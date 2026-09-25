@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -317,5 +321,374 @@ class RequestThrottleTest {
         throttle.adjustMaxConcurrentRequests(2);
 
         assertEquals("ok", queued.get(5, TimeUnit.SECONDS));
+    }
+
+    /**
+     * A reduction that cannot take permits back right away still has to take effect once the
+     * running requests return theirs.
+     */
+    @Test
+    void shrinkingWhileAllPermitsAreInFlightStillTakesEffect() {
+        RequestThrottle throttle = new RequestThrottle(2);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+        assertEquals(0, throttle.getAvailablePermits());
+
+        throttle.adjustMaxConcurrentRequests(1);
+
+        first.complete(null);
+        second.complete(null);
+
+        assertEquals(1, throttle.getMaxConcurrentRequests());
+        assertEquals(1, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * A limit reduced under load has to be enforced afterwards, not just reported.
+     */
+    @Test
+    void limitStaysEnforcedAfterShrinkingUnderLoad() {
+        RequestThrottle throttle = new RequestThrottle(2);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+
+        throttle.adjustMaxConcurrentRequests(1);
+        first.complete(null);
+        second.complete(null);
+
+        AtomicInteger started = new AtomicInteger();
+        for (int i = 0; i < 3; i++) {
+            throttle.execute(() -> {
+                started.incrementAndGet();
+                return new CompletableFuture<Void>();
+            });
+        }
+
+        assertEquals(1, started.get(), "only one request may run while the limit is 1");
+    }
+
+    /**
+     * In-flight tracking must not report a negative number of requests.
+     */
+    @Test
+    void inFlightCountNeverGoesNegative() {
+        RequestThrottle throttle = new RequestThrottle(2);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+
+        throttle.adjustMaxConcurrentRequests(1);
+        assertEquals(2, throttle.getInFlightRequests());
+
+        first.complete(null);
+        assertEquals(1, throttle.getInFlightRequests());
+
+        second.complete(null);
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * Shrinking under load and raising the limit again must not leave the pool over budget.
+     */
+    @Test
+    void shrinkingUnderLoadThenRaisingDoesNotInflateThePool() {
+        RequestThrottle throttle = new RequestThrottle(2);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+
+        throttle.adjustMaxConcurrentRequests(1);
+        throttle.adjustMaxConcurrentRequests(2);
+
+        first.complete(null);
+        second.complete(null);
+
+        assertEquals(2, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * Reducing holds the permit lock, so it cannot wait for in-flight permits. It has to hand
+     * the whole reduction over as debt and let the running requests settle it.
+     */
+    @Test
+    void shrinkingFromAnotherThreadWhileBusyAppliesTheWholeReduction() throws Exception {
+        RequestThrottle throttle = new RequestThrottle(4);
+        List<CompletableFuture<Void>> running = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            CompletableFuture<Void> blocker = new CompletableFuture<>();
+            running.add(blocker);
+            throttle.execute(() -> blocker);
+        }
+
+        CompletableFuture<Void> shrink = CompletableFuture.runAsync(() -> throttle.adjustMaxConcurrentRequests(1));
+        assertDoesNotThrow(() -> shrink.get(5, TimeUnit.SECONDS));
+
+        running.forEach(blocker -> blocker.complete(null));
+        assertEquals(1, throttle.getAvailablePermits());
+    }
+
+    /**
+     * Truncation is not limited to having no free permit: with 2 of 3 in flight and the limit
+     * dropping to 1, one permit is free and the second has to come out of a running request.
+     */
+    @Test
+    void partiallyApplicableReductionIsNotTruncated() {
+        RequestThrottle throttle = new RequestThrottle(3);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+        assertEquals(1, throttle.getAvailablePermits());
+
+        throttle.adjustMaxConcurrentRequests(1);
+        assertEquals(0, throttle.getAvailablePermits());
+        assertEquals(2, throttle.getInFlightRequests());
+
+        first.complete(null);
+        second.complete(null);
+
+        assertEquals(1, throttle.getMaxConcurrentRequests());
+        assertEquals(1, throttle.getAvailablePermits(), "the whole reduction has to be applied");
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * A queued request started from inside the adjustment must not observe a negative count.
+     */
+    @Test
+    void raisingTheLimitNeverReportsNegativeInFlight() {
+        RequestThrottle throttle = new RequestThrottle(1);
+        throttle.execute(() -> new CompletableFuture<>());
+
+        AtomicInteger observed = new AtomicInteger(Integer.MIN_VALUE);
+        throttle.execute(() -> {
+            observed.set(throttle.getInFlightRequests());
+            return new CompletableFuture<Void>();
+        });
+
+        throttle.adjustMaxConcurrentRequests(4);
+
+        assertTrue(observed.get() >= 0,
+            "in-flight count observed during the adjustment was " + observed.get());
+        assertTrue(throttle.getInFlightRequests() >= 0);
+    }
+
+    /**
+     * No sequence of adjustments may drive the reported in-flight count below zero.
+     */
+    @Test
+    void inFlightCountStaysNonNegativeAcrossAdjustments() {
+        RequestThrottle throttle = new RequestThrottle(4);
+        List<CompletableFuture<Void>> running = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            CompletableFuture<Void> blocker = new CompletableFuture<>();
+            running.add(blocker);
+            throttle.execute(() -> blocker);
+        }
+
+        for (int newMax : new int[]{1, 3, 2, 5, 1}) {
+            throttle.adjustMaxConcurrentRequests(newMax);
+            assertTrue(throttle.getInFlightRequests() >= 0,
+                "negative in-flight count after adjusting to " + newMax);
+        }
+        for (CompletableFuture<Void> blocker : running) {
+            blocker.complete(null);
+            assertTrue(throttle.getInFlightRequests() >= 0, "negative in-flight count while draining");
+        }
+
+        assertEquals(1, throttle.getMaxConcurrentRequests());
+        assertEquals(1, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * Every permit is either free, held by an in-flight request, or retired to settle a reduction.
+     */
+    private static void assertPermitsAccountedFor(RequestThrottle throttle) {
+        assertEquals(throttle.getMaxConcurrentRequests() + throttle.getPermitDebt(),
+            throttle.getAvailablePermits() + throttle.getInFlightRequests(),
+            "available + in-flight must equal max + outstanding reduction");
+        assertTrue(throttle.getInFlightRequests() >= 0, "in-flight count went negative");
+        assertTrue(throttle.getPermitDebt() >= 0, "permit debt went negative");
+    }
+
+    @Test
+    void permitsStayAccountedForWhileShrinkingUnderLoad() {
+        RequestThrottle throttle = new RequestThrottle(3);
+        assertPermitsAccountedFor(throttle);
+
+        List<CompletableFuture<Void>> running = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            CompletableFuture<Void> blocker = new CompletableFuture<>();
+            running.add(blocker);
+            throttle.execute(() -> blocker);
+            assertPermitsAccountedFor(throttle);
+        }
+
+        throttle.adjustMaxConcurrentRequests(1);
+        assertEquals(2, throttle.getPermitDebt());
+        assertPermitsAccountedFor(throttle);
+
+        for (CompletableFuture<Void> blocker : running) {
+            blocker.complete(null);
+            assertPermitsAccountedFor(throttle);
+        }
+
+        assertEquals(0, throttle.getPermitDebt());
+        assertEquals(1, throttle.getAvailablePermits());
+    }
+
+    /**
+     * Raising by less than the outstanding reduction only cancels part of it.
+     */
+    @Test
+    void raisingByLessThanTheOutstandingReductionOnlyCancelsPartOfIt() {
+        RequestThrottle throttle = new RequestThrottle(4);
+        List<CompletableFuture<Void>> running = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            CompletableFuture<Void> blocker = new CompletableFuture<>();
+            running.add(blocker);
+            throttle.execute(() -> blocker);
+        }
+
+        throttle.adjustMaxConcurrentRequests(1);
+        assertEquals(3, throttle.getPermitDebt());
+
+        throttle.adjustMaxConcurrentRequests(2);
+
+        assertEquals(2, throttle.getPermitDebt(), "one unit of the reduction is cancelled");
+        assertEquals(0, throttle.getAvailablePermits(), "nothing may be handed out yet");
+        assertPermitsAccountedFor(throttle);
+
+        running.forEach(blocker -> blocker.complete(null));
+        assertPermitsAccountedFor(throttle);
+        assertEquals(0, throttle.getPermitDebt());
+        assertEquals(2, throttle.getAvailablePermits());
+    }
+
+    /**
+     * Raising by more than the outstanding reduction cancels it and hands out the remainder.
+     */
+    @Test
+    void raisingByMoreThanTheOutstandingReductionHandsOutTheRemainder() {
+        RequestThrottle throttle = new RequestThrottle(2);
+        CompletableFuture<Void> first = new CompletableFuture<>();
+        CompletableFuture<Void> second = new CompletableFuture<>();
+        throttle.execute(() -> first);
+        throttle.execute(() -> second);
+
+        throttle.adjustMaxConcurrentRequests(1);
+        assertEquals(1, throttle.getPermitDebt());
+
+        throttle.adjustMaxConcurrentRequests(4);
+
+        assertEquals(0, throttle.getPermitDebt(), "the reduction is fully cancelled");
+        assertEquals(2, throttle.getAvailablePermits(), "only the remainder is handed out");
+        assertPermitsAccountedFor(throttle);
+
+        first.complete(null);
+        second.complete(null);
+        assertPermitsAccountedFor(throttle);
+        assertEquals(4, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    @Test
+    void permitsStayAccountedForAcrossAnAdjustmentSequence() {
+        RequestThrottle throttle = new RequestThrottle(4);
+        List<CompletableFuture<Void>> running = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            CompletableFuture<Void> blocker = new CompletableFuture<>();
+            running.add(blocker);
+            throttle.execute(() -> blocker);
+        }
+
+        for (int newMax : new int[]{1, 3, 2, 5, 1, 4}) {
+            throttle.adjustMaxConcurrentRequests(newMax);
+            assertPermitsAccountedFor(throttle);
+        }
+        for (CompletableFuture<Void> blocker : running) {
+            blocker.complete(null);
+            assertPermitsAccountedFor(throttle);
+        }
+
+        assertEquals(4, throttle.getMaxConcurrentRequests());
+        assertEquals(4, throttle.getAvailablePermits());
+        assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * A permit returned while a reduction is being applied must not be counted twice: once back
+     * into the pool and once against the reduction. The throttle would then hand out permits while
+     * the requests still running already occupy the reduced limit.
+     *
+     * <p>The window is a few instructions wide, so the threads are aligned on a spin flag and the
+     * scenario is repeated. On the unfixed code this reports free permits within a few dozen
+     * attempts; it has to report none, on every attempt, whatever the interleaving.
+     */
+    @Test
+    void permitsReturnedWhileShrinkingAreNotCountedTwice() throws Exception {
+        int returning = 4;
+        ExecutorService executor = Executors.newFixedThreadPool(returning + 1);
+        try {
+            for (int attempt = 0; attempt < 2000; attempt++) {
+                RequestThrottle throttle = new RequestThrottle(2 * returning);
+                List<CompletableFuture<Void>> running = new ArrayList<>();
+                for (int i = 0; i < 2 * returning; i++) {
+                    CompletableFuture<Void> blocker = new CompletableFuture<>();
+                    running.add(blocker);
+                    throttle.execute(() -> blocker);
+                }
+                assertEquals(0, throttle.getAvailablePermits());
+
+                // Half of the requests return their permit exactly while the limit is halved.
+                CountDownLatch ready = new CountDownLatch(returning + 1);
+                AtomicBoolean go = new AtomicBoolean();
+                List<Future<?>> started = new ArrayList<>();
+                for (int i = 0; i < returning; i++) {
+                    CompletableFuture<Void> blocker = running.get(i);
+                    started.add(executor.submit(() -> {
+                        awaitGo(ready, go);
+                        blocker.complete(null);
+                    }));
+                }
+                started.add(executor.submit(() -> {
+                    awaitGo(ready, go);
+                    throttle.adjustMaxConcurrentRequests(returning);
+                }));
+                ready.await(10, TimeUnit.SECONDS);
+                go.set(true);
+                for (Future<?> task : started) {
+                    task.get(10, TimeUnit.SECONDS);
+                }
+
+                assertEquals(returning, throttle.getInFlightRequests());
+                assertEquals(0, throttle.getAvailablePermits(),
+                    "the reduced limit is already taken by the requests still in flight (attempt " + attempt + ")");
+                assertPermitsAccountedFor(throttle);
+
+                running.subList(returning, 2 * returning).forEach(blocker -> blocker.complete(null));
+                assertEquals(returning, throttle.getAvailablePermits());
+                assertEquals(0, throttle.getPermitDebt());
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /** Reports the caller as ready and spins until every party has been let go. */
+    private static void awaitGo(CountDownLatch ready, AtomicBoolean go) {
+        ready.countDown();
+        while (!go.get()) {
+            Thread.onSpinWait();
+        }
     }
 }
