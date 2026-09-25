@@ -42,8 +42,15 @@ public class RequestThrottle {
     /** Requests waiting for a permit, started in the order they were submitted. */
     private final Queue<Runnable> pending = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean draining = new AtomicBoolean();
+    /**
+     * Guards the permit accounting: a returned permit either goes back to the semaphore or retires
+     * part of an outstanding reduction, and a reduction either takes a free permit or defers it as
+     * debt. Both decisions have to see the same state, so they share this lock. Nothing that blocks
+     * or calls back into a request runs while it is held.
+     */
+    private final Object permitLock = new Object();
     /** Part of a reduction that could not be applied at once, settled as in-flight permits return. */
-    private final AtomicInteger permitDebt = new AtomicInteger();
+    private int permitDebt;
     /** Permits handed out to requests that have not returned them yet. */
     private final AtomicInteger inFlight = new AtomicInteger();
 
@@ -75,15 +82,12 @@ public class RequestThrottle {
     /** Returns a permit to the pool, or retires it if a reduction is still outstanding. */
     private void releasePermit() {
         inFlight.decrementAndGet();
-        while (true) {
-            int debt = permitDebt.get();
-            if (debt == 0) {
-                semaphore.release();
+        synchronized (permitLock) {
+            if (permitDebt > 0) {
+                permitDebt--;
                 return;
             }
-            if (permitDebt.compareAndSet(debt, debt - 1)) {
-                return;
-            }
+            semaphore.release();
         }
     }
 
@@ -150,43 +154,50 @@ public class RequestThrottle {
         drain();
     }
 
-    public synchronized void adjustMaxConcurrentRequests(int newMax) {
+    public void adjustMaxConcurrentRequests(int newMax) {
         if (newMax < 1) {
             throw new IllegalArgumentException("Max concurrent requests must be at least 1, got: " + newMax);
         }
-        if (newMax == this.maxConcurrentRequests) {
-            return;
+
+        boolean grown;
+        int unsettled;
+        synchronized (permitLock) {
+            int difference = newMax - this.maxConcurrentRequests;
+            if (difference == 0) {
+                return;
+            }
+            this.maxConcurrentRequests = newMax;
+            grown = difference > 0;
+            if (grown) {
+                // Cancel any unsettled reduction first, otherwise it would be undone twice.
+                int cancelled = Math.min(difference, permitDebt);
+                permitDebt -= cancelled;
+                int toRelease = difference - cancelled;
+                if (toRelease > 0) {
+                    semaphore.release(toRelease);
+                }
+            } else {
+                int toRemove = -difference;
+                // Only take what is free: waiting here would block under the lock for permits that
+                // only the in-flight requests can return.
+                int removed = 0;
+                while ((removed < toRemove) && semaphore.tryAcquire()) {
+                    removed++;
+                }
+                permitDebt += toRemove - removed;
+            }
+            unsettled = permitDebt;
         }
 
-        int difference = newMax - this.maxConcurrentRequests;
-        if (difference > 0) {
-            this.maxConcurrentRequests = newMax;
-            // Cancel any unsettled reduction first, otherwise it would be undone twice.
-            int cancelled = Math.min(difference, permitDebt.getAndUpdate(debt -> Math.max(0, debt - difference)));
-            int toRelease = difference - cancelled;
-            if (toRelease > 0) {
-                semaphore.release(toRelease);
-            }
-            drain();
-        } else {
-            int toRemove = -difference;
-            // Only take what is free: waiting here would block under the monitor for permits that
-            // only the in-flight requests can return.
-            int removed = 0;
-            while ((removed < toRemove) && semaphore.tryAcquire()) {
-                removed++;
-            }
-            if (removed < toRemove) {
-                permitDebt.addAndGet(toRemove - removed);
-            }
-            this.maxConcurrentRequests = newMax;
-        }
-        int unsettled = permitDebt.get();
         if (unsettled > 0) {
             LOGGER.info("Adjusted max concurrent requests to {}; {} permit(s) of the reduction are " +
                 "still held by in-flight requests and will be retired as those complete", newMax, unsettled);
         } else {
             LOGGER.info("Adjusted max concurrent requests to {}", newMax);
+        }
+        if (grown) {
+            // Outside the lock: a request started here can complete inline and return its permit.
+            drain();
         }
     }
 
@@ -208,7 +219,9 @@ public class RequestThrottle {
 
     /** Visible for testing. */
     int getPermitDebt() {
-        return permitDebt.get();
+        synchronized (permitLock) {
+            return permitDebt;
+        }
     }
 
 }

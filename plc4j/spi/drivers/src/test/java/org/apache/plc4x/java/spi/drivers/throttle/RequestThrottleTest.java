@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -411,8 +415,8 @@ class RequestThrottleTest {
     }
 
     /**
-     * Reducing runs under the instance monitor, so it cannot wait for in-flight permits. It has
-     * to hand the whole reduction over as debt and let the running requests settle it.
+     * Reducing holds the permit lock, so it cannot wait for in-flight permits. It has to hand
+     * the whole reduction over as debt and let the running requests settle it.
      */
     @Test
     void shrinkingFromAnotherThreadWhileBusyAppliesTheWholeReduction() throws Exception {
@@ -619,5 +623,72 @@ class RequestThrottleTest {
         assertEquals(4, throttle.getMaxConcurrentRequests());
         assertEquals(4, throttle.getAvailablePermits());
         assertEquals(0, throttle.getInFlightRequests());
+    }
+
+    /**
+     * A permit returned while a reduction is being applied must not be counted twice: once back
+     * into the pool and once against the reduction. The throttle would then hand out permits while
+     * the requests still running already occupy the reduced limit.
+     *
+     * <p>The window is a few instructions wide, so the threads are aligned on a spin flag and the
+     * scenario is repeated. On the unfixed code this reports free permits within a few dozen
+     * attempts; it has to report none, on every attempt, whatever the interleaving.
+     */
+    @Test
+    void permitsReturnedWhileShrinkingAreNotCountedTwice() throws Exception {
+        int returning = 4;
+        ExecutorService executor = Executors.newFixedThreadPool(returning + 1);
+        try {
+            for (int attempt = 0; attempt < 2000; attempt++) {
+                RequestThrottle throttle = new RequestThrottle(2 * returning);
+                List<CompletableFuture<Void>> running = new ArrayList<>();
+                for (int i = 0; i < 2 * returning; i++) {
+                    CompletableFuture<Void> blocker = new CompletableFuture<>();
+                    running.add(blocker);
+                    throttle.execute(() -> blocker);
+                }
+                assertEquals(0, throttle.getAvailablePermits());
+
+                // Half of the requests return their permit exactly while the limit is halved.
+                CountDownLatch ready = new CountDownLatch(returning + 1);
+                AtomicBoolean go = new AtomicBoolean();
+                List<Future<?>> started = new ArrayList<>();
+                for (int i = 0; i < returning; i++) {
+                    CompletableFuture<Void> blocker = running.get(i);
+                    started.add(executor.submit(() -> {
+                        awaitGo(ready, go);
+                        blocker.complete(null);
+                    }));
+                }
+                started.add(executor.submit(() -> {
+                    awaitGo(ready, go);
+                    throttle.adjustMaxConcurrentRequests(returning);
+                }));
+                ready.await(10, TimeUnit.SECONDS);
+                go.set(true);
+                for (Future<?> task : started) {
+                    task.get(10, TimeUnit.SECONDS);
+                }
+
+                assertEquals(returning, throttle.getInFlightRequests());
+                assertEquals(0, throttle.getAvailablePermits(),
+                    "the reduced limit is already taken by the requests still in flight (attempt " + attempt + ")");
+                assertPermitsAccountedFor(throttle);
+
+                running.subList(returning, 2 * returning).forEach(blocker -> blocker.complete(null));
+                assertEquals(returning, throttle.getAvailablePermits());
+                assertEquals(0, throttle.getPermitDebt());
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /** Reports the caller as ready and spins until every party has been let go. */
+    private static void awaitGo(CountDownLatch ready, AtomicBoolean go) {
+        ready.countDown();
+        while (!go.get()) {
+            Thread.onSpinWait();
+        }
     }
 }
