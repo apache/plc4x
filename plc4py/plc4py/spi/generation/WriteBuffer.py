@@ -46,6 +46,38 @@ from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
 from xsdata.utils.text import camel_case
 
 
+def _indent(tree: ET.Element, space: str = "  ", level: int = 0) -> None:
+    """
+    "ElementTree.indent", which only exists from Python 3.9 on. On 3.8 this is a port of the
+    CPython implementation, so both produce the same whitespace.
+    """
+    if hasattr(ET, "indent"):
+        ET.indent(tree, space=space, level=level)
+        return
+    if not len(tree):
+        return
+    indentations = ["\n" + level * space]
+
+    def _indent_children(elem: ET.Element, level: int) -> None:
+        child_level = level + 1
+        try:
+            child_indentation = indentations[child_level]
+        except IndexError:
+            child_indentation = indentations[level] + space
+            indentations.append(child_indentation)
+        if not elem.text or not elem.text.strip():
+            elem.text = child_indentation
+        for child in elem:
+            if len(child):
+                _indent_children(child, child_level)
+            if not child.tail or not child.tail.strip():
+                child.tail = child_indentation
+        if not child.tail.strip():
+            child.tail = indentations[level]
+
+    _indent_children(tree, 0)
+
+
 def enum_value(value):
     """
     Unwraps an enum member to the number behind it.
@@ -653,5 +685,5 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
             self.stack.append(new_element)
 
     def to_xml_string(self) -> str:
-        ET.indent(self.stack[0], space="\t", level=0)
+        _indent(self.stack[0], space="\t", level=0)
         return ET.tostring(self.stack[0]).decode("utf-8")
