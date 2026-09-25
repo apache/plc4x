@@ -899,14 +899,13 @@
     [simple   bit                              flagReferenceTo                                                         ]
     [simple   bit                              flagBitValue                                                            ]
     [simple   bit                              flagPersistent                                                          ]
-    [simple   bit                              flagCompilerGenerated                                                   ]
-    [reserved uint 1                           '0x0'                                                                   ]
-    [simple   bit                              flagSystemServiceSymbol                                                 ]
+    // Bits 15..8 as defined in TcAdsDef.h (ADSSYMBOLFLAG_*): bits 11..8 are not flags but a
+    // 4-bit task/context id (ADSSYMBOLFLAG_CONTEXTMASK 0x0F00).
     [simple   bit                              flagExtendedFlags                                                       ]
     [simple   bit                              flagInitOnReset                                                         ]
     [simple   bit                              flagStatic                                                              ]
     [implicit bit                              flagAttributes             'attributes != null'                         ]
-    [implicit bit                              flagContextMask            'contextMask != null'                        ]
+    [simple   uint 4                           contextMask                                                             ]
     // https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L679
     // Order of the bits if read Little-Endian and then accessing the bit flags
     // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8
@@ -927,7 +926,6 @@
 	[const    uint 8                           dataTypeNameTerminator     0x00                                         ]
 	[simple   vstring 'commentLength * 8'      comment                                                                 ]
 	[const    uint 8                           commentTerminator          0x00                                         ]
-	[optional uint 32                          contextMask                'flagContextMask'                            ]
     [array    byte                             guid                       count         'flagTypeGuid == true ? 16 : 0']
     [optional AdsDataTypeAttributes            attributes                 'flagAttributes'                             ]
     // Gobbling up the rest, but it seems there is only empty padding bytes in it.

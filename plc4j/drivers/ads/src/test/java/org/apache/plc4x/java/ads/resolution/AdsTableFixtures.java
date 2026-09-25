@@ -75,9 +75,9 @@ final class AdsTableFixtures {
 
     static AdsSymbolTableEntry symbol(String name, String dataTypeName, long group, long offset, long size) {
         return new AdsSymbolTableEntry(0L, group, offset, size, 0L,
-            false, false, false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false, (byte) 0,
             false, false, false, false, false,
-            name, dataTypeName, "", 0L, new byte[0], null, new byte[0]);
+            name, dataTypeName, "", new byte[0], null, new byte[0]);
     }
 
     private static AdsDataTypeTableEntry entry(String mainName, String secondaryName,
