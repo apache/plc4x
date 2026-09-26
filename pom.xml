@@ -1874,6 +1874,13 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>with-rust</id>
+      <modules>
+        <module>plc4rs</module>
+      </modules>
+    </profile>
   </profiles>
 
 </project>
