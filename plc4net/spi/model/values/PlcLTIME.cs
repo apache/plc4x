@@ -22,9 +22,10 @@ using System;
 namespace org.apache.plc4net.spi.model.values
 {
     /// <summary>
-    /// IEC 61131 <c>LTIME</c> - a duration in nanoseconds. The raw
-    /// <see cref="GetNanoseconds"/> is exact; <see cref="GetDuration"/> rounds
-    /// to the 100 ns <see cref="TimeSpan"/> tick.
+    /// IEC 61131 <c>LTIME</c> - a signed duration in nanoseconds.
+    /// <see cref="GetNanoseconds"/> returns the raw 64 bits as read from the wire;
+    /// <see cref="GetDuration"/> reads them as a signed count and truncates to the
+    /// 100 ns <see cref="TimeSpan"/> tick.
     /// </summary>
     public class PlcLTIME : PlcSimpleValueAdapter
     {
@@ -49,11 +50,7 @@ namespace org.apache.plc4net.spi.model.values
 
         public override TimeSpan GetDuration()
         {
-            const long MaxTicks = long.MaxValue;
-            if (nanoseconds > unchecked((ulong)MaxTicks * 100))
-                throw new OverflowException(
-                    $"LTIME duration {nanoseconds} ns exceeds TimeSpan.MaxValue ({MaxTicks} ticks).");
-            return TimeSpan.FromTicks((long)(nanoseconds / 100));
+            return TimeSpan.FromTicks(unchecked((long)nanoseconds) / 100);
         }
 
         protected bool Equals(PlcLTIME other)

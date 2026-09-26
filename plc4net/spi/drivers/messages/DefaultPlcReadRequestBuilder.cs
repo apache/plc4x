@@ -44,6 +44,10 @@ namespace org.apache.plc4net.spi.drivers.messages
 
         public IPlcReadRequestBuilder AddTagAddress(string name, string tagAddress)
         {
+            if (_tags.ContainsKey(name))
+            {
+                throw new ArgumentException($"Duplicate tag definition '{name}'.", nameof(name));
+            }
             var tag = _tagParser(tagAddress);
             _tags[name] = new DefaultPlcTagItem<IPlcTag>(name, tag);
             return this;
