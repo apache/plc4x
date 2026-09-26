@@ -309,6 +309,8 @@
             <instructions>
               <_include>-bnd.bnd</_include>
               <_removeheaders>Bnd-LastModified,Built-By</_removeheaders>
+              <SPI-Consumer>*</SPI-Consumer>
+              <SPI-Provider>*</SPI-Provider>  
             </instructions>
         </configuration>
       </plugin>
