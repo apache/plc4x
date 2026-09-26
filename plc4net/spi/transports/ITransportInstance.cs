@@ -88,7 +88,7 @@ namespace org.apache.plc4net.spi.transports
         /// Called when the connection drops. The argument is the causing exception, or
         /// null for an orderly close by the remote end.
         /// </summary>
-        void RegisterDisconnectListener(Action<Exception> listener);
+        void RegisterDisconnectListener(Action<Exception?> listener);
 
         void RemoveDisconnectListener();
     }

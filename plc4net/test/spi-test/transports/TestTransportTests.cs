@@ -139,5 +139,30 @@ namespace org.apache.plc4net.spi.test.transports
                 () => instance.WaitForWrittenData(3, 50));
             Assert.Contains("only 1", ex.Message);
         }
+
+        [Fact]
+        public void WaitForWrittenData_fails_promptly_when_the_instance_is_closed()
+        {
+            using var instance = CreateInstance();
+
+            // A dedicated thread for the same reason as in the write test above.
+            var closer = new Thread(() =>
+            {
+                Thread.Sleep(50);
+                instance.Close();
+            })
+            { IsBackground = true, Name = "test-transport-closer" };
+            closer.Start();
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var ex = Assert.Throws<TransportException>(
+                () => instance.WaitForWrittenData(3, 10_000));
+            watch.Stop();
+
+            closer.Join();
+            Assert.Contains("closed", ex.Message);
+            Assert.True(watch.ElapsedMilliseconds < 5_000,
+                $"Close() should wake the waiter, but it waited {watch.ElapsedMilliseconds} ms.");
+        }
     }
 }
