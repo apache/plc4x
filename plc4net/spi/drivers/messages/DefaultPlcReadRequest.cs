@@ -39,7 +39,10 @@ namespace org.apache.plc4net.spi.drivers.messages
         public DefaultPlcReadRequest(PlcReader reader, Dictionary<string, PlcTagItem<IPlcTag>> tags)
         {
             _reader = reader;
-            _tags = tags ?? new Dictionary<string, PlcTagItem<IPlcTag>>();
+            // Take a copy, so neither the caller nor a reused builder can change this request later.
+            _tags = tags != null
+                ? new Dictionary<string, PlcTagItem<IPlcTag>>(tags)
+                : new Dictionary<string, PlcTagItem<IPlcTag>>();
         }
 
         public int TagCount => _tags.Count;

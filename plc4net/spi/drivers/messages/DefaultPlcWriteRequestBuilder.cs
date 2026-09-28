@@ -42,83 +42,44 @@ namespace org.apache.plc4net.spi.drivers.messages
             _tagParser = tagParser ?? (s => new GenericTag(s));
         }
 
-        // For each typed overload, unwrap a single-element params array so the
-        // driver's Write method receives a scalar value rather than an array.
-
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params bool[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<bool>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params byte[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<byte>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params short[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<short>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params int[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<int>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params long[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<long>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params float[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<float>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params double[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<double>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params Decimal[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<Decimal>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params string[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<string>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag(string name, string tagAddress, params DateTime[] values)
-        {
-            _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
-            return this;
-        }
+            => AddTag<DateTime>(name, tagAddress, values);
 
         public IPlcWriteRequestBuilder AddTag<T>(string name, string tagAddress, params T[] values)
         {
+            if (_tags.ContainsKey(name))
+            {
+                throw new ArgumentException($"Duplicate tag definition '{name}'.", nameof(name));
+            }
             _tags[name] = new DefaultPlcTagValueItem<IPlcTag>(
-                name, _tagParser(tagAddress), Unwrap(values));
+                name, _tagParser(tagAddress), Unwrap(name, values));
             return this;
         }
 
@@ -128,16 +89,23 @@ namespace org.apache.plc4net.spi.drivers.messages
         }
 
         /// <summary>
-        /// If the array has one element, return it directly; if more than one,
-        /// throw because multi-value writes are not yet supported.
+        /// Returns the one value to write. At least one value is required, as in
+        /// SPI3; several values for one tag are not supported yet.
         /// </summary>
-        private static object? Unwrap<T>(T[] values)
+        private static object? Unwrap<T>(string name, T[] values)
         {
-            if (values == null || values.Length == 0) return null;
-            if (values.Length == 1) return values[0];
-            throw new NotSupportedException(
-                $"Multi-value writes (passed {values.Length} values of type {typeof(T).Name}) " +
-                "are not yet supported. Write each tag individually.");
+            if (values == null || values.Length == 0)
+            {
+                throw new ArgumentException(
+                    $"Tag '{name}' needs at least one value to write.", nameof(values));
+            }
+            if (values.Length > 1)
+            {
+                throw new NotSupportedException(
+                    $"Multi-value writes (passed {values.Length} values of type {typeof(T).Name}) " +
+                    "are not yet supported. Write each tag individually.");
+            }
+            return values[0];
         }
     }
 }

@@ -120,8 +120,8 @@ namespace org.apache.plc4net.transports.test
 
         /// <summary>
         /// Waits for at least <paramref name="expectedBytes"/> to be written,
-        /// then returns them. Times out with a <see cref="TransportException"/>
-        /// if the deadline passes without enough data.
+        /// then returns them. Throws a <see cref="TransportException"/> if the
+        /// deadline passes, or the instance is closed, before enough data arrives.
         /// </summary>
         public byte[] WaitForWrittenData(int expectedBytes, int timeoutMs)
         {
@@ -130,6 +130,13 @@ namespace org.apache.plc4net.transports.test
             {
                 while (_writeBuffer.AvailableForReading < expectedBytes)
                 {
+                    if (!_open)
+                    {
+                        throw new TransportException(
+                            $"Transport closed while waiting for {expectedBytes} bytes; only " +
+                            $"{_writeBuffer.AvailableForReading} arrived.");
+                    }
+
                     var remaining = deadline - Environment.TickCount64;
                     if (remaining <= 0)
                     {

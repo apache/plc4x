@@ -63,9 +63,7 @@ namespace org.apache.plc4net.spi.model.values
 
         public override TimeOnly GetTime()
         {
-            var maxTicksAsNanos = unchecked((ulong)long.MaxValue * 100);
-            var ns = Math.Min(nanosecondsSinceMidnight, Math.Min(NanosPerDay - 1, maxTicksAsNanos));
-            return TimeOnly.FromTimeSpan(TimeSpan.FromTicks((long)(ns / 100)));
+            return TimeOnly.FromTimeSpan(TimeSpan.FromTicks((long)(nanosecondsSinceMidnight / 100)));
         }
 
         protected bool Equals(PlcLTIME_OF_DAY other)

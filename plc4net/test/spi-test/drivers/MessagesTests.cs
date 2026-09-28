@@ -17,6 +17,7 @@
 // under the License.
 //
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using org.apache.plc4net.api.value;
@@ -121,6 +122,55 @@ namespace org.apache.plc4net.spi.test.drivers
 
             Assert.NotNull(response);
             Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("tag1"));
+        }
+
+        [Fact]
+        public void Reusing_a_read_builder_does_not_change_a_request_already_built()
+        {
+            var builder = new DefaultPlcReadRequestBuilder(new NoOpReader(), null);
+            var first = (IPlcTagRequest)builder.AddTagAddress("a", "coil:1").Build();
+
+            builder.AddTagAddress("b", "coil:2");
+
+            Assert.Equal(1, first.TagCount);
+            Assert.DoesNotContain("b", first.TagNames);
+        }
+
+        [Fact]
+        public void Reusing_a_write_builder_does_not_change_a_request_already_built()
+        {
+            var builder = new DefaultPlcWriteRequestBuilder(new NoOpWriter(), null);
+            var first = builder.AddTag("a", "coil:0", true).Build();
+
+            builder.AddTag("b", "coil:1", false);
+
+            Assert.Equal(1, first.NumberOfValues);
+        }
+
+        [Fact]
+        public void A_read_builder_rejects_a_duplicate_tag_name()
+        {
+            var builder = new DefaultPlcReadRequestBuilder(new NoOpReader(), null)
+                .AddTagAddress("a", "coil:1");
+
+            Assert.Throws<ArgumentException>(() => builder.AddTagAddress("a", "coil:2"));
+        }
+
+        [Fact]
+        public void A_write_builder_rejects_a_duplicate_tag_name()
+        {
+            var builder = new DefaultPlcWriteRequestBuilder(new NoOpWriter(), null)
+                .AddTag("t", "coil:0", true);
+
+            Assert.Throws<ArgumentException>(() => builder.AddTag("t", "coil:1", false));
+        }
+
+        [Fact]
+        public void A_write_needs_at_least_one_value()
+        {
+            var builder = new DefaultPlcWriteRequestBuilder(new NoOpWriter(), null);
+
+            Assert.Throws<ArgumentException>(() => builder.AddTag("empty", "coil:0", Array.Empty<bool>()));
         }
     }
 }

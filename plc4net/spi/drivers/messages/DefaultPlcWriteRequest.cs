@@ -39,7 +39,10 @@ namespace org.apache.plc4net.spi.drivers.messages
         public DefaultPlcWriteRequest(PlcWriter writer, Dictionary<string, PlcTagValueItem<IPlcTag>> tags)
         {
             _writer = writer;
-            _tags = tags ?? new Dictionary<string, PlcTagValueItem<IPlcTag>>();
+            // Take a copy, so neither the caller nor a reused builder can change this request later.
+            _tags = tags != null
+                ? new Dictionary<string, PlcTagValueItem<IPlcTag>>(tags)
+                : new Dictionary<string, PlcTagValueItem<IPlcTag>>();
         }
 
         public int NumberOfValues => _tags.Count;

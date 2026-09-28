@@ -240,6 +240,28 @@ namespace org.apache.plc4net.spi.test.model.values
         }
 
         [Fact]
+        public void LTIME_is_a_signed_duration()
+        {
+            // IEC 61131-3 LTIME is a signed 64-bit ns count; LT#-1s arrives as 0xFFFFFFFFC4653600.
+            IPlcValue minusOneSecond = new PlcLTIME(0xFFFFFFFFC4653600UL);
+            Assert.Equal(TimeSpan.FromSeconds(-1), minusOneSecond.GetDuration());
+
+            // The S7 range ends, LT#+/-106751d23h47m16s854ms775us807/808ns, truncated to 100 ns.
+            var extreme = new TimeSpan(106751, 23, 47, 16) + TimeSpan.FromTicks(8_547_758);
+            IPlcValue max = new PlcLTIME(0x7FFFFFFFFFFFFFFFUL);
+            IPlcValue min = new PlcLTIME(0x8000000000000000UL);
+            Assert.Equal(extreme, max.GetDuration());
+            Assert.Equal(-extreme, min.GetDuration());
+        }
+
+        [Fact]
+        public void LTIME_OF_DAY_keeps_the_last_tick_of_the_day()
+        {
+            IPlcValue lastTick = new PlcLTIME_OF_DAY(86_400_000_000_000UL - 1);
+            Assert.Equal(new TimeOnly(TimeSpan.TicksPerDay - 1), lastTick.GetTime());
+        }
+
+        [Fact]
         public void Null_value_is_null_equatable_and_hashable()
         {
             // PlcNULL.Equals()/GetHashCode() threw NotImplementedException and
