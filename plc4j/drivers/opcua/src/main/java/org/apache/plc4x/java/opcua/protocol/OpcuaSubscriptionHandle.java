@@ -22,6 +22,7 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -106,8 +107,10 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
     public OpcuaSubscriptionHandle(OpcuaConnection plcSubscriber,
         Conversation conversation, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId,
         long cycleTime, long revisedCycleTime, long queueSize) {
-        this.consumers = new HashSet<>();
-        this.tagConsumers = new HashMap<>();
+        // Consumers are added and removed from the caller's thread while the publish and cyclic
+        // threads iterate them, so both have to tolerate concurrent modification.
+        this.consumers = new CopyOnWriteArraySet<>();
+        this.tagConsumers = new ConcurrentHashMap<>();
         this.subscriptionRequest = subscriptionRequest;
         this.tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
         this.conversation = conversation;
@@ -472,6 +475,17 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
         logger.info("Registering a new OPCUA subscription consumer for tag with name {}", tagName);
         tagConsumers.put(tagName, consumer);
         return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
+    }
+
+    /**
+     * Stops delivering events to a consumer added through {@link #register} or
+     * {@link #registerTagConsumer}. The subscription itself stays active on the server.
+     *
+     * @param consumer - Consumer that should no longer receive events.
+     */
+    public void unregister(Consumer<PlcSubscriptionEvent> consumer) {
+        consumers.remove(consumer);
+        tagConsumers.values().removeIf(consumer::equals);
     }
 
     public Long getSubscriptionId() {

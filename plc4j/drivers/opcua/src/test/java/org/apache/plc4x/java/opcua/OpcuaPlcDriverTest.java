@@ -50,6 +50,8 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
@@ -806,6 +808,65 @@ public class OpcuaPlcDriverTest {
                     .addHandles(response.getSubscriptionHandles())
                     .build()
                     .execute();
+            }
+        }
+
+        /**
+         * Unregistering a consumer has to return and detach only that consumer - see GH-2775.
+         * It used to recurse until the stack overflowed, and the handle kept feeding the consumer.
+         */
+        @Test
+        public void unregisterDetachesOnlyThatConsumer() throws Exception {
+            PlcConnectionFactory connectionFactory = new DefaultPlcDriverManager().getConnectionFactory();
+
+            try (PlcConnection connection = connectionFactory.getConnection(tcpConnectionAddress)) {
+                int original = connection.readRequestBuilder()
+                    .addTagAddress("value", INTEGER_IDENTIFIER_READ_WRITE)
+                    .build().execute().get(30, TimeUnit.SECONDS)
+                    .getInteger("value");
+
+                PlcSubscriptionResponse response = connection.subscriptionRequestBuilder()
+                    .addChangeOfStateTag("value", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                    .build().execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
+                PlcSubscriptionHandle handle = response.getSubscriptionHandle("value");
+
+                ConcurrentLinkedDeque<PlcSubscriptionEvent> detached = new ConcurrentLinkedDeque<>();
+                ConcurrentLinkedDeque<PlcSubscriptionEvent> kept = new ConcurrentLinkedDeque<>();
+                PlcConsumerRegistration registration = handle.register(detached::add);
+                handle.register(kept::add);
+
+                // Wait for the monitored item's initial value, so the subscription is live.
+                for (int i = 0; i < 100 && kept.isEmpty(); i++) {
+                    Thread.sleep(100);
+                }
+                assertThat(kept).isNotEmpty();
+
+                registration.unregister();
+                detached.clear();
+                kept.clear();
+
+                int changed = original == 4711 ? 4712 : 4711;
+                try {
+                    connection.writeRequestBuilder()
+                        .addTagAddress("value", INTEGER_IDENTIFIER_READ_WRITE, changed)
+                        .build().execute().get(30, TimeUnit.SECONDS);
+
+                    for (int i = 0; i < 100 && kept.isEmpty(); i++) {
+                        Thread.sleep(100);
+                    }
+                    assertThat(kept).isNotEmpty();
+                    assertThat(kept.getLast().getInteger("value")).isEqualTo(changed);
+                    assertThat(detached).isEmpty();
+                } finally {
+                    connection.writeRequestBuilder()
+                        .addTagAddress("value", INTEGER_IDENTIFIER_READ_WRITE, original)
+                        .build().execute().get(30, TimeUnit.SECONDS);
+                    connection.unsubscriptionRequestBuilder()
+                        .addHandles(response.getSubscriptionHandles())
+                        .build()
+                        .execute();
+                }
             }
         }
 

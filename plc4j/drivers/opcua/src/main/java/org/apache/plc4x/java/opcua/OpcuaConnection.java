@@ -2580,8 +2580,17 @@ public class OpcuaConnection extends ConnectionBase<OpcuaConfiguration> implemen
 
     @Override
     protected void onUnregisterConsumer(PlcConsumerRegistration registration) {
-        registration.unregister();
-        consumers.remove(registration);
+        // Reached from DefaultPlcConsumerRegistration.unregister(), so calling back into it would
+        // recurse until the stack overflows (GH-2775). Detach the consumer from its handles instead.
+        if (!(registration instanceof DefaultPlcConsumerRegistration r)) {
+            return;
+        }
+        consumers.remove(r);
+        for (PlcSubscriptionHandle handle : r.getSubscriptionHandles()) {
+            if (handle instanceof OpcuaSubscriptionHandle opcuaHandle) {
+                opcuaHandle.unregister(r.getConsumer());
+            }
+        }
     }
 
     public static long getDateTime(long dateTime) {
