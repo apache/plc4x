@@ -169,7 +169,7 @@
     <logback.version>1.6.3</logback.version>
     <maven-artifact.version>3.9.16</maven-artifact.version>
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <!-- Used by the maven-site skin declaration in
          code-generation/protocol-test/src/site/site.xml - that file is ISO-8859-1 encoded,
