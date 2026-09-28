@@ -260,9 +260,13 @@ namespace org.apache.plc4net.transports.tcp
                     }
                     WriteHex("TCP SEND", bytes);
                 }
-                catch (ObjectDisposedException) when (Volatile.Read(ref _open) == 0)
+                catch (ObjectDisposedException) when (Volatile.Read(ref _closing) == 1)
                 {
                     // A concurrent Close() disposed the socket mid-write: normal shutdown.
+                }
+                catch (ObjectDisposedException e)
+                {
+                    throw new TransportException("Failed to write data", e);
                 }
                 catch (SocketException) when (Volatile.Read(ref _closing) == 1)
                 {
