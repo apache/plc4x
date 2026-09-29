@@ -21,7 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Antlr4.Runtime;
+using org.apache.plc4net.tools.codegen;
 using org.apache.plc4net.tools.codegen.grammar;
+using org.apache.plc4net.tools.codegen.model.terms;
 using Xunit;
 
 namespace org.apache.plc4net.test.codegen;
@@ -85,6 +87,108 @@ public class ParserSmokeTests
         Assert.Contains(tokens.GetTokens(), token =>
             token.Type == MSpecLexer.EmptyLine && token.Text == "    \n");
         AssertMSpecParses(input);
+    }
+
+    [Theory]
+    [InlineData("42", "42")]
+    [InlineData("0x0E", "0x0E")]
+    [InlineData("true", "true")]
+    [InlineData("false", "false")]
+    [InlineData("null", "null")]
+    [InlineData("1.5", "1.5")]
+    [InlineData("1 + 2 * 3", "(1 + (2 * 3))")]
+    [InlineData("(1 + 2) * 3", "((1 + 2) * 3)")]
+    [InlineData("8 / 2 % 3", "((8 / 2) % 3)")]
+    [InlineData("2 ^ 3 ^ 2", "(2 ^ (3 ^ 2))")]
+    [InlineData("0x2a << 1", "(0x2a << 1)")]
+    [InlineData("a >= b && c != d", "((a >= b) && (c != d))")]
+    [InlineData("a & b | c", "((a & b) | c)")]
+    [InlineData("a || b", "(a || b)")]
+    [InlineData("!flag", "!flag")]
+    [InlineData("-1", "-1")]
+    [InlineData("a ? b : c", "(a ? b : c)")]
+    public void BuildsExpressionTree(string input, string expected)
+    {
+        Assert.Equal(expected, MspecExpressionParser.Parse(input).ToString());
+    }
+
+    [Fact]
+    public void BuildsCallsIndexesAndMemberChains()
+    {
+        var call = Assert.IsType<VariableLiteral>(
+            MspecExpressionParser.Parse("CAST(parameter, Type).items[0].value"));
+
+        Assert.Equal("CAST", call.Name);
+        Assert.NotNull(call.Args);
+        Assert.Equal(2, call.Args.Count);
+        Assert.Equal("items", call.Child?.Name);
+        Assert.Equal("0", Assert.Single(call.Child!.Index).ToString());
+        Assert.Equal("value", call.Child.Child?.Name);
+    }
+
+    [Theory]
+    [InlineData("\"a\\\"b\"", "a\"b", "\"a\\\"b\"")]
+    [InlineData("'a\\'b'", "a'b", "\"a'b\"")]
+    [InlineData("\"C:\\\\temp\"", "C:\\temp", "\"C:\\\\temp\"")]
+    public void UnquotesAndRendersStringLiterals(string input, string value, string rendered)
+    {
+        var literal = Assert.IsType<StringLiteral>(MspecExpressionParser.Parse(input));
+
+        Assert.Equal(value, literal.Value);
+        Assert.Equal(rendered, literal.ToString());
+    }
+
+    [Fact]
+    public void DistinguishesEmptyCallsAndMultipleIndexes()
+    {
+        var value = Assert.IsType<VariableLiteral>(MspecExpressionParser.Parse("values()[row][column]"));
+
+        Assert.NotNull(value.Args);
+        Assert.Empty(value.Args);
+        Assert.Equal(2, value.Index.Count);
+    }
+
+    [Theory]
+    [InlineData("\"abc\"[0]", "\"abc\"[0]")]
+    [InlineData("(left + right)[offset]", "(left + right)[offset]")]
+    public void PreservesIndexesOnAnyExpression(string input, string expected)
+    {
+        Assert.Equal(expected, MspecExpressionParser.Parse(input).ToString());
+    }
+
+    [Theory]
+    [InlineData("pdu.lengthInBytes + 1")]
+    [InlineData("COUNT(events) + 6")]
+    [InlineData("(COUNT(fifoValue) * 2) / 2")]
+    [InlineData("ARRAY_SIZE_IN_BYTES(items)")]
+    [InlineData("STATIC_CALL(\"rtuCrcCheck\", address, pdu)")]
+    [InlineData("STATIC_CALL(\"asciiLrcCheck\", address, pdu)")]
+    public void BuildsExpressionsUsedByModbus(string input)
+    {
+        Assert.NotNull(MspecExpressionParser.Parse(input));
+    }
+
+    [Fact]
+    public void RejectsInvalidExpressionWithSourceLocation()
+    {
+        MspecParseException error =
+            Assert.Throws<MspecParseException>(() => MspecExpressionParser.Parse("1 +"));
+
+        Assert.Contains("'1 +'", error.Message);
+        Assert.Contains("line 1:", error.Message);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void RejectsOutOfRangeNumbersAsParseErrors(bool floatingPoint)
+    {
+        string input = floatingPoint ? new string('9', 400) + ".0" : new string('9', 30);
+        MspecParseException error =
+            Assert.Throws<MspecParseException>(() => MspecExpressionParser.Parse(input));
+
+        Assert.Contains(input, error.Message);
+        Assert.IsType<OverflowException>(error.InnerException);
     }
 
     private static void AssertMSpecParses(string input)
