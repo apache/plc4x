@@ -17,7 +17,6 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -33,7 +32,12 @@ public sealed class IntegerLiteral(long value, string? text = null) : Term
 {
     public long Value { get; } = value;
     public string Text { get; } = text ?? value.ToString(CultureInfo.InvariantCulture);
-    public bool IsHex => Text.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
+    public override string ToString() => Text;
+}
+
+public sealed class HexadecimalLiteral(string text) : Term
+{
+    public string Text { get; } = text;
     public override string ToString() => Text;
 }
 
@@ -105,7 +109,8 @@ public sealed class IndexExpression(Term target, IReadOnlyList<Term> indexes) : 
     public Term Target { get; } = target;
     public IReadOnlyList<Term> Indexes { get; } = indexes;
     public override string ToString() =>
-        Target + string.Concat(Indexes.Select(item => $"[{item}]"));
+        (Target is UnaryExpression ? $"({Target})" : Target.ToString()) +
+        string.Concat(Indexes.Select(item => $"[{item}]"));
 }
 
 public sealed class TernaryExpression(Term condition, Term whenTrue, Term whenFalse) : Term

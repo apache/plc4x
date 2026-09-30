@@ -20,7 +20,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyName>plc4net-code-gen</AssemblyName>
     <Title>PLC4Net: Code Generation</Title>
