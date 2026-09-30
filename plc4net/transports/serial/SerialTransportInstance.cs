@@ -18,6 +18,7 @@
 //
 
 using System;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,10 +36,11 @@ namespace org.apache.plc4net.transports.serial
         private readonly RingBuffer _readBuffer;
         private readonly CancellationTokenSource _readCts = new CancellationTokenSource();
         private readonly Task _readLoopTask;
+        private readonly object _writeLock = new object();
 
-        private Action? _dataListener;
-        private Action<Exception>? _disconnectListener;
-        private volatile bool _closed;
+        private volatile Action? _dataListener;
+        private volatile Action<Exception?>? _disconnectListener;
+        private int _closed;
 
         // Set to the current thread's id for the duration of a synchronous listener
         // callback invoked from the read loop, so Close() can tell "a listener called
@@ -64,6 +66,10 @@ namespace org.apache.plc4net.transports.serial
                 ReadTimeout = config.ReadTimeout,
                 WriteTimeout = config.WriteTimeout
             };
+            if (config.SendBufferSize > 0)
+            {
+                _port.WriteBufferSize = config.SendBufferSize;
+            }
             _readBuffer = new RingBuffer(config.ReceiveBufferSize);
 
             // Open the port and start the read loop immediately —
@@ -148,8 +154,11 @@ namespace org.apache.plc4net.transports.serial
                     }
                     catch (Exception listenerEx)
                     {
-                        // A throwing listener must not kill the read loop.
-                        _disconnectListener?.Invoke(listenerEx);
+                        // The data listener runs on the transport's read loop. Once it
+                        // fails, continuing to feed it data would only report a false
+                        // disconnect while keeping the connection alive.
+                        CloseFromReadLoop(listenerEx);
+                        break;
                     }
                     finally
                     {
@@ -160,11 +169,11 @@ namespace org.apache.plc4net.transports.serial
                 {
                     break;
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException) when (IsClosed)
                 {
                     break;
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException) when (IsClosed)
                 {
                     break;
                 }
@@ -173,18 +182,7 @@ namespace org.apache.plc4net.transports.serial
                     // Close() already set _closed before tearing down the port, so a
                     // fault that only happened because Close() disposed out from under
                     // us is expected shutdown noise, not a real disconnect to report.
-                    if (!_closed)
-                    {
-                        _listenerThreadId = Environment.CurrentManagedThreadId;
-                        try
-                        {
-                            _disconnectListener?.Invoke(ex);
-                        }
-                        finally
-                        {
-                            _listenerThreadId = 0;
-                        }
-                    }
+                    CloseFromReadLoop(ex);
                     break;
                 }
             }
@@ -192,7 +190,7 @@ namespace org.apache.plc4net.transports.serial
 
         // ── ITransportInstance ───────────────────────────────────
 
-        public override bool IsOpen => !_closed && _port.IsOpen;
+        public override bool IsOpen => !IsClosed && _port.IsOpen;
 
         public override int GetNumBytesAvailable()
         {
@@ -220,18 +218,62 @@ namespace org.apache.plc4net.transports.serial
         public override void Write(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0) return;
-            if (_closed) throw new TransportException("Serial port is closed.");
-            _port.Write(bytes, 0, bytes.Length);
+            lock (_writeLock)
+            {
+                if (IsClosed) throw new TransportException("Serial port is closed.");
+                try
+                {
+                    // A serial link is a byte stream: keep every caller's message intact
+                    // instead of allowing concurrent writes to interleave on the wire.
+                    _port.Write(bytes, 0, bytes.Length);
+                }
+                catch (ObjectDisposedException ex) when (IsClosed)
+                {
+                    throw new TransportException("Serial port was closed while writing.", ex);
+                }
+                catch (InvalidOperationException ex) when (IsClosed)
+                {
+                    throw new TransportException("Serial port was closed while writing.", ex);
+                }
+                catch (Exception ex) when (ex is ObjectDisposedException || ex is InvalidOperationException ||
+                                          ex is IOException || ex is TimeoutException)
+                {
+                    // A write timeout can leave an RTU frame partly buffered and an I/O
+                    // error means the OS no longer considers the link reliable. Neither
+                    // condition can safely resume the byte stream.
+                    CloseCore(ex, calledFromReadLoop: false);
+                    throw new TransportException("Serial port write failed.", ex);
+                }
+            }
         }
 
         public override void Close()
         {
-            if (_closed) return;
-            _closed = true;
-            _readCts.Cancel();
+            CloseCore(null, calledFromReadLoop: false);
+        }
+
+        private bool IsClosed => Volatile.Read(ref _closed) != 0;
+
+        private void CloseFromReadLoop(Exception failure)
+        {
+            CloseCore(failure, calledFromReadLoop: true);
+        }
+
+        private void CloseCore(Exception? failure, bool calledFromReadLoop)
+        {
+            // Close is part of ITransportInstance's idempotent contract. The winning
+            // caller owns cancellation and disposal; all racing callers return without
+            // touching an already-disposed CancellationTokenSource.
+            if (Interlocked.CompareExchange(ref _closed, 1, 0) != 0) return;
+
+            try { _readCts.Cancel(); } catch (ObjectDisposedException) { }
             try { _port.Close(); } catch { /* best-effort */ }
-            _readCts.Dispose();
             try { _port.Dispose(); } catch { }
+
+            if (failure != null)
+            {
+                NotifyDisconnect(failure);
+            }
 
             // Do not wait on the read loop when we are standing inside a listener
             // callback it invoked synchronously — the loop cannot finish while that
@@ -241,9 +283,29 @@ namespace org.apache.plc4net.transports.serial
             // a caller could treat the port as fully released while the background
             // task is still mid-iteration on it — a known SerialPort Close()-vs-
             // concurrent-Read() hazard (dotnet/runtime#20362, dotnet/corefx#36040).
-            if (Environment.CurrentManagedThreadId != _listenerThreadId)
+            if (!calledFromReadLoop && Environment.CurrentManagedThreadId != _listenerThreadId)
             {
                 try { _readLoopTask.Wait(TimeSpan.FromSeconds(1)); } catch { /* best-effort */ }
+            }
+
+            _readCts.Dispose();
+        }
+
+        private void NotifyDisconnect(Exception failure)
+        {
+            _listenerThreadId = Environment.CurrentManagedThreadId;
+            try
+            {
+                _disconnectListener?.Invoke(failure);
+            }
+            catch
+            {
+                // A consumer callback must not turn a transport failure into an
+                // unobserved task exception.
+            }
+            finally
+            {
+                _listenerThreadId = 0;
             }
         }
 
@@ -259,7 +321,7 @@ namespace org.apache.plc4net.transports.serial
             _dataListener = null;
         }
 
-        public void RegisterDisconnectListener(Action<Exception> listener)
+        public void RegisterDisconnectListener(Action<Exception?> listener)
         {
             _disconnectListener = listener;
         }

@@ -19,6 +19,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using org.apache.plc4net.spi.transports;
 
 namespace org.apache.plc4net.transports.cotp
@@ -33,6 +34,7 @@ namespace org.apache.plc4net.transports.cotp
         private readonly ITransportInstance _inner;
         private readonly object _handshakeLock = new object();
         private byte[] _leftover = Array.Empty<byte>();
+        private const int RequestedTpduSize = 1024;
 
         // Volatile so the pre-handshake fast path in Read/Write/Peek/GetNumBytesAvailable
         // can be read without the lock; Open() sets it only after the handshake completes.
@@ -42,11 +44,12 @@ namespace org.apache.plc4net.transports.cotp
         // a concurrent Close() clears it (and closes the inner transport) so the poll
         // loops below notice and fail fast instead of burning the whole timeout.
         private volatile bool _handshakeInProgress;
+        private TaskCompletionSource<bool>? _handshakeCompletion;
 
         // Negotiated COTP TPDU size, taken from the Confirm's TPDU-size parameter. The
         // Connection Request asks for 1024 bytes; a PLC may confirm a smaller value
         // (S7-1200/1500 commonly confirm 480), and Data Transfer frames must respect it.
-        private int _tpduSize = 1024;
+        private int _tpduSize = RequestedTpduSize;
 
         /// <summary>
         /// How long Open() waits for the Connection Confirm before giving up. Injectable
@@ -183,12 +186,29 @@ namespace org.apache.plc4net.transports.cotp
             // hanging handshake — is not blocked for the full timeout. Close() clears
             // _handshakeInProgress and closes the inner transport; the poll loops notice
             // via IsOpen and fail fast.
+            TaskCompletionSource<bool>? existingHandshake = null;
             lock (_handshakeLock)
             {
                 if (_handshakeDone) return;
-                if (_handshakeInProgress) return;
-                if (!_inner.IsOpen) throw new TransportException("Inner transport is not open.");
-                _handshakeInProgress = true;
+                if (_handshakeInProgress)
+                {
+                    existingHandshake = _handshakeCompletion;
+                }
+                else
+                {
+                    if (!_inner.IsOpen) throw new TransportException("Inner transport is not open.");
+                    _handshakeInProgress = true;
+                    _handshakeCompletion = new TaskCompletionSource<bool>(
+                        TaskCreationOptions.RunContinuationsAsynchronously);
+                }
+            }
+
+            // A concurrent caller must observe the owner handshake's result. Returning
+            // early would let it issue a write against a session that is not ready yet.
+            if (existingHandshake != null)
+            {
+                existingHandshake.Task.GetAwaiter().GetResult();
+                return;
             }
 
             try
@@ -234,6 +254,11 @@ namespace org.apache.plc4net.transports.cotp
 
                 // Peek TPKT header to learn the frame size.
                 var tpktHeader = _inner.PeekReadableBytes(4);
+                if (tpktHeader[0] != TpktFrame.Version || tpktHeader[1] != 0)
+                {
+                    throw new TransportException(
+                        $"Invalid TPKT header: version 0x{tpktHeader[0]:X2}, reserved 0x{tpktHeader[1]:X2}.");
+                }
                 var frameLen = ((tpktHeader[2] << 8) | tpktHeader[3]);
                 if (frameLen < 4 + 7) // TPKT(4) + LI(1) + CC(1) + DST-REF(2) + SRC-REF(2) + class(1)
                     throw new TransportException(
@@ -273,33 +298,55 @@ namespace org.apache.plc4net.transports.cotp
                 // that does not echo our SRC-REF). The CR always sends SRC-REF 1, so a
                 // stale Confirm from a timed-out first attempt is indistinguishable from
                 // a fresh one — accepted, matching Java's behaviour.
-                if (cc.Length < 7 || cc[1] != 0xD0)
+                if (cc.Length < 7)
                 {
-                    var pduType = cc.Length > 1 ? $"0x{cc[1]:X2}" : "missing";
+                    throw new TransportException("COTP Connection Confirm is shorter than its fixed header.");
+                }
+                if (cc[0] < 0x06)
+                {
                     throw new TransportException(
-                        $"Expected COTP CC (0xD0) but received PDU type {pduType}.");
+                        $"Invalid COTP Connection Confirm length indicator 0x{cc[0]:X2}; expected at least 0x06.");
+                }
+                var ccLength = cc[0] + 1;
+                if (ccLength > cc.Length)
+                {
+                    throw new TransportException(
+                        $"COTP Connection Confirm length indicator requires {ccLength} bytes, but only {cc.Length} are available.");
+                }
+                if (cc[1] != 0xD0)
+                {
+                    throw new TransportException(
+                        $"Expected COTP CC (0xD0) but received PDU type 0x{cc[1]:X2}.");
                 }
 
                 // Negotiate the TPDU size from the CC's TPDU-size parameter (0xC0), which
                 // may confirm something smaller than the 1024 bytes requested.
-                _tpduSize = ParseTpduSize(cc);
+                _tpduSize = Math.Min(RequestedTpduSize, ParseTpduSize(cc, ccLength));
 
                 WriteHex(frame, $"RECV  COTP Connection Confirm (CC) — negotiated TPDU size = {_tpduSize} bytes");
 
+                TaskCompletionSource<bool>? completedHandshake;
                 lock (_handshakeLock)
                 {
                     _handshakeDone = true;
                     _handshakeInProgress = false;
+                    completedHandshake = _handshakeCompletion;
+                    _handshakeCompletion = null;
                 }
+                completedHandshake?.TrySetResult(true);
             }
-            catch
+            catch (Exception ex)
             {
                 // A failed handshake leaves the instance open for a retry: only clear the
                 // in-progress flag, never mark the handshake done.
+                TaskCompletionSource<bool>? failedHandshake;
                 lock (_handshakeLock)
                 {
                     _handshakeInProgress = false;
+                    failedHandshake = _handshakeCompletion;
+                    _handshakeCompletion = null;
                 }
+                failedHandshake?.TrySetException(ex);
                 throw;
             }
         }
@@ -309,16 +356,16 @@ namespace org.apache.plc4net.transports.cotp
         /// value is the ISO 8073 TPDU-size index; absent a parameter, keep the 1024
         /// bytes the Connection Request asked for.
         /// </summary>
-        private static int ParseTpduSize(byte[] cc)
+        private static int ParseTpduSize(byte[] cc, int ccLength)
         {
             // Parameter list starts after LI(1) + PDU type(1) + DST-REF(2) + SRC-REF(2)
             // + class(1); each entry is [code][length][value].
             var offset = 7;
-            while (offset + 1 < cc.Length)
+            while (offset + 1 < ccLength)
             {
                 var code = cc[offset];
                 var len = cc[offset + 1];
-                if (offset + 2 + len > cc.Length) break;
+                if (offset + 2 + len > ccLength) break;
 
                 if (code == 0xC0 && len == 1)
                 {
@@ -332,13 +379,13 @@ namespace org.apache.plc4net.transports.cotp
                         0x0B => 2048,
                         0x0C => 4096,
                         0x0D => 8192,
-                        _ => 1024
+                        _ => RequestedTpduSize
                     };
                 }
 
                 offset += 2 + len;
             }
-            return 1024;
+            return RequestedTpduSize;
         }
 
         // ── Diagnostic helpers ──────────────────────────────────
@@ -442,6 +489,7 @@ namespace org.apache.plc4net.transports.cotp
 
         public override void Close()
         {
+            TaskCompletionSource<bool>? pendingHandshake;
             lock (_handshakeLock)
             {
                 _inner.Close();
@@ -457,7 +505,11 @@ namespace org.apache.plc4net.transports.cotp
                 // closed inner transport first.
                 _handshakeDone = false;
                 _handshakeInProgress = false;
+                pendingHandshake = _handshakeCompletion;
+                _handshakeCompletion = null;
             }
+            pendingHandshake?.TrySetException(
+                new TransportException("COTP transport was closed while the handshake was in progress."));
         }
 
         // ── IAsyncTransportInstance ──────────────────────────────
@@ -507,6 +559,18 @@ namespace org.apache.plc4net.transports.cotp
                 var header = _inner.PeekReadableBytes(TpktFrame.HeaderSize);
                 var totalLength = ((header[2] << 8) | header[3]);
 
+                if (header[0] != TpktFrame.Version || header[1] != 0)
+                {
+                    throw new TransportException(
+                        $"Invalid TPKT header: version 0x{header[0]:X2}, reserved 0x{header[1]:X2}.");
+                }
+
+                if (totalLength < TpktFrame.HeaderSize)
+                {
+                    throw new TransportException(
+                        $"Invalid TPKT frame length {totalLength}; it must include the {TpktFrame.HeaderSize}-byte header.");
+                }
+
                 // Frame not yet complete — wait for more data.
                 if (available < totalLength) return;
 
@@ -545,6 +609,12 @@ namespace org.apache.plc4net.transports.cotp
                 {
                     throw new TransportException(
                         $"Expected COTP DT frame (0xF0) but received PDU type 0x{pduType:X2}.");
+                }
+
+                if (payload[0] != 0x02)
+                {
+                    throw new TransportException(
+                        $"Invalid COTP DT length indicator 0x{payload[0]:X2}; expected 0x02.");
                 }
 
                 // Diagnostic: log the DT frame before stripping its header.

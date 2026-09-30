@@ -52,7 +52,7 @@ namespace org.apache.plc4net.transports.serial
         /// <summary>Size of the ring buffer between the receive thread and the codec.</summary>
         public int ReceiveBufferSize { get; set; } = 81920;
 
-        /// <summary>Size of the ring buffer for the transmit path (queue → wire).</summary>
+        /// <summary>Optional native serial-port transmit-buffer size; zero keeps the platform default.</summary>
         public int SendBufferSize { get; set; }
     }
 }

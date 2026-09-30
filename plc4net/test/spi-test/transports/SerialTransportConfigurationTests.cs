@@ -78,5 +78,25 @@ namespace org.apache.plc4net.spi.test.transports
             Assert.Throws<TransportException>(
                 () => Configure("modbus-rtu:serial://COM1?" + parameter));
         }
+
+        [Theory]
+        [InlineData("serial.parity=99")]
+        [InlineData("serial.stop-bits=99")]
+        [InlineData("serial.handshake=99")]
+        public void Undefined_enum_values_fall_back_to_the_safe_default(string parameter)
+        {
+            var config = Configure("modbus-rtu:serial://COM1?" + parameter);
+
+            Assert.Equal(Parity.Even, config.Parity);
+            Assert.Equal(StopBits.One, config.StopBits);
+            Assert.Equal(Handshake.None, config.Handshake);
+        }
+
+        [Fact]
+        public void Stop_bits_none_is_rejected_before_opening_the_port()
+        {
+            Assert.Throws<TransportException>(
+                () => Configure("modbus-rtu:serial://COM1?serial.stop-bits=None"));
+        }
     }
 }

@@ -40,44 +40,65 @@ namespace org.apache.plc4net.spi.test.transports
     internal class ScriptedTransportInstance : BaseTransportInstance
     {
         private readonly List<byte> _inbound = new List<byte>();
+        private readonly object _sync = new object();
 
         public ScriptedTransportInstance() : base(new ScriptedTransportConfiguration()) { }
 
         public List<byte[]> Written { get; } = new List<byte[]>();
 
-        public bool Closed { get; private set; }
+        public bool Closed { get { lock (_sync) { return _closed; } } }
+        private bool _closed;
+        public int WrittenCount { get { lock (_sync) { return Written.Count; } } }
 
         public override bool IsOpen => !Closed;
 
-        public void Inject(params byte[] bytes) => _inbound.AddRange(bytes);
+        public void Inject(params byte[] bytes)
+        {
+            lock (_sync) { _inbound.AddRange(bytes); }
+        }
 
-        public override int GetNumBytesAvailable() => _inbound.Count;
+        public override int GetNumBytesAvailable()
+        {
+            lock (_sync) { return _inbound.Count; }
+        }
 
         public override byte[] PeekReadableBytes(int numBytes)
         {
-            if (numBytes > _inbound.Count)
+            lock (_sync)
             {
-                throw new TransportException(
-                    $"Requested {numBytes} bytes but only {_inbound.Count} available.");
+                if (numBytes > _inbound.Count)
+                {
+                    throw new TransportException(
+                        $"Requested {numBytes} bytes but only {_inbound.Count} available.");
+                }
+                return _inbound.Take(numBytes).ToArray();
             }
-            return _inbound.Take(numBytes).ToArray();
         }
 
         public override byte[] Read(int numBytes)
         {
-            if (numBytes > _inbound.Count)
+            lock (_sync)
             {
-                throw new TransportException(
-                    $"Requested {numBytes} bytes but only {_inbound.Count} available.");
+                if (numBytes > _inbound.Count)
+                {
+                    throw new TransportException(
+                        $"Requested {numBytes} bytes but only {_inbound.Count} available.");
+                }
+                var result = _inbound.Take(numBytes).ToArray();
+                _inbound.RemoveRange(0, numBytes);
+                return result;
             }
-            var result = _inbound.Take(numBytes).ToArray();
-            _inbound.RemoveRange(0, numBytes);
-            return result;
         }
 
-        public override void Write(byte[] bytes) => Written.Add(bytes);
+        public override void Write(byte[] bytes)
+        {
+            lock (_sync) { Written.Add(bytes); }
+        }
 
-        public override void Close() => Closed = true;
+        public override void Close()
+        {
+            lock (_sync) { _closed = true; }
+        }
     }
 
     public class CotpTransportInstanceTests
@@ -238,6 +259,41 @@ namespace org.apache.plc4net.spi.test.transports
             Assert.Contains("0x01", ex.Message);
         }
 
+        [Theory]
+        [InlineData(0x00, 0x00)]
+        [InlineData(0x00, 0x03)]
+        public void Read_rejects_a_tpkt_frame_length_smaller_than_its_header(byte lengthHigh, byte lengthLow)
+        {
+            var (cotp, inner) = Handshaken();
+            inner.Inject(0x03, 0x00, lengthHigh, lengthLow);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.GetNumBytesAvailable());
+
+            Assert.Contains("TPKT frame length", ex.Message);
+        }
+
+        [Fact]
+        public void Read_rejects_a_tpkt_frame_with_an_invalid_version()
+        {
+            var (cotp, inner) = Handshaken();
+            inner.Inject(0x04, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.GetNumBytesAvailable());
+
+            Assert.Contains("Invalid TPKT header", ex.Message);
+        }
+
+        [Fact]
+        public void Read_rejects_a_data_transfer_frame_with_an_invalid_length_indicator()
+        {
+            var (cotp, inner) = Handshaken();
+            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x03, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.GetNumBytesAvailable());
+
+            Assert.Contains("length indicator", ex.Message);
+        }
+
         [Fact]
         public void A_stray_confirm_after_the_handshake_is_skipped_not_fatal()
         {
@@ -275,6 +331,144 @@ namespace org.apache.plc4net.spi.test.transports
 
             // Exactly one Connection Request on the wire, however many callers raced.
             Assert.Single(inner.Written);
+        }
+
+        [Fact]
+        public void Concurrent_Open_waits_for_the_owner_handshake_to_complete()
+        {
+            var inner = new ScriptedTransportInstance();
+            var cotp = new CotpTransportInstance(inner)
+            {
+                HandshakeTimeout = TimeSpan.FromSeconds(2)
+            };
+            Exception? ownerFailure = null;
+            Exception? followerFailure = null;
+            using var ownerDone = new ManualResetEventSlim(false);
+            using var followerEntered = new ManualResetEventSlim(false);
+            using var followerDone = new ManualResetEventSlim(false);
+
+            var owner = new Thread(() =>
+            {
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { ownerFailure = ex; }
+                finally { ownerDone.Set(); }
+            });
+            var follower = new Thread(() =>
+            {
+                followerEntered.Set();
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { followerFailure = ex; }
+                finally { followerDone.Set(); }
+            });
+
+            owner.Start();
+            Assert.True(SpinWait.SpinUntil(() => inner.WrittenCount == 1, TimeSpan.FromSeconds(1)));
+            follower.Start();
+            Assert.True(followerEntered.Wait(TimeSpan.FromSeconds(1)));
+            Assert.False(followerDone.Wait(TimeSpan.FromMilliseconds(100)));
+
+            inner.Inject(ConnectionConfirm());
+            Assert.True(ownerDone.Wait(TimeSpan.FromSeconds(2)));
+            Assert.True(followerDone.Wait(TimeSpan.FromSeconds(2)));
+            owner.Join();
+            follower.Join();
+
+            Assert.Null(ownerFailure);
+            Assert.Null(followerFailure);
+            Assert.True(cotp.IsOpen);
+            Assert.Single(inner.Written);
+        }
+
+        [Fact]
+        public void Concurrent_Open_propagates_the_owner_handshake_failure()
+        {
+            var inner = new ScriptedTransportInstance();
+            var cotp = new CotpTransportInstance(inner)
+            {
+                HandshakeTimeout = TimeSpan.FromSeconds(2)
+            };
+            Exception? ownerFailure = null;
+            Exception? followerFailure = null;
+            using var ownerDone = new ManualResetEventSlim(false);
+            using var followerEntered = new ManualResetEventSlim(false);
+            using var followerDone = new ManualResetEventSlim(false);
+
+            var owner = new Thread(() =>
+            {
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { ownerFailure = ex; }
+                finally { ownerDone.Set(); }
+            });
+            var follower = new Thread(() =>
+            {
+                followerEntered.Set();
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { followerFailure = ex; }
+                finally { followerDone.Set(); }
+            });
+
+            owner.Start();
+            Assert.True(SpinWait.SpinUntil(() => inner.WrittenCount == 1, TimeSpan.FromSeconds(1)));
+            follower.Start();
+            Assert.True(followerEntered.Wait(TimeSpan.FromSeconds(1)));
+            Assert.False(followerDone.Wait(TimeSpan.FromMilliseconds(100)));
+
+            inner.Inject(0x04, 0x00, 0x00, 0x0B, 0x06, 0xD0, 0x00, 0x01, 0x00, 0x02, 0x00);
+            Assert.True(ownerDone.Wait(TimeSpan.FromSeconds(2)));
+            Assert.True(followerDone.Wait(TimeSpan.FromSeconds(2)));
+            owner.Join();
+            follower.Join();
+
+            var ownerTransportFailure = Assert.IsType<TransportException>(ownerFailure);
+            var followerTransportFailure = Assert.IsType<TransportException>(followerFailure);
+            Assert.Equal(ownerTransportFailure.Message, followerTransportFailure.Message);
+            Assert.True(cotp.IsOpen);
+            Assert.Single(inner.Written);
+        }
+
+        [Fact]
+        public void Concurrent_Open_unblocks_the_waiter_when_the_transport_closes()
+        {
+            var inner = new ScriptedTransportInstance();
+            var cotp = new CotpTransportInstance(inner)
+            {
+                HandshakeTimeout = TimeSpan.FromSeconds(2)
+            };
+            Exception? ownerFailure = null;
+            Exception? followerFailure = null;
+            using var ownerDone = new ManualResetEventSlim(false);
+            using var followerEntered = new ManualResetEventSlim(false);
+            using var followerDone = new ManualResetEventSlim(false);
+
+            var owner = new Thread(() =>
+            {
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { ownerFailure = ex; }
+                finally { ownerDone.Set(); }
+            });
+            var follower = new Thread(() =>
+            {
+                followerEntered.Set();
+                try { cotp.Open(0x01, 0x00, 0x03, 0x01); }
+                catch (Exception ex) { followerFailure = ex; }
+                finally { followerDone.Set(); }
+            });
+
+            owner.Start();
+            Assert.True(SpinWait.SpinUntil(() => inner.WrittenCount == 1, TimeSpan.FromSeconds(1)));
+            follower.Start();
+            Assert.True(followerEntered.Wait(TimeSpan.FromSeconds(1)));
+            Assert.False(followerDone.Wait(TimeSpan.FromMilliseconds(100)));
+            cotp.Close();
+
+            Assert.True(ownerDone.Wait(TimeSpan.FromSeconds(2)));
+            Assert.True(followerDone.Wait(TimeSpan.FromSeconds(2)));
+            owner.Join();
+            follower.Join();
+
+            Assert.IsType<TransportException>(ownerFailure);
+            Assert.IsType<TransportException>(followerFailure);
+            Assert.True(inner.Closed);
         }
 
         [Fact]
@@ -330,7 +524,40 @@ namespace org.apache.plc4net.spi.test.transports
             var cotp = new CotpTransportInstance(inner);
 
             var ex = Assert.Throws<TransportException>(() => cotp.Open(0x01, 0x00, 0x03, 0x01));
-            Assert.Contains("TPKT version", ex.Message);
+            Assert.Contains("Invalid TPKT header", ex.Message);
+        }
+
+        [Fact]
+        public void Open_rejects_a_connection_confirm_with_a_nonzero_tpkt_reserved_byte()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(0x03, 0x01, 0x00, 0x0B, 0x06, 0xD0, 0x00, 0x01, 0x00, 0x02, 0x00);
+            var cotp = new CotpTransportInstance(inner);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.Open(0x01, 0x00, 0x03, 0x01));
+            Assert.Contains("Invalid TPKT header", ex.Message);
+        }
+
+        [Fact]
+        public void Open_rejects_a_connection_confirm_with_an_invalid_length_indicator()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x00, 0xD0, 0x00, 0x01, 0x00, 0x02, 0x00);
+            var cotp = new CotpTransportInstance(inner);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.Open(0x01, 0x00, 0x03, 0x01));
+            Assert.Contains("length indicator", ex.Message);
+        }
+
+        [Fact]
+        public void Open_rejects_a_connection_confirm_whose_length_indicator_exceeds_the_frame()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x09, 0xD0, 0x00, 0x01, 0x00, 0x02, 0x00);
+            var cotp = new CotpTransportInstance(inner);
+
+            var ex = Assert.Throws<TransportException>(() => cotp.Open(0x01, 0x00, 0x03, 0x01));
+            Assert.Contains("requires", ex.Message);
         }
 
         [Fact]
@@ -358,7 +585,7 @@ namespace org.apache.plc4net.spi.test.transports
             // of exercising the wait loop's closed-transport detection. This also removes
             // the timing dependency that could flake under CI load.
             var crDeadline = Environment.TickCount64 + 500;
-            while (inner.Written.Count == 0 && Environment.TickCount64 < crDeadline)
+            while (inner.WrittenCount == 0 && Environment.TickCount64 < crDeadline)
             {
                 Thread.Sleep(5);
             }
@@ -476,6 +703,42 @@ namespace org.apache.plc4net.spi.test.transports
             Assert.Equal(2, inner.Written.Count);
             Assert.Equal(0x00, inner.Written[0][6] & 0x80);   // first: no EOT
             Assert.Equal(0x80, inner.Written[1][6] & 0x80);   // second: EOT
+        }
+
+        [Fact]
+        public void Open_ignores_parameters_outside_the_connection_confirm_length_indicator()
+        {
+            var inner = new ScriptedTransportInstance();
+            // LI=6 ends after the fixed CC header. The apparent C0 parameter is trailing
+            // data and must not shrink the negotiated TPDU size to 64 bytes.
+            inner.Inject(0x03, 0x00, 0x00, 0x0E, 0x06, 0xD0, 0x00, 0x01, 0x00, 0x02,
+                         0x00, 0xC0, 0x01, 0x06);
+            var cotp = new CotpTransportInstance(inner);
+            cotp.Open(0x01, 0x00, 0x03, 0x01);
+            inner.Written.Clear();
+
+            cotp.Write(new byte[64]);
+
+            Assert.Single(inner.Written);
+        }
+
+        [Fact]
+        public void Open_caps_a_larger_confirmed_tpdu_size_to_the_requested_size()
+        {
+            var inner = new ScriptedTransportInstance();
+            // The CR asks for 1024 bytes; a larger CC must not raise that limit.
+            inner.Inject(0x03, 0x00, 0x00, 0x0E, 0x09, 0xD0, 0x00, 0x01, 0x00, 0x02,
+                         0x00, 0xC0, 0x01, 0x0D);
+            var cotp = new CotpTransportInstance(inner);
+            cotp.Open(0x01, 0x00, 0x03, 0x01);
+            inner.Written.Clear();
+
+            cotp.Write(new byte[1024]);
+
+            Assert.Equal(2, inner.Written.Count);
+            Assert.Equal(1028, inner.Written[0].Length); // TPKT(4) + DT header(3) + 1021 payload
+            Assert.Equal(0x00, inner.Written[0][6] & 0x80);
+            Assert.Equal(0x80, inner.Written[1][6] & 0x80);
         }
 
         [Fact]

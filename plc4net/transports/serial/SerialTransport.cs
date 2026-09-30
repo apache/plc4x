@@ -95,7 +95,10 @@ namespace org.apache.plc4net.transports.serial
         {
             var raw = GetValue(parameters, key);
             if (raw == null) return fallback;
-            return Enum.TryParse<T>(raw, ignoreCase: true, out var value) ? value : fallback;
+            return Enum.TryParse<T>(raw, ignoreCase: true, out var value)
+                   && Enum.IsDefined(typeof(T), value)
+                ? value
+                : fallback;
         }
 
         // ConnectionString keeps all query parameters. Follow the transport convention
@@ -131,6 +134,11 @@ namespace org.apache.plc4net.transports.serial
             if (config.ReceiveBufferSize <= 0 || config.SendBufferSize < 0)
             {
                 throw new TransportException("receive-buffer-size must be positive and send-buffer-size must be non-negative.");
+            }
+
+            if (config.StopBits == StopBits.None)
+            {
+                throw new TransportException("stop-bits must not be None.");
             }
         }
     }
