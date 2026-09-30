@@ -242,7 +242,7 @@ namespace org.apache.plc4net.test.codegen
             Assert.Contains("_map[\"onOff\"] = new PlcBOOL((bool) onOff);", code);
             Assert.Contains("return new PlcStruct(_map);", code);
             // serialize reads each field back off the struct
-            Assert.Contains("_value.GetValue(\"control\").GetBool()", code);
+            Assert.Contains("_value.GetValue(\"control\")!.GetBool()", code);
         }
 
         [Fact]
@@ -265,7 +265,7 @@ namespace org.apache.plc4net.test.codegen
             Assert.DoesNotContain("NotImplementedException", code);
             Assert.Contains("readBuffer.ReadByteArray(\"groupAddress\", (int) (2) * 8)", code);
             Assert.Contains("_map[\"groupAddress\"] = new PlcRawByteArray(groupAddress);", code);
-            Assert.Contains("writeBuffer.WriteByteArray(\"groupAddress\", _value.GetValue(\"groupAddress\").GetRaw())", code);
+            Assert.Contains("writeBuffer.WriteByteArray(\"groupAddress\", _value.GetValue(\"groupAddress\")!.GetRaw())", code);
             Assert.Contains("lengthInBits += ((2) * 8);", code);
         }
 
@@ -356,16 +356,26 @@ namespace org.apache.plc4net.test.codegen
         public void The_real_s7_mspec_keeps_every_enum_member_even_where_constants_collide()
         {
             // s7.mspec's TransportSize has COUNTER and DATE_AND_TIME both at
-            // 0x1C: the member-keyed parameter accessors must keep both arms
-            // (only the key-value reverse lookup dedups, by key pattern).
+            // 0x1C. Both enum members remain declared, while the generated
+            // accessor keeps only the first arm because C# rejects duplicate
+            // switch patterns.
             var repoRoot = RepoPaths.FindRepoRoot();
             Assert.NotNull(repoRoot);
             var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
                 "protocols", "s7", "src", "main", "resources", "protocols", "s7", "s7.mspec"));
             var files = new CSharpGenerator(model, "s7", "org.apache.plc4net.drivers.s7.readwrite").Generate();
 
-            Assert.Contains("TransportSize.DATE_AND_TIME => ", files["model/TransportSize.cs"]);
-            Assert.Contains("TransportSize.COUNTER => ", files["model/TransportSize.cs"]);
+            var code = files["model/TransportSize.cs"];
+            Assert.Contains("COUNTER,", code);
+            Assert.Contains("DATE_AND_TIME =", code);
+            var getCode = code.Substring(
+                code.IndexOf("GetCode", System.StringComparison.Ordinal),
+                code.IndexOf("GetDataTransportSize", System.StringComparison.Ordinal)
+                    - code.IndexOf("GetCode", System.StringComparison.Ordinal));
+            Assert.Contains("TransportSize.COUNTER =>", getCode);
+            Assert.DoesNotContain("TransportSize.DATE_AND_TIME =>", getCode);
+            Assert.Contains("ParseS7String", files["model/S7StaticHelper.cs"]);
+            Assert.Contains("BcdToBin12", files["model/S7StaticHelper.cs"]);
         }
 
         [Fact]

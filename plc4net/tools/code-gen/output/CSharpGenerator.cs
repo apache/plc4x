@@ -868,15 +868,19 @@ namespace org.apache.plc4net.tools.codegen.output
                     c.Line($"public static {retType} Get{Pascal(arg.Name)}(this {e.Name} value) => value switch");
                     c.Line("{");
                     c.Indent();
-                    // No dedup: the patterns are distinct members even where
-                    // the underlying constants collide (S7's TransportSize has
-                    // COUNTER and DATE_AND_TIME both at 0x1C). Only the
-                    // key-value reverse lookup below dedups, by key pattern.
-                    foreach (var v in rows)
-                    {
-                        c.Line($"{e.Name}.{v.Name} => {RenderEnumParamValue(v.ConstantValues[ai], arg.Type, r)},");
-                    }
-                    c.Line("_ => default,");
+                    // C# rejects duplicate switch patterns when two enum
+                    // members share the same underlying value (S7's
+                    // TransportSize has COUNTER and DATE_AND_TIME at 0x1C).
+                    // Keep every enum member in the declaration, but make the
+                    // accessor deterministic by keeping the first member for
+                    // each parameter value.
+                    EmitEnumArms(
+                        c,
+                        rows,
+                        v => RenderEnumParamValue(v.ConstantValues[ai], arg.Type, r),
+                        v => $"{e.Name}.{v.Name}",
+                        v => RenderEnumParamValue(v.ConstantValues[ai], arg.Type, r));
+                    c.Line("_ => default!,");
                     c.Outdent();
                     c.Line("};");
                 }
@@ -1512,10 +1516,10 @@ namespace org.apache.plc4net.tools.codegen.output
                         c.Line($"{CSharpTypeMapper.WriteCall(rf.Type, "reserved", WithType(r.Render(rf.ReferenceValue), rf.Type))};");
                         break;
                     case ArrayField af:
-                        c.Line($"writeBuffer.WriteByteArray(\"{af.Name}\", _value.GetValue(\"{af.Name}\").GetRaw());");
+                        c.Line($"writeBuffer.WriteByteArray(\"{af.Name}\", _value.GetValue(\"{af.Name}\")!.GetRaw());");
                         break;
                     case SimpleField sf when sf.Type is SimpleTypeReference st:
-                        var v = $"({CSharpTypeMapper.SimpleCSharpType(st)}) _value.GetValue(\"{sf.Name}\").{PlcValueGetter(st)}";
+                        var v = $"({CSharpTypeMapper.SimpleCSharpType(st)}) _value.GetValue(\"{sf.Name}\")!.{PlcValueGetter(st)}";
                         c.Line($"{CSharpTypeMapper.WriteCall(sf.Type, sf.Name, v)};");
                         break;
                 }
@@ -1779,6 +1783,11 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Indent();
             c.Line("=> items?.Sum(i => i.GetLengthInBytes()) ?? 0;");
             c.Outdent();
+            c.Line();
+            c.Line("public static byte BcdToBin(byte value) => (byte) ((value >> 4) * 10 + (value & 0x0F));");
+            c.Line("public static ushort BcdToBin12(ushort value) => (ushort) (((value >> 8) & 0x0F) * 100 + ((value >> 4) & 0x0F) * 10 + (value & 0x0F));");
+            c.Line("public static byte BinToBcd(int value) => (byte) ((value / 10) * 16 + (value % 10));");
+            c.Line("public static ushort BinToBcd12(int value) => (ushort) ((value / 100) * 256 + ((value / 10) % 10) * 16 + (value % 10));");
             foreach (var (name, retType) in staticCalls)
             {
                 c.Line();
@@ -1804,6 +1813,20 @@ namespace org.apache.plc4net.tools.codegen.output
                     foreach (var term in FieldTerms(f))
                     {
                         WalkStaticCalls(term, retType, sink);
+                    }
+                }
+            }
+            foreach (var dio in _protocol.DataIos)
+            {
+                foreach (var c in dio.Cases)
+                {
+                    foreach (var f in c.Fields)
+                    {
+                        var retType = f.Type != null ? CSharpTypeMapper.CSharpType(f.Type) : "object";
+                        foreach (var term in FieldTerms(f))
+                        {
+                            WalkStaticCalls(term, retType, sink);
+                        }
                     }
                 }
             }
