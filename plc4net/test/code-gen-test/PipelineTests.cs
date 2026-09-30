@@ -17,8 +17,11 @@
 // under the License.
 //
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using org.apache.plc4net.tools.codegen;
 using org.apache.plc4net.tools.codegen.model;
 using org.apache.plc4net.tools.codegen.model.fields;
@@ -327,7 +330,7 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
-        public void The_real_knx_mspec_generates_compilable_datapoints()
+        public void The_real_knx_mspec_fails_loudly_for_an_unsupported_dataIo_shape()
         {
             // Fail loud rather than passing vacuously outside the repo layout.
             var repoRoot = RepoPaths.FindRepoRoot();
@@ -338,22 +341,15 @@ namespace org.apache.plc4net.test.codegen
                 Directory.GetFiles(Path.Combine(knxDir, "resources", "protocols", "knxnetip"), "*.mspec")
                     .Concat(Directory.GetFiles(Path.Combine(knxDir, "generated", "protocols", "knxnetip"), "*.mspec"))
                     .ToArray());
-            var files = new CSharpGenerator(
-                model, "knxnetip", "org.apache.plc4net.drivers.knxnetip.readwrite").Generate();
+            var ex = Assert.Throws<System.NotSupportedException>(() => new CSharpGenerator(
+                model, "knxnetip", "org.apache.plc4net.drivers.knxnetip.readwrite").Generate());
 
-            // external enum: not emitted
-            Assert.DoesNotContain("model/PlcValueType.cs", files.Keys);
-            // hyphenated id: a literal, not subtraction
-            Assert.Contains("\"DPST-1-1\"", files["model/KnxDatapointType.cs"]);
-            Assert.DoesNotContain("DPST - 1", files["model/KnxDatapointType.cs"]);
-            // struct dataIo cases populate the map
-            Assert.Contains("return new PlcStruct(_map);", files["model/KnxDatapoint.cs"]);
-            Assert.Contains("new PlcRawByteArray(groupAddress)", files["model/KnxProperty.cs"]);
-            Assert.DoesNotContain("NotImplementedException", files["model/KnxProperty.cs"]);
+            Assert.Contains("KnxDatapoint", ex.Message);
+            Assert.Contains("TIME", ex.Message);
         }
 
         [Fact]
-        public void The_real_s7_mspec_keeps_every_enum_member_even_where_constants_collide()
+        public void The_real_s7_mspec_fails_loudly_when_a_static_helper_is_missing()
         {
             // s7.mspec's TransportSize has COUNTER and DATE_AND_TIME both at
             // 0x1C. Both enum members remain declared, while the generated
@@ -363,19 +359,11 @@ namespace org.apache.plc4net.test.codegen
             Assert.NotNull(repoRoot);
             var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
                 "protocols", "s7", "src", "main", "resources", "protocols", "s7", "s7.mspec"));
-            var files = new CSharpGenerator(model, "s7", "org.apache.plc4net.drivers.s7.readwrite").Generate();
+            var ex = Assert.Throws<System.NotSupportedException>(() => new CSharpGenerator(
+                model, "s7", "org.apache.plc4net.drivers.s7.readwrite").Generate());
 
-            var code = files["model/TransportSize.cs"];
-            Assert.Contains("COUNTER,", code);
-            Assert.Contains("DATE_AND_TIME =", code);
-            var getCode = code.Substring(
-                code.IndexOf("GetCode", System.StringComparison.Ordinal),
-                code.IndexOf("GetDataTransportSize", System.StringComparison.Ordinal)
-                    - code.IndexOf("GetCode", System.StringComparison.Ordinal));
-            Assert.Contains("TransportSize.COUNTER =>", getCode);
-            Assert.DoesNotContain("TransportSize.DATE_AND_TIME =>", getCode);
-            Assert.Contains("ParseS7String", files["model/S7StaticHelper.cs"]);
-            Assert.Contains("BcdToBin12", files["model/S7StaticHelper.cs"]);
+            Assert.Contains("STATIC_CALL", ex.Message);
+            Assert.Contains("EventItemLength", ex.Message);
         }
 
         [Fact]
@@ -389,6 +377,123 @@ namespace org.apache.plc4net.test.codegen
             var ex = Assert.Throws<System.NotSupportedException>(
                 () => new CSharpGenerator(model, "le", "le.readwrite").Generate());
             Assert.Contains("LePacket", ex.Message);
+        }
+
+        [Fact]
+        public void A_terminated_array_is_rejected_instead_of_being_emitted_as_a_count_array()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type Packet
+    [array byte payload terminated 'false']
+]
+");
+
+            var ex = Assert.Throws<System.NotSupportedException>(
+                () => new CSharpGenerator(model, "demo", "demo.readwrite").Generate());
+
+            Assert.Contains("terminated array", ex.Message);
+            Assert.Contains("payload", ex.Message);
+        }
+
+        [Fact]
+        public void A_byte_array_with_a_byte_length_uses_the_buffer_bulk_read()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type Packet
+    [simple uint 8 length]
+    [array byte payload length 'length']
+]
+");
+
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite")
+                .Generate()["model/Packet.cs"];
+
+            Assert.Contains("readBuffer.ReadByteArray(\"payload\", (int) (length) * 8)", code);
+            Assert.DoesNotContain("new byte[]()", code);
+            Assert.DoesNotContain("payload.Add", code);
+        }
+
+        [Fact]
+        public void An_unknown_mspec_field_is_rejected_before_source_is_emitted()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type Packet
+    [peek uint 8 marker]
+]
+");
+
+            var ex = Assert.Throws<System.NotSupportedException>(
+                () => new CSharpGenerator(model, "demo", "demo.readwrite").Generate());
+
+            Assert.Contains("unsupported mspec field", ex.Message);
+            Assert.Contains("peek", ex.Message);
+        }
+
+        [Fact]
+        public void Modbus_crc_and_lrc_helpers_are_generated_as_real_implementations()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var mspec = Path.Combine(repoRoot!, "protocols", "modbus", "src", "main", "resources",
+                "protocols", "modbus", "modbus.mspec");
+
+            var files = new CSharpGenerator(MspecModelBuilder.BuildFile(mspec), "modbus",
+                "org.apache.plc4net.drivers.modbus.readwrite").Generate();
+            var helper = files["model/ModbusStaticHelper.cs"];
+
+            Assert.Contains("public static ushort RtuCrcCheck(byte address, IMessage pdu)", helper);
+            Assert.Contains("public static ushort AsciiLrcCheck(byte address, IMessage pdu)", helper);
+            Assert.DoesNotContain("NotImplementedException", helper);
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task A_generated_modbus_model_compiles_against_the_plc4net_spi()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var mspec = Path.Combine(repoRoot!, "protocols", "modbus", "src", "main", "resources",
+                "protocols", "modbus", "modbus.mspec");
+            var files = new CSharpGenerator(MspecModelBuilder.BuildFile(mspec), "modbus",
+                "org.apache.plc4net.drivers.modbus.readwrite").Generate();
+            var temp = Path.Combine(Path.GetTempPath(), "plc4net-codegen-" + Guid.NewGuid().ToString("N"));
+
+            try
+            {
+                foreach (var (relativePath, source) in files)
+                {
+                    var target = Path.Combine(temp, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                    File.WriteAllText(target, source);
+                }
+                var spiProject = Path.Combine(repoRoot!, "plc4net", "spi", "spi.csproj");
+                File.WriteAllText(Path.Combine(temp, "generated.csproj"),
+                    "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><TargetFramework>net8.0</TargetFramework>"
+                    + "<ImplicitUsings>disable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup>"
+                    + $"<ProjectReference Include=\"{SecurityElement.Escape(spiProject)}\" />"
+                    + "</ItemGroup></Project>");
+
+                var start = new ProcessStartInfo("dotnet", "build generated.csproj --ignore-failed-sources --nologo")
+                {
+                    WorkingDirectory = temp,
+                    UseShellExecute = false,
+                };
+                using var process = Process.Start(start)!;
+                var exit = process.WaitForExitAsync();
+                if (await System.Threading.Tasks.Task.WhenAny(exit, System.Threading.Tasks.Task.Delay(60000)) != exit)
+                {
+                    process.Kill(entireProcessTree: true);
+                    await exit;
+                    Assert.Fail("Timed out compiling the generated Modbus model.");
+                }
+                Assert.True(process.ExitCode == 0, "Compiling the generated Modbus model failed.");
+            }
+            finally
+            {
+                if (Directory.Exists(temp))
+                {
+                    Directory.Delete(temp, recursive: true);
+                }
+            }
         }
 
         [Fact]

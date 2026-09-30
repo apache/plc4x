@@ -34,11 +34,25 @@ dotnet run --project plc4net/tools/code-gen -c Release -- \
 Each source can be one `.mspec` file or a directory containing `.mspec`
 files. Separate multiple sources with semicolons.
 
-`<output-dir>/model/*.cs` is wiped and rewritten, so a removed mspec type
-leaves no stale file. Regenerating these protocol model files is an explicit
+Generation is staged and then replaces `<output-dir>/model`, so a failed
+write leaves the previous generated model intact. Regenerating these protocol model files is an explicit
 driver-maintenance step; the driver slices that consume them commit the
 result. This is separate from the checked-in ANTLR parser artifacts below,
 whose reproducibility is enforced by CI.
+
+## Supported subset and fail-fast behavior
+
+The generator only emits a protocol when every field has a known C# wire
+mapping. It deliberately fails before writing output for unsupported field
+keywords, terminated arrays, unsupported data-IO shapes, unsupported temporal
+primitives, non-big-endian byte order, and unimplemented `STATIC_CALL`
+targets. This prevents a successful generation from silently changing a wire
+layout or deferring a missing implementation to production.
+
+Counted and byte-length arrays are supported; byte arrays with a byte-length
+use the buffer bulk-read path. Modbus `rtuCrcCheck` and `asciiLrcCheck` are
+generated as concrete helpers. Other protocol-specific static helpers remain
+an explicit generator gap and cause a diagnostic failure until implemented.
 
 ## Grammars and the checked-in parsers
 

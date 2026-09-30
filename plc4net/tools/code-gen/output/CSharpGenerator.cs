@@ -71,6 +71,24 @@ namespace org.apache.plc4net.tools.codegen.output
             {
                 foreach (var f in t.Fields)
                 {
+                    if (f is UnsupportedField unsupported)
+                    {
+                        throw new NotSupportedException(
+                            $"type '{t.Name}' contains unsupported mspec field "
+                            + $"'{unsupported.MspecKeyword}': {unsupported.RawText}");
+                    }
+                    if (f is ArrayField { LoopType: ArrayField.Loop.Terminated })
+                    {
+                        throw new NotSupportedException(
+                            $"type '{t.Name}' contains a terminated array '{f.Name}'; "
+                            + "terminated arrays are not implemented and cannot be emitted as count arrays");
+                    }
+                    if (f.Type is SimpleTypeReference { BaseType: SimpleTypeReference.Base.Time
+                        or SimpleTypeReference.Base.Date or SimpleTypeReference.Base.DateTime })
+                    {
+                        throw new NotSupportedException(
+                            $"type '{t.Name}.{f.Name}' uses '{f.Type}', which has no C# buffer mapping yet");
+                    }
                     if (f is not EnumField ef || ef.KeyAccessor == null
                         || ef.Type is not EnumTypeReference et)
                     {
@@ -85,6 +103,44 @@ namespace org.apache.plc4net.tools.codegen.output
                             + "does not declare as a non-external argument; "
                             + "the generated reverse lookup would not exist");
                     }
+                }
+            }
+
+            foreach (var dio in _protocol.DataIos)
+            {
+                foreach (var cs in dio.Cases)
+                {
+                    foreach (var f in cs.Fields)
+                    {
+                        if (f is UnsupportedField unsupported)
+                        {
+                            throw new NotSupportedException(
+                                $"dataIo '{dio.Name}.{cs.Name}' contains unsupported mspec field "
+                                + $"'{unsupported.MspecKeyword}': {unsupported.RawText}");
+                        }
+                        if (f is ArrayField { LoopType: ArrayField.Loop.Terminated })
+                        {
+                            throw new NotSupportedException(
+                                $"dataIo '{dio.Name}.{cs.Name}' contains a terminated array '{f.Name}'; "
+                                + "terminated arrays are not implemented");
+                        }
+                    }
+                    if (!IsSupportedDataIoCase(dio, cs))
+                    {
+                        throw new NotSupportedException(
+                            $"dataIo '{dio.Name}' case '{cs.Name}' is not a supported C# value shape");
+                    }
+                }
+            }
+
+            var staticCalls = new SortedDictionary<string, string>(StringComparer.Ordinal);
+            CollectStaticCalls(staticCalls);
+            foreach (var name in staticCalls.Keys)
+            {
+                if (!IsGeneratedStaticCall(name))
+                {
+                    throw new NotSupportedException(
+                        $"{_protocolName}.mspec uses STATIC_CALL '{name}', but no C# implementation is available");
                 }
             }
         }
@@ -406,7 +462,7 @@ namespace org.apache.plc4net.tools.codegen.output
             var (elemType, isByteArray) = CSharpTypeMapper.ArrayType(element);
             var name = Camel(af.Name);
 
-            if (isByteArray && af.LoopType == ArrayField.Loop.Count)
+            if (isByteArray && af.LoopType is ArrayField.Loop.Count or ArrayField.Loop.Length)
             {
                 c.Line($"var {name} = readBuffer.ReadByteArray(\"{af.Name}\", (int) ({r.Render(af.LoopExpression)}) * 8);");
                 return;
@@ -1244,15 +1300,6 @@ namespace org.apache.plc4net.tools.codegen.output
                                      LoopType: ArrayField.Loop.Count,
                                  });
 
-            if (!temporal && !scalar && !structCase
-                && !(listField?.Type is SimpleTypeReference && listField.LoopType == ArrayField.Loop.Count))
-            {
-                c.Line($"throw new NotImplementedException(\"{dio.Name} '{cs.Name}' is not a shape the generator emits yet (design.md GAP-8)\");");
-                c.Outdent();
-                c.Line("}");
-                return;
-            }
-
             switch (mode)
             {
                 case DataIoMode.Parse when temporal:
@@ -1766,14 +1813,13 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("using System.Collections.Generic;");
             c.Line("using System.Linq;");
             c.Line("using org.apache.plc4net.spi.drivers;");
+            c.Line("using org.apache.plc4net.spi.generation;");
             c.Line();
             c.Line($"namespace {_namespace}.model");
             c.Line("{");
             c.Indent();
             c.Line("/// <summary>");
-            c.Line($"/// The array-size helper, and the <c>STATIC_CALL</c> targets in");
-            c.Line($"/// {_protocolName}.mspec. The generated bodies throw; supply the real");
-            c.Line("/// implementation in a sibling non-generated <c>partial</c> file.");
+            c.Line("/// Shared helpers required by the generated protocol model.");
             c.Line("/// </summary>");
             c.Line($"public static partial class {cls}");
             c.Line("{");
@@ -1791,16 +1837,58 @@ namespace org.apache.plc4net.tools.codegen.output
             foreach (var (name, retType) in staticCalls)
             {
                 c.Line();
-                c.Line($"public static {retType} {name}(params object[] args)");
-                c.Indent();
-                c.Line($"=> throw new NotImplementedException(\"{_protocolName}.mspec STATIC_CALL '{name}' has no implementation yet\");");
-                c.Outdent();
+                EmitStaticCall(c, name, retType);
             }
             c.Outdent();
             c.Line("}");
             c.Outdent();
             c.Line("}");
             return c.ToString();
+        }
+
+        private void EmitStaticCall(CodeWriter c, string name, string retType)
+        {
+            if (_protocolName.Equals("modbus", StringComparison.OrdinalIgnoreCase)
+                && name == "AsciiLrcCheck")
+            {
+                c.Line("public static ushort AsciiLrcCheck(byte address, IMessage pdu)");
+                c.Line("{");
+                c.Indent();
+                c.Line("var buffer = new WriteBuffer();");
+                c.Line("buffer.WriteByte(\"address\", 8, address);");
+                c.Line("pdu.Serialize(buffer);");
+                c.Line("var sum = 0;");
+                c.Line("foreach (var b in buffer.GetBytes()) sum = (sum + b) & 0xFF;");
+                c.Line("return (ushort) ((-sum) & 0xFF);");
+                c.Outdent();
+                c.Line("}");
+                return;
+            }
+            if (_protocolName.Equals("modbus", StringComparison.OrdinalIgnoreCase)
+                && name == "RtuCrcCheck")
+            {
+                c.Line("public static ushort RtuCrcCheck(byte address, IMessage pdu)");
+                c.Line("{");
+                c.Indent();
+                c.Line("var buffer = new WriteBuffer();");
+                c.Line("buffer.WriteByte(\"address\", 8, address);");
+                c.Line("pdu.Serialize(buffer);");
+                c.Line("ushort crc = 0xFFFF;");
+                c.Line("foreach (var b in buffer.GetBytes())");
+                c.Line("{");
+                c.Indent();
+                c.Line("crc ^= b;");
+                c.Line("for (var bit = 0; bit < 8; bit++) crc = (crc & 1) != 0 ? (ushort) ((crc >> 1) ^ 0xA001) : (ushort) (crc >> 1);");
+                c.Outdent();
+                c.Line("}");
+                // ReadBuffer/WriteBuffer are MSB-first. Modbus RTU transports
+                // the low CRC byte first, so return the swapped 16-bit value.
+                c.Line("return (ushort) ((crc << 8) | (crc >> 8));");
+                c.Outdent();
+                c.Line("}");
+                return;
+            }
+            throw new InvalidOperationException($"No C# implementation is registered for STATIC_CALL '{name}' ({retType}).");
         }
 
         private void CollectStaticCalls(IDictionary<string, string> sink)
@@ -1830,6 +1918,32 @@ namespace org.apache.plc4net.tools.codegen.output
                     }
                 }
             }
+
+        }
+
+        private bool IsGeneratedStaticCall(string name) =>
+            _protocolName.Equals("modbus", StringComparison.OrdinalIgnoreCase)
+            && (name == "RtuCrcCheck" || name == "AsciiLrcCheck");
+
+        private static bool IsSupportedDataIoCase(DataIoTypeDefinition dio, ComplexTypeDefinition cs)
+        {
+            var props = cs.PropertyFields.ToList();
+            var valueField = props.Count == 1 ? props[0] : null;
+            var listField = valueField as ArrayField;
+            var temporal = TemporalPlcValueCases.Contains(cs.Name)
+                           && dio.Arguments.Any(a => a.Name == "dataProtocolId")
+                           && props.All(f => f is not ArrayField);
+            var scalar = valueField is not (null or ArrayField) && ScalarPlcValueCases.Contains(cs.Name);
+            var structCase = cs.Name == "Struct"
+                             && props.Count > 0
+                             && props.All(f => f is SimpleField { Type: SimpleTypeReference }
+                                 || f is ArrayField
+                                 {
+                                     Type: SimpleTypeReference { BaseType: SimpleTypeReference.Base.Byte },
+                                     LoopType: ArrayField.Loop.Count,
+                                 });
+            return temporal || scalar || structCase
+                || listField?.Type is SimpleTypeReference && listField.LoopType == ArrayField.Loop.Count;
         }
 
         private static void WalkStaticCalls(Term t, string retType, IDictionary<string, string> sink)

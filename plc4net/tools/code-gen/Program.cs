@@ -86,18 +86,51 @@ foreach (var diagnostic in model.Diagnostics)
 }
 var files = new CSharpGenerator(model, protocol, ns).Generate();
 
+// Stage every source file before replacing the current model directory. This
+// keeps a previously generated driver intact if a disk/write failure occurs.
+Directory.CreateDirectory(outDir);
+var stageRoot = Path.Combine(outDir, $".plc4net-code-gen-{Guid.NewGuid():N}");
+var stageModelDir = Path.Combine(stageRoot, "model");
 var modelDir = Path.Combine(outDir, "model");
-Directory.CreateDirectory(modelDir);
-foreach (var stale in Directory.EnumerateFiles(modelDir, "*.cs"))
-{
-    File.Delete(stale);
-}
+var backupDir = Path.Combine(outDir, $".plc4net-code-gen-backup-{Guid.NewGuid():N}");
 
-foreach (var (relativePath, source) in files)
+try
 {
-    var target = Path.Combine(outDir, relativePath);
-    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-    File.WriteAllText(target, source);
+    foreach (var (relativePath, source) in files)
+    {
+        var target = Path.Combine(stageRoot, relativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+        File.WriteAllText(target, source);
+    }
+
+    if (Directory.Exists(modelDir))
+    {
+        Directory.Move(modelDir, backupDir);
+    }
+    try
+    {
+        Directory.Move(stageModelDir, modelDir);
+    }
+    catch
+    {
+        if (Directory.Exists(backupDir) && !Directory.Exists(modelDir))
+        {
+            Directory.Move(backupDir, modelDir);
+        }
+        throw;
+    }
+
+    if (Directory.Exists(backupDir))
+    {
+        Directory.Delete(backupDir, recursive: true);
+    }
+}
+finally
+{
+    if (Directory.Exists(stageRoot))
+    {
+        Directory.Delete(stageRoot, recursive: true);
+    }
 }
 
 Console.WriteLine(
