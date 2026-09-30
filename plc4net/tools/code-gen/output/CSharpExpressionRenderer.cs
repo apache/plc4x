@@ -98,6 +98,12 @@ public sealed class CSharpExpressionRenderer(IExpressionScope? scope = null)
 
     private string RenderVariable(VariableLiteral variable)
     {
+        if (variable.Name == MspecReader.EmptyStringSentinel &&
+            !variable.IsCall && variable.Index.Count == 0 && variable.Child == null)
+        {
+            return "\"\"";
+        }
+
         string head;
         if (variable.IsCall && RenderBuiltin(variable) is { } builtin)
         {

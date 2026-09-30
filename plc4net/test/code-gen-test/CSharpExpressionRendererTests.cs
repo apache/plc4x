@@ -63,6 +63,12 @@ public class CSharpExpressionRendererTests
             renderer.Render(MspecExpressionParser.Parse("CAST(value, Protocol.Message)")));
     }
 
+    [Fact]
+    public void RendersTheMspecEmptyStringCompatibilitySentinel()
+    {
+        Assert.Equal("\"\"", Render(MspecReader.EmptyStringSentinel));
+    }
+
     private static string Render(string expression) =>
         new CSharpExpressionRenderer().Render(MspecExpressionParser.Parse(expression));
 
