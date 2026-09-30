@@ -80,5 +80,14 @@ namespace org.apache.plc4net.test.codegen
 
             Assert.Contains("Failed to parse", ex.Message);
         }
+
+        [Fact]
+        public void A_lexer_error_is_reported_by_strict_parsing()
+        {
+            var ex = Assert.Throws<MspecParseException>(
+                () => MspecReader.Read("[type Packet [simple uint 8 value] @]"));
+
+            Assert.Contains("token recognition error", ex.Message);
+        }
     }
 }

@@ -154,6 +154,78 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
+        public void A_checksum_field_is_validated_after_it_is_read()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [simple uint 8 payload]
+    [checksum uint 8 crc 'payload']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("var expectedCrc = (byte) (payload);", code);
+            Assert.Contains("if (!Equals(crc, expectedCrc))", code);
+            Assert.Contains("throw new ParseException", code);
+        }
+
+        [Fact]
+        public void A_virtual_field_is_available_to_later_parse_fields_and_as_a_computed_property()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type T
+    [simple uint 8 payload]
+    [virtual uint 8 commandType 'payload + 1']
+    [optional uint 8 detail 'commandType == 2']
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/T.cs"];
+
+            Assert.Contains("public byte CommandType =>", code);
+            Assert.Contains("Payload + 1", code);
+            Assert.Contains("var commandType =", code);
+            Assert.Contains("payload + 1", code);
+            Assert.Contains("if ((commandType == 2))", code);
+            Assert.DoesNotContain("byte commandType)", code);
+        }
+
+        [Fact]
+        public void A_virtual_field_can_drive_a_type_switch()
+        {
+            var model = MspecModelBuilder.Build(@"
+[discriminatedType Parent
+    [simple uint 8 payload]
+    [virtual uint 8 commandType 'payload + 1']
+    [typeSwitch commandType
+        ['2' Child
+            [simple uint 8 detail]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/Parent.cs"];
+
+            Assert.Contains("public byte CommandType =>", code);
+            Assert.Contains("var commandType =", code);
+            Assert.Contains("if (Equals(commandType, (byte) (2)))", code);
+        }
+
+        [Fact]
+        public void Enum_accessors_deduplicate_duplicate_underlying_values()
+        {
+            var model = MspecModelBuilder.Build(@"
+[enum uint 8 TransportSize(uint 8 code)
+    ['0x1C' COUNTER ['1']]
+    ['0x1C' DATE_AND_TIME ['2']]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/TransportSize.cs"];
+
+            Assert.Single(System.Text.RegularExpressions.Regex.Matches(
+                code, "TransportSize\\.(COUNTER|DATE_AND_TIME) =>").Cast<System.Text.RegularExpressions.Match>());
+        }
+
+        [Fact]
         public void An_optional_field_is_nullable_and_conditional()
         {
             var model = MspecModelBuilder.Build(@"

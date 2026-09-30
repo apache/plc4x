@@ -207,7 +207,7 @@ namespace org.apache.plc4net.tools.codegen.output
 
             EmitConstFields(c, type, render);
             EmitDiscriminatorAccessors(c, type, render);
-            EmitProperties(c, type);
+            EmitProperties(c, type, render);
             EmitConstructor(c, type);
             EmitStaticParse(c, type, render, scope);
             EmitSerialize(c, type, render, scope);
@@ -280,13 +280,21 @@ namespace org.apache.plc4net.tools.codegen.output
             }
         }
 
-        private void EmitProperties(CodeWriter c, ComplexTypeDefinition type)
+        private void EmitProperties(CodeWriter c, ComplexTypeDefinition type, CSharpExpressionRenderer parseRender)
         {
             foreach (var f in type.PropertyFields)
             {
                 c.Line($"public {PropertyType(f)} {Pascal(f.Name)} {{ get; }}");
             }
-            if (type.PropertyFields.Any())
+            var serializeRender = new CSharpExpressionRenderer(new FieldScope(_protocol, type, serialize: true))
+            {
+                StaticHelperClass = parseRender.StaticHelperClass,
+            };
+            foreach (var f in type.Fields.OfType<VirtualField>())
+            {
+                c.Line($"public {CSharpTypeMapper.CSharpType(f.Type)} {Pascal(f.Name)} => {WithType(serializeRender.Render(f.ValueExpression), f.Type)};");
+            }
+            if (type.PropertyFields.Any() || type.Fields.OfType<VirtualField>().Any())
             {
                 c.Line();
             }
@@ -407,6 +415,11 @@ namespace org.apache.plc4net.tools.codegen.output
 
                 case ChecksumField ck:
                     c.Line($"var {Camel(ck.Name)} = {CSharpTypeMapper.ReadCall(ck.Type, ck.Name)};");
+                    c.Line($"var expected{Pascal(ck.Name)} = {WithType(r.Render(ck.ChecksumExpression), ck.Type)};");
+                    c.Line($"if (!Equals({Camel(ck.Name)}, expected{Pascal(ck.Name)}))");
+                    c.Indent();
+                    c.Line($"throw new ParseException($\"Checksum '{ck.Name}' does not match: expected {{expected{Pascal(ck.Name)}}} but got {{{Camel(ck.Name)}}}\");");
+                    c.Outdent();
                     break;
 
                 case OptionalField opt:
@@ -447,7 +460,8 @@ namespace org.apache.plc4net.tools.codegen.output
                     EmitTypeSwitchParse(c, type, ts, r);
                     break;
 
-                case VirtualField:
+                case VirtualField vf:
+                    c.Line($"var {Camel(vf.Name)} = {WithType(r.Render(vf.ValueExpression), vf.Type)};");
                     break;
 
                 case UnsupportedField uf:
@@ -929,11 +943,11 @@ namespace org.apache.plc4net.tools.codegen.output
                     // TransportSize has COUNTER and DATE_AND_TIME at 0x1C).
                     // Keep every enum member in the declaration, but make the
                     // accessor deterministic by keeping the first member for
-                    // each parameter value.
+                    // each underlying enum value.
                     EmitEnumArms(
                         c,
                         rows,
-                        v => RenderEnumParamValue(v.ConstantValues[ai], arg.Type, r),
+                        v => RenderEnumUnderlyingValue(v, r),
                         v => $"{e.Name}.{v.Name}",
                         v => RenderEnumParamValue(v.ConstantValues[ai], arg.Type, r));
                     c.Line("_ => default!,");
@@ -1846,6 +1860,9 @@ namespace org.apache.plc4net.tools.codegen.output
             return c.ToString();
         }
 
+        private static string RenderEnumUnderlyingValue(EnumValue value, CSharpExpressionRenderer r) =>
+            value.Value == null ? value.Name : r.Render(value.Value);
+
         private void EmitStaticCall(CodeWriter c, string name, string retType)
         {
             if (_protocolName.Equals("modbus", StringComparison.OrdinalIgnoreCase)
@@ -2136,7 +2153,7 @@ namespace org.apache.plc4net.tools.codegen.output
                 {
                     // A property field carries the value itself; only a bare
                     // `discriminator` / parser-arg gets an accessor.
-                    AccessorName = field is { IsProperty: true } ? null : name,
+                    AccessorName = field is { IsProperty: true } or VirtualField ? null : name,
                     Type = type,
                     DispatchExpr = Camel(name),
                 });

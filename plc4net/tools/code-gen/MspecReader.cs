@@ -18,6 +18,7 @@
 //
 
 using System.IO;
+using System.Linq;
 using Antlr4.Runtime;
 using org.apache.plc4net.tools.codegen.grammar;
 
@@ -48,6 +49,9 @@ namespace org.apache.plc4net.tools.codegen
             mspecContent = mspecContent.Replace("''", "'" + EmptyStringSentinel + "'");
             var inputStream = new AntlrInputStream(mspecContent);
             var lexer = new MSpecLexer(inputStream);
+            var lexerErrors = new LexerErrorListener();
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(lexerErrors);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new MSpecParser(tokenStream);
 
@@ -58,17 +62,18 @@ namespace org.apache.plc4net.tools.codegen
 
             var tree = parser.file();
 
-            if (errorListener.HasErrors && strict)
+            var errors = lexerErrors.Errors.Concat(errorListener.Errors).ToArray();
+            if (errors.Length != 0 && strict)
             {
                 throw new MspecParseException(
-                    $"Failed to parse mspec: {string.Join("; ", errorListener.Errors)}");
+                    $"Failed to parse mspec: {string.Join("; ", errors)}");
             }
 
             // Non-strict: ANTLR's error recovery has already skipped the bad
             // tokens and produced a best-effort tree. The Java MessageFormatParser
             // behaves the same on knx-master-data.mspec (it logs the same
             // "mismatched input" lines to stderr and carries on).
-            LastErrors = errorListener.Errors;
+            LastErrors = errors;
             return tree;
         }
 
@@ -103,6 +108,17 @@ namespace org.apache.plc4net.tools.codegen
             string msg, RecognitionException e)
         {
             _errors.Add($"line {line}:{charPositionInLine} {msg}");
+        }
+    }
+
+    internal sealed class LexerErrorListener : IAntlrErrorListener<int>
+    {
+        public System.Collections.Generic.List<string> Errors { get; } = new System.Collections.Generic.List<string>();
+
+        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol,
+            int line, int charPositionInLine, string msg, RecognitionException e)
+        {
+            Errors.Add($"line {line}:{charPositionInLine} {msg}");
         }
     }
 

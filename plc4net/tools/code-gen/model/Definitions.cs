@@ -106,8 +106,7 @@ namespace org.apache.plc4net.tools.codegen.model
         public IEnumerable<fields.Field> PrefixContextFields =>
             Fields.TakeWhile(f => f is not fields.TypeSwitchField)
                   .Where(f => f.Name != null
-                      && f is not fields.ReservedField
-                      && f is not fields.VirtualField);
+                      && f is not fields.ReservedField);
 
         /// <summary>Pre-<c>typeSwitch</c> implicit fields - a child recomputes
         /// these at the top of its serialize / length.</summary>
