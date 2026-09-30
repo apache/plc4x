@@ -21,16 +21,45 @@ name: .NET Platform Compatibility
 on:
   push:
     branches: [develop, plc4net]
-    paths: [plc4net/**, .github/workflows/dotnet-platform.yml]
+    paths:
+      - plc4net/**
+      - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - .github/workflows/dotnet-platform.yml
   pull_request:
     branches: [develop, plc4net]
-    paths: [plc4net/**, .github/workflows/dotnet-platform.yml]
+    paths:
+      - plc4net/**
+      - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  parser-generation:
+    name: Generated parser artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - name: Cache ANTLR
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/plc4x/antlr
+          key: ${{ runner.os }}-antlr-4.13.2
+      - name: Verify generated parser artifacts
+        run: python plc4net/tools/code-gen/generate_parsers.py --check
+
   test:
     name: Build and test (${{ matrix.os }})
     strategy:
