@@ -65,9 +65,8 @@ public static class MspecExpressionParser
     private static Term Convert(ExpressionParser.ExpressionContext context) => context switch
     {
         ExpressionParser.NumberExpressionContext value => Number(value.Number().GetText()),
-        ExpressionParser.HexExpressionContext value => new IntegerLiteral(
-            long.Parse(value.HexExpression().GetText()[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
-            value.HexExpression().GetText()),
+        ExpressionParser.HexExpressionContext value =>
+            new HexadecimalLiteral(value.HexExpression().GetText()),
         ExpressionParser.BoolExpressionContext value =>
             new BooleanLiteral(bool.Parse(value.Bool().GetText())),
         ExpressionParser.NullExpressionContext => new NullLiteral(),

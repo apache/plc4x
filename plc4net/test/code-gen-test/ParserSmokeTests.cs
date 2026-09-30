@@ -112,6 +112,17 @@ public class ParserSmokeTests
         Assert.Equal(expected, MspecExpressionParser.Parse(input).ToString());
     }
 
+    [Theory]
+    [InlineData("0x0E")]
+    [InlineData("0xFFFFFFFFFFFFFFFF")]
+    [InlineData("0x10000000000000000")]
+    public void PreservesHexadecimalLiteralTextWithoutSignedConversion(string input)
+    {
+        var literal = Assert.IsType<HexadecimalLiteral>(MspecExpressionParser.Parse(input));
+
+        Assert.Equal(input, literal.Text);
+    }
+
     [Fact]
     public void BuildsCallsIndexesAndMemberChains()
     {
@@ -151,6 +162,8 @@ public class ParserSmokeTests
     [Theory]
     [InlineData("\"abc\"[0]", "\"abc\"[0]")]
     [InlineData("(left + right)[offset]", "(left + right)[offset]")]
+    [InlineData("(-value)[0]", "(-value)[0]")]
+    [InlineData("(!flag)[0]", "(!flag)[0]")]
     public void PreservesIndexesOnAnyExpression(string input, string expected)
     {
         Assert.Equal(expected, MspecExpressionParser.Parse(input).ToString());
