@@ -28,13 +28,17 @@ C# `io-template` was never migrated, so it only ever produced data classes).
 
 ```bash
 dotnet run --project plc4net/tools/code-gen -c Release -- \
-  <protocol> <mspec-path[;mspec-path...]> <output-dir> [namespace]
+  <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]
 ```
 
+Each source can be one `.mspec` file or a directory containing `.mspec`
+files. Separate multiple sources with semicolons.
+
 `<output-dir>/model/*.cs` is wiped and rewritten, so a removed mspec type
-leaves no stale file. Refreshing the generated sources is a manual step for
-now; the CI wiring that keeps them current lands with the driver slices that
-consume them.
+leaves no stale file. Regenerating these protocol model files is an explicit
+driver-maintenance step; the driver slices that consume them commit the
+result. This is separate from the checked-in ANTLR parser artifacts below,
+whose reproducibility is enforced by CI.
 
 ## Grammars and the checked-in parsers
 
@@ -55,6 +59,9 @@ C# port; without that file the generated lexer does not compile.
 `MSpecLexerTests` pins the behaviour.
 
 ### Regenerating the parsers
+
+This requires Python 3 and a Java runtime. The script downloads the pinned
+ANTLR archive; it does not require a manually installed ANTLR command.
 
 ```bash
 python plc4net/tools/code-gen/generate_parsers.py

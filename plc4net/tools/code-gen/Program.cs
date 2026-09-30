@@ -28,7 +28,7 @@ using org.apache.plc4net.tools.codegen.output;
 // Maven profile: no JDK, no freemarker.
 //
 //   dotnet run --project plc4net/tools/code-gen -- \
-//     <protocol> <mspec-file> <output-dir> [namespace]
+//     <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]
 //
 // <output-dir> receives model/*.cs. It is wiped of *.cs under model/ first so
 // a removed mspec type does not leave a stale file behind.
@@ -36,7 +36,7 @@ using org.apache.plc4net.tools.codegen.output;
 if (args.Length < 3)
 {
     Console.Error.WriteLine(
-        "usage: plc4net-code-gen <protocol> <mspec-file> <output-dir> [namespace]");
+        "usage: plc4net-code-gen <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]");
     return 2;
 }
 
