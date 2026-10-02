@@ -155,7 +155,7 @@
          2.22.2 pair with jackson-annotations 2.22). -->
     <jackson-api.version>2.22</jackson-api.version>
     <jackson.version>2.22.3</jackson.version>
-    <woodstox-core.version>7.2.2</woodstox-core.version>
+    <woodstox-core.version>7.3.0</woodstox-core.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
     <javapoet.version>0.20.0</javapoet.version>
