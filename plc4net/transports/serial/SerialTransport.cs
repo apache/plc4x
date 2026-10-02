@@ -126,9 +126,17 @@ namespace org.apache.plc4net.transports.serial
                 throw new TransportException($"data-bits must be between 5 and 8, but was {config.DataBits}.");
             }
 
-            if (config.ReadTimeout < -1 || config.WriteTimeout < -1)
+            if (config.ReadTimeout < -1)
             {
-                throw new TransportException("read-timeout and write-timeout must be -1 or non-negative.");
+                throw new TransportException("read-timeout must be -1 (infinite) or non-negative.");
+            }
+
+            // SerialPort.WriteTimeout is stricter than ReadTimeout: it takes a positive value or
+            // -1 and rejects 0. Fail here rather than as an unrelated ArgumentOutOfRangeException
+            // when the port is opened.
+            if (config.WriteTimeout == 0 || config.WriteTimeout < -1)
+            {
+                throw new TransportException("write-timeout must be -1 (infinite) or positive.");
             }
 
             if (config.ReceiveBufferSize <= 0 || config.SendBufferSize < 0)

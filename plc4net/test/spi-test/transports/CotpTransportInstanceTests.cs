@@ -140,6 +140,23 @@ namespace org.apache.plc4net.spi.test.transports
     }
 
     /// <summary>
+    /// An inner transport whose writes take a moment, so that two writers racing for the same
+    /// COTP instance reliably overlap instead of one finishing before the other has started.
+    /// </summary>
+    internal class SlowWriteTransportInstance : ScriptedTransportInstance
+    {
+        private volatile bool _slow;
+
+        public void SlowWrites() => _slow = true;
+
+        public override void Write(byte[] bytes)
+        {
+            if (_slow) Thread.Sleep(5);
+            base.Write(bytes);
+        }
+    }
+
+    /// <summary>
     /// A diagnostic sink that runs a callback the first time a line containing a marker is
     /// written. It lets a test act at an exact point inside Open() without depending on
     /// thread timing.
@@ -201,6 +218,14 @@ namespace org.apache.plc4net.spi.test.transports
         {
             await AssertCompletes(task, failureMessage);
             return await task;
+        }
+
+        [Fact]
+        public void The_constructor_rejects_a_null_inner_transport()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => new CotpTransportInstance(null!));
+
+            Assert.Equal("inner", ex.ParamName);
         }
 
         [Fact]
@@ -623,10 +648,11 @@ namespace org.apache.plc4net.spi.test.transports
             cotp.Open(0x01, 0x00, 0x03, 0x01);
             inner.StallWrites();
 
+            Exception? writeFailure = null;
             var writer = new Thread(() =>
             {
                 try { cotp.Write(new byte[] { 0x32, 0x01 }); }
-                catch (Exception) { /* released by the cleanup below */ }
+                catch (Exception ex) { writeFailure = ex; }
             })
             { IsBackground = true };
 
@@ -654,6 +680,62 @@ namespace org.apache.plc4net.spi.test.transports
                 inner.Close();
                 writer.Join(TimeSpan.FromSeconds(5));
             }
+
+            // Closing the inner transport is what ends the stalled write, and it must end with
+            // the transport's own failure rather than something unrelated.
+            Assert.IsType<TransportException>(writeFailure);
+        }
+
+        [Fact]
+        public void Concurrent_writes_keep_the_fragments_of_each_message_contiguous()
+        {
+            var inner = new SlowWriteTransportInstance();
+            inner.Inject(ConnectionConfirm());
+            var cotp = new CotpTransportInstance(inner);
+            cotp.Open(0x01, 0x00, 0x03, 0x01);
+            inner.Written.Clear();
+            inner.SlowWrites();
+
+            // The default TPDU size of 1024 leaves 1021 payload bytes per DT frame, so each of
+            // these messages spans three fragments.
+            var messages = new[]
+            {
+                Enumerable.Repeat((byte)0xAA, 2500).ToArray(),
+                Enumerable.Repeat((byte)0xBB, 2500).ToArray()
+            };
+            var failures = new ConcurrentBag<Exception>();
+            using var start = new ManualResetEventSlim(false);
+            var threads = messages
+                .Select(message => new Thread(() =>
+                {
+                    start.Wait();
+                    try { cotp.Write(message); }
+                    catch (Exception ex) { failures.Add(ex); }
+                }))
+                .ToList();
+
+            threads.ForEach(t => t.Start());
+            start.Set();
+            threads.ForEach(t => t.Join());
+
+            Assert.Empty(failures);
+            Assert.Equal(6, inner.Written.Count);
+            for (var i = 0; i < inner.Written.Count; i++)
+            {
+                var frame = inner.Written[i];
+                var message = frame[7];
+
+                // One message per frame, and frames 0-2 and 3-5 belong together: a second writer
+                // slipping a fragment in between would split a message on the wire.
+                Assert.All(frame.Skip(7), b => Assert.Equal(message, b));
+                Assert.Equal(inner.Written[i / 3 * 3][7], message);
+
+                // TPDU numbers follow the order on the wire, and only the last fragment of a
+                // message carries EOT.
+                Assert.Equal(i, frame[6] & 0x7F);
+                Assert.Equal(i % 3 == 2, (frame[6] & 0x80) != 0);
+            }
+            Assert.NotEqual(inner.Written[0][7], inner.Written[3][7]);
         }
 
         [Fact]
@@ -883,8 +965,64 @@ namespace org.apache.plc4net.spi.test.transports
             // session, or the next Write() goes out on a connection the peer already ended.
             Assert.True(inner.Closed);
             Assert.False(cotp.IsOpen);
-            Assert.Throws<TransportException>(() => cotp.Write(new byte[] { 0x32 }));
-            Assert.Throws<TransportException>(() => cotp.Read(1));
+
+            // Every later call names the teardown. Blaming a missing Open() would send the
+            // caller looking for a mistake in their own call order.
+            AssertTeardownReported(() => cotp.Write(new byte[] { 0x32 }), pduType);
+            AssertTeardownReported(() => cotp.Read(1), pduType);
+            AssertTeardownReported(() => cotp.PeekReadableBytes(1), pduType);
+            AssertTeardownReported(() => cotp.GetNumBytesAvailable(), pduType);
+            AssertTeardownReported(() => cotp.Open(0x01, 0x00, 0x03, 0x01), pduType);
+        }
+
+        [Theory]
+        [MemberData(nameof(SessionEndingTpdus))]
+        public void A_response_delivered_before_a_peer_teardown_stays_readable(int pduType, byte[] frame)
+        {
+            var (cotp, inner) = Handshaken();
+            // A complete DT frame carrying four payload bytes, then the session-ending TPDU.
+            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
+            inner.Inject(frame);
+
+            // The response is reported first; the teardown queued behind it does not hide it.
+            Assert.Equal(4, cotp.GetNumBytesAvailable());
+
+            // The teardown has been consumed by now, so the session no longer claims to be live.
+            Assert.True(inner.Closed);
+            Assert.False(cotp.IsOpen);
+            AssertTeardownReported(() => cotp.Write(new byte[] { 0x32 }), pduType);
+
+            // The bytes the peer delivered before ending the session are still handed out.
+            Assert.Equal(new byte[] { 0x32, 0x03, 0x00, 0x00 }, cotp.PeekReadableBytes(4));
+            Assert.Equal(new byte[] { 0x32, 0x03, 0x00, 0x00 }, cotp.Read(4));
+
+            // Only once they are gone does the teardown surface.
+            AssertTeardownReported(() => cotp.GetNumBytesAvailable(), pduType);
+            AssertTeardownReported(() => cotp.Read(1), pduType);
+        }
+
+        [Fact]
+        public void A_read_for_more_than_was_delivered_before_a_peer_teardown_reports_the_teardown()
+        {
+            var (cotp, inner) = Handshaken();
+            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
+            inner.Inject(TpktFrame.Wrap(new byte[] { 0x06, 0x80, 0x00, 0x01, 0x00, 0x02, 0x00 }));
+
+            // Four bytes arrived and then the peer ended the session: the other four never
+            // will, so a caller waiting for them is told why instead of "only 4 available".
+            AssertTeardownReported(() => cotp.Read(8), 0x80);
+
+            // The bytes that did arrive are not lost by the failed read.
+            Assert.Equal(new byte[] { 0x32, 0x03, 0x00, 0x00 }, cotp.Read(4));
+        }
+
+        private static void AssertTeardownReported(Action call, int pduType)
+        {
+            var ex = Assert.Throws<TransportException>(call);
+
+            Assert.Contains("disconnected", ex.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains($"0x{pduType:X2}", ex.Message);
+            Assert.DoesNotContain("Open() first", ex.Message);
         }
 
         [Fact]

@@ -73,10 +73,37 @@ namespace org.apache.plc4net.spi.test.transports
         [InlineData("serial.data-bits=4")]
         [InlineData("serial.data-bits=9")]
         [InlineData("serial.receive-buffer-size=0")]
+        // SerialPort.WriteTimeout takes a positive value or -1 and rejects 0, so 0 has to fail
+        // here instead of as an unrelated exception when the port is opened.
+        [InlineData("serial.write-timeout=0")]
+        [InlineData("serial.write-timeout=-2")]
+        [InlineData("serial.read-timeout=-2")]
         public void Invalid_transport_settings_fail_before_opening_the_port(string parameter)
         {
             Assert.Throws<TransportException>(
                 () => Configure("modbus-rtu:serial://COM1?" + parameter));
+        }
+
+        [Theory]
+        [InlineData("serial.read-timeout=0", 0, 2000)]
+        [InlineData("serial.read-timeout=-1", -1, 2000)]
+        [InlineData("serial.write-timeout=1", 2000, 1)]
+        [InlineData("serial.write-timeout=-1", 2000, -1)]
+        public void Timeouts_the_serial_port_accepts_are_applied(
+            string parameter, int readTimeout, int writeTimeout)
+        {
+            var config = Configure("modbus-rtu:serial://COM1?" + parameter);
+
+            Assert.Equal(readTimeout, config.ReadTimeout);
+            Assert.Equal(writeTimeout, config.WriteTimeout);
+
+            // What the configuration accepts has to be something SerialPort accepts as well;
+            // assigning the timeouts does not open the port.
+            using var port = new SerialPort
+            {
+                ReadTimeout = config.ReadTimeout,
+                WriteTimeout = config.WriteTimeout
+            };
         }
 
         [Theory]

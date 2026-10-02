@@ -53,6 +53,12 @@ namespace org.apache.plc4net.transports.cotp
         private volatile bool _handshakeInProgress;
         private TaskCompletionSource<bool>? _handshakeCompletion;
 
+        // Why the peer ended the session (Disconnect Request, Disconnect Confirm or TPDU
+        // Error); null while it is alive. Read and written under _handshakeLock. Payload the
+        // peer delivered before that stays in _leftover and remains readable. Once none is
+        // left, every call reports this instead of a missing handshake.
+        private string? _peerTeardown;
+
         // Negotiated COTP TPDU size, taken from the Confirm's TPDU-size parameter. The
         // Connection Request asks for 1024 bytes; a PLC may confirm a smaller value
         // (S7-1200/1500 commonly confirm 480), and Data Transfer frames must respect it.
@@ -77,9 +83,9 @@ namespace org.apache.plc4net.transports.cotp
         private int _bufferedFramePayloads;
 
         public CotpTransportInstance(ITransportInstance inner)
-            : base(inner.Configuration)
+            : base((inner ?? throw new ArgumentNullException(nameof(inner))).Configuration)
         {
-            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            _inner = inner;
             DriverConfig = inner.DriverConfig;
         }
 
@@ -105,7 +111,14 @@ namespace org.apache.plc4net.transports.cotp
                 // The drain mutates _leftover, so it must run under the same lock that
                 // Read()/PeekReadableBytes() hold when they mutate it.
                 DrainFramesIfAvailable();
-                return _leftover.Length + _bufferedFramePayloads;
+                var available = _leftover.Length + _bufferedFramePayloads;
+
+                // Nothing left to hand out and nothing more can arrive: say why, instead of an
+                // endless 0 that looks like a slow peer.
+                if (available == 0 && _peerTeardown != null)
+                    throw new TransportException(_peerTeardown);
+
+                return available;
             }
         }
 
@@ -126,8 +139,15 @@ namespace org.apache.plc4net.transports.cotp
                 DrainFramesIfAvailable();
 
                 if (_leftover.Length < numBytes)
+                {
+                    // A session the peer has ended will never deliver the missing bytes, so
+                    // say so rather than suggest they may still arrive.
+                    if (_peerTeardown != null)
+                        throw new TransportException(_peerTeardown);
+
                     throw new TransportException(
                         $"Requested {numBytes} bytes but only {_leftover.Length} available.");
+                }
 
                 var result = new byte[numBytes];
                 Array.Copy(_leftover, 0, result, 0, numBytes);
@@ -152,8 +172,15 @@ namespace org.apache.plc4net.transports.cotp
                 DrainFramesIfAvailable();
 
                 if (_leftover.Length < numBytes)
+                {
+                    // A session the peer has ended will never deliver the missing bytes, so
+                    // say so rather than suggest they may still arrive.
+                    if (_peerTeardown != null)
+                        throw new TransportException(_peerTeardown);
+
                     throw new TransportException(
                         $"Requested {numBytes} bytes but only {_leftover.Length} available.");
+                }
 
                 var result = new byte[numBytes];
                 Array.Copy(_leftover, 0, result, 0, numBytes);
@@ -197,6 +224,9 @@ namespace org.apache.plc4net.transports.cotp
             TaskCompletionSource<bool>? ownedHandshake = null;
             lock (_handshakeLock)
             {
+                // A session the peer has ended stays ended. Without this the check below would
+                // report success for a connection that is gone.
+                if (_peerTeardown != null) throw new TransportException(_peerTeardown);
                 if (_handshakeDone) return;
                 if (_handshakeInProgress)
                 {
@@ -480,6 +510,9 @@ namespace org.apache.plc4net.transports.cotp
                 int tpduSize;
                 lock (_handshakeLock)
                 {
+                    if (_peerTeardown != null)
+                        throw new TransportException(_peerTeardown);
+
                     if (!_handshakeDone)
                         throw new TransportException("COTP handshake has not been performed. Call Open() first.");
 
@@ -591,6 +624,9 @@ namespace org.apache.plc4net.transports.cotp
         /// </summary>
         private void DrainFramesIfAvailable()
         {
+            // The peer has ended the session: whatever it sent after that is not ours to read.
+            if (_peerTeardown != null) return;
+
             while (true)
             {
                 var available = _inner.GetNumBytesAvailable();
@@ -639,11 +675,11 @@ namespace org.apache.plc4net.transports.cotp
                 // connection is released too (RFC 905 6.22 recommends it for the receiver,
                 // and the sender releases it itself when its error timer expires).
                 // Swallowing it made every read stall for the full timeout and report a
-                // misleading "no response" while IsConnected stayed true. Surface it
-                // instead so the caller can distinguish a dead session from a slow one,
-                // and close the transport so it stops claiming a live session: the frame
-                // is already consumed, and a later Write() would otherwise go out on a
-                // connection the peer has ended.
+                // misleading "no response" while IsConnected stayed true. So end the session
+                // here: the transport is closed, which stops it claiming a live session and
+                // makes a later Write() fail instead of going out on a connection the peer has
+                // ended. Callers learn why once no payload the peer delivered first is left to
+                // hand out; the frames queued behind this one are not read.
                 if (pduType == 0x80 || pduType == 0xC0 || pduType == 0x70)
                 {
                     var teardown = pduType switch
@@ -652,9 +688,9 @@ namespace org.apache.plc4net.transports.cotp
                         0xC0 => "Disconnect Confirm",
                         _ => "TPDU Error"
                     };
-                    Close();
-                    throw new TransportException(
+                    EndSessionByPeer(
                         $"COTP peer disconnected the session ({teardown}, PDU type 0x{pduType:X2}).");
+                    return;
                 }
 
                 // Anything else that is not a Data Transfer frame is a protocol violation.
@@ -691,6 +727,25 @@ namespace org.apache.plc4net.transports.cotp
                 _leftover = newLeftover;
                 _bufferedFramePayloads = 0; // consolidated into leftover
             }
+        }
+
+        /// <summary>
+        /// Records that the peer ended the session and closes the inner transport. Unlike
+        /// <see cref="Close"/> it keeps <c>_leftover</c>: a response the peer sent before ending
+        /// the session is still the caller's to read. Must be called with
+        /// <c>_handshakeLock</c> held.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="Close"/> closes the inner transport before taking the lock, so that a
+        /// stalled Write() cannot hold it up. Here the lock is already held, which is safe for
+        /// the same reason: closing the inner transport never waits for the writer.
+        /// <c>TcpTransportInstance.Close()</c> takes no locks and does not wait for its read
+        /// loop, and a stalled Write() holds only <c>_writeLock</c>, never <c>_handshakeLock</c>.
+        /// </remarks>
+        private void EndSessionByPeer(string reason)
+        {
+            _peerTeardown = reason;
+            _inner.Close();
         }
     }
 }
