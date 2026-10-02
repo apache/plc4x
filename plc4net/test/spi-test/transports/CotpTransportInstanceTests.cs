@@ -21,8 +21,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using org.apache.plc4net.spi.transports;
 using org.apache.plc4net.transports.cotp;
 using Xunit;
@@ -101,6 +104,68 @@ namespace org.apache.plc4net.spi.test.transports
         }
     }
 
+    /// <summary>
+    /// An inner transport whose writes can be made to hang like a socket send against a peer
+    /// that has stopped reading. A stalled write only returns once the transport is closed
+    /// underneath it, which is how closing a real socket releases a blocked send.
+    /// </summary>
+    internal class StalledWriteTransportInstance : ScriptedTransportInstance
+    {
+        private readonly ManualResetEventSlim _writeStarted = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _released = new ManualResetEventSlim(false);
+        private volatile bool _stallWrites;
+
+        public void StallWrites() => _stallWrites = true;
+
+        public bool WaitForStalledWrite(TimeSpan timeout) => _writeStarted.Wait(timeout);
+
+        public override void Write(byte[] bytes)
+        {
+            if (!_stallWrites)
+            {
+                base.Write(bytes);
+                return;
+            }
+
+            _writeStarted.Set();
+            _released.Wait();
+            throw new TransportException("Transport closed while a write was blocked.");
+        }
+
+        public override void Close()
+        {
+            base.Close();
+            _released.Set();
+        }
+    }
+
+    /// <summary>
+    /// A diagnostic sink that runs a callback the first time a line containing a marker is
+    /// written. It lets a test act at an exact point inside Open() without depending on
+    /// thread timing.
+    /// </summary>
+    internal sealed class CallbackTextWriter : TextWriter
+    {
+        private readonly string _marker;
+        private readonly Action _onMarker;
+        private bool _fired;
+
+        public CallbackTextWriter(string marker, Action onMarker)
+        {
+            _marker = marker;
+            _onMarker = onMarker;
+        }
+
+        public override Encoding Encoding => Encoding.UTF8;
+
+        public override void WriteLine(string? value)
+        {
+            if (_fired || value == null || !value.Contains(_marker)) return;
+            _fired = true;
+            _onMarker();
+        }
+    }
+
     public class CotpTransportInstanceTests
     {
         // A well-formed Connection Confirm: TPKT(4) + LI + 0xD0 + DST-REF(2) + SRC-REF(2)
@@ -122,6 +187,20 @@ namespace org.apache.plc4net.spi.test.transports
             var cotp = new CotpTransportInstance(inner);
             cotp.Open(0x01, 0x00, 0x03, 0x01);
             return (cotp, inner);
+        }
+
+        // A call that hangs must fail its test rather than hang it, so awaiting one is bounded.
+        private static async Task AssertCompletes(Task task, string failureMessage)
+        {
+            var finished = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(2)));
+            Assert.True(ReferenceEquals(finished, task), failureMessage);
+            await task;
+        }
+
+        private static async Task<T> ResultWithin<T>(Task<T> task, string failureMessage)
+        {
+            await AssertCompletes(task, failureMessage);
+            return await task;
         }
 
         [Fact]
@@ -298,9 +377,10 @@ namespace org.apache.plc4net.spi.test.transports
         public void A_stray_confirm_after_the_handshake_is_skipped_not_fatal()
         {
             var (cotp, inner) = Handshaken();
-            // A late Confirm (or a DR/ER teardown) can legitimately precede the S7
-            // response; it is consumed and skipped, and the following DT frame still
-            // delivers its payload.
+            // A late Connection Confirm can legitimately precede the S7 response; it is
+            // consumed and skipped, and the following DT frame still delivers its payload.
+            // Disconnect and Error TPDUs are different: they end the session (see
+            // A_session_ending_tpdu_from_the_peer_closes_the_transport).
             inner.Inject(ConnectionConfirm());
             inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
 
@@ -469,6 +549,111 @@ namespace org.apache.plc4net.spi.test.transports
             Assert.IsType<TransportException>(ownerFailure);
             Assert.IsType<TransportException>(followerFailure);
             Assert.True(inner.Closed);
+        }
+
+        [Fact]
+        public void Open_fails_when_Close_wins_the_race_before_the_handshake_is_published()
+        {
+            var inner = new ScriptedTransportInstance();
+            inner.Inject(ConnectionConfirm());
+            var cotp = new CotpTransportInstance(inner);
+
+            // The diagnostic hook fires once the Confirm has been validated, immediately
+            // before Open() takes the lock to publish the handshake as complete: the window
+            // a concurrent Close() can hit. Running Close() from the hook makes that
+            // interleaving deterministic.
+            cotp.DiagnosticOutput = new CallbackTextWriter("Connection Confirm (CC)", () => cotp.Close());
+
+            var ex = Assert.Throws<TransportException>(() => cotp.Open(0x01, 0x00, 0x03, 0x01));
+
+            Assert.Contains("closed", ex.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(cotp.IsOpen);
+            // A Confirm that arrives after Close() must not resurrect the ended session.
+            var writeEx = Assert.Throws<TransportException>(() => cotp.Write(new byte[] { 0x32 }));
+            Assert.Contains("handshake", writeEx.Message, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public async Task Close_releases_a_write_stalled_on_the_inner_transport()
+        {
+            var inner = new StalledWriteTransportInstance();
+            inner.Inject(ConnectionConfirm());
+            var cotp = new CotpTransportInstance(inner);
+            cotp.Open(0x01, 0x00, 0x03, 0x01);
+            inner.StallWrites();
+
+            Exception? writeFailure = null;
+            using var writeDone = new ManualResetEventSlim(false);
+            var writer = new Thread(() =>
+            {
+                try { cotp.Write(new byte[] { 0x32, 0x01 }); }
+                catch (Exception ex) { writeFailure = ex; }
+                finally { writeDone.Set(); }
+            })
+            { IsBackground = true };
+
+            try
+            {
+                writer.Start();
+                Assert.True(inner.WaitForStalledWrite(TimeSpan.FromSeconds(2)),
+                    "the write never reached the inner transport");
+
+                // Closing the inner transport is the only thing that can release a send that
+                // is blocked on a peer that stopped reading, so Close() must not queue behind
+                // the writer.
+                await AssertCompletes(Task.Run(() => cotp.Close()), "Close() hung behind the stalled write");
+                Assert.True(writeDone.Wait(TimeSpan.FromSeconds(2)), "the stalled write was never released");
+                Assert.IsType<TransportException>(writeFailure);
+                Assert.True(inner.Closed);
+            }
+            finally
+            {
+                // Never leave the writer parked when an assertion above failed.
+                inner.Close();
+                writer.Join(TimeSpan.FromSeconds(5));
+            }
+        }
+
+        [Fact]
+        public async Task A_stalled_write_does_not_block_reads()
+        {
+            var inner = new StalledWriteTransportInstance();
+            inner.Inject(ConnectionConfirm());
+            var cotp = new CotpTransportInstance(inner);
+            cotp.Open(0x01, 0x00, 0x03, 0x01);
+            inner.StallWrites();
+
+            var writer = new Thread(() =>
+            {
+                try { cotp.Write(new byte[] { 0x32, 0x01 }); }
+                catch (Exception) { /* released by the cleanup below */ }
+            })
+            { IsBackground = true };
+
+            try
+            {
+                writer.Start();
+                Assert.True(inner.WaitForStalledWrite(TimeSpan.FromSeconds(2)),
+                    "the write never reached the inner transport");
+
+                // A driver polls GetNumBytesAvailable()/Read() while a request is in flight; a
+                // send stuck on a stalled peer must not freeze those calls.
+                inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
+                var available = await ResultWithin(
+                    Task.Run(() => cotp.GetNumBytesAvailable()),
+                    "GetNumBytesAvailable() blocked behind the stalled write");
+                Assert.Equal(4, available);
+
+                var payload = await ResultWithin(
+                    Task.Run(() => cotp.Read(4)),
+                    "Read() blocked behind the stalled write");
+                Assert.Equal(new byte[] { 0x32, 0x03, 0x00, 0x00 }, payload);
+            }
+            finally
+            {
+                inner.Close();
+                writer.Join(TimeSpan.FromSeconds(5));
+            }
         }
 
         [Fact]
@@ -672,16 +857,34 @@ namespace org.apache.plc4net.spi.test.transports
             Assert.True(cotp.IsOpen);
         }
 
-        [Fact]
-        public void A_disconnect_request_from_the_peer_is_surfaced_not_swallowed()
+        // The TPDUs that end a COTP session, as s7.mspec defines them (TPKT-wrapped, with the
+        // LI byte first): Disconnect Request 0x80, Disconnect Confirm 0xC0 and TPDU Error 0x70.
+        public static IEnumerable<object[]> SessionEndingTpdus() => new[]
+        {
+            new object[] { 0x80, TpktFrame.Wrap(new byte[] { 0x06, 0x80, 0x00, 0x01, 0x00, 0x02, 0x00 }) },
+            new object[] { 0xC0, TpktFrame.Wrap(new byte[] { 0x05, 0xC0, 0x00, 0x01, 0x00, 0x02 }) },
+            new object[] { 0x70, TpktFrame.Wrap(new byte[] { 0x04, 0x70, 0x00, 0x01, 0x05 }) }
+        };
+
+        [Theory]
+        [MemberData(nameof(SessionEndingTpdus))]
+        public void A_session_ending_tpdu_from_the_peer_closes_the_transport(int pduType, byte[] frame)
         {
             var (cotp, inner) = Handshaken();
-            // A Disconnect Request, followed by a DT frame that must NOT be reached.
-            inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0x80, 0x00, 0x00);
+            // The session-ending TPDU, followed by a DT frame that must NOT be reached.
+            inner.Inject(frame);
             inner.Inject(0x03, 0x00, 0x00, 0x0B, 0x02, 0xF0, 0x80, 0x32, 0x03, 0x00, 0x00);
 
             var ex = Assert.Throws<TransportException>(() => cotp.GetNumBytesAvailable());
             Assert.Contains("disconnected", ex.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains($"0x{pduType:X2}", ex.Message);
+
+            // Surfacing the teardown is not enough: the transport must stop claiming a live
+            // session, or the next Write() goes out on a connection the peer already ended.
+            Assert.True(inner.Closed);
+            Assert.False(cotp.IsOpen);
+            Assert.Throws<TransportException>(() => cotp.Write(new byte[] { 0x32 }));
+            Assert.Throws<TransportException>(() => cotp.Read(1));
         }
 
         [Fact]

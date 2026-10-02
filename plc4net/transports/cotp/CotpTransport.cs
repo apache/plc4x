@@ -25,11 +25,17 @@ namespace org.apache.plc4net.transports.cotp
 {
     /// <summary>
     /// The "cotp" transport — wraps a TCP connection with TPKT (RFC 1006)
-    /// framing for use by the S7 driver.
+    /// framing and COTP (ISO 8073 class 0) connection handling for use by the
+    /// S7 driver.
     /// </summary>
     /// <remarks>
-    /// COTP connection establishment and TPDU handling is performed by the
-    /// driver layer. This transport only adds TPKT framing on top of TCP.
+    /// The transport instances created here do the COTP work themselves instead
+    /// of leaving it to the driver: <c>CotpTransportInstance.Open</c> exchanges
+    /// the Connection Request and Confirm for the TSAPs the driver supplies and
+    /// negotiates the TPDU size, <c>Write</c> splits a payload into Data
+    /// Transfer TPDUs that fit that size, and <c>Read</c> returns the payload of
+    /// the received Data Transfer TPDUs with the TPKT and COTP headers
+    /// stripped. The driver only deals in the payload bytes above COTP.
     /// </remarks>
     public class CotpTransport : ITransport
     {

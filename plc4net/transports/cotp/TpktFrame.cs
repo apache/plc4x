@@ -31,6 +31,15 @@ namespace org.apache.plc4net.transports.cotp
         public const int HeaderSize = 4;
 
         /// <summary>
+        /// The TPKT length field is 16 bits wide and counts the header itself, so a frame
+        /// can be at most 65535 bytes long.
+        /// </summary>
+        public const int MaxFrameSize = ushort.MaxValue;
+
+        /// <summary>The most payload a single TPKT frame can carry.</summary>
+        public const int MaxPayloadSize = MaxFrameSize - HeaderSize;
+
+        /// <summary>
         /// Reads the payload length from a TPKT header (bytes 2-3, big-endian).
         /// The length includes the 4-byte header itself.
         /// </summary>
@@ -44,9 +53,22 @@ namespace org.apache.plc4net.transports.cotp
         /// <summary>
         /// Wraps a payload in a TPKT frame and returns the complete byte array.
         /// </summary>
+        /// <exception cref="ArgumentException">
+        /// The payload is longer than <see cref="MaxPayloadSize"/>: the frame length would not
+        /// fit the 16-bit length field and the header would describe a different size than the
+        /// frame actually has.
+        /// </exception>
         public static byte[] Wrap(byte[] payload)
         {
-            var totalLength = HeaderSize + (payload?.Length ?? 0);
+            var payloadLength = payload?.Length ?? 0;
+            if (payloadLength > MaxPayloadSize)
+            {
+                throw new ArgumentException(
+                    $"A TPKT frame carries at most {MaxPayloadSize} payload bytes, but the payload has {payloadLength}.",
+                    nameof(payload));
+            }
+
+            var totalLength = HeaderSize + payloadLength;
             var frame = new byte[totalLength];
             frame[0] = Version;
             frame[1] = 0; // reserved

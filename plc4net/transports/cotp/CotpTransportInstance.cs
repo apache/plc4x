@@ -33,6 +33,13 @@ namespace org.apache.plc4net.transports.cotp
     {
         private readonly ITransportInstance _inner;
         private readonly object _handshakeLock = new object();
+
+        // Serializes Write() so the DT fragments of one message stay contiguous on the wire.
+        // Deliberately not _handshakeLock: the socket write can block indefinitely against a
+        // peer that has stopped reading, and neither Close() nor the polling reads may queue
+        // behind it. The lock order is _writeLock then _handshakeLock; nothing takes them the
+        // other way round.
+        private readonly object _writeLock = new object();
         private byte[] _leftover = Array.Empty<byte>();
         private const int RequestedTpduSize = 1024;
 
@@ -187,6 +194,7 @@ namespace org.apache.plc4net.transports.cotp
             // _handshakeInProgress and closes the inner transport; the poll loops notice
             // via IsOpen and fail fast.
             TaskCompletionSource<bool>? existingHandshake = null;
+            TaskCompletionSource<bool>? ownedHandshake = null;
             lock (_handshakeLock)
             {
                 if (_handshakeDone) return;
@@ -198,8 +206,9 @@ namespace org.apache.plc4net.transports.cotp
                 {
                     if (!_inner.IsOpen) throw new TransportException("Inner transport is not open.");
                     _handshakeInProgress = true;
-                    _handshakeCompletion = new TaskCompletionSource<bool>(
+                    ownedHandshake = new TaskCompletionSource<bool>(
                         TaskCreationOptions.RunContinuationsAsynchronously);
+                    _handshakeCompletion = ownedHandshake;
                 }
             }
 
@@ -328,6 +337,17 @@ namespace org.apache.plc4net.transports.cotp
                 TaskCompletionSource<bool>? completedHandshake;
                 lock (_handshakeLock)
                 {
+                    // A Close() that ran after the Confirm was parsed has already failed this
+                    // handshake and closed the inner transport. Publishing success now would
+                    // bring a closed session back for this caller while every waiter was told
+                    // the handshake failed, so only the owner of the still-current handshake
+                    // may complete it.
+                    if (!_handshakeInProgress || !ReferenceEquals(_handshakeCompletion, ownedHandshake))
+                    {
+                        throw new TransportException(
+                            "COTP transport was closed while the handshake was in progress.");
+                    }
+
                     _handshakeDone = true;
                     _handshakeInProgress = false;
                     completedHandshake = _handshakeCompletion;
@@ -338,13 +358,18 @@ namespace org.apache.plc4net.transports.cotp
             catch (Exception ex)
             {
                 // A failed handshake leaves the instance open for a retry: only clear the
-                // in-progress flag, never mark the handshake done.
-                TaskCompletionSource<bool>? failedHandshake;
+                // in-progress flag, never mark the handshake done. A Close() that already
+                // cleared this handshake (and failed its waiters) owns that state now, so it
+                // is left alone.
+                TaskCompletionSource<bool>? failedHandshake = null;
                 lock (_handshakeLock)
                 {
-                    _handshakeInProgress = false;
-                    failedHandshake = _handshakeCompletion;
-                    _handshakeCompletion = null;
+                    if (ReferenceEquals(_handshakeCompletion, ownedHandshake))
+                    {
+                        _handshakeInProgress = false;
+                        failedHandshake = _handshakeCompletion;
+                        _handshakeCompletion = null;
+                    }
                 }
                 failedHandshake?.TrySetException(ex);
                 throw;
@@ -446,15 +471,25 @@ namespace org.apache.plc4net.transports.cotp
             if (!_handshakeDone)
                 throw new TransportException("COTP handshake has not been performed. Call Open() first.");
 
-            lock (_handshakeLock)
+            // _writeLock keeps the fragments of one message contiguous. _handshakeLock is held
+            // only to validate the session and read the negotiated TPDU size, never across the
+            // socket write: a send blocked on a stalled peer would otherwise freeze Close() and
+            // every polling read behind it.
+            lock (_writeLock)
             {
-                if (!_handshakeDone)
-                    throw new TransportException("COTP handshake has not been performed. Call Open() first.");
+                int tpduSize;
+                lock (_handshakeLock)
+                {
+                    if (!_handshakeDone)
+                        throw new TransportException("COTP handshake has not been performed. Call Open() first.");
+
+                    tpduSize = _tpduSize;
+                }
 
                 // The COTP DT header is 3 bytes (LI + 0xF0 + TPDU-NR/EOT).
                 // The 16-bit TPKT length field caps the frame at 65535;
                 // the negotiated TPDU size caps the DT TPDU. The tighter wins.
-                var maxPayload = Math.Min(65528, _tpduSize - 3);
+                var maxPayload = Math.Min(TpktFrame.MaxPayloadSize - 3, tpduSize - 3);
                 var offset = 0;
 
                 while (offset < bytes.Length)
@@ -489,10 +524,15 @@ namespace org.apache.plc4net.transports.cotp
 
         public override void Close()
         {
+            // Close the inner transport first, with no COTP lock held: closing the socket is the
+            // only thing that releases a Write() blocked against a stalled peer, and
+            // TcpTransportInstance.Close() takes no locks for the same reason. Doing it under
+            // _handshakeLock would let a stalled writer hold this call hostage.
+            _inner.Close();
+
             TaskCompletionSource<bool>? pendingHandshake;
             lock (_handshakeLock)
             {
-                _inner.Close();
                 _leftover = Array.Empty<byte>();
                 _bufferedFramePayloads = 0;
 
@@ -592,16 +632,29 @@ namespace org.apache.plc4net.transports.cotp
                     continue;
                 }
 
-                // A Disconnect Request (0x80) or Disconnect Confirm/Error (0x70) means the
-                // peer is tearing the session down — most commonly a CPU stop or a
-                // connection rejection. Swallowing it made every read stall for the full
-                // timeout and report a misleading "no response" while IsConnected stayed
-                // true. Surface it instead so the caller can distinguish a dead session
-                // from a slow one.
-                if (pduType == 0x80 || pduType == 0x70)
+                // A Disconnect Request (0x80), a Disconnect Confirm (0xC0) or a TPDU Error
+                // (0x70) means the peer is tearing the session down — most commonly a CPU
+                // stop or a connection rejection. A DR ends the connection by definition,
+                // a DC is not valid on a class 0 connection at all, and after an ER the
+                // connection is released too (RFC 905 6.22 recommends it for the receiver,
+                // and the sender releases it itself when its error timer expires).
+                // Swallowing it made every read stall for the full timeout and report a
+                // misleading "no response" while IsConnected stayed true. Surface it
+                // instead so the caller can distinguish a dead session from a slow one,
+                // and close the transport so it stops claiming a live session: the frame
+                // is already consumed, and a later Write() would otherwise go out on a
+                // connection the peer has ended.
+                if (pduType == 0x80 || pduType == 0xC0 || pduType == 0x70)
                 {
+                    var teardown = pduType switch
+                    {
+                        0x80 => "Disconnect Request",
+                        0xC0 => "Disconnect Confirm",
+                        _ => "TPDU Error"
+                    };
+                    Close();
                     throw new TransportException(
-                        $"COTP peer disconnected the session (PDU type 0x{pduType:X2}).");
+                        $"COTP peer disconnected the session ({teardown}, PDU type 0x{pduType:X2}).");
                 }
 
                 // Anything else that is not a Data Transfer frame is a protocol violation.
