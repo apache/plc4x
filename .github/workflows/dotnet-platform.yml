@@ -60,6 +60,22 @@ jobs:
       - name: Verify generated parser artifacts
         run: python plc4net/tools/code-gen/generate_parsers.py --check
 
+  protocol-model-generation:
+    name: Generated protocol models
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Verify the generated Modbus model
+        run: |
+          out="$(mktemp -d)"
+          dotnet run --project plc4net/tools/code-gen --configuration Release -- \
+            modbus protocols/modbus/src/main/resources/protocols/modbus/modbus.mspec "$out"
+          diff -r "$out/model" plc4net/drivers/modbus/model
+
   test:
     name: Build and test (${{ matrix.os }})
     strategy:
