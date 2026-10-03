@@ -35,7 +35,8 @@ Each source can be one `.mspec` file or a directory containing `.mspec`
 files. Separate multiple sources with semicolons.
 
 Generation is staged and then replaces `<output-dir>/model`, so a failed
-write leaves the previous generated model intact. Regenerating these protocol model files is an explicit
+write leaves the previous generated model intact. The files follow the
+repository's `.editorconfig`: LF line endings and no final newline. Regenerating these protocol model files is an explicit
 driver-maintenance step; the driver slices that consume them commit the
 result. This is separate from the checked-in ANTLR parser artifacts below,
 whose reproducibility is enforced by CI.
@@ -53,6 +54,15 @@ Counted and byte-length arrays are supported; byte arrays with a byte-length
 use the buffer bulk-read path. Modbus `rtuCrcCheck` and `asciiLrcCheck` are
 generated as concrete helpers. Other protocol-specific static helpers remain
 an explicit generator gap and cause a diagnostic failure until implemented.
+
+A case of a discriminated type that does not pin a discriminator read from the
+wire keeps the value it was parsed with, as plc4j does: Modbus'
+`ModbusPDUError` pins `errorFlag` but not `functionFlag`, so it takes the
+function code as an extra trailing constructor and `StaticParse` parameter and
+returns it from the discriminator accessor. The message then serializes back to
+the bytes it was parsed from, which a checksum over the serialized form relies
+on. A discriminator that is a parser argument rather than a wire field is not
+kept; it takes the type's default.
 
 ## Grammars and the checked-in parsers
 
