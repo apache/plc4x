@@ -24,12 +24,14 @@ on:
     paths:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - protocols/modbus/**
       - .github/workflows/dotnet-platform.yml
   pull_request:
     branches: [develop, plc4net]
     paths:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - protocols/modbus/**
       - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
 
