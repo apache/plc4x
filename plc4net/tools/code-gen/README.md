@@ -55,6 +55,15 @@ use the buffer bulk-read path. Modbus `rtuCrcCheck` and `asciiLrcCheck` are
 generated as concrete helpers. Other protocol-specific static helpers remain
 an explicit generator gap and cause a diagnostic failure until implemented.
 
+A case of a discriminated type that does not pin a discriminator read from the
+wire keeps the value it was parsed with, as plc4j does: Modbus'
+`ModbusPDUError` pins `errorFlag` but not `functionFlag`, so it takes the
+function code as an extra trailing constructor and `StaticParse` parameter and
+returns it from the discriminator accessor. The message then serializes back to
+the bytes it was parsed from, which a checksum over the serialized form relies
+on. A discriminator that is a parser argument rather than a wire field is not
+kept; it takes the type's default.
+
 ## Grammars and the checked-in parsers
 
 `src/generated/` holds the ANTLR 4.13.2 output (lexer, parser, listener and
