@@ -391,6 +391,12 @@ namespace org.apache.plc4net.drivers.modbus
                             return PlcResponseCode.InvalidAddress;
                         case (byte)ModbusErrorCode.ILLEGAL_DATA_VALUE:
                             return PlcResponseCode.InvalidDatatype;
+                        case (byte)ModbusErrorCode.ACKNOWLEDGE:
+                            // The device has accepted the request and will process it, as
+                            // plc4j also reports it. The codes plc4j answers with dedicated
+                            // remote-busy/remote-error values have no counterpart in
+                            // PlcResponseCode and fall through to InternalError.
+                            return PlcResponseCode.Ok;
                         case (byte)ModbusErrorCode.SLAVE_DEVICE_BUSY:
                             return PlcResponseCode.RequestTimeout;
                         default:

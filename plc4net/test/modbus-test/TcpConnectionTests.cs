@@ -245,7 +245,7 @@ namespace org.apache.plc4net.drivers.modbus.test
         [InlineData(0x02, PlcResponseCode.InvalidAddress)]
         [InlineData(0x03, PlcResponseCode.InvalidDatatype)]
         [InlineData(0x04, PlcResponseCode.InternalError)]
-        [InlineData(0x05, PlcResponseCode.InternalError)]
+        [InlineData(0x05, PlcResponseCode.Ok)]
         [InlineData(0x06, PlcResponseCode.RequestTimeout)]
         [InlineData(0x07, PlcResponseCode.InternalError)]
         [InlineData(0x08, PlcResponseCode.InternalError)]

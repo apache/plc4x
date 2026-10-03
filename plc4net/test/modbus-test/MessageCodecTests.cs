@@ -234,6 +234,8 @@ namespace org.apache.plc4net.drivers.modbus.test
         [Theory]
         [InlineData(0x05, 0x00, 0x0A, 0xFF, 0x00)] // Write Single Coil echo
         [InlineData(0x06, 0x00, 0x05, 0x12, 0x34)] // Write Single Register echo
+        [InlineData(0x0F, 0x00, 0x0A, 0x00, 0x03)] // Write Multiple Coils echo: address + quantity
+        [InlineData(0x10, 0x00, 0x05, 0x00, 0x02)] // Write Multiple Registers echo: address + quantity
         public void Rtu_a_write_echo_is_eight_bytes(byte function, byte a, byte b, byte c, byte d)
         {
             var transport = NewTransport();

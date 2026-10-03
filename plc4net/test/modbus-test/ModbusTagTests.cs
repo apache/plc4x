@@ -103,6 +103,7 @@ namespace org.apache.plc4net.drivers.modbus.test
         [InlineData("holding-register:+1")]
         [InlineData("holding-register:1.5")]
         [InlineData("holding-register: 1")]
+        [InlineData("coil:١")] // a Unicode decimal digit (U+0661), not the ASCII 1
         [InlineData("unknown:1")]
         [InlineData("holding:1")]   // revival-era spelling, not plc4j's
         [InlineData("input:1")]

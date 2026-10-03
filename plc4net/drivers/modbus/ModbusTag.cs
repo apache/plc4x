@@ -65,8 +65,11 @@ namespace org.apache.plc4net.drivers.modbus
         /// <summary>The highest register number: wire address 65535.</summary>
         public const int MaxAddress = 65536;
 
+        // [0-9], not \d: in .NET \d matches every Unicode decimal digit, so a
+        // non-ASCII address would pass the pattern and blow up int.Parse below
+        // instead of failing here as a PlcInvalidFieldException.
         private static readonly Regex AddressPattern = new Regex(
-            @"^(?<area>coil|discrete-input|holding-register|input-register):(?<address>\d{1,9})(:(?<datatype>[A-Za-z_]+))?$",
+            @"^(?<area>coil|discrete-input|holding-register|input-register):(?<address>[0-9]{1,9})(:(?<datatype>[A-Za-z_]+))?$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         public ModbusTag(TagType type, int address, ModbusDataType dataType)

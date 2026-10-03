@@ -154,6 +154,7 @@ namespace org.apache.plc4net.drivers.modbus.test
         [InlineData(0x02, PlcResponseCode.InvalidAddress)]
         [InlineData(0x03, PlcResponseCode.InvalidDatatype)]
         [InlineData(0x04, PlcResponseCode.InternalError)]
+        [InlineData(0x05, PlcResponseCode.Ok)]
         [InlineData(0x06, PlcResponseCode.RequestTimeout)]
         public async Task A_device_exception_maps_to_a_specific_code(byte exceptionCode, PlcResponseCode expected)
         {
