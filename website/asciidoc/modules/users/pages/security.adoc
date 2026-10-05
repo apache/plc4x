@@ -23,6 +23,6 @@ Please note that binary patches are not produced for individual vulnerabilities.
 
 For more information about reporting vulnerabilities, see the https://www.apache.org/security/[Apache Security Team] page.
 
-== Known Vulnerabilities
+Vulnerabilities are being tracked by Apache Security here:
 
-No vulnerabilities have been reported.
+https://security.apache.org/projects/plc4x/
