@@ -137,10 +137,9 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.s7.readwrite.S7Driver
             </Export-Service>
-            <Import-Package>
-              *
-            </Import-Package>
-            <SPI-consumer>*</SPI-consumer>            
+            <Import-Package>*</Import-Package>
+            <SPI-Consumer>*</SPI-Consumer>
+            <SPI-Provider>*</SPI-Provider>           
           </instructions>
         </configuration>
       </plugin>

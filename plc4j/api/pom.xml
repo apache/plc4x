@@ -70,6 +70,19 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Service>org.apache.plc4x.java.mock.ApiMockDriver</Export-Service>              
+            <Import-Package>*</Import-Package>
+            <SPI-Consumer>*</SPI-Consumer>
+            <SPI-Provider>*</SPI-Provider>  
+          </instructions>
+        </configuration>
+      </plugin>      
     </plugins>
   </build>
 
