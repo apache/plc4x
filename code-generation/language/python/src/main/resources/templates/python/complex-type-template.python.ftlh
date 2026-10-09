@@ -732,6 +732,24 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ${type.name}Builder = None
+                <#-- A case that does not pin a discriminator down to a value inherits whatever was read
+                     from the wire. Collect those here and hand them to the instance after it was built,
+                     the same way the Java code-generator retains them. -->
+                <#assign retainedDiscriminatorNames=[]>
+                <#list switchField.cases as case>
+                    <#list switchField.discriminatorExpressions as discriminatorExpression>
+                        <#assign discriminatorName=discriminatorExpression.asLiteral().orElseThrow().asVariableLiteral().orElseThrow().discriminatorName>
+                        <#if type.isDiscriminatorField(discriminatorName) && !case.isNonDiscriminatorField(discriminatorName)
+                             && (!(case.discriminatorValueTerms?size > discriminatorExpression?index) || helper.isWildcard(case.discriminatorValueTerms[discriminatorExpression?index]))>
+                            <#if !retainedDiscriminatorNames?seq_contains(discriminatorName)>
+                                <#assign retainedDiscriminatorNames=retainedDiscriminatorNames + [discriminatorName]>
+                            </#if>
+                        </#if>
+                    </#list>
+                </#list>
+                <#list retainedDiscriminatorNames as retainedDiscriminatorName>
+        _retained_${helper.camelCaseToSnakeCase(retainedDiscriminatorName)} = ${helper.camelCaseToSnakeCase(retainedDiscriminatorName)}
+                </#list>
                 <#list switchField.cases as case>
                     <#if case.discriminatorValueTerms?has_content>
         from plc4py.protocols.${protocolName}.${outputFlavor?replace('-', '')}.${case.name} import ${case.name}
@@ -824,6 +842,13 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#list reservedFields as reservedField>
         _${helper.camelCaseToSnakeCase(type.name)}.reserved_field${reservedField?index} = reserved_field_${reservedField?index}
         </#list>
+        <#-- Discriminators the chosen sub-type does not pin down keep the value read from the wire,
+             instead of the sub-type's placeholder default. -->
+        <#if retainedDiscriminatorNames??>
+            <#list retainedDiscriminatorNames as retainedDiscriminatorName>
+        _${helper.camelCaseToSnakeCase(type.name)}.${helper.camelCaseToSnakeCase(retainedDiscriminatorName)} = _retained_${helper.camelCaseToSnakeCase(retainedDiscriminatorName)}
+            </#list>
+        </#if>
         return _${helper.camelCaseToSnakeCase(type.name)}
     <#else>
         _${helper.camelCaseToSnakeCase(type.name)}: ${type.name} = ${type.name}(<@compress single_line=true>

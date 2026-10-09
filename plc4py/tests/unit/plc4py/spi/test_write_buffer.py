@@ -20,7 +20,12 @@
 import pytest
 from bitarray import bitarray
 
-from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
+from aenum import AutoNumberEnum
+
+from plc4py.spi.generation.WriteBuffer import (
+    WriteBufferByteBased,
+    WriteBufferXmlBased,
+)
 
 from plc4py.utils.GenericTypes import ByteOrder
 
@@ -283,3 +288,35 @@ def test_write_buffer_set_float_big_endian(mocker) -> None:
     wb.write_float(-1, 32)
     ba: memoryview = wb.get_bytes()
     assert ba.obj == bitarray("10111111100000000000000000000000", endian="big")
+
+
+class _ExampleErrorCode(AutoNumberEnum):
+    """
+    Stands in for a generated enum: those all extend "aenum.AutoNumberEnum", which - unlike
+    "IntEnum" - is not an int subclass, so "int(member)" raises a TypeError.
+    """
+
+    ILLEGAL_FUNCTION: int = 1
+    ILLEGAL_DATA_ADDRESS: int = 2
+
+
+def test_write_buffer_write_enum_unsigned_byte(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.BIG_ENDIAN)
+    wb.write_unsigned_byte(_ExampleErrorCode.ILLEGAL_DATA_ADDRESS)
+    ba: memoryview = wb.get_bytes()
+    assert b"\x02" == ba.tobytes()
+
+
+def test_write_buffer_write_enum_unsigned_short(mocker) -> None:
+    wb: WriteBufferByteBased = WriteBufferByteBased(2, ByteOrder.BIG_ENDIAN)
+    wb.write_unsigned_short(_ExampleErrorCode.ILLEGAL_DATA_ADDRESS)
+    ba: memoryview = wb.get_bytes()
+    assert b"\x00\x02" == ba.tobytes()
+
+
+def test_write_buffer_xml_write_enum_renders_the_numeric_value(mocker) -> None:
+    wb: WriteBufferXmlBased = WriteBufferXmlBased()
+    wb.write_unsigned_byte(
+        _ExampleErrorCode.ILLEGAL_DATA_ADDRESS, logical_name="exceptionCode"
+    )
+    assert ">2<" in wb.to_xml_string()

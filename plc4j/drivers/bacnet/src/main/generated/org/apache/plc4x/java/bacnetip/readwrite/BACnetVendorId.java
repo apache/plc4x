@@ -611,7 +611,7 @@ public enum BACnetVendorId {
 
   ADVANTAGE_CONTROLS((int) 292, (int) 292, "Advantage Controls"),
 
-  CRITICAL_ROOM_CONTROL((int) 293, (int) 293, "Critical Room Control"),
+  CRC((int) 293, (int) 293, "CRC"),
 
   LEGRAND((int) 294, (int) 294, "LEGRAND"),
 
@@ -3316,6 +3316,22 @@ public enum BACnetVendorId {
   MODUTROL_PTY_LTD((int) 1655, (int) 1655, "Modutrol Pty Ltd"),
 
   KAESER_KOMPRESSORENSE((int) 1656, (int) 1656, "Kaeser Kompressoren SE"),
+
+  CUNNECT_GMBH((int) 1657, (int) 1657, "cunnect GmbH"),
+
+  BENNETT_AUTOMATIONLLC((int) 1658, (int) 1658, "Bennett Automation, LLC"),
+
+  LESOPHISTIQUE_TECH_PVT_LTD((int) 1659, (int) 1659, "Lesophistique Tech Pvt Ltd"),
+
+  EBMPAPSTNEO_GMBH_COKG((int) 1660, (int) 1660, "Ebm-papst neo GmbH & Co. KG"),
+
+  AVYANNA_TECH_PVT_LTD((int) 1661, (int) 1661, "Avyanna Tech Pvt Ltd"),
+
+  CONTROL_BY_WEB((int) 1662, (int) 1662, "ControlByWeb"),
+
+  COOLER_MASTER_CO_LTD((int) 1663, (int) 1663, "Cooler Master Co., Ltd."),
+
+  BES_TECH_INC((int) 1664, (int) 1664, "Bes-Tech, Inc."),
 
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 

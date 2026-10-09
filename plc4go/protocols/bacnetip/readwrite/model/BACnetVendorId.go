@@ -336,7 +336,7 @@ const (
 	BACnetVendorId_ROMUTEC_STEUERU_REGELSYSTEME_GMBH                                            BACnetVendorId = 290
 	BACnetVendorId_PRIBUSIN_INC                                                                 BACnetVendorId = 291
 	BACnetVendorId_ADVANTAGE_CONTROLS                                                           BACnetVendorId = 292
-	BACnetVendorId_CRITICAL_ROOM_CONTROL                                                        BACnetVendorId = 293
+	BACnetVendorId_CRC                                                                          BACnetVendorId = 293
 	BACnetVendorId_LEGRAND                                                                      BACnetVendorId = 294
 	BACnetVendorId_TONGDY_CONTROL_TECHNOLOGY_CO_LTD                                             BACnetVendorId = 295
 	BACnetVendorId_ISSARO_INTEGRIERTE_SYSTEMTECHNIK                                             BACnetVendorId = 296
@@ -1689,6 +1689,14 @@ const (
 	BACnetVendorId_CORE_CONTROLS_AILLC                                                          BACnetVendorId = 1654
 	BACnetVendorId_MODUTROL_PTY_LTD                                                             BACnetVendorId = 1655
 	BACnetVendorId_KAESER_KOMPRESSORENSE                                                        BACnetVendorId = 1656
+	BACnetVendorId_CUNNECT_GMBH                                                                 BACnetVendorId = 1657
+	BACnetVendorId_BENNETT_AUTOMATIONLLC                                                        BACnetVendorId = 1658
+	BACnetVendorId_LESOPHISTIQUE_TECH_PVT_LTD                                                   BACnetVendorId = 1659
+	BACnetVendorId_EBMPAPSTNEO_GMBH_COKG                                                        BACnetVendorId = 1660
+	BACnetVendorId_AVYANNA_TECH_PVT_LTD                                                         BACnetVendorId = 1661
+	BACnetVendorId_CONTROL_BY_WEB                                                               BACnetVendorId = 1662
+	BACnetVendorId_COOLER_MASTER_CO_LTD                                                         BACnetVendorId = 1663
+	BACnetVendorId_BES_TECH_INC                                                                 BACnetVendorId = 1664
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1990,7 +1998,7 @@ func init() {
 		BACnetVendorId_ROMUTEC_STEUERU_REGELSYSTEME_GMBH,
 		BACnetVendorId_PRIBUSIN_INC,
 		BACnetVendorId_ADVANTAGE_CONTROLS,
-		BACnetVendorId_CRITICAL_ROOM_CONTROL,
+		BACnetVendorId_CRC,
 		BACnetVendorId_LEGRAND,
 		BACnetVendorId_TONGDY_CONTROL_TECHNOLOGY_CO_LTD,
 		BACnetVendorId_ISSARO_INTEGRIERTE_SYSTEMTECHNIK,
@@ -3343,6 +3351,14 @@ func init() {
 		BACnetVendorId_CORE_CONTROLS_AILLC,
 		BACnetVendorId_MODUTROL_PTY_LTD,
 		BACnetVendorId_KAESER_KOMPRESSORENSE,
+		BACnetVendorId_CUNNECT_GMBH,
+		BACnetVendorId_BENNETT_AUTOMATIONLLC,
+		BACnetVendorId_LESOPHISTIQUE_TECH_PVT_LTD,
+		BACnetVendorId_EBMPAPSTNEO_GMBH_COKG,
+		BACnetVendorId_AVYANNA_TECH_PVT_LTD,
+		BACnetVendorId_CONTROL_BY_WEB,
+		BACnetVendorId_COOLER_MASTER_CO_LTD,
+		BACnetVendorId_BES_TECH_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -6261,9 +6277,41 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1656' */
 			return 1656
 		}
+	case 1657:
+		{ /* '1657' */
+			return 1657
+		}
+	case 1658:
+		{ /* '1658' */
+			return 1658
+		}
+	case 1659:
+		{ /* '1659' */
+			return 1659
+		}
 	case 166:
 		{ /* '166' */
 			return 166
+		}
+	case 1660:
+		{ /* '1660' */
+			return 1660
+		}
+	case 1661:
+		{ /* '1661' */
+			return 1661
+		}
+	case 1662:
+		{ /* '1662' */
+			return 1662
+		}
+	case 1663:
+		{ /* '1663' */
+			return 1663
+		}
+	case 1664:
+		{ /* '1664' */
+			return 1664
 		}
 	case 167:
 		{ /* '167' */
@@ -12867,9 +12915,41 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1656' */
 			return "Kaeser Kompressoren SE"
 		}
+	case 1657:
+		{ /* '1657' */
+			return "cunnect GmbH"
+		}
+	case 1658:
+		{ /* '1658' */
+			return "Bennett Automation, LLC"
+		}
+	case 1659:
+		{ /* '1659' */
+			return "Lesophistique Tech Pvt Ltd"
+		}
 	case 166:
 		{ /* '166' */
 			return "Cooper Controls"
+		}
+	case 1660:
+		{ /* '1660' */
+			return "Ebm-papst neo GmbH & Co. KG"
+		}
+	case 1661:
+		{ /* '1661' */
+			return "Avyanna Tech Pvt Ltd"
+		}
+	case 1662:
+		{ /* '1662' */
+			return "ControlByWeb"
+		}
+	case 1663:
+		{ /* '1663' */
+			return "Cooler Master Co., Ltd."
+		}
+	case 1664:
+		{ /* '1664' */
+			return "Bes-Tech, Inc."
 		}
 	case 167:
 		{ /* '167' */
@@ -13433,7 +13513,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 293:
 		{ /* '293' */
-			return "Critical Room Control"
+			return "CRC"
 		}
 	case 294:
 		{ /* '294' */
@@ -18016,8 +18096,24 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_MODUTROL_PTY_LTD, true
 	case 1656:
 		return BACnetVendorId_KAESER_KOMPRESSORENSE, true
+	case 1657:
+		return BACnetVendorId_CUNNECT_GMBH, true
+	case 1658:
+		return BACnetVendorId_BENNETT_AUTOMATIONLLC, true
+	case 1659:
+		return BACnetVendorId_LESOPHISTIQUE_TECH_PVT_LTD, true
 	case 166:
 		return BACnetVendorId_COOPER_CONTROLS, true
+	case 1660:
+		return BACnetVendorId_EBMPAPSTNEO_GMBH_COKG, true
+	case 1661:
+		return BACnetVendorId_AVYANNA_TECH_PVT_LTD, true
+	case 1662:
+		return BACnetVendorId_CONTROL_BY_WEB, true
+	case 1663:
+		return BACnetVendorId_COOLER_MASTER_CO_LTD, true
+	case 1664:
+		return BACnetVendorId_BES_TECH_INC, true
 	case 167:
 		return BACnetVendorId_DUKSAN_MECASYS_CO_LTD, true
 	case 168:
@@ -18299,7 +18395,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 292:
 		return BACnetVendorId_ADVANTAGE_CONTROLS, true
 	case 293:
-		return BACnetVendorId_CRITICAL_ROOM_CONTROL, true
+		return BACnetVendorId_CRC, true
 	case 294:
 		return BACnetVendorId_LEGRAND, true
 	case 295:
@@ -21316,8 +21412,24 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_MODUTROL_PTY_LTD, true
 	case "KAESER_KOMPRESSORENSE":
 		return BACnetVendorId_KAESER_KOMPRESSORENSE, true
+	case "CUNNECT_GMBH":
+		return BACnetVendorId_CUNNECT_GMBH, true
+	case "BENNETT_AUTOMATIONLLC":
+		return BACnetVendorId_BENNETT_AUTOMATIONLLC, true
+	case "LESOPHISTIQUE_TECH_PVT_LTD":
+		return BACnetVendorId_LESOPHISTIQUE_TECH_PVT_LTD, true
 	case "COOPER_CONTROLS":
 		return BACnetVendorId_COOPER_CONTROLS, true
+	case "EBMPAPSTNEO_GMBH_COKG":
+		return BACnetVendorId_EBMPAPSTNEO_GMBH_COKG, true
+	case "AVYANNA_TECH_PVT_LTD":
+		return BACnetVendorId_AVYANNA_TECH_PVT_LTD, true
+	case "CONTROL_BY_WEB":
+		return BACnetVendorId_CONTROL_BY_WEB, true
+	case "COOLER_MASTER_CO_LTD":
+		return BACnetVendorId_COOLER_MASTER_CO_LTD, true
+	case "BES_TECH_INC":
+		return BACnetVendorId_BES_TECH_INC, true
 	case "DUKSAN_MECASYS_CO_LTD":
 		return BACnetVendorId_DUKSAN_MECASYS_CO_LTD, true
 	case "FUJIIT_CO_LTD":
@@ -21598,8 +21710,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PRIBUSIN_INC, true
 	case "ADVANTAGE_CONTROLS":
 		return BACnetVendorId_ADVANTAGE_CONTROLS, true
-	case "CRITICAL_ROOM_CONTROL":
-		return BACnetVendorId_CRITICAL_ROOM_CONTROL, true
+	case "CRC":
+		return BACnetVendorId_CRC, true
 	case "LEGRAND":
 		return BACnetVendorId_LEGRAND, true
 	case "TONGDY_CONTROL_TECHNOLOGY_CO_LTD":
@@ -24688,8 +24800,24 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "MODUTROL_PTY_LTD"
 	case BACnetVendorId_KAESER_KOMPRESSORENSE:
 		return "KAESER_KOMPRESSORENSE"
+	case BACnetVendorId_CUNNECT_GMBH:
+		return "CUNNECT_GMBH"
+	case BACnetVendorId_BENNETT_AUTOMATIONLLC:
+		return "BENNETT_AUTOMATIONLLC"
+	case BACnetVendorId_LESOPHISTIQUE_TECH_PVT_LTD:
+		return "LESOPHISTIQUE_TECH_PVT_LTD"
 	case BACnetVendorId_COOPER_CONTROLS:
 		return "COOPER_CONTROLS"
+	case BACnetVendorId_EBMPAPSTNEO_GMBH_COKG:
+		return "EBMPAPSTNEO_GMBH_COKG"
+	case BACnetVendorId_AVYANNA_TECH_PVT_LTD:
+		return "AVYANNA_TECH_PVT_LTD"
+	case BACnetVendorId_CONTROL_BY_WEB:
+		return "CONTROL_BY_WEB"
+	case BACnetVendorId_COOLER_MASTER_CO_LTD:
+		return "COOLER_MASTER_CO_LTD"
+	case BACnetVendorId_BES_TECH_INC:
+		return "BES_TECH_INC"
 	case BACnetVendorId_DUKSAN_MECASYS_CO_LTD:
 		return "DUKSAN_MECASYS_CO_LTD"
 	case BACnetVendorId_FUJIIT_CO_LTD:
@@ -24970,8 +25098,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "PRIBUSIN_INC"
 	case BACnetVendorId_ADVANTAGE_CONTROLS:
 		return "ADVANTAGE_CONTROLS"
-	case BACnetVendorId_CRITICAL_ROOM_CONTROL:
-		return "CRITICAL_ROOM_CONTROL"
+	case BACnetVendorId_CRC:
+		return "CRC"
 	case BACnetVendorId_LEGRAND:
 		return "LEGRAND"
 	case BACnetVendorId_TONGDY_CONTROL_TECHNOLOGY_CO_LTD:

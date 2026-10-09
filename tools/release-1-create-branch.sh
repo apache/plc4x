@@ -20,6 +20,14 @@
 # ----------------------------------------------------------------------------
 
 DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Values shared with the other release scripts (Nexus staging profile, dist.apache.org URLs) and the
+# ownership settings for the docker builds.
+if [[ ! -f "$DIRECTORY/tools/release-common.sh" ]]; then
+    echo "❌ '$DIRECTORY/tools/release-common.sh' not found, aborting."
+    exit 1
+fi
+# shellcheck source=release-common.sh
+source "$DIRECTORY/tools/release-common.sh"
 
 # BSD and GNU sed disagree about "-i": BSD wants a backup suffix as a separate argument, GNU
 # treats that argument as the expression. Editing through a temporary file works on both, and
@@ -44,6 +52,11 @@ if [[ $(git -C "$DIRECTORY" status --porcelain) ]]; then
   echo "❌ There are untracked files or changed files, aborting."
   exit 1
 fi
+
+# The release branch and the release tag belong in the Apache repository, which is not necessarily
+# the remote called "origin" - see "resolve_apache_remote" in "release-common.sh".
+require_apache_remote
+echo "Apache remote:        $APACHE_REMOTE ($APACHE_REMOTE_URL)"
 
 ########################################################################################################################
 # 1. Get and calculate the current version (local)
@@ -257,7 +270,7 @@ if ! git -C "$DIRECTORY" checkout "$BRANCH_NAME"; then
 fi
 
 # Make sure the release branch is also pushed to the remote.
-if ! git -C "$DIRECTORY" push --set-upstream origin "$BRANCH_NAME"; then
+if ! git -C "$DIRECTORY" push --set-upstream "$APACHE_REMOTE" "$BRANCH_NAME"; then
     echo "❌ Got non-0 exit code from pushing changes, aborting."
     exit 1
 fi

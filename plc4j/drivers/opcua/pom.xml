@@ -32,6 +32,8 @@
 
   <properties>
     <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    <!-- Version of the Milo server bundled into the OPC UA test server image (MiloTestContainer). -->
+    <milo.version>0.6.16</milo.version>
   </properties>
 
   <build>
@@ -81,6 +83,39 @@
             </Import-Package>
           </instructions>
         </configuration>
+      </plugin>
+      <!--
+        Fetch the Milo server-examples uber jar the OPC UA test server image is built from and
+        place it next to its Dockerfile. Letting Maven resolve it (instead of an ADD in the
+        Dockerfile) means it comes from the local repository or the configured mirror: Maven
+        Central answers the Docker client with "429 Too Many Requests", and an ADD of a URL is
+        re-fetched on every image build, even a cached one.
+        The copy goal only fetches this single jar, so Milo's dependency tree stays off the
+        test classpath (see the Dockerfile for why that matters).
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fetch-milo-test-server</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.eclipse.milo</groupId>
+                  <artifactId>server-examples</artifactId>
+                  <version>${milo.version}</version>
+                  <outputDirectory>${project.build.testOutputDirectory}/opcua/server</outputDirectory>
+                  <destFileName>server-examples.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

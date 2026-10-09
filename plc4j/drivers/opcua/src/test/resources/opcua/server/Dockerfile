@@ -26,15 +26,16 @@
 # bundles the complete Milo stack plus its dependencies - is fetched here and the handful
 # of PLC4X test-server classes under src/ are compiled against it inside the image.
 #
+# The jar is not downloaded here: Maven copies it into the build context (see the
+# fetch-milo-test-server execution in the module pom, which also holds milo.version), so it
+# comes from the local repository or mirror rather than hitting Maven Central on every build.
+#
 # Consequence: the sources in src/ are not compiled by Maven, so the IDE will not flag
-# breakage in them. Bumping MILO_VERSION is a manual step; a compile error surfaces as a
-# failed image build when the integration test runs.
-
-ARG MILO_VERSION=0.6.16
+# breakage in them. A compile error after bumping milo.version surfaces as a failed image
+# build when the integration test runs.
 
 FROM eclipse-temurin:21-jdk AS build
-ARG MILO_VERSION
-ADD "https://repo1.maven.org/maven2/org/eclipse/milo/server-examples/${MILO_VERSION}/server-examples-${MILO_VERSION}.jar" /opt/milo/server-examples.jar
+COPY server-examples.jar /opt/milo/server-examples.jar
 COPY src /src
 RUN javac -nowarn -cp /opt/milo/server-examples.jar -d /opt/milo/classes $(find /src -name '*.java')
 

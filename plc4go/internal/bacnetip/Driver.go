@@ -36,8 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	spiTransports "github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -68,7 +67,7 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	return driver
 }
 
-func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
+func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transports map[string]spiTransports.Transport, driverOptions map[string][]string) (plc4go.PlcConnection, error) {
 	connectionLog := d.log.With().Ctx(ctx).Str("transportUrl", transportUrl.String()).Logger()
 	connectionLog.Debug().
 		Int("nTransports", len(transports)).
@@ -85,10 +84,6 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	}
 	// Provide a default-port to the transport, used if the user doesn't provide one in the connection string.
 	driverOptions["defaultUdpPort"] = []string{strconv.FormatUint(uint64(model.Constant_BACNETUDPDEFAULTPORT), 10)}
-	// Set so_reuse by default so multiple BACnet processes can share the BACnet/IP UDP port.
-	if _, ok := driverOptions["so-reuse"]; !ok {
-		driverOptions["so-reuse"] = []string{"true"}
-	}
 	// BACnet/IP uses port 47808 on both sides of a conversation; spec-conformant
 	// peers (bacpypes3, EcoStruxure, Niagara, ...) send unsolicited messages
 	// and responses back to the well-known port regardless of the request's
@@ -112,11 +107,11 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	localAddress := &net.UDPAddr{IP: net.IPv4zero, Port: localPort}
 	connectionLog.Info().Stringer("localAddress", localAddress).Msg("BACnet driver binding local UDP")
 
-	udpTransport, ok := transport.(*udp.Transport)
+	localAddressTransport, ok := transport.(spiTransports.LocalAddressAware)
 	if !ok {
-		return nil, errors.Errorf("BACnet/IP requires the udp transport; got %T", transport)
+		return nil, errors.Errorf("BACnet/IP needs a transport that can bind a local address; got %T", transport)
 	}
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(
+	transportInstance, err := localAddressTransport.CreateTransportInstanceForLocalAddress(
 		transportUrl,
 		driverOptions,
 		localAddress,

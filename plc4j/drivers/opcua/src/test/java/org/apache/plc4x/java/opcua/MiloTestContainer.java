@@ -57,13 +57,15 @@ public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
     private static ImageFromDockerfile inlineImage() {
         // The build context is assembled from the test resources: the Dockerfile plus the
         // sources of the test server, which are compiled inside the image against the Milo
-        // uber jar it downloads (see the Dockerfile for why Milo is not a Maven dependency).
+        // uber jar Maven copies next to the Dockerfile (see the Dockerfile for why Milo is not
+        // a Maven dependency).
         //
         // Keeping the named image around reuses the Docker layer cache across runs; the
         // context only changes when the Dockerfile or those sources change, so a cached
         // build stays correct while turning a multi-minute rebuild into a near-instant one.
         ImageFromDockerfile image = new ImageFromDockerfile("plc4x-milo-test", false)
-            .withFileFromClasspath("Dockerfile", SERVER_RESOURCES + "/Dockerfile");
+            .withFileFromClasspath("Dockerfile", SERVER_RESOURCES + "/Dockerfile")
+            .withFileFromClasspath("server-examples.jar", SERVER_RESOURCES + "/server-examples.jar");
         for (String source : SERVER_SOURCES) {
             image.withFileFromClasspath("src/" + source, SERVER_RESOURCES + "/src/" + source);
         }

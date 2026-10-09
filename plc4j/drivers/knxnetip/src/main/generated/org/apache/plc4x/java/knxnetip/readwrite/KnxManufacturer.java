@@ -1657,7 +1657,7 @@ public enum KnxManufacturer {
 
   M_SYNCPRO((int) 815, (int) 876, "SYNCPRO"),
 
-  M_HAAR_INFORMATIK((int) 816, (int) 877, "Haar-Informatik"),
+  M_HAAR_INFORMATIK((int) 816, (int) 877, "Haar Informatik"),
 
   M_DIE_BILDUNGSMANUFAKTUR_GMBH((int) 817, (int) 878, "DIE-Bildungsmanufaktur GmbH"),
 
@@ -1685,9 +1685,19 @@ public enum KnxManufacturer {
 
   M_GERALD_DOCENKO((int) 829, (int) 891, "Gerald Docenko"),
 
-  M_ABB___RESERVED((int) 830, (int) 43954, "ABB - reserved"),
+  M_VK_SYSTEMS_OY((int) 830, (int) 892, "VK Systems Oy"),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 831, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_GXCIT((int) 831, (int) 893, "GXCIT"),
+
+  M_SCHWARZ_WORKS_GMBH((int) 832, (int) 894, "Schwarz Works GmbH"),
+
+  M_LTECH((int) 833, (int) 895, "LTECH"),
+
+  M_LE_ETS_AI((int) 834, (int) 896, "LE-ETS-AI"),
+
+  M_ABB___RESERVED((int) 835, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 836, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

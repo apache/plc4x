@@ -63,15 +63,13 @@ public class AdsSymbolTableEntry implements Message {
 
   protected final boolean flagPersistent;
 
-  protected final boolean flagCompilerGenerated;
-
-  protected final boolean flagSystemServiceSymbol;
-
   protected final boolean flagExtendedFlags;
 
   protected final boolean flagInitOnReset;
 
   protected final boolean flagStatic;
+
+  protected final byte contextMask;
 
   protected final boolean flagVariantType;
 
@@ -89,8 +87,6 @@ public class AdsSymbolTableEntry implements Message {
 
   protected final String comment;
 
-  protected final Long contextMask;
-
   protected final byte[] guid;
 
   protected final AdsDataTypeAttributes attributes;
@@ -100,12 +96,11 @@ public class AdsSymbolTableEntry implements Message {
   public AdsSymbolTableEntry(Long entryLength, Long group, Long offset, Long size, Long dataType,
       Boolean flagMethodDeref, Boolean flagItfMethodAccess, Boolean flagReadOnly,
       Boolean flagTComInterfacePointer, Boolean flagReferenceTo, Boolean flagBitValue,
-      Boolean flagPersistent, Boolean flagCompilerGenerated, Boolean flagSystemServiceSymbol,
-      Boolean flagExtendedFlags, Boolean flagInitOnReset, Boolean flagStatic,
-      Boolean flagVariantType, Boolean flagOnlineChangePtrRefType, Boolean flagRefactorInfo,
-      Boolean flagRedundancyIgnore, Boolean flagPlcPointerType, String name, String dataTypeName,
-      String comment, Long contextMask, byte[] guid, AdsDataTypeAttributes attributes,
-      byte[] rest) {
+      Boolean flagPersistent, Boolean flagExtendedFlags, Boolean flagInitOnReset,
+      Boolean flagStatic, Byte contextMask, Boolean flagVariantType,
+      Boolean flagOnlineChangePtrRefType, Boolean flagRefactorInfo, Boolean flagRedundancyIgnore,
+      Boolean flagPlcPointerType, String name, String dataTypeName, String comment, byte[] guid,
+      AdsDataTypeAttributes attributes, byte[] rest) {
     this.entryLength = entryLength;
     this.group = group;
     this.offset = offset;
@@ -118,11 +113,10 @@ public class AdsSymbolTableEntry implements Message {
     this.flagReferenceTo = flagReferenceTo;
     this.flagBitValue = flagBitValue;
     this.flagPersistent = flagPersistent;
-    this.flagCompilerGenerated = flagCompilerGenerated;
-    this.flagSystemServiceSymbol = flagSystemServiceSymbol;
     this.flagExtendedFlags = flagExtendedFlags;
     this.flagInitOnReset = flagInitOnReset;
     this.flagStatic = flagStatic;
+    this.contextMask = contextMask;
     this.flagVariantType = flagVariantType;
     this.flagOnlineChangePtrRefType = flagOnlineChangePtrRefType;
     this.flagRefactorInfo = flagRefactorInfo;
@@ -131,7 +125,6 @@ public class AdsSymbolTableEntry implements Message {
     this.name = name;
     this.dataTypeName = dataTypeName;
     this.comment = comment;
-    this.contextMask = contextMask;
     this.guid = guid;
     this.attributes = attributes;
     this.rest = rest;
@@ -222,20 +215,6 @@ public class AdsSymbolTableEntry implements Message {
   }
 
   /**
-   * Property field flagCompilerGenerated
-   */
-  public boolean getFlagCompilerGenerated() {
-    return flagCompilerGenerated;
-  }
-
-  /**
-   * Property field flagSystemServiceSymbol
-   */
-  public boolean getFlagSystemServiceSymbol() {
-    return flagSystemServiceSymbol;
-  }
-
-  /**
    * Property field flagExtendedFlags
    */
   public boolean getFlagExtendedFlags() {
@@ -254,6 +233,13 @@ public class AdsSymbolTableEntry implements Message {
    */
   public boolean getFlagStatic() {
     return flagStatic;
+  }
+
+  /**
+   * Property field contextMask
+   */
+  public byte getContextMask() {
+    return contextMask;
   }
 
   /**
@@ -310,13 +296,6 @@ public class AdsSymbolTableEntry implements Message {
    */
   public String getComment() {
     return comment;
-  }
-
-  /**
-   * Property field contextMask
-   */
-  public Long getContextMask() {
-    return contextMask;
   }
 
   /**
@@ -404,15 +383,6 @@ public class AdsSymbolTableEntry implements Message {
     // Simple Field: flagPersistent
     boolean flagPersistent = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagPersistent"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
-    // Simple Field: flagCompilerGenerated
-    boolean flagCompilerGenerated = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagCompilerGenerated"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
-    // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 1), (byte) 0x0, WithOption.WithName("AdsSymbolTableEntry.reserved14"));
-
-    // Simple Field: flagSystemServiceSymbol
-    boolean flagSystemServiceSymbol = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagSystemServiceSymbol"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
     // Simple Field: flagExtendedFlags
     boolean flagExtendedFlags = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagExtendedFlags"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -425,11 +395,11 @@ public class AdsSymbolTableEntry implements Message {
     // Implicit Field: flagAttributes
     boolean flagAttributes = FieldReaderFactory.readImplicitField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagAttributes"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
-    // Implicit Field: flagContextMask
-    boolean flagContextMask = FieldReaderFactory.readImplicitField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagContextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    // Simple Field: contextMask
+    byte contextMask = FieldReaderFactory.readSimpleField(DataReaderFactory.readUnsignedByte(readBuffer, 4), WithOption.WithName("contextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 3), (byte) 0x0, WithOption.WithName("AdsSymbolTableEntry.reserved21"));
+    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedByte(readBuffer, 3), (byte) 0x0, WithOption.WithName("AdsSymbolTableEntry.reserved18"));
 
     // Simple Field: flagVariantType
     boolean flagVariantType = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagVariantType"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -447,7 +417,7 @@ public class AdsSymbolTableEntry implements Message {
     boolean flagPlcPointerType = FieldReaderFactory.readSimpleField(DataReaderFactory.readBoolean(readBuffer), WithOption.WithName("flagPlcPointerType"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
-    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("AdsSymbolTableEntry.reserved27"));
+    FieldReaderFactory.readReservedField(DataReaderFactory.readUnsignedShort(readBuffer, 8), (short) 0x00, WithOption.WithName("AdsSymbolTableEntry.reserved24"));
 
     // Implicit Field: nameLength
     int nameLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("nameLength"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -476,9 +446,6 @@ public class AdsSymbolTableEntry implements Message {
     // Const Field: commentTerminator
     short commentTerminator = FieldReaderFactory.readConstField(DataReaderFactory.readUnsignedShort(readBuffer, 8), COMMENTTERMINATOR, WithOption.WithName("commentTerminator"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
-    // Optional Field (conditional): contextMask
-    Long contextMask = FieldReaderFactory.readOptionalField(DataReaderFactory.readUnsignedLong(readBuffer, 32), flagContextMask, WithOption.WithName("contextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
     // Array Field: guid
     byte[] guid = readBuffer.readBits(Math.toIntExact(((((flagTypeGuid) == (true)) ? 16 : 0)) * 8), WithOption.WithName("guid"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -489,7 +456,7 @@ public class AdsSymbolTableEntry implements Message {
     byte[] rest = readBuffer.readBits(Math.toIntExact(((entryLength) - (((readBuffer.getPositionInBits() - startPos) / 8))) * 8), WithOption.WithName("rest"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     readBuffer.popContext();
-    return new AdsSymbolTableEntry(entryLength, group, offset, size, dataType, flagMethodDeref, flagItfMethodAccess, flagReadOnly, flagTComInterfacePointer, flagReferenceTo, flagBitValue, flagPersistent, flagCompilerGenerated, flagSystemServiceSymbol, flagExtendedFlags, flagInitOnReset, flagStatic, flagVariantType, flagOnlineChangePtrRefType, flagRefactorInfo, flagRedundancyIgnore, flagPlcPointerType, name, dataTypeName, comment, contextMask, guid, attributes, rest);
+    return new AdsSymbolTableEntry(entryLength, group, offset, size, dataType, flagMethodDeref, flagItfMethodAccess, flagReadOnly, flagTComInterfacePointer, flagReferenceTo, flagBitValue, flagPersistent, flagExtendedFlags, flagInitOnReset, flagStatic, contextMask, flagVariantType, flagOnlineChangePtrRefType, flagRefactorInfo, flagRedundancyIgnore, flagPlcPointerType, name, dataTypeName, comment, guid, attributes, rest);
   }
 
   @Override
@@ -537,15 +504,6 @@ public class AdsSymbolTableEntry implements Message {
     // Simple Field: flagPersistent
     FieldWriterFactory.writeSimpleField((boolean) flagPersistent, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagPersistent"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
-    // Simple Field: flagCompilerGenerated
-    FieldWriterFactory.writeSimpleField((boolean) flagCompilerGenerated, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagCompilerGenerated"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
-    // Reserved Field
-    FieldWriterFactory.writeReservedField((byte) 0x0, DataWriterFactory.writeUnsignedByte(writeBuffer, 1));
-
-    // Simple Field: flagSystemServiceSymbol
-    FieldWriterFactory.writeSimpleField((boolean) flagSystemServiceSymbol, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagSystemServiceSymbol"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
     // Simple Field: flagExtendedFlags
     FieldWriterFactory.writeSimpleField((boolean) flagExtendedFlags, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagExtendedFlags"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -559,9 +517,8 @@ public class AdsSymbolTableEntry implements Message {
     boolean flagAttributes = (boolean) ((attributes) != (null));
     FieldWriterFactory.writeImplicitField((boolean) flagAttributes, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagAttributes"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
-    // Implicit Field: flagContextMask
-    boolean flagContextMask = (boolean) ((contextMask) != (null));
-    FieldWriterFactory.writeImplicitField((boolean) flagContextMask, DataWriterFactory.writeBoolean(writeBuffer), WithOption.WithName("flagContextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
+    // Simple Field: contextMask
+    FieldWriterFactory.writeSimpleField((byte) contextMask, DataWriterFactory.writeUnsignedByte(writeBuffer, 4), WithOption.WithName("contextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
     // Reserved Field
     FieldWriterFactory.writeReservedField((byte) 0x0, DataWriterFactory.writeUnsignedByte(writeBuffer, 3));
@@ -613,11 +570,6 @@ public class AdsSymbolTableEntry implements Message {
 
     // Const Field: commentTerminator
     FieldWriterFactory.writeConstField((short) COMMENTTERMINATOR, DataWriterFactory.writeUnsignedShort(writeBuffer, 8), WithOption.WithName("commentTerminator"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-
-    if(contextMask != null) {
-      // Optional Field: contextMask
-      FieldWriterFactory.writeOptionalField((Long) contextMask, DataWriterFactory.writeUnsignedLong(writeBuffer, 32), WithOption.WithName("contextMask"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
-    }
 
     // Array Field: guid
     FieldWriterFactory.writeByteArrayField(guid, DataWriterFactory.writeByteArray(writeBuffer, (int) ((guid != null) ? guid.length : 0)), WithOption.WithName("guid"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("LITTLE_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
@@ -682,15 +634,6 @@ public class AdsSymbolTableEntry implements Message {
     // Simple Field: flagPersistent
     lengthInBits += 1;
 
-    // Simple Field: flagCompilerGenerated
-    lengthInBits += 1;
-
-    // Reserved Field
-    lengthInBits += 1;
-
-    // Simple Field: flagSystemServiceSymbol
-    lengthInBits += 1;
-
     // Simple Field: flagExtendedFlags
     lengthInBits += 1;
 
@@ -703,8 +646,8 @@ public class AdsSymbolTableEntry implements Message {
     // Implicit Field: flagAttributes
     lengthInBits += 1;
 
-    // Implicit Field: flagContextMask
-    lengthInBits += 1;
+    // Simple Field: contextMask
+    lengthInBits += 4;
 
     // Reserved Field
     lengthInBits += 3;
@@ -753,11 +696,6 @@ public class AdsSymbolTableEntry implements Message {
 
     // Const Field: commentTerminator
     lengthInBits += 8;
-
-    // Optional Field: contextMask
-    if(contextMask != null) {
-      lengthInBits += 32;
-    }
 
     // Array Field: guid
     lengthInBits += 8 * ((guid != null) ? guid.length : 0);

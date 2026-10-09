@@ -122,6 +122,8 @@ class ModbusPDU(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusPDUBuilder = None
+        _retained_function_flag = function_flag
+        _retained_response = response
         from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
 
         if error_flag == bool(True):
@@ -647,6 +649,8 @@ class ModbusPDU(ABC, PlcMessage):
         read_buffer.pop_context("ModbusPDU")
         # Create the instance
         _modbus_pdu: ModbusPDU = builder.build()
+        _modbus_pdu.function_flag = _retained_function_flag
+        _modbus_pdu.response = _retained_response
         return _modbus_pdu
 
     def equals(self, o: object) -> bool:

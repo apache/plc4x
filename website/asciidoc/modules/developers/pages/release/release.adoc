@@ -168,6 +168,43 @@ Start each step from a clean checkout.
 Note that the signing in `release-2-prepare-release.sh` and all `git` and `svn` operations run on your machine, not inside the container.
 So GPG, your git credentials and your Apache SVN credentials all have to work on the host.
 
+[#which-remote]
+=== Which remote the release is pushed to
+
+The release branch, the release tag and the updated `develop` and `release` branches all have to end up in the Apache repository, and that repository is not necessarily the remote called `origin`.
+Anybody who followed the xref:contributing.adoc[contributing] guide has their own fork as `origin` and the Apache repository under a second name, usually `upstream`.
+
+So the scripts do not go by the name: they look through the remotes of your checkout for the URL of the Apache repository - `gitbox.apache.org/repos/asf/plc4x` or the GitHub mirror `github.com/apache/plc4x`, over ssh or over https - and use the one that matches.
+If none of them matches, or if more than one does, every script that touches the remote stops before doing anything and prints the remotes it found.
+
+To settle it yourself - for a mirror, or when several remotes point at the Apache repository - name the remote explicitly:
+
+----
+export PLC4X_REMOTE=upstream
+----
+
+[#ssh-keys]
+=== The remote has to use ssh
+
+Everything a release pushes - the release branch, the release commits, the release tag, the merges back into `develop` and `release` - goes out through these scripts, spread over a run that takes the better part of an hour.
+Over `https` every single one of those needs a password or a credential helper, in the middle of the release; with an `ssh` key the agent already holds, none of them needs anything.
+The release container itself has no credentials at all, which is why `release:prepare` is run with `-DpushChanges=false` and the pushing is left to the host.
+
+So the remote has to be an `ssh` one:
+
+----
+git remote set-url origin git@github.com:apache/plc4x.git
+----
+
+and the key it uses has to be one the agent can offer without asking, which usually means adding it before starting a release:
+
+----
+ssh-add ~/.ssh/id_ed25519
+----
+
+`release-preflight.sh` checks both: that the Apache remote is an `ssh` URL, and that the host actually accepts the key, reporting the account it greets you as.
+That last part matters - it is the account the release ends up being pushed as.
+
 [#checking-your-system-is-ready]
 == Checking your system is ready
 
@@ -188,10 +225,10 @@ It checks:
 |Area |What it checks
 
 |Tools
-|`git`, `docker`, `gpg`, `svn`, `curl`, `java` and `shasum` are installed, and the Docker daemon is actually running.
+|`git`, `docker`, `gpg`, `ssh`, `svn`, `curl`, `java` and `shasum` are installed, and the Docker daemon is actually running.
 
 |Git
-|`user.name` and `user.email` are configured, the working tree is clean, and `origin` accepts your credentials for pushing (a `git push --dry-run`, which authenticates without changing anything).
+|`user.name` and `user.email` are configured, the working tree is clean, exactly one remote of the checkout points at the Apache repository, that remote uses `ssh` and your key is accepted by the host without a prompt, and the remote accepts your credentials for pushing (a `git push --dry-run`, which authenticates without changing anything).
 
 |Signing
 |A secret key is available (`user.signingkey`, or the first one `gpg` lists), it carries an `@apache.org` address, it can sign a throwaway file without asking for input, and its fingerprint is present in the published `KEYS` file.
@@ -360,14 +397,16 @@ Make sure you are on the release branch, then run:
 This is the long one - it takes the release from a tagged commit all the way to a staged release candidate and a drafted vote mail.
 The only thing it asks for is the release-candidate number.
 
-Before it does anything, it derives the release version (`1.0.0`), the tag name (`v1.0.0`) and the next development version (`1.0.1-SNAPSHOT` - note this is a *bugfix* bump, unlike in `release-1`), and it refuses to continue if the tag already exists locally or on `origin`, telling you exactly how to remove it.
+Before it does anything, it derives the release version (`1.0.0`), the tag name (`v1.0.0`) and the next development version (`1.0.1-SNAPSHOT` - note this is a *bugfix* bump, unlike in `release-1`), and it refuses to continue if the tag already exists locally or on the Apache remote, telling you exactly how to remove it.
 This is the usual outcome of an earlier failed attempt.
 
 It then works through these steps:
 
 1. Runs `mvn release:prepare` in the container with all profiles enabled and the versions and tag passed in explicitly, so the plugin asks no questions.
    This checks that no `SNAPSHOT` dependencies are referenced, updates all poms, runs a full build with tests, commits, tags and prepares the next development version.
-2. Pushes the result and records the commit hash the tag points at, for the vote mail.
+   It runs with `-DpushChanges=false`: the container has no credentials, so the commits and the tag stay local for now.
+2. Pushes the release commits and then the release tag, and records the commit hash the tag points at, for the vote mail.
+   The tag has to be pushed before the next step, which checks it out from the remote rather than from your working copy.
 3. Runs `mvn release:perform` in the container, deploying into `out/.local-artifacts-dir` rather than straight to Nexus.
    Nothing leaves your machine yet.
 4. Signs every artifact in that directory with `gpg -ab` - poms, jars, kars, nars, feature and site descriptors, the CycloneDX SBOMs and the source-release zip.

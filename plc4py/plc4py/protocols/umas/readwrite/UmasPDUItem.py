@@ -153,6 +153,7 @@ class UmasPDUItem(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasPDUItemBuilder = None
+        _retained_umas_request_function_key = umas_request_function_key
         from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
             UmasInitCommsRequest,
         )
@@ -312,6 +313,7 @@ class UmasPDUItem(ABC, PlcMessage):
         read_buffer.pop_context("UmasPDUItem")
         # Create the instance
         _umas_pduitem: UmasPDUItem = builder.build(pairing_key, byte_length)
+        _umas_pduitem.umas_request_function_key = _retained_umas_request_function_key
         return _umas_pduitem
 
     def equals(self, o: object) -> bool:

@@ -75,16 +75,16 @@ type AdsSymbolTableEntry interface {
 	GetFlagBitValue() bool
 	// GetFlagPersistent returns FlagPersistent (property field)
 	GetFlagPersistent() bool
-	// GetFlagCompilerGenerated returns FlagCompilerGenerated (property field)
-	GetFlagCompilerGenerated() bool
-	// GetFlagSystemServiceSymbol returns FlagSystemServiceSymbol (property field)
-	GetFlagSystemServiceSymbol() bool
 	// GetFlagExtendedFlags returns FlagExtendedFlags (property field)
+	// Bits 15..8 as defined in TcAdsDef.h (ADSSYMBOLFLAG_*): bits 11..8 are not flags but a
+	// 4-bit task/context id (ADSSYMBOLFLAG_CONTEXTMASK 0x0F00).
 	GetFlagExtendedFlags() bool
 	// GetFlagInitOnReset returns FlagInitOnReset (property field)
 	GetFlagInitOnReset() bool
 	// GetFlagStatic returns FlagStatic (property field)
 	GetFlagStatic() bool
+	// GetContextMask returns ContextMask (property field)
+	GetContextMask() uint8
 	// GetFlagVariantType returns FlagVariantType (property field)
 	GetFlagVariantType() bool
 	// GetFlagOnlineChangePtrRefType returns FlagOnlineChangePtrRefType (property field)
@@ -101,8 +101,6 @@ type AdsSymbolTableEntry interface {
 	GetDataTypeName() string
 	// GetComment returns Comment (property field)
 	GetComment() string
-	// GetContextMask returns ContextMask (property field)
-	GetContextMask() *uint32
 	// GetGuid returns Guid (property field)
 	GetGuid() []byte
 	// GetAttributes returns Attributes (property field)
@@ -130,11 +128,10 @@ type _AdsSymbolTableEntry struct {
 	FlagReferenceTo            bool
 	FlagBitValue               bool
 	FlagPersistent             bool
-	FlagCompilerGenerated      bool
-	FlagSystemServiceSymbol    bool
 	FlagExtendedFlags          bool
 	FlagInitOnReset            bool
 	FlagStatic                 bool
+	ContextMask                uint8
 	FlagVariantType            bool
 	FlagOnlineChangePtrRefType bool
 	FlagRefactorInfo           bool
@@ -143,21 +140,19 @@ type _AdsSymbolTableEntry struct {
 	Name                       string
 	DataTypeName               string
 	Comment                    string
-	ContextMask                *uint32
 	Guid                       []byte
 	Attributes                 AdsDataTypeAttributes
 	Rest                       []byte
 	// Reserved Fields
 	reservedField0 *uint8
 	reservedField1 *uint8
-	reservedField2 *uint8
 }
 
 var _ AdsSymbolTableEntry = (*_AdsSymbolTableEntry)(nil)
 
 // NewAdsSymbolTableEntry factory function for _AdsSymbolTableEntry
-func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagCompilerGenerated bool, flagSystemServiceSymbol bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, contextMask *uint32, guid []byte, attributes AdsDataTypeAttributes, rest []byte) *_AdsSymbolTableEntry {
-	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagCompilerGenerated: flagCompilerGenerated, FlagSystemServiceSymbol: flagSystemServiceSymbol, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, FlagVariantType: flagVariantType, FlagOnlineChangePtrRefType: flagOnlineChangePtrRefType, FlagRefactorInfo: flagRefactorInfo, FlagRedundancyIgnore: flagRedundancyIgnore, FlagPlcPointerType: flagPlcPointerType, Name: name, DataTypeName: dataTypeName, Comment: comment, ContextMask: contextMask, Guid: guid, Attributes: attributes, Rest: rest}
+func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, contextMask uint8, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, guid []byte, attributes AdsDataTypeAttributes, rest []byte) *_AdsSymbolTableEntry {
+	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, ContextMask: contextMask, FlagVariantType: flagVariantType, FlagOnlineChangePtrRefType: flagOnlineChangePtrRefType, FlagRefactorInfo: flagRefactorInfo, FlagRedundancyIgnore: flagRedundancyIgnore, FlagPlcPointerType: flagPlcPointerType, Name: name, DataTypeName: dataTypeName, Comment: comment, Guid: guid, Attributes: attributes, Rest: rest}
 }
 
 ///////////////////////////////////////////////////////////
@@ -169,7 +164,7 @@ func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, siz
 type AdsSymbolTableEntryBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagCompilerGenerated bool, flagSystemServiceSymbol bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, guid []byte, rest []byte) AdsSymbolTableEntryBuilder
+	WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, contextMask uint8, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, guid []byte, rest []byte) AdsSymbolTableEntryBuilder
 	// WithEntryLength adds EntryLength (property field)
 	WithEntryLength(uint32) AdsSymbolTableEntryBuilder
 	// WithGroup adds Group (property field)
@@ -194,16 +189,14 @@ type AdsSymbolTableEntryBuilder interface {
 	WithFlagBitValue(bool) AdsSymbolTableEntryBuilder
 	// WithFlagPersistent adds FlagPersistent (property field)
 	WithFlagPersistent(bool) AdsSymbolTableEntryBuilder
-	// WithFlagCompilerGenerated adds FlagCompilerGenerated (property field)
-	WithFlagCompilerGenerated(bool) AdsSymbolTableEntryBuilder
-	// WithFlagSystemServiceSymbol adds FlagSystemServiceSymbol (property field)
-	WithFlagSystemServiceSymbol(bool) AdsSymbolTableEntryBuilder
 	// WithFlagExtendedFlags adds FlagExtendedFlags (property field)
 	WithFlagExtendedFlags(bool) AdsSymbolTableEntryBuilder
 	// WithFlagInitOnReset adds FlagInitOnReset (property field)
 	WithFlagInitOnReset(bool) AdsSymbolTableEntryBuilder
 	// WithFlagStatic adds FlagStatic (property field)
 	WithFlagStatic(bool) AdsSymbolTableEntryBuilder
+	// WithContextMask adds ContextMask (property field)
+	WithContextMask(uint8) AdsSymbolTableEntryBuilder
 	// WithFlagVariantType adds FlagVariantType (property field)
 	WithFlagVariantType(bool) AdsSymbolTableEntryBuilder
 	// WithFlagOnlineChangePtrRefType adds FlagOnlineChangePtrRefType (property field)
@@ -220,8 +213,6 @@ type AdsSymbolTableEntryBuilder interface {
 	WithDataTypeName(string) AdsSymbolTableEntryBuilder
 	// WithComment adds Comment (property field)
 	WithComment(string) AdsSymbolTableEntryBuilder
-	// WithContextMask adds ContextMask (property field)
-	WithOptionalContextMask(uint32) AdsSymbolTableEntryBuilder
 	// WithGuid adds Guid (property field)
 	WithGuid(...byte) AdsSymbolTableEntryBuilder
 	// WithAttributes adds Attributes (property field)
@@ -249,8 +240,8 @@ type _AdsSymbolTableEntryBuilder struct {
 
 var _ (AdsSymbolTableEntryBuilder) = (*_AdsSymbolTableEntryBuilder)(nil)
 
-func (b *_AdsSymbolTableEntryBuilder) WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagCompilerGenerated bool, flagSystemServiceSymbol bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, guid []byte, rest []byte) AdsSymbolTableEntryBuilder {
-	return b.WithEntryLength(entryLength).WithGroup(group).WithOffset(offset).WithSize(size).WithDataType(dataType).WithFlagMethodDeref(flagMethodDeref).WithFlagItfMethodAccess(flagItfMethodAccess).WithFlagReadOnly(flagReadOnly).WithFlagTComInterfacePointer(flagTComInterfacePointer).WithFlagReferenceTo(flagReferenceTo).WithFlagBitValue(flagBitValue).WithFlagPersistent(flagPersistent).WithFlagCompilerGenerated(flagCompilerGenerated).WithFlagSystemServiceSymbol(flagSystemServiceSymbol).WithFlagExtendedFlags(flagExtendedFlags).WithFlagInitOnReset(flagInitOnReset).WithFlagStatic(flagStatic).WithFlagVariantType(flagVariantType).WithFlagOnlineChangePtrRefType(flagOnlineChangePtrRefType).WithFlagRefactorInfo(flagRefactorInfo).WithFlagRedundancyIgnore(flagRedundancyIgnore).WithFlagPlcPointerType(flagPlcPointerType).WithName(name).WithDataTypeName(dataTypeName).WithComment(comment).WithGuid(guid...).WithRest(rest...)
+func (b *_AdsSymbolTableEntryBuilder) WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, contextMask uint8, flagVariantType bool, flagOnlineChangePtrRefType bool, flagRefactorInfo bool, flagRedundancyIgnore bool, flagPlcPointerType bool, name string, dataTypeName string, comment string, guid []byte, rest []byte) AdsSymbolTableEntryBuilder {
+	return b.WithEntryLength(entryLength).WithGroup(group).WithOffset(offset).WithSize(size).WithDataType(dataType).WithFlagMethodDeref(flagMethodDeref).WithFlagItfMethodAccess(flagItfMethodAccess).WithFlagReadOnly(flagReadOnly).WithFlagTComInterfacePointer(flagTComInterfacePointer).WithFlagReferenceTo(flagReferenceTo).WithFlagBitValue(flagBitValue).WithFlagPersistent(flagPersistent).WithFlagExtendedFlags(flagExtendedFlags).WithFlagInitOnReset(flagInitOnReset).WithFlagStatic(flagStatic).WithContextMask(contextMask).WithFlagVariantType(flagVariantType).WithFlagOnlineChangePtrRefType(flagOnlineChangePtrRefType).WithFlagRefactorInfo(flagRefactorInfo).WithFlagRedundancyIgnore(flagRedundancyIgnore).WithFlagPlcPointerType(flagPlcPointerType).WithName(name).WithDataTypeName(dataTypeName).WithComment(comment).WithGuid(guid...).WithRest(rest...)
 }
 
 func (b *_AdsSymbolTableEntryBuilder) WithEntryLength(entryLength uint32) AdsSymbolTableEntryBuilder {
@@ -313,16 +304,6 @@ func (b *_AdsSymbolTableEntryBuilder) WithFlagPersistent(flagPersistent bool) Ad
 	return b
 }
 
-func (b *_AdsSymbolTableEntryBuilder) WithFlagCompilerGenerated(flagCompilerGenerated bool) AdsSymbolTableEntryBuilder {
-	b.FlagCompilerGenerated = flagCompilerGenerated
-	return b
-}
-
-func (b *_AdsSymbolTableEntryBuilder) WithFlagSystemServiceSymbol(flagSystemServiceSymbol bool) AdsSymbolTableEntryBuilder {
-	b.FlagSystemServiceSymbol = flagSystemServiceSymbol
-	return b
-}
-
 func (b *_AdsSymbolTableEntryBuilder) WithFlagExtendedFlags(flagExtendedFlags bool) AdsSymbolTableEntryBuilder {
 	b.FlagExtendedFlags = flagExtendedFlags
 	return b
@@ -335,6 +316,11 @@ func (b *_AdsSymbolTableEntryBuilder) WithFlagInitOnReset(flagInitOnReset bool) 
 
 func (b *_AdsSymbolTableEntryBuilder) WithFlagStatic(flagStatic bool) AdsSymbolTableEntryBuilder {
 	b.FlagStatic = flagStatic
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithContextMask(contextMask uint8) AdsSymbolTableEntryBuilder {
+	b.ContextMask = contextMask
 	return b
 }
 
@@ -375,11 +361,6 @@ func (b *_AdsSymbolTableEntryBuilder) WithDataTypeName(dataTypeName string) AdsS
 
 func (b *_AdsSymbolTableEntryBuilder) WithComment(comment string) AdsSymbolTableEntryBuilder {
 	b.Comment = comment
-	return b
-}
-
-func (b *_AdsSymbolTableEntryBuilder) WithOptionalContextMask(contextMask uint32) AdsSymbolTableEntryBuilder {
-	b.ContextMask = &contextMask
 	return b
 }
 
@@ -497,14 +478,6 @@ func (m *_AdsSymbolTableEntry) GetFlagPersistent() bool {
 	return m.FlagPersistent
 }
 
-func (m *_AdsSymbolTableEntry) GetFlagCompilerGenerated() bool {
-	return m.FlagCompilerGenerated
-}
-
-func (m *_AdsSymbolTableEntry) GetFlagSystemServiceSymbol() bool {
-	return m.FlagSystemServiceSymbol
-}
-
 func (m *_AdsSymbolTableEntry) GetFlagExtendedFlags() bool {
 	return m.FlagExtendedFlags
 }
@@ -515,6 +488,10 @@ func (m *_AdsSymbolTableEntry) GetFlagInitOnReset() bool {
 
 func (m *_AdsSymbolTableEntry) GetFlagStatic() bool {
 	return m.FlagStatic
+}
+
+func (m *_AdsSymbolTableEntry) GetContextMask() uint8 {
+	return m.ContextMask
 }
 
 func (m *_AdsSymbolTableEntry) GetFlagVariantType() bool {
@@ -547,10 +524,6 @@ func (m *_AdsSymbolTableEntry) GetDataTypeName() string {
 
 func (m *_AdsSymbolTableEntry) GetComment() string {
 	return m.Comment
-}
-
-func (m *_AdsSymbolTableEntry) GetContextMask() *uint32 {
-	return m.ContextMask
 }
 
 func (m *_AdsSymbolTableEntry) GetGuid() []byte {
@@ -648,15 +621,6 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint64 {
 	// Simple field (flagPersistent)
 	lengthInBits += 1
 
-	// Simple field (flagCompilerGenerated)
-	lengthInBits += 1
-
-	// Reserved Field (reserved)
-	lengthInBits += 1
-
-	// Simple field (flagSystemServiceSymbol)
-	lengthInBits += 1
-
 	// Simple field (flagExtendedFlags)
 	lengthInBits += 1
 
@@ -669,8 +633,8 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint64 {
 	// Implicit Field (flagAttributes)
 	lengthInBits += 1
 
-	// Implicit Field (flagContextMask)
-	lengthInBits += 1
+	// Simple field (contextMask)
+	lengthInBits += 4
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -719,11 +683,6 @@ func (m *_AdsSymbolTableEntry) GetLengthInBits(ctx context.Context) uint64 {
 
 	// Const Field (commentTerminator)
 	lengthInBits += 8
-
-	// Optional Field (contextMask)
-	if m.ContextMask != nil {
-		lengthInBits += 32
-	}
 
 	// Array field
 	if len(m.Guid) > 0 {
@@ -854,24 +813,6 @@ func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.FlagPersistent = flagPersistent
 
-	flagCompilerGenerated, err := ReadSimpleField(ctx, "flagCompilerGenerated", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagCompilerGenerated' field"))
-	}
-	m.FlagCompilerGenerated = flagCompilerGenerated
-
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
-	}
-	m.reservedField0 = reservedField0
-
-	flagSystemServiceSymbol, err := ReadSimpleField(ctx, "flagSystemServiceSymbol", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagSystemServiceSymbol' field"))
-	}
-	m.FlagSystemServiceSymbol = flagSystemServiceSymbol
-
 	flagExtendedFlags, err := ReadSimpleField(ctx, "flagExtendedFlags", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagExtendedFlags' field"))
@@ -896,17 +837,17 @@ func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	_ = flagAttributes
 
-	flagContextMask, err := ReadImplicitField[bool](ctx, "flagContextMask", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	contextMask, err := ReadSimpleField(ctx, "contextMask", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagContextMask' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'contextMask' field"))
 	}
-	_ = flagContextMask
+	m.ContextMask = contextMask
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(3)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(3)), uint8(0x0), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
-	m.reservedField1 = reservedField1
+	m.reservedField0 = reservedField0
 
 	flagVariantType, err := ReadSimpleField(ctx, "flagVariantType", ReadBoolean(readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -938,11 +879,11 @@ func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.FlagPlcPointerType = flagPlcPointerType
 
-	reservedField2, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
-	m.reservedField2 = reservedField2
+	m.reservedField1 = reservedField1
 
 	nameLength, err := ReadImplicitField[uint16](ctx, "nameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -997,13 +938,6 @@ func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentTerminator' field"))
 	}
 	_ = commentTerminator
-
-	var contextMask *uint32
-	contextMask, err = ReadOptionalField[uint32](ctx, "contextMask", ReadUnsignedInt(readBuffer, uint8(32)), flagContextMask, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'contextMask' field"))
-	}
-	m.ContextMask = contextMask
 
 	guid, err := readBuffer.ReadByteArray("guid", int(utils.InlineIf(bool((flagTypeGuid) == (true)), func() any { return int32(int32(16)) }, func() any { return int32(int32(0)) }).(int32)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
@@ -1103,18 +1037,6 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'flagPersistent' field")
 	}
 
-	if err := WriteSimpleField[bool](ctx, "flagCompilerGenerated", m.GetFlagCompilerGenerated(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'flagCompilerGenerated' field")
-	}
-
-	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 1), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
-	}
-
-	if err := WriteSimpleField[bool](ctx, "flagSystemServiceSymbol", m.GetFlagSystemServiceSymbol(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'flagSystemServiceSymbol' field")
-	}
-
 	if err := WriteSimpleField[bool](ctx, "flagExtendedFlags", m.GetFlagExtendedFlags(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'flagExtendedFlags' field")
 	}
@@ -1130,13 +1052,13 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	if err := WriteImplicitField(ctx, "flagAttributes", flagAttributes, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'flagAttributes' field")
 	}
-	flagContextMask := bool(bool((m.GetContextMask()) != (nil)))
-	if err := WriteImplicitField(ctx, "flagContextMask", flagContextMask, WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'flagContextMask' field")
+
+	if err := WriteSimpleField[uint8](ctx, "contextMask", m.GetContextMask(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'contextMask' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 3), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	if err := WriteSimpleField[bool](ctx, "flagVariantType", m.GetFlagVariantType(), WriteBoolean(writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
@@ -1160,7 +1082,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'reserved' field number 3")
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 	nameLength := uint16(uint16(len(m.GetName())))
 	if err := WriteImplicitField(ctx, "nameLength", nameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
@@ -1197,10 +1119,6 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	if err := WriteConstField(ctx, "commentTerminator", AdsSymbolTableEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commentTerminator' field")
-	}
-
-	if err := WriteOptionalField[uint32](ctx, "contextMask", m.GetContextMask(), WriteUnsignedInt(writeBuffer, 32), true, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
-		return errors.Wrap(err, "Error serializing 'contextMask' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "guid", m.GetGuid(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
@@ -1244,11 +1162,10 @@ func (m *_AdsSymbolTableEntry) deepCopy() *_AdsSymbolTableEntry {
 		m.FlagReferenceTo,
 		m.FlagBitValue,
 		m.FlagPersistent,
-		m.FlagCompilerGenerated,
-		m.FlagSystemServiceSymbol,
 		m.FlagExtendedFlags,
 		m.FlagInitOnReset,
 		m.FlagStatic,
+		m.ContextMask,
 		m.FlagVariantType,
 		m.FlagOnlineChangePtrRefType,
 		m.FlagRefactorInfo,
@@ -1257,13 +1174,11 @@ func (m *_AdsSymbolTableEntry) deepCopy() *_AdsSymbolTableEntry {
 		m.Name,
 		m.DataTypeName,
 		m.Comment,
-		utils.CopyPtr[uint32](m.ContextMask),
 		utils.DeepCopySlice[byte, byte](m.Guid),
 		utils.DeepCopy[AdsDataTypeAttributes](m.Attributes),
 		utils.DeepCopySlice[byte, byte](m.Rest),
 		m.reservedField0,
 		m.reservedField1,
-		m.reservedField2,
 	}
 	return _AdsSymbolTableEntryCopy
 }

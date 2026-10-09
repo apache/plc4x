@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>39</version>
+    <version>40</version>
     <relativePath />
   </parent>
 
@@ -127,7 +127,7 @@
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-configuration2.version>2.15.1</commons-configuration2.version>
     <commons-io.version>2.22.0</commons-io.version>
-    <commons-lang3.version>3.20.0</commons-lang3.version>
+    <commons-lang3.version>3.21.0</commons-lang3.version>
     <commons-net.version>3.13.0</commons-net.version>
     <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
@@ -137,7 +137,7 @@
     <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
     <freemarker.version>2.3.35</freemarker.version>
     <glob.version>0.9.0</glob.version>
-    <groovy.version>5.1.2</groovy.version>
+    <groovy.version>6.0.0</groovy.version>
     <gson.version>2.14.0</gson.version>
     <guava.version>33.7.1-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -154,22 +154,22 @@
          "jackson.version" releases in a row can map to the same value (both 2.21.4 and
          2.22.2 pair with jackson-annotations 2.22). -->
     <jackson-api.version>2.22</jackson-api.version>
-    <jackson.version>${jackson-api.version}.2</jackson.version>
+    <jackson.version>2.22.3</jackson.version>
     <woodstox-core.version>7.2.2</woodstox-core.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
-    <javapoet.version>0.19.0</javapoet.version>
+    <javapoet.version>0.20.0</javapoet.version>
     <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
-    <joda-time.version>2.14.3</joda-time.version>
+    <joda-time.version>2.14.4</joda-time.version>
     <jserialcom.version>2.11.4</jserialcom.version>
     <jsoup.version>1.22.2</jsoup.version>
     <jssc.version>2.10.4</jssc.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
-    <logback.version>1.6.3</logback.version>
-    <maven-artifact.version>3.9.16</maven-artifact.version>
+    <logback.version>1.6.4</logback.version>
+    <maven-artifact.version>3.10.0</maven-artifact.version>
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <!-- Used by the maven-site skin declaration in
          code-generation/protocol-test/src/site/site.xml - that file is ISO-8859-1 encoded,
@@ -177,10 +177,10 @@
     <reflow.skin.version>2.3.3</reflow.skin.version>
     <saxon.version>13.0</saxon.version>
     <semver4j.version>3.1.0</semver4j.version>
-    <slf4j.version>2.0.19</slf4j.version>
+    <slf4j.version>2.0.20</slf4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <testcontainers-virtualavr.version>0.0.2</testcontainers-virtualavr.version>
-    <xmlunit.version>2.13.0</xmlunit.version>
+    <xmlunit.version>2.14.0</xmlunit.version>
 
     <skip-code-generation>false</skip-code-generation>
     <skip-code-generation-tests>true</skip-code-generation-tests>
@@ -1129,13 +1129,13 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>6.1.2</version>
+          <version>6.2.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.11</version>
+          <version>4.4.12</version>
         </plugin>
 
         <plugin>

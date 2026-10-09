@@ -887,10 +887,6 @@
     [simple   uint 32                          offset                                                                  ]
     [simple   uint 32                          size                                                                    ]
     [simple   uint 32                          dataType                                                                ]
-    // Start: Flags
-    // https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L619
-    // Order of the bits if read Little-Endian and then accessing the bit flags
-    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8
     [simple   bit                              flagMethodDeref                                                         ]
     [simple   bit                              flagItfMethodAccess                                                     ]
     [simple   bit                              flagReadOnly                                                            ]
@@ -899,17 +895,11 @@
     [simple   bit                              flagReferenceTo                                                         ]
     [simple   bit                              flagBitValue                                                            ]
     [simple   bit                              flagPersistent                                                          ]
-    [simple   bit                              flagCompilerGenerated                                                   ]
-    [reserved uint 1                           '0x0'                                                                   ]
-    [simple   bit                              flagSystemServiceSymbol                                                 ]
     [simple   bit                              flagExtendedFlags                                                       ]
     [simple   bit                              flagInitOnReset                                                         ]
     [simple   bit                              flagStatic                                                              ]
     [implicit bit                              flagAttributes             'attributes != null'                         ]
-    [implicit bit                              flagContextMask            'contextMask != null'                        ]
-    // https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L679
-    // Order of the bits if read Little-Endian and then accessing the bit flags
-    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8
+    [simple   uint 4                           contextMask                                                             ]
     [reserved uint 3                          '0x0'                                                                    ]
     [simple   bit                              flagVariantType                                                         ]
     [simple   bit                              flagOnlineChangePtrRefType                                              ]
@@ -917,7 +907,6 @@
     [simple   bit                              flagRedundancyIgnore                                                    ]
     [simple   bit                              flagPlcPointerType                                                      ]
     [reserved uint 8                           '0x00'                                                                  ]
-    // End: Flags
     [implicit uint 16                          nameLength                 'STR_LEN(name)'                              ]
     [implicit uint 16                          dataTypeNameLength         'STR_LEN(dataTypeName)'                      ]
     [implicit uint 16                          commentLength              'STR_LEN(comment)'                           ]
@@ -927,7 +916,6 @@
 	[const    uint 8                           dataTypeNameTerminator     0x00                                         ]
 	[simple   vstring 'commentLength * 8'      comment                                                                 ]
 	[const    uint 8                           commentTerminator          0x00                                         ]
-	[optional uint 32                          contextMask                'flagContextMask'                            ]
     [array    byte                             guid                       count         'flagTypeGuid == true ? 16 : 0']
     [optional AdsDataTypeAttributes            attributes                 'flagAttributes'                             ]
     // Gobbling up the rest, but it seems there is only empty padding bytes in it.
@@ -947,10 +935,6 @@
 	[simple   uint 32                            size                                                                  ]
 	[simple   uint 32                            offset                                                                ]
 	[simple   AdsDatatypeId                      dataType                                                              ]
-	// Begin: Data Type Flags
-	// Source (https://github.com/jisotalo/ads-client/blob/master/src/ads-commons.ts#L724)
-    // 7 6 5 4 3 2 1 0  |  15 14 13 12 11 10 9 8  |  23 22 21 20 19 18 17 16 | 31 30 29 28 27 26 25 24
-	// Byte 1
 	[implicit bit                                flagTypeGuid               'COUNT(guid) > 0'                          ]
 	[simple   bit                                flagPropItem                                                          ]
 	[simple   bit                                flagBitValues                                                         ]
@@ -959,7 +943,6 @@
 	[simple   bit                                flagReferenceTo                                                       ]
 	[implicit bit                                flagDataType               'numChildren > 0'                         ]
 	[implicit bit                                flagDataItem               'numChildren == 0'                          ]
-	// Byte 2
     [reserved uint 2                             '0x0'                                                                 ]
   	[implicit bit                                flagExtendedInfos          'extendedInfos != null'                    ]
   	[implicit bit                                flagAttributes             'attributes != null'                       ]
@@ -967,7 +950,6 @@
   	[simple   bit                                flagTComInterfacePtr                                                  ]
   	[simple   bit                                flagCopyMask                                                          ]
   	[simple   bit                                flagPersistent                                                        ]
-	// Byte 3
     [simple   bit                                flagPlcPointerType                                                    ]
     [simple   bit                                flagInitOnReset                                                       ]
     [simple   bit                                flagPersistentDataType                                                ]
@@ -976,7 +958,6 @@
     [simple   bit                                flagSoftwareProtectionLevels                                          ]
     [simple   bit                                flagStatic                                                            ]
     [simple   bit                                flagAligned                                                           ]
-	// Byte 4
     [simple   bit                                ExtendedFlags                                                         ]
     [reserved uint 1                             '0x0'                                                                 ]
     [simple   bit                                flagExtendedEnumInfos                                                 ]
