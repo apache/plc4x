@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
@@ -41,6 +42,17 @@ public class RequestThrottle {
     /** Requests waiting for a permit, started in the order they were submitted. */
     private final Queue<Runnable> pending = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean draining = new AtomicBoolean();
+    /**
+     * Guards the permit accounting: a returned permit either goes back to the semaphore or retires
+     * part of an outstanding reduction, and a reduction either takes a free permit or defers it as
+     * debt. Both decisions have to see the same state, so they share this lock. Nothing that blocks
+     * or calls back into a request runs while it is held.
+     */
+    private final Object permitLock = new Object();
+    /** Part of a reduction that could not be applied at once, settled as in-flight permits return. */
+    private int permitDebt;
+    /** Permits handed out to requests that have not returned them yet. */
+    private final AtomicInteger inFlight = new AtomicInteger();
 
     public RequestThrottle(int maxConcurrentRequests) {
         if (maxConcurrentRequests < 1) {
@@ -57,13 +69,26 @@ public class RequestThrottle {
      */
     public void acquire() throws InterruptedException {
         semaphore.acquire();
+        inFlight.incrementAndGet();
     }
 
     /**
      * Releases a permit previously acquired via {@link #acquire()}.
      */
     public void release() {
-        semaphore.release();
+        releasePermit();
+    }
+
+    /** Returns a permit to the pool, or retires it if a reduction is still outstanding. */
+    private void releasePermit() {
+        inFlight.decrementAndGet();
+        synchronized (permitLock) {
+            if (permitDebt > 0) {
+                permitDebt--;
+                return;
+            }
+            semaphore.release();
+        }
     }
 
     public <T> CompletableFuture<T> execute(Supplier<CompletableFuture<T>> requestSupplier) {
@@ -85,10 +110,11 @@ public class RequestThrottle {
             }
             try {
                 while (!pending.isEmpty() && semaphore.tryAcquire()) {
+                    inFlight.incrementAndGet();
                     Runnable request = pending.poll();
                     if (request == null) {
                         // Another thread took the entry between the check and the poll.
-                        semaphore.release();
+                        releasePermit();
                         break;
                     }
                     request.run();
@@ -124,30 +150,55 @@ public class RequestThrottle {
     }
 
     private void releaseAndDrain() {
-        semaphore.release();
+        releasePermit();
         drain();
     }
 
-    public synchronized void adjustMaxConcurrentRequests(int newMax) {
+    public void adjustMaxConcurrentRequests(int newMax) {
         if (newMax < 1) {
             throw new IllegalArgumentException("Max concurrent requests must be at least 1, got: " + newMax);
         }
-        if (newMax == this.maxConcurrentRequests) {
-            return;
+
+        boolean grown;
+        int unsettled;
+        synchronized (permitLock) {
+            int difference = newMax - this.maxConcurrentRequests;
+            if (difference == 0) {
+                return;
+            }
+            this.maxConcurrentRequests = newMax;
+            grown = difference > 0;
+            if (grown) {
+                // Cancel any unsettled reduction first, otherwise it would be undone twice.
+                int cancelled = Math.min(difference, permitDebt);
+                permitDebt -= cancelled;
+                int toRelease = difference - cancelled;
+                if (toRelease > 0) {
+                    semaphore.release(toRelease);
+                }
+            } else {
+                int toRemove = -difference;
+                // Only take what is free: waiting here would block under the lock for permits that
+                // only the in-flight requests can return.
+                int removed = 0;
+                while ((removed < toRemove) && semaphore.tryAcquire()) {
+                    removed++;
+                }
+                permitDebt += toRemove - removed;
+            }
+            unsettled = permitDebt;
         }
 
-        int difference = newMax - this.maxConcurrentRequests;
-        if (difference > 0) {
-            semaphore.release(difference);
-            drain();
+        if (unsettled > 0) {
+            LOGGER.info("Adjusted max concurrent requests to {}; {} permit(s) of the reduction are " +
+                "still held by in-flight requests and will be retired as those complete", newMax, unsettled);
         } else {
-            int toDrain = Math.min(-difference, semaphore.availablePermits());
-            if (toDrain > 0) {
-                semaphore.acquireUninterruptibly(toDrain);
-            }
+            LOGGER.info("Adjusted max concurrent requests to {}", newMax);
         }
-        this.maxConcurrentRequests = newMax;
-        LOGGER.info("Adjusted max concurrent requests to {}", newMax);
+        if (grown) {
+            // Outside the lock: a request started here can complete inline and return its permit.
+            drain();
+        }
     }
 
     public int getAvailablePermits() {
@@ -158,8 +209,19 @@ public class RequestThrottle {
         return maxConcurrentRequests;
     }
 
+    /**
+     * Requests holding a permit right now. Directly after a reduction this may exceed
+     * {@link #getMaxConcurrentRequests()} until the running requests return their permits.
+     */
     public int getInFlightRequests() {
-        return maxConcurrentRequests - semaphore.availablePermits();
+        return inFlight.get();
+    }
+
+    /** Visible for testing. */
+    int getPermitDebt() {
+        synchronized (permitLock) {
+            return permitDebt;
+        }
     }
 
 }
