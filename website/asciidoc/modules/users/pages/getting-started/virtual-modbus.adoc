@@ -298,6 +298,7 @@ If this is `PlcResponseCode.OK`, everything is ok, however it could be one of th
 - INVALID_DATATYPE
 - INTERNAL_ERROR
 - RESPONSE_PENDING
+- REQUEST_TIMEOUT
 
 Assuming the return code was `OK`, we can continue accessing the data.
 
