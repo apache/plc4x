@@ -339,6 +339,88 @@ namespace org.apache.plc4net.drivers.modbus.test
             Assert.Equal((short)0x2222, ValueOf(second).GetShort());
         }
 
+        // ── Unit identifier ────────────────────────────────────
+        // Behind a TCP-to-serial gateway the unit identifier names the slave, so a frame from
+        // another unit is not the answer, whatever its transaction identifier says.
+
+        [Fact]
+        public async Task A_response_from_another_unit_is_not_the_answer_and_the_request_is_not_sent_again()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 2, 0x03, 0x02, 0x00, 0x01));
+            var connection = NewTcp(transport, "?request-timeout-ms=200");
+
+            var response = await ReadAsync(connection, "holding-register:1");
+
+            Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("v"));
+            Assert.Equal(
+                ModbusFrames.Tcp(1, 1, 0x03, 0x00, 0x00, 0x00, 0x01),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task A_response_from_another_unit_is_skipped_and_the_matching_one_that_comes_later_completes_the_request()
+        {
+            var transport = NewTransport();
+            // The frame from unit 2 is seen on its own first; the right one comes later still.
+            transport.InjectTestData(ModbusFrames.Tcp(1, 2, 0x03, 0x02, 0x00, 0x01));
+            var connection = NewTcp(transport);
+            var answer = InjectAfterRequest(transport, 150, ModbusFrames.Tcp(1, 1, 0x03, 0x02, 0x00, 0xFA));
+
+            var response = await ReadAsync(connection, "holding-register:1");
+            await answer;
+
+            Assert.Equal((short)250, ValueOf(response).GetShort());
+        }
+
+        [Fact]
+        public async Task A_write_acknowledged_by_another_unit_is_not_accepted_and_not_sent_again()
+        {
+            var transport = NewTransport();
+            // The echo of the write, but from unit 2.
+            transport.InjectTestData(ModbusFrames.Tcp(1, 2, 0x06, 0x00, 0x00, 0x01, 0xC8));
+            var connection = NewTcp(transport, "?request-timeout-ms=200");
+
+            var response = await WriteAsync<ushort>(connection, "holding-register:1:UINT", 456);
+
+            Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("v"));
+            Assert.Equal(
+                ModbusFrames.Tcp(1, 1, 0x06, 0x00, 0x00, 0x01, 0xC8),
+                transport.GetAllWrittenData());
+        }
+
+        [Theory]
+        [InlineData("?request-timeout-ms=200", 2)]
+        [InlineData("?default-unit-identifier=7&request-timeout-ms=200", 1)] // not the built-in default
+        [InlineData("?default-unit-identifier=0&request-timeout-ms=200", 1)]
+        public async Task The_answer_is_checked_against_the_unit_identifier_of_the_connection(
+            string parameters, int answeringUnit)
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, (byte)answeringUnit, 0x03, 0x02, 0x00, 0x01));
+            var connection = NewTcp(transport, parameters);
+
+            var response = await ReadAsync(connection, "holding-register:1");
+
+            Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("v"));
+        }
+
+        [Fact]
+        public async Task The_connection_keeps_working_after_a_response_from_another_unit_was_dropped()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 2, 0x03, 0x02, 0x00, 0x01));
+            var connection = NewTcp(transport, "?request-timeout-ms=200");
+
+            var first = await ReadAsync(connection, "holding-register:1"); // only unit 2 answers
+            Assert.Equal(PlcResponseCode.RequestTimeout, first.GetResponseCode("v"));
+
+            transport.InjectTestData(ModbusFrames.Tcp(2, 1, 0x03, 0x02, 0x00, 0x2A));
+            var second = await ReadAsync(connection, "holding-register:1");
+
+            Assert.Equal((short)42, ValueOf(second).GetShort());
+        }
+
         [Fact]
         public async Task A_response_that_arrives_in_pieces_is_assembled()
         {

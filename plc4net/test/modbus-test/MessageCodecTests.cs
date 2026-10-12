@@ -343,6 +343,97 @@ namespace org.apache.plc4net.drivers.modbus.test
                 Assert.Single(received).Pdu).Value.Length);
         }
 
+        [Theory]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(17)]
+        [InlineData(120)]
+        [InlineData(246)]
+        public void Rtu_the_good_frame_is_found_behind_noise_of_any_length_that_announces_a_long_frame(
+            int noiseLength)
+        {
+            var transport = NewTransport();
+            var (codec, received) = NewRtu(transport);
+            // 01 03 FA looks like the start of a 255-byte read response; after it come bytes
+            // that cannot start a frame, and then the real answer.
+            var noise = new byte[noiseLength];
+            Array.Fill(noise, (byte)0x55);
+            noise[0] = 0x01;
+            noise[1] = 0x03;
+            noise[2] = 0xFA;
+            transport.InjectTestData(Concat(noise, ModbusFrames.Rtu(1, 0x03, 0x02, 0x12, 0x34)));
+
+            codec.ProcessIncomingData();
+
+            var pdu = Assert.IsType<ModbusPDUReadHoldingRegistersResponse>(Assert.Single(received).Pdu);
+            Assert.Equal(new byte[] { 0x12, 0x34 }, pdu.Value);
+        }
+
+        [Fact]
+        public void Rtu_an_exception_response_behind_noise_that_announces_a_long_frame_is_found()
+        {
+            var transport = NewTransport();
+            var (codec, received) = NewRtu(transport);
+            transport.InjectTestData(Concat(
+                new byte[] { 0x01, 0x03, 0xFA, 0x55 }, ModbusFrames.Rtu(1, 0x83, 0x02)));
+
+            codec.ProcessIncomingData();
+
+            var error = Assert.IsType<ModbusPDUError>(Assert.Single(received).Pdu);
+            Assert.Equal(ModbusErrorCode.ILLEGAL_DATA_ADDRESS, error.ExceptionCode);
+        }
+
+        [Fact]
+        public void Rtu_a_candidate_with_a_wrong_crc_behind_a_long_header_is_not_taken_for_a_frame()
+        {
+            var transport = NewTransport();
+            var (codec, received) = NewRtu(transport);
+            var bad = ModbusFrames.Rtu(1, 0x03, 0x02, 0x12, 0x34);
+            bad[^1] ^= 0x01; // the CRC no longer fits
+            transport.InjectTestData(Concat(new byte[] { 0x01, 0x03, 0xFA, 0x55 }, bad));
+
+            codec.ProcessIncomingData();
+
+            // Nothing good is behind the header, so the frame it announces is waited for.
+            Assert.Empty(received);
+            Assert.Equal(4 + bad.Length, transport.GetNumBytesAvailable());
+        }
+
+        [Fact]
+        public void Rtu_the_scan_for_a_frame_behind_the_header_starts_after_the_first_byte_and_needs_the_whole_frame()
+        {
+            var frame = ModbusFrames.Rtu(1, 0x03, 0x02, 0x12, 0x34);
+
+            // A good frame at offset 0 is the frame under test, not one behind it.
+            Assert.False(ModbusRtuMessageCodec.HasFrameBehindFirstByte(frame));
+            Assert.True(ModbusRtuMessageCodec.HasFrameBehindFirstByte(Concat(new byte[] { 0x55 }, frame)));
+            // One byte short: it has not arrived in full.
+            Assert.False(ModbusRtuMessageCodec.HasFrameBehindFirstByte(Concat(new byte[] { 0x55 }, frame[..^1])));
+        }
+
+        [Fact]
+        public void Rtu_the_crc_check_of_the_scan_takes_what_the_reference_builds_and_nothing_with_a_flipped_bit()
+        {
+            var frames = new[]
+            {
+                ModbusFrames.Rtu(1, 0x03, 0x02, 0x12, 0x34),
+                ModbusFrames.Rtu(17, 0x06, 0x00, 0x05, 0x12, 0x34),
+                ModbusFrames.Rtu(247, 0x83, 0x02),
+            };
+            foreach (var frame in frames)
+            {
+                Assert.True(ModbusRtuMessageCodec.CrcMatches(frame), Convert.ToHexString(frame));
+                for (var bit = 0; bit < frame.Length * 8; bit++)
+                {
+                    var flipped = (byte[])frame.Clone();
+                    flipped[bit / 8] ^= (byte)(1 << (bit % 8));
+                    Assert.False(
+                        ModbusRtuMessageCodec.CrcMatches(flipped),
+                        $"bit {bit} flipped in {Convert.ToHexString(frame)}");
+                }
+            }
+        }
+
         [Fact]
         public void Rtu_a_complete_frame_is_checked_before_it_is_consumed()
         {

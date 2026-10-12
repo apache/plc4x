@@ -45,10 +45,9 @@ namespace org.apache.plc4net.drivers.modbus
         private const int MaxByteCount = 250;
 
         // How much of the buffer is searched for a good frame behind a header that
-        // announces more than has arrived. The bound also caps the resync cost on a
-        // persistently noisy line, where every offset re-parses a candidate frame. A
-        // valid answer that starts further into the buffer is not found and ends as
-        // a request timeout.
+        // announces more than has arrived. The bound also caps the cost of that search
+        // on a persistently noisy line. A valid answer that starts further into the
+        // buffer is not found and ends as a request timeout.
         private const int LookaheadBytes = 512;
 
         public ModbusRtuMessageCodec(ITransportInstance transport, Action<ModbusRtuADU> handler)
@@ -85,22 +84,27 @@ namespace org.apache.plc4net.drivers.modbus
         }
 
         private bool HasCompleteFrameBehind(int availableBytes)
+            => HasFrameBehindFirstByte(
+                TransportInstance.PeekReadableBytes(Math.Min(availableBytes, LookaheadBytes)));
+
+        /// <summary>
+        /// Whether a whole good frame starts anywhere in the buffer after its first byte. On a
+        /// noisy line nearly every offset is a miss, so a candidate has to pass two cheap checks
+        /// - a function code that can start a frame, and a CRC that fits - before the generated
+        /// parser, which throws on every miss, is asked.
+        /// </summary>
+        internal static bool HasFrameBehindFirstByte(byte[] buffered)
         {
-            var buffered = TransportInstance.PeekReadableBytes(Math.Min(availableBytes, LookaheadBytes));
             for (var offset = 1; offset + HeaderSize <= buffered.Length; offset++)
             {
-                int length;
-                try
+                if (!TryExpectedLength(buffered[offset + 1], buffered[offset + 2], out var length)
+                    || offset + length > buffered.Length)
                 {
-                    length = ExpectedLength(new[] { buffered[offset], buffered[offset + 1], buffered[offset + 2] });
-                }
-                catch (MessageCodecException)
-                {
-                    continue; // nothing that could be a frame starts here
+                    continue; // nothing that could be a frame starts here, or not all of it has arrived
                 }
 
-                if (offset + length <= buffered.Length
-                    && IsFrame(buffered[offset..(offset + length)]))
+                var candidate = buffered.AsSpan(offset, length);
+                if (CrcMatches(candidate) && IsFrame(buffered, offset, length))
                 {
                     return true;
                 }
@@ -108,12 +112,30 @@ namespace org.apache.plc4net.drivers.modbus
             return false;
         }
 
+        /// <summary>Whether the last two bytes are the CRC-16/MODBUS of the rest, low byte first.</summary>
+        internal static bool CrcMatches(ReadOnlySpan<byte> frame)
+        {
+            ushort crc = 0xFFFF;
+            for (var i = 0; i < frame.Length - 2; i++)
+            {
+                crc ^= frame[i];
+                for (var bit = 0; bit < 8; bit++)
+                {
+                    crc = (crc & 1) != 0 ? (ushort)((crc >> 1) ^ 0xA001) : (ushort)(crc >> 1);
+                }
+            }
+            return frame[frame.Length - 2] == (byte)crc && frame[frame.Length - 1] == (byte)(crc >> 8);
+        }
+
         /// <summary>Whether the bytes are one whole frame that the generated parser accepts, CRC included.</summary>
-        private static bool IsFrame(byte[] bytes)
+        private static bool IsFrame(byte[] bytes, int offset = 0, int length = -1)
         {
             try
             {
-                ModbusRtuADU.StaticParse(new ReadBuffer(bytes), DriverType.MODBUS_RTU, true);
+                ModbusRtuADU.StaticParse(
+                    new ReadBuffer(bytes, offset, length < 0 ? bytes.Length - offset : length),
+                    DriverType.MODBUS_RTU,
+                    true);
                 return true;
             }
             catch (ParseException)
@@ -124,12 +146,26 @@ namespace org.apache.plc4net.drivers.modbus
 
         private static int ExpectedLength(byte[] header)
         {
-            var functionCode = header[1];
+            if (!TryExpectedLength(header[1], header[2], out var length))
+            {
+                // Not the start of a frame: let the base class resync.
+                throw new MessageCodecException(
+                    $"Not the start of a Modbus RTU frame (function code 0x{header[1]:X2}, third byte {header[2]}).");
+            }
+            return length;
+        }
 
+        /// <summary>
+        /// The length of the frame that starts with an address byte, then this function code and
+        /// this third byte - or false when nothing that can be a response starts like that.
+        /// </summary>
+        private static bool TryExpectedLength(byte functionCode, byte third, out int length)
+        {
             // Exception response: address, function, exception code, CRC.
             if ((functionCode & 0x80) != 0)
             {
-                return 5;
+                length = 5;
+                return true;
             }
 
             switch (functionCode)
@@ -138,23 +174,19 @@ namespace org.apache.plc4net.drivers.modbus
                 case 0x02: // Read Discrete Inputs
                 case 0x03: // Read Holding Registers
                 case 0x04: // Read Input Registers
-                    if (header[2] > MaxByteCount)
-                    {
-                        throw new MessageCodecException(
-                            $"Implausible Modbus RTU byte count {header[2]}.");
-                    }
                     // Address, function, byte count, data, CRC.
-                    return 3 + header[2] + 2;
+                    length = 3 + third + 2;
+                    return third <= MaxByteCount;
                 case 0x05: // Write Single Coil
                 case 0x06: // Write Single Register
                 case 0x0F: // Write Multiple Coils
                 case 0x10: // Write Multiple Registers
                     // Address, function, the echoed address and value or quantity, CRC.
-                    return 8;
+                    length = 8;
+                    return true;
                 default:
-                    // Not the start of a frame: let the base class resync.
-                    throw new MessageCodecException(
-                        $"Unsupported Modbus RTU function code 0x{functionCode:X2}.");
+                    length = 0;
+                    return false;
             }
         }
 

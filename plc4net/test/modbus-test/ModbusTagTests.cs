@@ -167,5 +167,27 @@ namespace org.apache.plc4net.drivers.modbus.test
             // Enum.TryParse would read "7" as ModbusDataType.INT.
             Assert.Throws<PlcInvalidFieldException>(() => ModbusTag.Parse("holding-register:1:7"));
         }
+
+        [Theory]
+        [InlineData("coil", ModbusTag.TagType.Coil)]
+        [InlineData("discrete-input", ModbusTag.TagType.DiscreteInput)]
+        [InlineData("holding-register", ModbusTag.TagType.HoldingRegister)]
+        [InlineData("input-register", ModbusTag.TagType.InputRegister)]
+        [InlineData("INPUT-REGISTER", ModbusTag.TagType.InputRegister)]
+        public void Each_area_name_is_its_own_area(string area, ModbusTag.TagType expected)
+        {
+            Assert.Equal(expected, ModbusTag.ParseArea(area));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("holding")]
+        [InlineData("input")]
+        [InlineData("register")]
+        [InlineData("inputregister")]
+        public void An_area_name_that_is_not_one_of_the_four_is_never_read_as_an_input_register(string area)
+        {
+            Assert.Throws<PlcInvalidFieldException>(() => ModbusTag.ParseArea(area));
+        }
     }
 }

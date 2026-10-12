@@ -30,7 +30,8 @@ namespace org.apache.plc4net.drivers.modbus
 {
     /// <summary>
     /// A Modbus TCP connection: wraps each request PDU in a generated
-    /// <see cref="ModbusTcpADU"/>, and matches the response by its transaction identifier.
+    /// <see cref="ModbusTcpADU"/>, and matches the response by its transaction identifier
+    /// and its unit identifier.
     /// </summary>
     public sealed class ModbusTcpConnection : ModbusConnectionBase
     {
@@ -138,6 +139,19 @@ namespace org.apache.plc4net.drivers.modbus
                 Logger.LogDebug(
                     "Modbus TCP: discarded a stale response (transaction {Got}, waiting for {Want})",
                     adu.TransactionIdentifier, _expectedTransactionId);
+                return;
+            }
+
+            // Behind a TCP-to-serial gateway the unit identifier names the slave, so a frame
+            // from another unit is not the answer even when its transaction identifier fits.
+            // It is dropped and the request keeps waiting for the right frame until it times
+            // out; it is never sent again, since a rejected acknowledgement does not show
+            // that the device left the write undone.
+            if (adu.UnitIdentifier != UnitIdentifier)
+            {
+                Logger.LogWarning(
+                    "Modbus TCP: discarded a response from unit {Got} to transaction {Transaction}, waiting for unit {Want}",
+                    adu.UnitIdentifier, adu.TransactionIdentifier, UnitIdentifier);
                 return;
             }
             _response = adu;

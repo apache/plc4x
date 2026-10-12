@@ -150,7 +150,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         public override string ToString() => $"{AreaName(Type)}:{Address}:{DataType}";
 
-        private static TagType ParseArea(string area)
+        internal static TagType ParseArea(string area)
         {
             switch (area.ToLowerInvariant())
             {
@@ -160,8 +160,13 @@ namespace org.apache.plc4net.drivers.modbus
                     return TagType.DiscreteInput;
                 case "holding-register":
                     return TagType.HoldingRegister;
-                default:
+                case "input-register":
                     return TagType.InputRegister;
+                default:
+                    // The pattern lets only the four names through. A name that gets past it
+                    // later must fail here: reading it as an input register would address
+                    // other memory than the tag says.
+                    throw new PlcInvalidFieldException($"Unknown Modbus area '{area}'.");
             }
         }
 

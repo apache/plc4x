@@ -27,21 +27,46 @@ namespace org.apache.plc4net.spi.generation
     {
         private readonly byte[] _data;
         private readonly BitReader _reader;
+        private readonly int _startBit;
+        private readonly int _endBit;
 
-        public ReadBuffer(byte[] data)
+        public ReadBuffer(byte[] data) : this(data, 0, data?.Length ?? throw new ArgumentNullException(nameof(data)))
         {
-            this._data = data;
+        }
+
+        /// <summary>
+        /// Reads a byte-aligned window of <paramref name="data"/> without copying it.
+        /// Positions reported by this buffer are relative to the window, and no read can
+        /// cross its end. This lets stream codecs validate a frame inside a larger receive
+        /// buffer without allocating a temporary array for that frame.
+        /// </summary>
+        public ReadBuffer(byte[] data, int offset, int length)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+            if (offset < 0 || length < 0 || offset > data.Length - length)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(length), "The buffer window must be wholly contained in the data array.");
+            }
+
+            _data = data;
             _reader = new BitReader(data);
+            _startBit = checked(offset * 8);
+            _endBit = checked((offset + length) * 8);
+            _reader.Position = _startBit;
         }
 
         public void Reset()
         {
-            _reader.Position = 0;
+            _reader.Position = _startBit;
         }
 
         public int GetPos()
         {
-            return _reader.Position;
+            return _reader.Position - _startBit;
         }
 
         public byte[] GetBytes()
@@ -51,7 +76,7 @@ namespace org.apache.plc4net.spi.generation
 
         public int GetTotalBytes()
         {
-            return _data.Length;
+            return (_endBit - _startBit) / 8;
         }
 
         public bool HasMore(int bitLength)
@@ -64,16 +89,18 @@ namespace org.apache.plc4net.spi.generation
             }
             // Inclusive: a buffer with exactly bitLength bits left can still serve
             // a read of that size.
-            return bitLength <= _reader.Remaining;
+            return bitLength <= _endBit - _reader.Position;
         }
 
         public byte PeekByte(int offset)
         {
+            EnsureReadable((offset + 1) * 8);
             return _data[(_reader.Position / 8) + offset];
         }
 
         public bool ReadBit(String logicalName)
         {
+            EnsureReadable(1);
             return _reader.ReadBool();
         }
 
@@ -83,6 +110,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (byte)_reader.ReadBits(bitLength);
         }
 
@@ -92,6 +120,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (ushort)_reader.ReadBits(bitLength);
         }
 
@@ -101,6 +130,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (uint)_reader.ReadBits(bitLength);
         }
 
@@ -113,6 +143,7 @@ namespace org.apache.plc4net.spi.generation
             // The previous implementation read (bitLength - 32) bits and then a
             // further bitLength bits, consuming 2*bitLength-32 bits instead of
             // bitLength, so it never round-tripped against WriteBuffer.WriteUlong.
+            EnsureReadable(bitLength);
             return _reader.ReadBits(bitLength);
         }
 
@@ -122,6 +153,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (sbyte)_reader.ReadSignedBits(bitLength);
         }
 
@@ -131,6 +163,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (short)_reader.ReadSignedBits(bitLength);
         }
 
@@ -140,6 +173,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
+            EnsureReadable(bitLength);
             return (int)_reader.ReadSignedBits(bitLength);
         }
 
@@ -150,6 +184,7 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
             // Same over-read as ReadUlong had.
+            EnsureReadable(bitLength);
             return _reader.ReadSignedBits(bitLength);
         }
 
@@ -159,11 +194,13 @@ namespace org.apache.plc4net.spi.generation
             {
                 // Reinterpret the 32 raw bits as IEEE-754. Going via
                 // BitConverter.GetBytes would reorder them on a little-endian host.
+                EnsureReadable(32);
                 return BitConverter.Int32BitsToSingle((int)_reader.ReadBits(32));
             }
             // KNX DPT 9.x: a 16 bit fixed-point form, not IEEE-754 half precision.
             if (bitLength == 16)
             {
+                EnsureReadable(16);
                 var sign = _reader.ReadBool();
                 var exp = (int)_reader.ReadBits(4);
                 var mantissa = (int)_reader.ReadBits(11);
@@ -186,6 +223,7 @@ namespace org.apache.plc4net.spi.generation
             }
             if (bitLength == 64)
             {
+                EnsureReadable(64);
                 return BitConverter.Int64BitsToDouble((long)_reader.ReadBits(64));
             }
             throw new NotImplementedException("This encoding is currently not supported");
@@ -203,6 +241,7 @@ namespace org.apache.plc4net.spi.generation
                     nameof(bitLength), bitLength, "String lengths must be a whole number of bytes.");
             }
 
+            EnsureReadable(bitLength);
             var raw = _reader.ReadBytes(bitLength / 8);
             // PLC strings are commonly padded to a fixed field width with NULs.
             return encoding.GetString(raw).TrimEnd('\0');
@@ -215,7 +254,16 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(
                     nameof(bitLength), bitLength, "Byte arrays must be a whole number of bytes.");
             }
+            EnsureReadable(bitLength);
             return _reader.ReadBytes(bitLength / 8);
+        }
+
+        private void EnsureReadable(int bitLength)
+        {
+            if (bitLength < 0 || bitLength > _endBit - _reader.Position)
+            {
+                throw new ParseException("Not enough data in the read buffer.");
+            }
         }
 
     }
