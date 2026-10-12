@@ -23,7 +23,11 @@
 # round-trip the upstream `withTcpSerialMode()` uses (which jSerialComm on
 # macOS won't open) and gives the IT a single endpoint that works on every
 # OS Docker runs on.
-FROM pfichtner/virtualavr:latest
+#
+# The base image is pinned: 0.3.0 changed virtualavr.js to take a compiled HEX
+# file instead of compiling the sketch itself, and the floating `latest` tag
+# picked that up silently and broke this IT on every platform.
+FROM pfichtner/virtualavr:0.3.1
 
 # StandardFirmata.ino is LGPL-2.1 ©Firmata authors and is therefore not
 # compatible with this repository's Apache-2.0 source tree. Fetch it from
@@ -35,10 +39,15 @@ RUN curl -fsSL "${FIRMATA_REPO}/${FIRMATA_REF}/examples/StandardFirmata/Standard
         -o /sketch/sketch.ino
 
 # StandardFirmata.ino #includes <Servo.h> and <Firmata.h>. The upstream image
-# ships arduino-cli + the AVR core but no extra libraries, and virtualavr's
-# own library installer is currently disabled (compileArduinoSketch sets
-# installCommand=false), so install them at image build time.
+# ships arduino-cli + the AVR core but no extra libraries, so install them at
+# image build time.
 RUN arduino-cli lib install Servo Firmata
+
+# virtualavr.js only runs compiled firmware; upstream's own entrypoint (which
+# this image replaces) compiles the sketch with virtualavr-compile-arduino
+# before every start. Compile it once here instead, so that every accept below
+# starts the simulator straight away.
+RUN virtualavr-compile-arduino /sketch/sketch.ino /sketch/firmware.hex
 
 # The upstream pfichtner/virtualavr HEALTHCHECK pings ws://localhost:8080,
 # which only starts when the simulator starts, which only happens on the
@@ -59,4 +68,4 @@ EXPOSE 3030
 # what made the container exit cleanly within seconds under Testcontainers'
 # default log-streaming attach during earlier testing).
 ENTRYPOINT ["/bin/sh", "-c", \
-            "while true; do socat TCP-LISTEN:3030,reuseaddr EXEC:'node /app/virtualavr.js sketch.ino',pty,rawer,fdin=3,fdout=4; sleep 1; done </dev/null"]
+            "while true; do socat TCP-LISTEN:3030,reuseaddr EXEC:'node /app/virtualavr.js /sketch/firmware.hex',pty,rawer,fdin=3,fdout=4; sleep 1; done </dev/null"]
