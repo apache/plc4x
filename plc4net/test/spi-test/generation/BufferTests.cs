@@ -226,5 +226,22 @@ namespace org.apache.plc4net.spi.test.generation
             var ex = Assert.Throws<ParseException>(() => rb.ReadUint("", 32));
             Assert.Contains("Not enough data", ex.Message);
         }
+
+        [Fact]
+        public void A_window_reads_the_selected_bytes_without_crossing_its_end()
+        {
+            var rb = new ReadBuffer(new byte[] { 0xAA, 0x12, 0x34, 0xBB }, 1, 2);
+
+            Assert.Equal(2, rb.GetTotalBytes());
+            Assert.Equal(0, rb.GetPos());
+            Assert.Equal((byte)0x12, rb.PeekByte(0));
+            Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16));
+            Assert.Equal(16, rb.GetPos());
+            Assert.False(rb.HasMore(1));
+            Assert.Throws<ParseException>(() => rb.ReadByte("", 8));
+
+            rb.Reset();
+            Assert.Equal((byte)0x12, rb.ReadByte("", 8));
+        }
     }
 }
