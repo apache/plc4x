@@ -99,6 +99,9 @@ char *plc4c_response_code_to_message(plc4c_response_code response_code) {
     case PLC4C_RESPONSE_CODE_RESPONSE_PENDING: {
       return "RESPONSE PENDING";
     }
+    case PLC4C_RESPONSE_CODE_REQUEST_TIMEOUT: {
+      return "REQUEST TIMEOUT";
+    }
     default: {
       return "UNKNOWN RESPONSE CODE";
     }

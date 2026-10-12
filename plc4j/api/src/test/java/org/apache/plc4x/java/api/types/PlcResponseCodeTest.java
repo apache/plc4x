@@ -33,6 +33,7 @@ class PlcResponseCodeTest {
         assertThat(PlcResponseCode.INVALID_ADDRESS, notNullValue());
         assertThat(PlcResponseCode.INVALID_DATATYPE, notNullValue());
         assertThat(PlcResponseCode.RESPONSE_PENDING, notNullValue());
+        assertThat(PlcResponseCode.REQUEST_TIMEOUT, notNullValue());
     }
 
 }

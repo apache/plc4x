@@ -315,6 +315,54 @@ class ModbusRtuConnectionRequestChainTest {
     }
 
     /**
+     * A block the device never answers is reported as REQUEST_TIMEOUT for its tags; the other
+     * blocks of the read keep their values instead of the whole request failing.
+     */
+    @Test
+    void readBlockThatTimesOutDoesNotFailTheOtherBlocks() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport, 200);
+
+        // Different units can't share a block; only unit 7 answers.
+        CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
+            .addTagAddress("slow", "4x00001:INT")
+            .addTagAddress("fast", "4x00001:INT{unit-id: 7}")
+            .build()
+            .execute();
+
+        // The blocks go out one at a time, in an order this test doesn't rely on.
+        for (int i = 1; i <= 2; i++) {
+            int writes = i;
+            awaitTrue(() -> transport.writeCount() == writes, 2, TimeUnit.SECONDS);
+            if ((transport.lastWrittenFrame()[0] & 0xFF) == 7) {
+                transport.deliver(readResponseFrame(7, new byte[]{0x00, 0x2A}));
+                transport.runDataListener();
+            }
+        }
+
+        PlcReadResponse response = future.get(2, TimeUnit.SECONDS);
+        assertEquals(PlcResponseCode.REQUEST_TIMEOUT, response.getResponseCode("slow"));
+        assertEquals(PlcResponseCode.OK, response.getResponseCode("fast"));
+        assertEquals(42, response.getInteger("fast"));
+    }
+
+    @Test
+    void writeThatTimesOutIsReportedAsRequestTimeout() throws Exception {
+        ScriptedAsyncTransport transport = new ScriptedAsyncTransport();
+        ModbusRtuConnection connection = newConnectedConnection(transport, 200);
+
+        PlcWriteResponse response = connection.writeRequestBuilder()
+            .addTagAddress("value", "4x00001:INT", 42)
+            .build()
+            .execute()
+            .get(2, TimeUnit.SECONDS);
+
+        assertEquals(PlcResponseCode.REQUEST_TIMEOUT, response.getResponseCode("value"));
+        // Whether the unanswered write took effect is unknown, so it is never re-sent.
+        assertEquals(1, transport.writeCount());
+    }
+
+    /**
      * Builds a connection wired to the given fake transport, and drives it
      * through the same construction/connect path as {@code ModbusRtuConnectionTest}.
      */

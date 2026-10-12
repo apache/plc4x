@@ -32,6 +32,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -63,6 +64,59 @@ func TestWriter_failedSendDeliversErrorResult(t *testing.T) {
 		}
 	case <-time.After(2 * time.Second):
 		t.Fatal("no result delivered for a failed send")
+	}
+}
+
+// A write the device never answers is reported the way the reader reports a block and plc4j
+// reports a write: REQUEST_TIMEOUT for its tag, with the error alongside it, so a caller that only
+// checks the error still sees that the write failed.
+func TestWriter_anUnansweredWriteIsReportedAsRequestTimeout(t *testing.T) {
+	codec := newCaptureCodec(nil)
+	writer := NewWriter(DefaultConfiguration(), codec, testTransactionManager())
+
+	results := writer.Write(testutils.TestContext(t), testWriteRequest(t, writer))
+
+	var handlers capturedHandlers
+	select {
+	case handlers = <-codec.handlers:
+	case <-time.After(time.Second):
+		t.Fatal("SendRequest was never invoked")
+	}
+	// What the codec hands an expectation that expired (spi/default.defaultCodec.TimeoutExpectations).
+	_ = handlers.handleError(utils.NewTimeoutError(time.Second))
+
+	select {
+	case result := <-results:
+		require.Error(t, result.GetErr())
+		require.NotNil(t, result.GetResponse())
+		assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, result.GetResponse().GetResponseCode("tag"))
+	case <-time.After(2 * time.Second):
+		t.Fatal("the unanswered write never released the request")
+	}
+}
+
+// A failure that isn't a timeout - the connection going away, say - says nothing about the tag, so
+// it is still reported as an error alone.
+func TestWriter_aFailureOtherThanATimeoutIsAnErrorResult(t *testing.T) {
+	codec := newCaptureCodec(nil)
+	writer := NewWriter(DefaultConfiguration(), codec, testTransactionManager())
+
+	results := writer.Write(testutils.TestContext(t), testWriteRequest(t, writer))
+
+	var handlers capturedHandlers
+	select {
+	case handlers = <-codec.handlers:
+	case <-time.After(time.Second):
+		t.Fatal("SendRequest was never invoked")
+	}
+	_ = handlers.handleError(errors.New("disconnected"))
+
+	select {
+	case result := <-results:
+		require.Error(t, result.GetErr())
+		assert.Nil(t, result.GetResponse())
+	case <-time.After(2 * time.Second):
+		t.Fatal("the failed write never released the request")
 	}
 }
 

@@ -644,6 +644,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				result1 := NewMockPlcWriteRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetErr().Return(errors.New("asd"))
+				result1Expect.GetResponse().Return(nil)
 				result2 := NewMockPlcWriteRequestResult(t)
 				result2Expect := result2.EXPECT()
 				result2Expect.GetResponse().Return(nil)
@@ -662,6 +663,34 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
 				assert.NotNil(t, errors.Cause(errors.New("asd")))
 				return true
+			},
+		},
+		{
+			name: "two result (one failed with a response)",
+			setup: func(t *testing.T, fields *fields, args *args) {
+				var mergedCodes map[string]apiModel.PlcResponseCode
+				fields.writeResponseFactory = func(request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
+					mergedCodes = responseCodes
+					return nil
+				}
+				// A sub-write that failed, but still reports a code for its tag (a timeout, say).
+				failed := NewMockPlcWriteRequestResult(t)
+				failed.EXPECT().GetErr().Return(errors.New("timed out"))
+				failed.EXPECT().GetResponse().Return(writeResponseWith(t, "tag1", apiModel.PlcResponseCode_REQUEST_TIMEOUT))
+				succeeded := NewMockPlcWriteRequestResult(t)
+				succeeded.EXPECT().GetErr().Return(nil)
+				succeeded.EXPECT().GetResponse().Return(writeResponseWith(t, "tag2", apiModel.PlcResponseCode_OK))
+				args.writeResults = []apiModel.PlcWriteRequestResult{failed, succeeded}
+				args.ctx = testutils.TestContext(t)
+				t.Cleanup(func() {
+					assert.Equal(t, map[string]apiModel.PlcResponseCode{
+						"tag1": apiModel.PlcResponseCode_REQUEST_TIMEOUT,
+						"tag2": apiModel.PlcResponseCode_OK,
+					}, mergedCodes)
+				})
+			},
+			wantAssert: func(t *testing.T, args args, got apiModel.PlcWriteRequestResult) bool {
+				return assert.Error(t, got.GetErr())
 			},
 		},
 		{
@@ -707,6 +736,16 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 			}
 		})
 	}
+}
+
+// writeResponseWith is a sub-write's response: one tag, and the code it was written with.
+func writeResponseWith(t *testing.T, tagName string, code apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
+	request := NewMockPlcWriteRequest(t)
+	request.EXPECT().GetTagNames().Return([]string{tagName})
+	response := NewMockPlcWriteResponse(t)
+	response.EXPECT().GetRequest().Return(request)
+	response.EXPECT().GetResponseCode(tagName).Return(code)
+	return response
 }
 
 func Test_interceptedPlcReadRequestResult_GetErr(t *testing.T) {

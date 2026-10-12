@@ -219,6 +219,21 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			return
 		}
 
+		// A write the device didn't answer within the request timeout is reported as
+		// REQUEST_TIMEOUT for its tag, the way the reader reports a block that timed out and plc4j
+		// reports a write. The error goes along with it, so a caller that only checks the error
+		// still sees that the write failed. Whether the device executed it is unknown, so it is
+		// never sent again. Any other failure says nothing about the tag and stays an error alone.
+		deliverFailure := func(err error) {
+			if utils.IsTimeoutError(err) {
+				deliver(spiModel.NewDefaultPlcWriteResponse(writeRequest, map[string]apiModel.PlcResponseCode{
+					tagName: apiModel.PlcResponseCode_REQUEST_TIMEOUT,
+				}), err)
+				return
+			}
+			deliver(nil, err)
+		}
+
 		// Calculate a new unit identifier
 		transactionIdentifier := atomic.AddInt32(&m.transactionIdentifier, 1)
 		if transactionIdentifier > math.MaxUint8 {
@@ -254,11 +269,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 			}
 			return nil
 		}, func(err error) error {
-			deliver(nil, errors.Wrap(err, "got timeout while waiting for response"))
+			deliverFailure(errors.Wrap(err, "got no response"))
 			return nil
 		}); err != nil {
+			// A write that ran out of time while it was still waiting its turn behind another
+			// request (sendTransacted) timed out as much as an unanswered one did.
 			m.log.Debug().Err(err).Msg("error sending message")
-			deliver(nil, errors.Wrap(err, "error sending message"))
+			deliverFailure(errors.Wrap(err, "error sending message"))
 		}
 	})
 	return result

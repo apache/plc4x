@@ -88,7 +88,13 @@ public enum PlcResponseCode {
      * Distinct from {@link #INVALID_DATA} (which means "malformed") and
      * {@link #INVALID_ADDRESS} (which means "no such address exists").
      */
-    OUT_OF_RANGE((short) 0x0E);
+    OUT_OF_RANGE((short) 0x0E),
+    /**
+     * The request was sent, but no matching response arrived within the request timeout, and
+     * the driver has stopped waiting for one. This is final: unlike {@link #RESPONSE_PENDING},
+     * no result will follow. For a write, the device may or may not have executed it.
+     */
+    REQUEST_TIMEOUT((short) 0x0F);
 
     private static final Map<Short, PlcResponseCode> map;
 
