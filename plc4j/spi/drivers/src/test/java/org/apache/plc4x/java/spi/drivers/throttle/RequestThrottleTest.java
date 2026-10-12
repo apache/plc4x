@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.drivers.throttle;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -635,6 +636,7 @@ class RequestThrottleTest {
      * attempts; it has to report none, on every attempt, whatever the interleaving.
      */
     @Test
+    @Timeout(60)
     void permitsReturnedWhileShrinkingAreNotCountedTwice() throws Exception {
         int returning = 4;
         ExecutorService executor = Executors.newFixedThreadPool(returning + 1);
@@ -684,10 +686,16 @@ class RequestThrottleTest {
         }
     }
 
-    /** Reports the caller as ready and spins until every party has been let go. */
+    /**
+     * Reports the caller as ready and spins until every party has been let go. Gives up when
+     * interrupted, so a failing attempt that never sets the flag cannot leave threads spinning.
+     */
     private static void awaitGo(CountDownLatch ready, AtomicBoolean go) {
         ready.countDown();
         while (!go.get()) {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new IllegalStateException("interrupted before the attempt was started");
+            }
             Thread.onSpinWait();
         }
     }
