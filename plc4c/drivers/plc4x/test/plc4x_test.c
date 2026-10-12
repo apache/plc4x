@@ -18,17 +18,53 @@
  */
 #include <unity.h>
 
+#include "plc4c/driver_plc4x_packets.h"
+
 void parser_serializer_test_plc4x_read_write();
 
 void setUp(void) {}
 
 void tearDown(void) {}
 
+// Every code the proxy can put on the wire, and what a plc4c caller sees for it: the one plc4c
+// has where it has one, INTERNAL_ERROR where it doesn't.
+void test_plc4x_response_code_mapping(void) {
+  struct {
+    plc4c_plc4x_read_write_plc4x_response_code wire;
+    plc4c_response_code expected;
+  } cases[] = {
+      {plc4c_plc4x_read_write_plc4x_response_code_OK, PLC4C_RESPONSE_CODE_OK},
+      {plc4c_plc4x_read_write_plc4x_response_code_NOT_FOUND, PLC4C_RESPONSE_CODE_NOT_FOUND},
+      {plc4c_plc4x_read_write_plc4x_response_code_ACCESS_DENIED, PLC4C_RESPONSE_CODE_ACCESS_DENIED},
+      {plc4c_plc4x_read_write_plc4x_response_code_INVALID_ADDRESS, PLC4C_RESPONSE_CODE_INVALID_ADDRESS},
+      {plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATATYPE, PLC4C_RESPONSE_CODE_INVALID_DATATYPE},
+      {plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATA, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_INTERNAL_ERROR, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_REMOTE_BUSY, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_REMOTE_ERROR, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_UNSUPPORTED, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING, PLC4C_RESPONSE_CODE_RESPONSE_PENDING},
+      {plc4c_plc4x_read_write_plc4x_response_code_NOT_READY, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE, PLC4C_RESPONSE_CODE_INTERNAL_ERROR},
+      {plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT, PLC4C_RESPONSE_CODE_REQUEST_TIMEOUT},
+  };
+  int num_cases = sizeof(cases) / sizeof(cases[0]);
+
+  // A code added to the wire enum has to be added here, so that its mapping is a decision.
+  TEST_ASSERT_EQUAL_INT(plc4c_plc4x_read_write_plc4x_response_code_num_values(), num_cases);
+  for (int i = 0; i < num_cases; i++) {
+    TEST_ASSERT_EQUAL_INT_MESSAGE(cases[i].expected,
+        plc4c_driver_plc4x_map_response_code(cases[i].wire),
+        plc4c_response_code_to_message(cases[i].expected));
+  }
+}
+
 int main(void) {
   UNITY_BEGIN();
 
   // Execute the auto-generated serializer/parser tests.
   parser_serializer_test_plc4x_read_write();
+  RUN_TEST(test_plc4x_response_code_mapping);
 
   return UNITY_END();
 }

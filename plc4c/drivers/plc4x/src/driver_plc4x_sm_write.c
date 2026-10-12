@@ -215,12 +215,8 @@ plc4c_return_code plc4c_driver_plc4x_parse_write_response(
     }
     response_item->item = request_item->item;
 
-    // TODO: better map transport error codes to response error codes
-    if (plc4x_payload_item->response_code == plc4c_plc4x_read_write_plc4x_response_code_OK) {
-      response_item->response_code = PLC4C_RESPONSE_CODE_OK;
-    } else {
-      response_item->response_code = PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
-    }
+    response_item->response_code =
+        plc4c_driver_plc4x_map_response_code(plc4x_payload_item->response_code);
 
     plc4c_utils_list_insert_head_value(execution->write_response->response_items, response_item);
 

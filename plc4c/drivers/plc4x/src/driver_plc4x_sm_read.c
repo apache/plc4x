@@ -216,11 +216,8 @@ plc4c_return_code plc4c_driver_plc4x_parse_read_response(
 
     response_value_item->item = request_item;
 
-    if (payload_item->response_code == plc4c_plc4x_read_write_plc4x_response_code_OK) {
-      response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
-    } else {
-      response_value_item->response_code = PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
-    }
+    response_value_item->response_code =
+        plc4c_driver_plc4x_map_response_code(payload_item->response_code);
     
     response_value_item->value = payload_item->value;
 
