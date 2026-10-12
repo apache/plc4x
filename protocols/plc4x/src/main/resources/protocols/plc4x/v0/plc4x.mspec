@@ -254,6 +254,9 @@
     ['0x0A' REMOTE_ERROR    ]
     ['0x0B' UNSUPPORTED     ]
     ['0x0C' RESPONSE_PENDING]
+    ['0x0D' NOT_READY       ]
+    ['0x0E' OUT_OF_RANGE    ]
+    ['0x0F' REQUEST_TIMEOUT ]
 ]
 
 [enum uint 8 Plc4xValueType

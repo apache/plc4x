@@ -94,11 +94,20 @@ plc4c_plc4x_read_write_plc4x_response_code plc4c_plc4x_read_write_plc4x_response
     if(strcmp(value_string, "RESPONSE_PENDING") == 0) {
         return plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING;
     }
+    if(strcmp(value_string, "NOT_READY") == 0) {
+        return plc4c_plc4x_read_write_plc4x_response_code_NOT_READY;
+    }
+    if(strcmp(value_string, "OUT_OF_RANGE") == 0) {
+        return plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE;
+    }
+    if(strcmp(value_string, "REQUEST_TIMEOUT") == 0) {
+        return plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT;
+    }
     return -1;
 }
 
 int plc4c_plc4x_read_write_plc4x_response_code_num_values() {
-  return 11;
+  return 14;
 }
 
 plc4c_plc4x_read_write_plc4x_response_code plc4c_plc4x_read_write_plc4x_response_code_value_for_index(int index) {
@@ -135,6 +144,15 @@ plc4c_plc4x_read_write_plc4x_response_code plc4c_plc4x_read_write_plc4x_response
       }
       case 10: {
         return plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING;
+      }
+      case 11: {
+        return plc4c_plc4x_read_write_plc4x_response_code_NOT_READY;
+      }
+      case 12: {
+        return plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE;
+      }
+      case 13: {
+        return plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT;
       }
       default: {
         return -1;

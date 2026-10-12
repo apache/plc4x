@@ -43,7 +43,13 @@ public enum Plc4xResponseCode {
 
   UNSUPPORTED((short) 0x0B),
 
-  RESPONSE_PENDING((short) 0x0C);
+  RESPONSE_PENDING((short) 0x0C),
+
+  NOT_READY((short) 0x0D),
+
+  OUT_OF_RANGE((short) 0x0E),
+
+  REQUEST_TIMEOUT((short) 0x0F);
 
   private static final Map<Short, Plc4xResponseCode> map;
 

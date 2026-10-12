@@ -40,7 +40,10 @@ enum plc4c_plc4x_read_write_plc4x_response_code {
   plc4c_plc4x_read_write_plc4x_response_code_REMOTE_BUSY = 0x09,
   plc4c_plc4x_read_write_plc4x_response_code_REMOTE_ERROR = 0x0A,
   plc4c_plc4x_read_write_plc4x_response_code_UNSUPPORTED = 0x0B,
-  plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING = 0x0C
+  plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING = 0x0C,
+  plc4c_plc4x_read_write_plc4x_response_code_NOT_READY = 0x0D,
+  plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE = 0x0E,
+  plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT = 0x0F
 };
 typedef enum plc4c_plc4x_read_write_plc4x_response_code plc4c_plc4x_read_write_plc4x_response_code;
 
