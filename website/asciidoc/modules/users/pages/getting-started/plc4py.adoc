@@ -167,6 +167,8 @@ If this is `PlcResponseCode.OK`, everything is ok, however it could be one of th
 - RESPONSE_PENDING
 - NOT_CONNECTED
 - REQUEST_TIMEOUT
+- NOT_READY
+- OUT_OF_RANGE
 
 Assuming the return code was `OK`, we can continue accessing the data.
 
