@@ -169,22 +169,12 @@ class ModbusTcpUnitIdentifierCorrelationTest {
     }
 
     /**
-     * A request whose only answer was discarded must not succeed: it runs into the request
-     * timeout, which - depending on which layer's timer fires first - fails the request or
-     * reports a non-OK code for the tag.
+     * A request whose only answer was discarded must not succeed: its transaction runs into the
+     * request timeout, which fails the whole request.
      */
-    private static void assertRejected(CompletableFuture<? extends PlcResponse> execution) throws Exception {
-        PlcResponse response;
-        try {
-            response = execution.get(5, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            assertInstanceOf(TimeoutException.class, e.getCause());
-            return;
-        }
-        PlcResponseCode code = response instanceof PlcReadResponse readResponse
-            ? readResponse.getResponseCode("value")
-            : ((PlcWriteResponse) response).getResponseCode("value");
-        assertNotEquals(PlcResponseCode.OK, code);
+    private static void assertRejected(CompletableFuture<? extends PlcResponse> execution) {
+        ExecutionException e = assertThrows(ExecutionException.class, () -> execution.get(5, TimeUnit.SECONDS));
+        assertInstanceOf(TimeoutException.class, e.getCause());
     }
 
     /**
