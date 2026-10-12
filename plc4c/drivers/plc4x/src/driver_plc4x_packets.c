@@ -343,13 +343,26 @@ plc4c_response_code plc4c_driver_plc4x_map_response_code(
       return PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
     case plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATATYPE:
       return PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
+    case plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATA:
+      return PLC4C_RESPONSE_CODE_INVALID_DATA;
+    case plc4c_plc4x_read_write_plc4x_response_code_INTERNAL_ERROR:
+      return PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
+    case plc4c_plc4x_read_write_plc4x_response_code_REMOTE_BUSY:
+      return PLC4C_RESPONSE_CODE_REMOTE_BUSY;
+    case plc4c_plc4x_read_write_plc4x_response_code_REMOTE_ERROR:
+      return PLC4C_RESPONSE_CODE_REMOTE_ERROR;
+    case plc4c_plc4x_read_write_plc4x_response_code_UNSUPPORTED:
+      return PLC4C_RESPONSE_CODE_UNSUPPORTED;
     case plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING:
       return PLC4C_RESPONSE_CODE_RESPONSE_PENDING;
+    case plc4c_plc4x_read_write_plc4x_response_code_NOT_READY:
+      return PLC4C_RESPONSE_CODE_NOT_READY;
+    case plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE:
+      return PLC4C_RESPONSE_CODE_OUT_OF_RANGE;
     case plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT:
       return PLC4C_RESPONSE_CODE_REQUEST_TIMEOUT;
     default:
-      // INVALID_DATA, REMOTE_BUSY, REMOTE_ERROR, UNSUPPORTED, NOT_READY and OUT_OF_RANGE have no
-      // plc4c counterpart (yet), and INTERNAL_ERROR maps onto itself.
+      // Not a code the proxy protocol defines.
       return PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
   }
 }

@@ -55,7 +55,7 @@ void plc4c_driver_plc4x_destroy_plc4x_write_request(
 
 /**
  * Translates a response code received from the proxy into the one plc4c reports for the tag.
- * Codes plc4c has no counterpart for are reported as PLC4C_RESPONSE_CODE_INTERNAL_ERROR.
+ * A value the proxy protocol doesn't define is reported as PLC4C_RESPONSE_CODE_INTERNAL_ERROR.
  *
  * @param response_code the code as it came over the wire.
  * @return the code to report to the caller.

@@ -102,6 +102,24 @@ char *plc4c_response_code_to_message(plc4c_response_code response_code) {
     case PLC4C_RESPONSE_CODE_REQUEST_TIMEOUT: {
       return "REQUEST TIMEOUT";
     }
+    case PLC4C_RESPONSE_CODE_INVALID_DATA: {
+      return "INVALID DATA";
+    }
+    case PLC4C_RESPONSE_CODE_REMOTE_BUSY: {
+      return "REMOTE BUSY";
+    }
+    case PLC4C_RESPONSE_CODE_REMOTE_ERROR: {
+      return "REMOTE ERROR";
+    }
+    case PLC4C_RESPONSE_CODE_UNSUPPORTED: {
+      return "UNSUPPORTED";
+    }
+    case PLC4C_RESPONSE_CODE_NOT_READY: {
+      return "NOT READY";
+    }
+    case PLC4C_RESPONSE_CODE_OUT_OF_RANGE: {
+      return "OUT OF RANGE";
+    }
     default: {
       return "UNKNOWN RESPONSE CODE";
     }
