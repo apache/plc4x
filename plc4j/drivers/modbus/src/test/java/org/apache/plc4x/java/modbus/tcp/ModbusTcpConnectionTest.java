@@ -402,11 +402,11 @@ class ModbusTcpConnectionTest {
         Field pendingField = ModbusTcpConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Integer, CompletableFuture<ModbusTcpADU>> pendingRequests =
-            (Map<Integer, CompletableFuture<ModbusTcpADU>>) pendingField.get(connection);
+        Map<Integer, ModbusTcpConnection.PendingRequest> pendingRequests =
+            (Map<Integer, ModbusTcpConnection.PendingRequest>) pendingField.get(connection);
 
         CompletableFuture<ModbusTcpADU> future = new CompletableFuture<>();
-        pendingRequests.put(42, future);
+        pendingRequests.put(42, new ModbusTcpConnection.PendingRequest((short) 1, future));
 
         // Create a response ADU
         ModbusTcpADU responseAdu = new ModbusTcpADU(42, (short) 1,
@@ -415,6 +415,35 @@ class ModbusTcpConnectionTest {
         method.invoke(connection, responseAdu);
         assertTrue(future.isDone());
         assertEquals(responseAdu, future.get());
+    }
+
+    @Test
+    void testHandleIncomingMessage_mismatchedUnitIdentifier() throws Exception {
+        Method method = ModbusTcpConnection.class.getDeclaredMethod("handleIncomingMessage", ModbusTcpADU.class);
+        method.setAccessible(true);
+
+        Field pendingField = ModbusTcpConnection.class.getDeclaredField("pendingRequests");
+        pendingField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Integer, ModbusTcpConnection.PendingRequest> pendingRequests =
+            (Map<Integer, ModbusTcpConnection.PendingRequest>) pendingField.get(connection);
+
+        CompletableFuture<ModbusTcpADU> future = new CompletableFuture<>();
+        ModbusTcpConnection.PendingRequest pending = new ModbusTcpConnection.PendingRequest((short) 1, future);
+        pendingRequests.put(42, pending);
+
+        // Same transaction ID, but answered by unit 2 - not the response to a request for unit 1 (GH-2798).
+        method.invoke(connection, new ModbusTcpADU(42, (short) 2,
+            new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2A})));
+        assertFalse(future.isDone());
+        assertSame(pending, pendingRequests.get(42));
+
+        // The request keeps waiting for, and accepts, the matching response.
+        ModbusTcpADU matching = new ModbusTcpADU(42, (short) 1,
+            new ModbusPDUReadHoldingRegistersResponse(new byte[]{0x00, 0x2B}));
+        method.invoke(connection, matching);
+        assertSame(matching, future.get());
+        assertTrue(pendingRequests.isEmpty());
     }
 
     @Test
@@ -436,11 +465,11 @@ class ModbusTcpConnectionTest {
         Field pendingField = ModbusTcpConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Integer, CompletableFuture<ModbusTcpADU>> pendingRequests =
-            (Map<Integer, CompletableFuture<ModbusTcpADU>>) pendingField.get(connection);
+        Map<Integer, ModbusTcpConnection.PendingRequest> pendingRequests =
+            (Map<Integer, ModbusTcpConnection.PendingRequest>) pendingField.get(connection);
 
         CompletableFuture<ModbusTcpADU> future = new CompletableFuture<>();
-        pendingRequests.put(1, future);
+        pendingRequests.put(1, new ModbusTcpConnection.PendingRequest((short) 1, future));
 
         connection.close();
 
@@ -454,11 +483,11 @@ class ModbusTcpConnectionTest {
         Field pendingField = ModbusTcpConnection.class.getDeclaredField("pendingRequests");
         pendingField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Integer, CompletableFuture<ModbusTcpADU>> pendingRequests =
-            (Map<Integer, CompletableFuture<ModbusTcpADU>>) pendingField.get(connection);
+        Map<Integer, ModbusTcpConnection.PendingRequest> pendingRequests =
+            (Map<Integer, ModbusTcpConnection.PendingRequest>) pendingField.get(connection);
 
         CompletableFuture<ModbusTcpADU> future = new CompletableFuture<>();
-        pendingRequests.put(1, future);
+        pendingRequests.put(1, new ModbusTcpConnection.PendingRequest((short) 1, future));
 
         Method method = ModbusTcpConnection.class.getDeclaredMethod("onTransportDisconnected", Throwable.class);
         method.setAccessible(true);

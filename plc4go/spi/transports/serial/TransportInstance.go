@@ -172,10 +172,16 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
-	if !m.connected.Load() {
+	// Snapshot the port and pacer under the state lock: Close nils both, and
+	// a concurrent Close must not race the write (it fails on the closed
+	// port instead). The lock is not held across the blocking write.
+	m.stateChangeMutex.Lock()
+	connected, serialPort, writePacer := m.connected.Load(), m.serialPort, m.pacer
+	m.stateChangeMutex.Unlock()
+	if !connected {
 		return errors.New("error writing to transport. Not connected")
 	}
-	if m.serialPort == nil {
+	if serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
 	var deadline time.Time
@@ -184,14 +190,14 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	} else if m.cfg.writeTimeout > 0 {
 		deadline = time.Now().Add(m.cfg.writeTimeout)
 	}
-	if err := m.pacer.waitTurn(deadline); err != nil {
+	if err := writePacer.waitTurn(deadline); err != nil {
 		return errors.Wrap(err, "error pacing write")
 	}
-	if err := m.serialPort.SetWriteDeadline(deadline); err != nil {
+	if err := serialPort.SetWriteDeadline(deadline); err != nil {
 		return errors.Wrap(err, "error setting write deadline")
 	}
-	num, err := m.serialPort.Write(data)
-	m.pacer.noteActivity()
+	num, err := serialPort.Write(data)
+	writePacer.noteActivity()
 	if err != nil {
 		return errors.Wrap(err, "error writing")
 	}
@@ -206,7 +212,9 @@ func (m *TransportInstance) GetReader() transports.ExtendedReader {
 }
 
 func (m *TransportInstance) SetReadDeadline(deadline time.Time) error {
+	m.stateChangeMutex.Lock()
 	armer := m.armer
+	m.stateChangeMutex.Unlock()
 	if armer == nil {
 		return errors.New("error setting read deadline. Not connected")
 	}

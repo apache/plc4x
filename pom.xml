@@ -139,7 +139,7 @@
     <glob.version>0.9.0</glob.version>
     <groovy.version>6.0.0</groovy.version>
     <gson.version>2.14.0</gson.version>
-    <guava.version>33.7.1-jre</guava.version>
+    <guava.version>33.7.2-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
@@ -161,12 +161,12 @@
     <javapoet.version>0.20.0</javapoet.version>
     <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
-    <joda-time.version>2.14.4</joda-time.version>
+    <joda-time.version>2.15.0</joda-time.version>
     <jserialcom.version>2.11.4</jserialcom.version>
     <jsoup.version>1.22.2</jsoup.version>
     <jssc.version>2.10.4</jssc.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
-    <logback.version>1.6.4</logback.version>
+    <logback.version>1.6.5</logback.version>
     <maven-artifact.version>3.10.0</maven-artifact.version>
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
     <mockito.version>5.24.0</mockito.version>
