@@ -388,3 +388,35 @@ func TestWrite_DedicatedInterframePacing(t *testing.T) {
 	require.NoError(t, m.Write(context.Background(), []byte{0x02}))
 	assert.GreaterOrEqual(t, time.Since(start), 40*time.Millisecond, "second write must wait out the gap")
 }
+
+// Close nils serialPort/armer/pacer under stateChangeMutex; Write and
+// SetReadDeadline must not read those fields unguarded (GH-2802). Run under
+// -race: the detector flags the unguarded read, and without it a Close landing
+// between Write's nil check and its use of the port panics.
+func TestTransportInstance_WriteAndSetReadDeadlineRaceClose(t *testing.T) {
+	for range 50 {
+		m := NewTransportInstanceWithConfig("test", func() serialConfig {
+			c := defaultSerialConfig()
+			c.interframeDelay = time.Microsecond
+			return c
+		}(), NewTransport())
+		m.serialPort = stubPort{}
+		m.pacer = newPacer(m.cfg.interframeDelay)
+		m.armer = newDeadlineReader(m.serialPort, m.cfg.readTimeout, m.pacer)
+		m.connected.Store(true)
+
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			for range 100 {
+				_ = m.Write(context.Background(), []byte{0x01})
+				_ = m.SetReadDeadline(time.Time{})
+			}
+		}()
+		require.NoError(t, m.Close())
+		<-done
+
+		assert.Error(t, m.Write(context.Background(), []byte{0x01}), "write after close must fail")
+		assert.Error(t, m.SetReadDeadline(time.Time{}), "set read deadline after close must fail")
+	}
+}
