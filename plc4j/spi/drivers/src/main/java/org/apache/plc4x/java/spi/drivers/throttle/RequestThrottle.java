@@ -190,7 +190,7 @@ public class RequestThrottle {
         }
 
         if (unsettled > 0) {
-            LOGGER.info("Adjusted max concurrent requests to {}; {} permit(s) of the reduction are " +
+            LOGGER.info("Adjusted max concurrent requests to {}; {} permit(s) of a reduction are " +
                 "still held by in-flight requests and will be retired as those complete", newMax, unsettled);
         } else {
             LOGGER.info("Adjusted max concurrent requests to {}", newMax);

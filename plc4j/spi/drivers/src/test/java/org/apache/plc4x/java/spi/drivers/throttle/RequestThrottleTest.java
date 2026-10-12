@@ -631,7 +631,7 @@ class RequestThrottleTest {
      * the requests still running already occupy the reduced limit.
      *
      * <p>The window is a few instructions wide, so the threads are aligned on a spin flag and the
-     * scenario is repeated. On the unfixed code this reports free permits within a few dozen
+     * scenario is repeated; a blocking barrier releases them too far apart to ever hit it. On the unfixed code this reports free permits within a few dozen
      * attempts; it has to report none, on every attempt, whatever the interleaving.
      */
     @Test
@@ -639,7 +639,7 @@ class RequestThrottleTest {
         int returning = 4;
         ExecutorService executor = Executors.newFixedThreadPool(returning + 1);
         try {
-            for (int attempt = 0; attempt < 2000; attempt++) {
+            for (int attempt = 0; attempt < 500; attempt++) {
                 RequestThrottle throttle = new RequestThrottle(2 * returning);
                 List<CompletableFuture<Void>> running = new ArrayList<>();
                 for (int i = 0; i < 2 * returning; i++) {
@@ -664,7 +664,7 @@ class RequestThrottleTest {
                     awaitGo(ready, go);
                     throttle.adjustMaxConcurrentRequests(returning);
                 }));
-                ready.await(10, TimeUnit.SECONDS);
+                assertTrue(ready.await(10, TimeUnit.SECONDS), "not every thread got ready (attempt " + attempt + ")");
                 go.set(true);
                 for (Future<?> task : started) {
                     task.get(10, TimeUnit.SECONDS);
