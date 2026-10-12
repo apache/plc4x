@@ -37,6 +37,28 @@ namespace org.apache.plc4net.types
 
         /// <summary>The device rejected the request as unsupported (e.g. an
         /// illegal function code).</summary>
-        Unsupported
+        Unsupported,
+
+        // Added after the others so that the values above keep their numbers.
+
+        /// <summary>A value carried by the request is malformed.</summary>
+        InvalidData,
+
+        /// <summary>The device is currently unable to process the request due to overload.</summary>
+        RemoteBusy,
+
+        /// <summary>Something went wrong on the remote side.</summary>
+        RemoteError,
+
+        /// <summary>The request and the connection are healthy, but the data the tag points at
+        /// is not available yet - typically an asynchronous source (cyclic IO, a subscription,
+        /// a cache) has not delivered its first value. Retry shortly; this is not permanent.
+        /// Unlike <see cref="ResponsePending"/>, there is no request in flight.</summary>
+        NotReady,
+
+        /// <summary>The request is well-formed, but a value it carries is outside the range the
+        /// target accepts (e.g. a number too large for the datatype, or an address beyond the
+        /// device's extent). Unlike <see cref="InvalidData"/>, the value is not malformed.</summary>
+        OutOfRange
     }
 }

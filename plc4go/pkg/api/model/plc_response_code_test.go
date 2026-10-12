@@ -45,6 +45,8 @@ func TestPlcResponseCode_GetName(t *testing.T) {
 		{m: PlcResponseCode_UNSUPPORTED, want: "UNSUPPORTED"},
 		{m: PlcResponseCode_RESPONSE_PENDING, want: "RESPONSE_PENDING"},
 		{m: PlcResponseCode_REQUEST_TIMEOUT, want: "REQUEST_TIMEOUT"},
+		{m: PlcResponseCode_NOT_READY, want: "NOT_READY"},
+		{m: PlcResponseCode_OUT_OF_RANGE, want: "OUT_OF_RANGE"},
 		{m: 0xff},
 	}
 	for _, tt := range tests {
