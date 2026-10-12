@@ -33,6 +33,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func TestNewSingleItemRequestInterceptor(t *testing.T) {
@@ -465,6 +466,7 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				result1 := NewMockPlcReadRequestResult(t)
 				result1Expect := result1.EXPECT()
 				result1Expect.GetErr().Return(errors.New("asd"))
+				result1Expect.GetResponse().Return(nil)
 				result2 := NewMockPlcReadRequestResult(t)
 				result2Expect := result2.EXPECT()
 				result2Expect.GetResponse().Return(nil)
@@ -483,6 +485,42 @@ func TestSingleItemRequestInterceptor_ProcessReadResponses(t *testing.T) {
 				assert.NotNil(t, errors.Cause(errors.New("error aggregating")))
 				assert.NotNil(t, errors.Cause(errors.New("asd")))
 				return true
+			},
+		},
+		{
+			name: "two result (one failed with a response)",
+			setup: func(t *testing.T, fields *fields, args *args) {
+				var mergedCodes map[string]apiModel.PlcResponseCode
+				var mergedValues map[string]apiValues.PlcValue
+				fields.readResponseFactory = func(t *testing.T) readResponseFactory {
+					return func(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
+						mergedCodes = responseCodes
+						mergedValues = values
+						return nil
+					}
+				}
+				// A sub-read that failed, but still reports a code for its tag (a timeout, say).
+				failed := NewMockPlcReadRequestResult(t)
+				failed.EXPECT().GetErr().Return(errors.New("timed out"))
+				failed.EXPECT().GetResponse().Return(readResponseWith(t, "tag1", apiModel.PlcResponseCode_REQUEST_TIMEOUT, spiValues.NewPlcNULL()))
+				succeeded := NewMockPlcReadRequestResult(t)
+				succeeded.EXPECT().GetErr().Return(nil)
+				succeeded.EXPECT().GetResponse().Return(readResponseWith(t, "tag2", apiModel.PlcResponseCode_OK, spiValues.NewPlcBOOL(true)))
+				args.readResults = []apiModel.PlcReadRequestResult{failed, succeeded}
+				args.ctx = testutils.TestContext(t)
+				t.Cleanup(func() {
+					assert.Equal(t, map[string]apiModel.PlcResponseCode{
+						"tag1": apiModel.PlcResponseCode_REQUEST_TIMEOUT,
+						"tag2": apiModel.PlcResponseCode_OK,
+					}, mergedCodes)
+					assert.Equal(t, map[string]apiValues.PlcValue{
+						"tag1": spiValues.NewPlcNULL(),
+						"tag2": spiValues.NewPlcBOOL(true),
+					}, mergedValues)
+				})
+			},
+			wantAssert: func(t *testing.T, args args, got apiModel.PlcReadRequestResult) bool {
+				return assert.Error(t, got.GetErr())
 			},
 		},
 		{
@@ -739,6 +777,16 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 }
 
 // writeResponseWith is a sub-write's response: one tag, and the code it was written with.
+func readResponseWith(t *testing.T, tagName string, code apiModel.PlcResponseCode, value apiValues.PlcValue) apiModel.PlcReadResponse {
+	request := NewMockPlcReadRequest(t)
+	request.EXPECT().GetTagNames().Return([]string{tagName})
+	response := NewMockPlcReadResponse(t)
+	response.EXPECT().GetRequest().Return(request)
+	response.EXPECT().GetResponseCode(tagName).Return(code)
+	response.EXPECT().GetValue(tagName).Return(value)
+	return response
+}
+
 func writeResponseWith(t *testing.T, tagName string, code apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
 	request := NewMockPlcWriteRequest(t)
 	request.EXPECT().GetTagNames().Return([]string{tagName})

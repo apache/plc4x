@@ -189,7 +189,10 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 		if err := readResult.GetErr(); err != nil {
 			m.log.Debug().Err(err).Msg("Error during read")
 			collectedErrors = append(collectedErrors, err)
-		} else if response := readResult.GetResponse(); response != nil {
+		}
+		// A sub-read can fail and still say how it went for its tag - a read the device never
+		// answered comes back as REQUEST_TIMEOUT next to its error - so its codes are kept too.
+		if response := readResult.GetResponse(); response != nil {
 			request := response.GetRequest()
 			if len(request.GetTagNames()) > 1 {
 				m.log.Error().Int("numberOfTags", len(request.GetTagNames())).Msg("We should only get 1")
