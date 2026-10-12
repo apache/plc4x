@@ -16,10 +16,10 @@
   specific language governing permissions and limitations
   under the License.
   -->
-[![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
+[![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://central.sonatype.com/artifact/org.apache.plc4x/plc4j-api)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Jenkins Build Status](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/badge/icon)](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/)
-[![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)](https://github.com/apache/plc4x/commits/develop)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
 [![Java Platform compatibility](https://github.com/apache/plc4x/actions/workflows/java-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/java-platform.yml)
 [![Go Platform compatibility](https://github.com/apache/plc4x/actions/workflows/go-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/go-platform.yml)
