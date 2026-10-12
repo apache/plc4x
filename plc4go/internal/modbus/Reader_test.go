@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"context"
 	"encoding/hex"
 	"testing"
 	"time"
@@ -358,6 +359,62 @@ func TestReader_aBlockThatIsNeverAnsweredTimesOut(t *testing.T) {
 		assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, result.GetResponse().GetResponseCode("tag"))
 	case <-time.After(2 * time.Second):
 		t.Fatal("the unanswered block never released the request")
+	}
+}
+
+// The codec hands an expectation more than timeouts - closing the connection fails every pending
+// one with "disconnected" - and a connection that went away is not a device that was slow.
+func TestReader_aBlockFailedByADisconnectIsNotATimeout(t *testing.T) {
+	codec := newCaptureCodec(nil)
+	reader := NewReader(DefaultConfiguration(), codec, testTransactionManager())
+	tag := parseTag(t, "holding-register:1:REAL")
+	request := spiModel.NewDefaultPlcReadRequest(
+		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)
+
+	results := reader.Read(testutils.TestContext(t), request)
+	var handlers capturedHandlers
+	select {
+	case handlers = <-codec.handlers:
+	case <-time.After(time.Second):
+		t.Fatal("SendRequest was never invoked")
+	}
+	// What the codec hands every pending expectation on Disconnect (spi/default.defaultCodec).
+	_ = handlers.handleError(errors.New("disconnected"))
+
+	select {
+	case result := <-results:
+		require.Error(t, result.GetErr())
+		require.NotNil(t, result.GetResponse())
+		assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, result.GetResponse().GetResponseCode("tag"))
+	case <-time.After(2 * time.Second):
+		t.Fatal("the failed block never released the request")
+	}
+}
+
+// A read the caller cancels while a block is on the wire didn't run out of time either.
+func TestReader_aCancelledBlockIsNotATimeout(t *testing.T) {
+	codec := newCaptureCodec(nil)
+	reader := NewReader(DefaultConfiguration(), codec, testTransactionManager())
+	tag := parseTag(t, "holding-register:1:REAL")
+	request := spiModel.NewDefaultPlcReadRequest(
+		map[string]apiModel.PlcTag{"tag": tag}, []string{"tag"}, reader, nil)
+
+	ctx, cancel := context.WithCancel(testutils.TestContext(t))
+	results := reader.Read(ctx, request)
+	select {
+	case <-codec.handlers:
+	case <-time.After(time.Second):
+		t.Fatal("SendRequest was never invoked")
+	}
+	cancel()
+
+	select {
+	case result := <-results:
+		require.ErrorIs(t, result.GetErr(), context.Canceled)
+		require.NotNil(t, result.GetResponse())
+		assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, result.GetResponse().GetResponseCode("tag"))
+	case <-time.After(2 * time.Second):
+		t.Fatal("the cancelled read never returned")
 	}
 }
 

@@ -326,29 +326,20 @@ func (m *Reader) readBlock(ctx context.Context, block readBlock) blockOutcome {
 		complete(blockOutcome{responseCode: responseCode, data: data, err: err})
 		return nil
 	}, func(err error) error {
+		// The codec calls this for more than an expectation that expired: closing the connection
+		// fails every pending one as well.
 		complete(blockOutcome{
-			responseCode: apiModel.PlcResponseCode_REQUEST_TIMEOUT,
-			err:          errors.Wrap(err, "got timeout while waiting for response"),
+			responseCode: failedBlockCode(err),
+			err:          errors.Wrap(err, "got no response"),
 		})
 		return nil
 	}); err != nil {
 		// Nothing reached the wire. A block that ran out of time while it was still waiting its
-		// turn behind another request timed out just as surely as one the device never answered,
-		// so it is reported as a timeout; anything else is the codec refusing to send.
-		//
-		// NOT PINNED BY A TEST. Deleting the choice below and always reporting INTERNAL_ERROR
-		// leaves the package green, because the obvious way to provoke it - queue a block behind a
-		// slow one until its deadline passes - is noticed by the outer wait further down first,
-		// which reports REQUEST_TIMEOUT of its own. Reaching this line needs sendTransacted to
-		// return while requestCtx is already expired. Three sites in this function now produce
-		// REQUEST_TIMEOUT under conditions that overlap, which is the actual smell; collapsing
-		// them into one decision would be worth more than a test that reaches this one.
-		responseCode := apiModel.PlcResponseCode_INTERNAL_ERROR
-		if requestCtx.Err() != nil {
-			responseCode = apiModel.PlcResponseCode_REQUEST_TIMEOUT
-		}
+		// turn behind another request timed out just as surely as one the device never answered
+		// (sendTransacted and the codec both hand back the expired context's error for that);
+		// anything else is the codec refusing to send.
 		complete(blockOutcome{
-			responseCode: responseCode,
+			responseCode: failedBlockCode(err),
 			err:          errors.Wrap(err, "error sending message"),
 		})
 	}
@@ -366,8 +357,19 @@ func (m *Reader) readBlock(ctx context.Context, block readBlock) blockOutcome {
 			return outcome
 		default:
 		}
-		return blockOutcome{responseCode: apiModel.PlcResponseCode_REQUEST_TIMEOUT, err: requestCtx.Err()}
+		return blockOutcome{responseCode: failedBlockCode(requestCtx.Err()), err: requestCtx.Err()}
 	}
+}
+
+// failedBlockCode is the code every tag of a block that got no answer carries. Only running out of
+// time is a REQUEST_TIMEOUT - the request went out and nothing came back in time, which is final -
+// while a connection that went away or a read the caller cancelled is not something the device
+// did, so it is an INTERNAL_ERROR, as is the codec refusing to send.
+func failedBlockCode(err error) apiModel.PlcResponseCode {
+	if utils.IsTimeoutError(err) {
+		return apiModel.PlcResponseCode_REQUEST_TIMEOUT
+	}
+	return apiModel.PlcResponseCode_INTERNAL_ERROR
 }
 
 // extractResponseData pulls the payload out of a read response: the packed bits for the two bit
