@@ -259,7 +259,10 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 		if err := writeResult.GetErr(); err != nil {
 			m.log.Debug().Err(err).Msg("Error during write")
 			collectedErrors = append(collectedErrors, err)
-		} else if writeResult.GetResponse() != nil {
+		}
+		// A sub-write can fail and still say how it went for its tag - a write the device never
+		// answered comes back as REQUEST_TIMEOUT next to its error - so its codes are kept too.
+		if writeResult.GetResponse() != nil {
 			if len(writeResult.GetResponse().GetRequest().GetTagNames()) > 1 {
 				m.log.Error().Int("numberOfTags", len(writeResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
 			}

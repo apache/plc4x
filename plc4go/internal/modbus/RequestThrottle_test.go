@@ -34,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // throttleCodec stands in for a device: it answers every request after a while, and records how
@@ -62,6 +63,9 @@ type throttleCodec struct {
 	// were at once. The whole point of the transaction manager is that the latter stays at one.
 	inFlight    int
 	maxInFlight int
+	// timesOut picks the requests the "device" never answers: once their hold is up, the codec
+	// times their expectation out instead of handing on an answer.
+	timesOut func(request spi.Message) bool
 }
 
 func newThrottleCodec(t *testing.T, hold time.Duration) *throttleCodec {
@@ -104,12 +108,19 @@ func (c *throttleCodec) SendRequest(ctx context.Context, _ string, message spi.M
 		c.maxInFlight = c.inFlight
 	}
 	hold := c.hold
+	timesOut := c.timesOut != nil && c.timesOut(message)
 	c.mutex.Unlock()
 
 	c.wg.Go(func() {
 		select {
 		case <-time.After(hold):
 			c.offTheWire()
+			if timesOut {
+				// What the real codec hands an expectation that expired
+				// (spi/default.defaultCodec.TimeoutExpectations).
+				_ = handleError(utils.NewTimeoutError(hold))
+				return
+			}
 			_ = handleMessage(answerFor(c.t, message))
 		case <-ctx.Done():
 			// What the real codec does with an expectation whose context ran out
@@ -227,6 +238,33 @@ func TestConnection_aMultiTagWriteSendsOneRequestAtATime(t *testing.T) {
 	_, sends, maxInFlight := codec.counts()
 	assert.Equal(t, 5, sends, "every tag is written")
 	assert.Equal(t, 1, maxInFlight, "a modbus connection has one request on the wire at a time")
+}
+
+// A tag of a multi-tag write the device never answers is reported as REQUEST_TIMEOUT, and the
+// other tags keep their results, as in plc4j: the interceptor that cuts the request into one
+// sub-write per tag keeps the codes of a sub-write that failed alongside its error.
+func TestConnection_aMultiTagWriteReportsATimedOutTagAndKeepsTheOthers(t *testing.T) {
+	codec := newThrottleCodec(t, 10*time.Millisecond)
+	// writeOf writes the value i to tag i; let the device leave tag1 unanswered.
+	codec.timesOut = func(request spi.Message) bool {
+		pdu, ok := request.(readWriteModel.ModbusTcpADU).GetPdu().(readWriteModel.ModbusPDUWriteSingleRegisterRequest)
+		return ok && pdu.GetValue() == 1
+	}
+	connection := throttleTestConnection(t, DefaultConfiguration(), codec)
+	request := writeOf(t, connection, 2)
+
+	select {
+	case result := <-request.Execute(testutils.TestContext(t)):
+		require.Error(t, result.GetErr(), "a caller checking only the error still sees the write failed")
+		require.NotNil(t, result.GetResponse())
+		assert.Equal(t, apiModel.PlcResponseCode_OK, result.GetResponse().GetResponseCode("tag0"))
+		assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, result.GetResponse().GetResponseCode("tag1"))
+	case <-time.After(30 * time.Second):
+		t.Fatal("the write never finished")
+	}
+
+	_, sends, _ := codec.counts()
+	assert.Equal(t, 2, sends, "the unanswered write is not sent again: whether it took effect is unknown")
 }
 
 // The bound belongs to the connection, not to a single request: reads and writes started
