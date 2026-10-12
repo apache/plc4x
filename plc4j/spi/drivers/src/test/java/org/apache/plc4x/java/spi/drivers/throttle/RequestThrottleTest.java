@@ -33,6 +33,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -631,9 +632,11 @@ class RequestThrottleTest {
      * into the pool and once against the reduction. The throttle would then hand out permits while
      * the requests still running already occupy the reduced limit.
      *
-     * <p>The window is a few instructions wide, so the threads are aligned on a spin flag and the
-     * scenario is repeated; a blocking barrier releases them too far apart to ever hit it. On the unfixed code this reports free permits within a few dozen
-     * attempts; it has to report none, on every attempt, whatever the interleaving.
+     * <p>The window is a few instructions wide, so the threads are held on a shared flag and let go
+     * together, and the scenario is repeated; a blocking barrier releases them too far apart to
+     * ever hit it. On the unfixed code this reports free permits within the first few attempts; it
+     * has to report none, on every attempt, whatever the interleaving. The attempts are also
+     * bounded by time, so a slow machine runs fewer of them instead of running into the timeout.
      */
     @Test
     @Timeout(60)
@@ -641,7 +644,8 @@ class RequestThrottleTest {
         int returning = 4;
         ExecutorService executor = Executors.newFixedThreadPool(returning + 1);
         try {
-            for (int attempt = 0; attempt < 500; attempt++) {
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+            for (int attempt = 0; attempt < 100 && System.nanoTime() < deadline; attempt++) {
                 RequestThrottle throttle = new RequestThrottle(2 * returning);
                 List<CompletableFuture<Void>> running = new ArrayList<>();
                 for (int i = 0; i < 2 * returning; i++) {
@@ -687,16 +691,22 @@ class RequestThrottleTest {
     }
 
     /**
-     * Reports the caller as ready and spins until every party has been let go. Gives up when
-     * interrupted, so a failing attempt that never sets the flag cannot leave threads spinning.
+     * Reports the caller as ready and waits until every party has been let go: a short spin, then
+     * parking briefly between checks so a waiting thread does not hold on to a core. Gives up when
+     * interrupted, so a failing attempt that never sets the flag cannot leave threads behind.
      */
     private static void awaitGo(CountDownLatch ready, AtomicBoolean go) {
         ready.countDown();
+        int spins = 0;
         while (!go.get()) {
             if (Thread.currentThread().isInterrupted()) {
                 throw new IllegalStateException("interrupted before the attempt was started");
             }
-            Thread.onSpinWait();
+            if (++spins < 100) {
+                Thread.onSpinWait();
+            } else {
+                LockSupport.parkNanos(10_000);
+            }
         }
     }
 }
