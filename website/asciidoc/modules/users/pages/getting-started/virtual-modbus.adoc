@@ -296,8 +296,14 @@ If this is `PlcResponseCode.OK`, everything is ok, however it could be one of th
 - ACCESS_DENIED
 - INVALID_ADDRESS
 - INVALID_DATATYPE
+- INVALID_DATA
 - INTERNAL_ERROR
+- REMOTE_BUSY
+- REMOTE_ERROR
+- UNSUPPORTED
 - RESPONSE_PENDING
+- NOT_READY
+- OUT_OF_RANGE
 - REQUEST_TIMEOUT
 
 Assuming the return code was `OK`, we can continue accessing the data.
