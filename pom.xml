@@ -123,7 +123,7 @@
     <byte-buddy.version>1.18.14</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-cli.version>1.11.0</commons-cli.version>
-    <commons-codec.version>1.22.1</commons-codec.version>
+    <commons-codec.version>1.23.0</commons-codec.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-configuration2.version>2.15.1</commons-configuration2.version>
     <commons-io.version>2.22.0</commons-io.version>
