@@ -267,7 +267,11 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (ModbusReadOptimizer.OptimizedRead optimizedRead : optimizedReads) {
             CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> blockFuture =
-                chain.thenComposeAsync(v -> executeOptimizedRead(optimizer, optimizedRead));
+                chain.thenComposeAsync(v -> executeOptimizedRead(optimizer, optimizedRead))
+                    .exceptionallyCompose(e -> isTimeout(e)
+                        ? CompletableFuture.completedFuture(
+                            optimizer.splitResponse(optimizedRead, PlcResponseCode.REQUEST_TIMEOUT, null))
+                        : CompletableFuture.failedFuture(e));
             blockFutures.add(blockFuture);
             chain = blockFuture.handle((r, e) -> null);
         }
@@ -353,7 +357,10 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             PlcTag tag = request.getTag(tagName);
             PlcValue value = request.getPlcValue(tagName);
             CompletableFuture<PlcResponseCode> tagFuture =
-                chain.thenComposeAsync(v -> writeSingleTag(tagName, tag, value));
+                chain.thenComposeAsync(v -> writeSingleTag(tagName, tag, value))
+                    .exceptionallyCompose(e -> isTimeout(e)
+                        ? CompletableFuture.completedFuture(PlcResponseCode.REQUEST_TIMEOUT)
+                        : CompletableFuture.failedFuture(e));
             tagFutures.put(tagName, tagFuture);
             chain = tagFuture.handle((r, e) -> null);
         }
@@ -606,6 +613,16 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             case GATEWAY_PATH_UNAVAILABLE -> PlcResponseCode.INTERNAL_ERROR;
             case GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND -> PlcResponseCode.REMOTE_ERROR;
         };
+    }
+
+    /**
+     * Whether a transaction failed by running into the request timeout. Such a failure is
+     * reported as {@link PlcResponseCode#REQUEST_TIMEOUT} for the tags the transaction covered,
+     * so the rest of the request keeps its results; any other failure still fails the request.
+     */
+    private static boolean isTimeout(Throwable error) {
+        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        return cause instanceof TimeoutException;
     }
 
     private ModbusByteOrder getEffectiveByteOrder(ModbusTag tag) {
