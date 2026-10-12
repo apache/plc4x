@@ -25,6 +25,7 @@
 [![Go Platform compatibility](https://github.com/apache/plc4x/actions/workflows/go-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/go-platform.yml)
 [![C Platform compatibility](https://github.com/apache/plc4x/actions/workflows/c-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/c-platform.yml)
 [![Python Platform Compatibility](https://github.com/apache/plc4x/actions/workflows/python-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/python-platform.yml)
+[![.NET Platform compatibility](https://github.com/apache/plc4x/actions/workflows/dotnet-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/dotnet-platform.yml)
 
 <h1 align="center">
   <br>
