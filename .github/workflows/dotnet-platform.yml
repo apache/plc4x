@@ -70,21 +70,18 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
-      - name: Verify the generated Modbus model
-        run: |
-          out="$(mktemp -d)"
-          dotnet run --project plc4net/tools/code-gen --configuration Release -- \
-            modbus protocols/modbus/src/main/resources/protocols/modbus/modbus.mspec "$out"
-          diff -r "$out/model" plc4net/drivers/modbus/model
-      - name: Verify the generated S7 model
-        run: |
-          out="$(mktemp -d)"
-          dotnet run --project plc4net/tools/code-gen --configuration Release -- \
-            s7 protocols/s7/src/main/resources/protocols/s7/s7.mspec "$out" --manual-static-calls
-          diff -r "$out/model" plc4net/drivers/s7/model
+      - name: Verify generated protocol models
+        run: ./mvnw -B -f plc4net/pom.xml -Pcheck-generated-code generate-sources
 
   test:
     name: Build and test (${{ matrix.os }})
