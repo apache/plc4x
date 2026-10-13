@@ -28,15 +28,25 @@ using org.apache.plc4net.tools.codegen.output;
 // Maven profile: no JDK, no freemarker.
 //
 //   dotnet run --project plc4net/tools/code-gen -- \
-//     <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]
+//     <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace] [--manual-static-calls]
 //
 // <output-dir> receives model/*.cs. It is wiped of *.cs under model/ first so
 // a removed mspec type does not leave a stale file behind.
+//
+// --manual-static-calls leaves every STATIC_CALL the generator has no
+// implementation for to a hand-written part of the protocol's partial
+// StaticHelper class, as plc4j and plc4go do. Without it such a call fails
+// the generation.
+
+const string ManualStaticCallsFlag = "--manual-static-calls";
+var manualStaticCalls = args.Contains(ManualStaticCallsFlag);
+args = args.Where(a => a != ManualStaticCallsFlag).ToArray();
 
 if (args.Length < 3)
 {
     Console.Error.WriteLine(
-        "usage: plc4net-code-gen <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]");
+        "usage: plc4net-code-gen <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace] "
+        + $"[{ManualStaticCallsFlag}]");
     return 2;
 }
 
@@ -84,7 +94,7 @@ foreach (var diagnostic in model.Diagnostics)
 {
     Console.Error.WriteLine($"warning: {diagnostic}");
 }
-var files = new CSharpGenerator(model, protocol, ns).Generate();
+var files = new CSharpGenerator(model, protocol, ns, manualStaticCalls).Generate();
 
 // Stage every source file before replacing the current model directory. This
 // keeps a previously generated driver intact if a disk/write failure occurs.

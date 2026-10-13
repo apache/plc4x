@@ -37,12 +37,21 @@ namespace org.apache.plc4net.tools.codegen.output
         private readonly Protocol _protocol;
         private readonly string _namespace;
         private readonly string _protocolName;
+        private readonly bool _manualStaticCalls;
 
-        public CSharpGenerator(Protocol protocol, string protocolName, string namespaceName)
+        /// <param name="manualStaticCalls">
+        /// Leave each <c>STATIC_CALL</c> this generator has no implementation for to a hand-written
+        /// part of the protocol's partial <c>StaticHelper</c> class, as plc4j and plc4go do: the calls
+        /// are generated as the mspec writes them and the compiler fails the build for a function that
+        /// is missing. Without it, such a call fails the generation.
+        /// </param>
+        public CSharpGenerator(
+            Protocol protocol, string protocolName, string namespaceName, bool manualStaticCalls = false)
         {
             _protocol = protocol;
             _protocolName = protocolName;
             _namespace = namespaceName;
+            _manualStaticCalls = manualStaticCalls;
         }
 
         /// <summary>Generates every file; key is a relative path.</summary>
@@ -137,10 +146,11 @@ namespace org.apache.plc4net.tools.codegen.output
             CollectStaticCalls(staticCalls);
             foreach (var name in staticCalls.Keys)
             {
-                if (!IsGeneratedStaticCall(name))
+                if (!_manualStaticCalls && !IsGeneratedStaticCall(name))
                 {
                     throw new NotSupportedException(
-                        $"{_protocolName}.mspec uses STATIC_CALL '{name}', but no C# implementation is available");
+                        $"{_protocolName}.mspec uses STATIC_CALL '{name}', but no C# implementation is available; "
+                        + "pass --manual-static-calls if the hand-written part of the static helper supplies it");
                 }
             }
         }
@@ -1871,6 +1881,10 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("public static ushort BinToBcd12(int value) => (ushort) ((value / 100) * 256 + ((value / 10) % 10) * 16 + (value % 10));");
             foreach (var (name, retType) in staticCalls)
             {
+                if (!IsGeneratedStaticCall(name))
+                {
+                    continue; // supplied by the hand-written part of the partial class
+                }
                 c.Line();
                 EmitStaticCall(c, name, retType);
             }
