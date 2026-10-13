@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\api\api.csproj" />
     <ProjectReference Include="..\..\spi\spi.csproj" />
+    <ProjectReference Include="..\..\transports\cotp\cotp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
