@@ -33,11 +33,12 @@ namespace org.apache.plc4net.drivers.s7.test
     /// </summary>
     public class S7MessageCodecTests
     {
-        private static (S7MessageCodec Codec, List<S7Message> Received, TestTransportInstance Transport) New()
+        private static (S7MessageCodec Codec, List<S7Message> Received, TestTransportInstance Transport) New(
+            int maximumMessageSize = 1024)
         {
             var transport = new TestTransportInstance(new TestTransportConfiguration());
             var received = new List<S7Message>();
-            return (new S7MessageCodec(transport, received.Add), received, transport);
+            return (new S7MessageCodec(transport, received.Add, maximumMessageSize), received, transport);
         }
 
         // The S7 message inside a frame that S7Frames wraps for the transport.
@@ -140,6 +141,24 @@ namespace org.apache.plc4net.drivers.s7.test
             codec.ProcessIncomingData();
 
             Assert.Equal((ushort)6, Assert.IsType<S7MessageResponseData>(Assert.Single(received)).TpduReference);
+        }
+
+        [Fact]
+        public void A_message_larger_than_the_negotiated_limit_is_not_waited_for()
+        {
+            var message = ReadAckMessage(7);
+            var announcedSize = message.Length + 1;
+            var (codec, received, transport) = New(message.Length);
+            var noise = new byte[]
+            {
+                0x32, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+                (byte)((announcedSize - 12) >> 8), (byte)(announcedSize - 12),
+            };
+            transport.InjectTestData(noise.Concat(message).ToArray());
+
+            codec.ProcessIncomingData();
+
+            Assert.Equal((ushort)7, Assert.IsType<S7MessageResponseData>(Assert.Single(received)).TpduReference);
         }
 
         [Fact]

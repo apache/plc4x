@@ -126,6 +126,16 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public void Connect_rejects_a_PDU_length_larger_than_the_requested_limit()
+        {
+            var transport = Ready(1025);
+
+            var exception = Assert.Throws<PlcConnectionException>(() => Connect(transport));
+
+            Assert.Contains("invalid PDU length 1025", exception.Message);
+        }
+
+        [Fact]
         public void Connect_fails_cleanly_when_the_CPU_does_not_answer_Setup_Communication()
         {
             var transport = NewTransport();

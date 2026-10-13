@@ -36,6 +36,8 @@ namespace org.apache.plc4net.drivers.s7.test
     public class GeneratedModelTests
     {
         private static readonly Assembly S7Model = typeof(TPKTPacket).Assembly;
+        private static readonly Lazy<ParserSerializerTestsuite> Suite =
+            new Lazy<ParserSerializerTestsuite>(() => ParserSerializerTestsuiteRunner.Load(RepoPaths.ParserSerializerTestsuite()));
         private const string ModelNamespace = "org.apache.plc4net.drivers.s7.readwrite.model";
 
         public static TheoryData<string> Vectors()
@@ -146,7 +148,7 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         private static ParserSerializerTestsuite LoadSuite()
-            => ParserSerializerTestsuiteRunner.Load(RepoPaths.ParserSerializerTestsuite());
+            => Suite.Value;
 
         private static string ToHex(byte[] bytes)
             => string.Concat(bytes.Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));

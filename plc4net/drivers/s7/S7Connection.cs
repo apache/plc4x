@@ -132,7 +132,7 @@ namespace org.apache.plc4net.drivers.s7
             _maxAmqCallee = NumberParameter(connectionString, "max-amq-callee", DefaultMaxAmq, 1, ushort.MaxValue);
             _readTimeoutMs = NumberParameter(connectionString, "read-timeout-ms", DefaultReadTimeoutMs, 1, int.MaxValue);
 
-            _codec = new S7MessageCodec(transport, OnMessage);
+            _codec = new S7MessageCodec(transport, OnMessage, _requestedPduSize);
         }
 
         /// <summary>The PDU length the CPU granted in Setup Communication, in bytes; 0 before that.</summary>
@@ -290,7 +290,15 @@ namespace org.apache.plc4net.drivers.s7
                 throw new PlcConnectionException("The answer to S7 Setup Communication carried no setup parameter.");
             }
 
+            if (setup.PduLength == 0 || setup.PduLength > _requestedPduSize)
+            {
+                throw new PlcConnectionException(
+                    $"S7 Setup Communication returned an invalid PDU length {setup.PduLength}; " +
+                    $"the requested maximum was {_requestedPduSize}.");
+            }
+
             NegotiatedPduLength = setup.PduLength;
+            _codec.MaximumMessageSize = NegotiatedPduLength;
             Logger.LogInformation("S7 Setup Communication done, PDU length {PduLength} bytes", NegotiatedPduLength);
         }
 

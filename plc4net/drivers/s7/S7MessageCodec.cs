@@ -42,14 +42,29 @@ namespace org.apache.plc4net.drivers.s7
         private const int HeaderSize = 10;
         private const int AckHeaderSize = 12;
 
-        // Parameter and data of one message share a PDU, which a CPU negotiates down to at most
-        // 960 bytes. A header that announces more than this is noise, and waiting for the rest of
-        // it would hold up the real answer until the timeout.
-        private const int MaxMessageSize = 8192;
+        // Before Setup Communication completes, the requested PDU length is the largest message
+        // this connection can accept. S7Connection replaces it with the CPU's negotiated value.
+        // An announced length beyond that limit is noise; waiting for it would hold up the real
+        // answer until the timeout.
+        private int _maximumMessageSize;
 
-        public S7MessageCodec(ITransportInstance transport, Action<S7Message> handler)
+        public S7MessageCodec(ITransportInstance transport, Action<S7Message> handler, int maximumMessageSize)
             : base("S7", transport, handler)
         {
+            MaximumMessageSize = maximumMessageSize;
+        }
+
+        internal int MaximumMessageSize
+        {
+            get => _maximumMessageSize;
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "The S7 message-size limit must be positive.");
+                }
+                _maximumMessageSize = value;
+            }
         }
 
         protected override int GetMinimumHeaderSize() => HeaderSize;
@@ -72,7 +87,7 @@ namespace org.apache.plc4net.drivers.s7
             var parameterLength = (header[6] << 8) | header[7];
             var dataLength = (header[8] << 8) | header[9];
             var total = headerSize + parameterLength + dataLength;
-            if (total > MaxMessageSize)
+            if (total > MaximumMessageSize)
             {
                 throw new MessageCodecException($"Implausible S7 message length {total}.");
             }
