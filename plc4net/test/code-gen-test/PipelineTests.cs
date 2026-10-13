@@ -483,12 +483,8 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
-        public void The_real_s7_mspec_fails_loudly_when_a_static_helper_is_missing()
+        public void The_real_s7_mspec_fails_loudly_unless_its_static_calls_are_declared_manual()
         {
-            // s7.mspec's TransportSize has COUNTER and DATE_AND_TIME both at
-            // 0x1C. Both enum members remain declared, while the generated
-            // accessor keeps only the first arm because C# rejects duplicate
-            // switch patterns.
             var repoRoot = RepoPaths.FindRepoRoot();
             Assert.NotNull(repoRoot);
             var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
@@ -498,6 +494,67 @@ namespace org.apache.plc4net.test.codegen
 
             Assert.Contains("STATIC_CALL", ex.Message);
             Assert.Contains("EventItemLength", ex.Message);
+            Assert.Contains("--manual-static-calls", ex.Message);
+        }
+
+        [Fact]
+        public void With_manual_static_calls_the_real_s7_mspec_generates_and_leaves_the_functions_to_hand_written_code()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
+                "protocols", "s7", "src", "main", "resources", "protocols", "s7", "s7.mspec"));
+
+            var files = new CSharpGenerator(
+                model, "s7", "org.apache.plc4net.drivers.s7.readwrite", manualStaticCalls: true).Generate();
+
+            // The call is generated as the mspec writes it ...
+            Assert.Contains(
+                "S7StaticHelper.EventItemLength(readBuffer, valueLength)", files["model/AssociatedValueType.cs"]);
+            // ... and the generated half of the helper does not declare the function.
+            Assert.DoesNotContain("EventItemLength", files["model/S7StaticHelper.cs"]);
+        }
+
+        [Fact]
+        public void A_manual_static_call_is_called_as_written_and_not_declared_by_the_generated_helper()
+        {
+            const string Mspec = @"
+[type Packet
+    [manual uint 8 value 'STATIC_CALL(""readValue"", readBuffer)' 'STATIC_CALL(""writeValue"", writeBuffer, value)' '1']
+]
+";
+
+            var ex = Assert.Throws<System.NotSupportedException>(
+                () => new CSharpGenerator(MspecModelBuilder.Build(Mspec), "demo", "demo.readwrite").Generate());
+            Assert.Contains("ReadValue", ex.Message);
+
+            var files = new CSharpGenerator(
+                MspecModelBuilder.Build(Mspec), "demo", "demo.readwrite", manualStaticCalls: true).Generate();
+            var packet = files["model/Packet.cs"];
+            Assert.Contains("DemoStaticHelper.ReadValue(readBuffer)", packet);
+            Assert.Contains("DemoStaticHelper.WriteValue(writeBuffer,", packet);
+            Assert.DoesNotContain("ReadValue", files["model/DemoStaticHelper.cs"]);
+            Assert.DoesNotContain("WriteValue", files["model/DemoStaticHelper.cs"]);
+        }
+
+        [Fact]
+        public void Manual_static_calls_change_nothing_for_a_protocol_whose_calls_are_all_generated()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var mspec = Path.Combine(repoRoot!, "protocols", "modbus", "src", "main", "resources",
+                "protocols", "modbus", "modbus.mspec");
+            const string Namespace = "org.apache.plc4net.drivers.modbus.readwrite";
+
+            var without = new CSharpGenerator(MspecModelBuilder.BuildFile(mspec), "modbus", Namespace).Generate();
+            var with = new CSharpGenerator(
+                MspecModelBuilder.BuildFile(mspec), "modbus", Namespace, manualStaticCalls: true).Generate();
+
+            Assert.Equal(without.Keys.OrderBy(k => k, StringComparer.Ordinal), with.Keys.OrderBy(k => k, StringComparer.Ordinal));
+            foreach (var (path, source) in without)
+            {
+                Assert.True(source == with[path], $"{path} differs");
+            }
         }
 
         [Fact]

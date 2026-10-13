@@ -28,7 +28,7 @@ C# `io-template` was never migrated, so it only ever produced data classes).
 
 ```bash
 dotnet run --project plc4net/tools/code-gen -c Release -- \
-  <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]
+  <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace] [--manual-static-calls]
 ```
 
 Each source can be one `.mspec` file or a directory containing `.mspec`
@@ -52,8 +52,17 @@ layout or deferring a missing implementation to production.
 
 Counted and byte-length arrays are supported; byte arrays with a byte-length
 use the buffer bulk-read path. Modbus `rtuCrcCheck` and `asciiLrcCheck` are
-generated as concrete helpers. Other protocol-specific static helpers remain
-an explicit generator gap and cause a diagnostic failure until implemented.
+generated as concrete helpers. Any other `STATIC_CALL` fails the generation,
+unless `--manual-static-calls` is given.
+
+With `--manual-static-calls`, every `STATIC_CALL` the generator has no
+implementation for is left to the hand-written part of the protocol's partial
+`<Protocol>StaticHelper` class, the way plc4j and plc4go keep their `StaticHelper`
+by hand. The generated code calls `<Protocol>StaticHelper.<Function>(...)` as the
+mspec writes it, and the generated half of the class does not declare the
+function, so a function that nobody wrote fails the compile of the driver
+instead of the generation. S7 is generated this way: its string, time and date
+codings live in `S7StaticHelper.Manual.cs` next to the generated model.
 
 A case of a discriminated type that does not pin a discriminator read from the
 wire keeps the value it was parsed with, as plc4j does: Modbus'
