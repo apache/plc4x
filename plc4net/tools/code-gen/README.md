@@ -41,6 +41,21 @@ driver-maintenance step; the driver slices that consume them commit the
 result. This is separate from the checked-in ANTLR parser artifacts below,
 whose reproducibility is enforced by CI.
 
+### Regenerating protocol models
+
+From the repository root, use the Maven wrapper profiles to regenerate the
+checked-in Modbus and S7 protocol models or to verify that they have not
+drifted from their `.mspec` sources:
+
+```bash
+./mvnw -f plc4net/pom.xml -Pupdate-generated-code generate-sources
+./mvnw -f plc4net/pom.xml -Pcheck-generated-code generate-sources
+```
+
+The first command updates the checked-in model directories. The second writes
+only to a temporary directory and fails when generated output differs from the
+checked-in files; CI runs that check.
+
 ## Supported subset and fail-fast behavior
 
 The generator only emits a protocol when every field has a known C# wire
