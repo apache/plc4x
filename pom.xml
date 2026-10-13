@@ -166,6 +166,8 @@
     <jsoup.version>1.22.2</jsoup.version>
     <jssc.version>2.10.4</jssc.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
+    <!-- Karaf the generated driver features are verified against, and the karaf-maven-plugin version -->
+    <karaf.version>4.4.12</karaf.version>
     <logback.version>1.6.5</logback.version>
     <maven-artifact.version>3.10.0</maven-artifact.version>
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
@@ -449,11 +451,6 @@
         <groupId>org.osgi</groupId>
         <artifactId>osgi.core</artifactId>
         <version>8.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.osgi</groupId>
-        <artifactId>org.osgi.service.component.annotations</artifactId>
-        <version>1.5.1</version>
       </dependency>
       <!-- The framework Karaf 4.4 runs on, used to test the OSGi activators against a real service registry -->
       <dependency>
@@ -1141,7 +1138,46 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.12</version>
+          <version>${karaf.version}</version>
+          <executions>
+            <!-- Not at compile time: the feature contains the module's own jar, which needs to exist first -->
+            <execution>
+              <id>verify-feature-xml</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Without this the feature holds only the dependencies, not the driver bundle itself -->
+            <includeProjectArtifact>true</includeProjectArtifact>
+            <!--
+              Karaf's pax-logging already exports org.slf4j. The plain slf4j-api bundle would
+              additionally require SPI Fly and a separate SLF4J provider bundle to resolve.
+            -->
+            <excludedArtifactIds>
+              <excludedArtifactId>slf4j-api</excludedArtifactId>
+            </excludedArtifactIds>
+            <!--
+              Used by the verify goal: resolve the module's own feature in a simulated Karaf. Without
+              explicit descriptors the goal has nothing to check and passes no matter what.
+            -->
+            <karafVersion>${karaf.version}</karafVersion>
+            <distribution>org.apache.karaf.features:framework:kar</distribution>
+            <distDir>resources</distDir>
+            <javase>${java.version}</javase>
+            <framework>
+              <feature>framework</feature>
+            </framework>
+            <descriptors>
+              <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
+              <descriptor>file:${project.build.directory}/feature/feature.xml</descriptor>
+            </descriptors>
+            <features>
+              <feature>${project.artifactId}</feature>
+            </features>
+          </configuration>
         </plugin>
 
         <plugin>

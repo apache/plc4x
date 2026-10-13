@@ -66,6 +66,13 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
+    <!-- Holds the Bundle-Activator. Compile scope, as the Karaf feature generator only picks up those -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-osgi</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+
     <!-- Test Dependencies -->
     <dependency>
       <groupId>ch.qos.logback</groupId>

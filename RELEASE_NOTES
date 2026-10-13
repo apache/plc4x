@@ -8,8 +8,24 @@ New Features
 Incompatible changes
 --------------------
 
+- Removed OsgiTransportManager from plc4j-transports-api. The
+  declarative-services component never had any transports to
+  bind; drivers in OSGi now resolve transports through the
+  service registry (see Bug Fixes). This also drops the
+  transports-api bundle's requirement on an SCR implementation.
+
 Bug Fixes
 ---------
+
+- plc4j drivers in OSGi (e.g. Apache Karaf) could not find any
+  transport and failed every connection with "Unsupported
+  transport". The transport bundles register their transports
+  as OSGi services again, and the drivers look them up there.
+- The generated Karaf features for the plc4j drivers now contain
+  the driver bundle itself and plc4j-osgi, and no longer need an
+  SCR implementation, SPI Fly or a separate SLF4J provider.
+  `feature:install plc4j-driver-<name>` is all a Karaf 4.4
+  container needs. The build verifies each feature resolves.
 
 ==============================================================
 Apache PLC4X 1.0.0

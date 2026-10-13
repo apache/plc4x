@@ -97,8 +97,6 @@
             <goals>
               <!-- Generate the feature.xml -->
               <goal>features-generate-descriptor</goal>
-              <!-- Check the feature.xml -->
-              <goal>verify</goal>
             </goals>
             <configuration>
               <enableGeneration>true</enableGeneration>

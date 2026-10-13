@@ -45,7 +45,6 @@
             <phase>compile</phase>
             <goals>
               <goal>features-generate-descriptor</goal>
-              <goal>verify</goal>
             </goals>
             <configuration>
               <enableGeneration>true</enableGeneration>

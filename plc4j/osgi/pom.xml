@@ -35,9 +35,11 @@
   </properties>
 
   <dependencies>
+    <!-- Provided by the framework: don't drag it onto the class path of every driver user -->
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi.core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

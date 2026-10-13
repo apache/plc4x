@@ -75,6 +75,10 @@
                 <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
               </ignoredDependencies>
+              <ignoredUnusedDeclaredDependencies>
+                <!-- Only referenced from the Bundle-Activator manifest header, which the analyzer can't see -->
+                <ignoredUnusedDeclaredDependency>org.apache.plc4x:plc4j-osgi</ignoredUnusedDeclaredDependency>
+              </ignoredUnusedDeclaredDependencies>
             </configuration>
           </execution>
         </executions>
