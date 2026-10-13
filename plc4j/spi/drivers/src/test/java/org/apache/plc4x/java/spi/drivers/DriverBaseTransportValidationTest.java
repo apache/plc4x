@@ -24,9 +24,11 @@ import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -171,6 +173,33 @@ class DriverBaseTransportValidationTest {
             String msg = messageFromFailedConnect(defaultOnlyDriver(), "stub:other://host");
             assertTrue(msg.contains(GUARD_MARKER), "non-default transport must be rejected: " + msg);
             assertTrue(msg.contains("other"), msg);
+        }
+    }
+
+    /**
+     * In OSGi the driver's own ServiceLoader lookup can't see the transport bundles, so the activator
+     * swaps in a registry-backed manager. The connection must then resolve through that manager.
+     */
+    @Nested
+    class InjectedTransportManager {
+
+        @Test
+        void getConnectionResolvesTheTransportThroughTheInjectedManager() {
+            List<String> requested = new ArrayList<>();
+            StubDriver driver = singleSupportDriver();
+            driver.setTransportManager(transportCode -> {
+                requested.add(transportCode);
+                return Optional.empty();
+            });
+
+            String msg = messageFromFailedConnect(driver, "stub:supported://host");
+            assertTrue(msg.contains(REGISTERED_MARKER), msg);
+            assertEquals(List.of("supported"), requested);
+        }
+
+        @Test
+        void nullManagerIsRejected() {
+            assertThrows(NullPointerException.class, () -> singleSupportDriver().setTransportManager(null));
         }
     }
 }

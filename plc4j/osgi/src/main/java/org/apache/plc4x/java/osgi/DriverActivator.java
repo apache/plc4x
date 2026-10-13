@@ -21,6 +21,7 @@ package org.apache.plc4x.java.osgi;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.spi.transports.api.TransportManagerAware;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -32,14 +33,21 @@ import java.util.ServiceLoader;
 public class DriverActivator implements BundleActivator {
 
     private final List<ServiceRegistration<PlcDriver>> registrations = new ArrayList<>();
+    private ServiceRegistryTransportManager transportManager;
     public static final String PROTOCOL_NAME = "org.apache.plc4x.driver.name";
     public static final String PROTOCOL_CODE = "org.apache.plc4x.driver.code";
 
 
     @Override
     public void start(BundleContext context) throws Exception {
+        // The driver's own class loader can't see the transport bundles, so resolve transports via the registry.
+        transportManager = new ServiceRegistryTransportManager(context);
+        transportManager.open();
         ServiceLoader<PlcDriver> drivers = ServiceLoader.load(PlcDriver.class, context.getBundle().adapt(BundleWiring.class).getClassLoader());
         for (PlcDriver driver : drivers) {
+            if (driver instanceof TransportManagerAware transportManagerAware) {
+                transportManagerAware.setTransportManager(transportManager);
+            }
             Hashtable<String, String> props = new Hashtable<>();
             props.put(PROTOCOL_CODE, driver.getProtocolCode());
             props.put(PROTOCOL_NAME, driver.getProtocolName());
@@ -51,6 +59,10 @@ public class DriverActivator implements BundleActivator {
     public void stop(BundleContext context) {
         registrations.forEach(ServiceRegistration::unregister);
         registrations.clear();
+        if (transportManager != null) {
+            transportManager.close();
+            transportManager = null;
+        }
     }
 }
 

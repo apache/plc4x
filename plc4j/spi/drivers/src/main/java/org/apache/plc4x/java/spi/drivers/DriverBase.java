@@ -46,6 +46,7 @@ import org.apache.plc4x.java.spi.transports.api.DefaultTransportManager;
 import org.apache.plc4x.java.spi.transports.api.Transport;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 import org.apache.plc4x.java.spi.transports.api.TransportManager;
+import org.apache.plc4x.java.spi.transports.api.TransportManagerAware;
 import org.apache.plc4x.java.spi.transports.api.config.TransportConfiguration;
 import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -71,7 +73,7 @@ import java.util.regex.Pattern;
  * Handles URI parsing, transport initialization, configuration, and connection factory delegation.
  * Drivers extend this class and implement the abstract methods to provide protocol-specific behavior.
  */
-public abstract class DriverBase implements PlcDriver {
+public abstract class DriverBase implements PlcDriver, TransportManagerAware {
 
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9\\-]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
@@ -79,11 +81,16 @@ public abstract class DriverBase implements PlcDriver {
 
     private static final Logger log = LoggerFactory.getLogger(DriverBase.class);
 
-    private final TransportManager transportManager;
+    private volatile TransportManager transportManager;
     private AuditLog auditLog;
 
     protected DriverBase() {
         transportManager = new DefaultTransportManager();
+    }
+
+    @Override
+    public void setTransportManager(TransportManager transportManager) {
+        this.transportManager = Objects.requireNonNull(transportManager, "transportManager");
     }
 
     protected abstract Class<? extends Configuration> getConfigurationClass();

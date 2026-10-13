@@ -455,6 +455,12 @@
         <artifactId>org.osgi.service.component.annotations</artifactId>
         <version>1.5.1</version>
       </dependency>
+      <!-- The framework Karaf 4.4 runs on, used to test the OSGi activators against a real service registry -->
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>7.0.5</version>
+      </dependency>
 
       <!-- TODO: Eliminate the usage of AssertJ (OPM and OPC-UA Driver) -->
       <!-- TODO: Check if we actually need this -->
