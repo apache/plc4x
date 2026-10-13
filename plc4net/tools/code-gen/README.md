@@ -56,6 +56,9 @@ The first command updates the checked-in model directories. The second writes
 only to a temporary directory and fails when generated output differs from the
 checked-in files; CI runs that check.
 
+The profiles use `python` by default. On a system where Python 3 is exposed
+only as `python3`, add `-Dpython.executable=python3` to either command.
+
 ## Supported subset and fail-fast behavior
 
 The generator only emits a protocol when every field has a known C# wire

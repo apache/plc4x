@@ -82,27 +82,29 @@ def generate(protocol, mspec, output, extra_arguments):
     )
 
 
-def differs(expected, actual):
-    expected_files = {
-        path.relative_to(expected)
-        for path in expected.rglob("*")
+def differs(checked_in, generated):
+    checked_in_files = {
+        path.relative_to(checked_in)
+        for path in checked_in.rglob("*")
         if path.is_file()
     }
-    actual_files = {
-        path.relative_to(actual)
-        for path in actual.rglob("*")
+    generated_files = {
+        path.relative_to(generated)
+        for path in generated.rglob("*")
         if path.is_file()
     }
-    missing_files = expected_files - actual_files
-    unexpected_files = actual_files - expected_files
+    missing_files = checked_in_files - generated_files
+    unexpected_files = generated_files - checked_in_files
     changed_files = [
         path
-        for path in expected_files & actual_files
-        if (expected / path).read_bytes().replace(b"\r\n", b"\n")
-        != (actual / path).read_bytes().replace(b"\r\n", b"\n")
+        for path in checked_in_files & generated_files
+        if (checked_in / path).read_bytes().replace(b"\r\n", b"\n")
+        != (generated / path).read_bytes().replace(b"\r\n", b"\n")
     ]
     if missing_files or unexpected_files or changed_files:
-        print(f"Generated model differs: {actual}", file=sys.stderr)
+        print("Generated model differs:", file=sys.stderr)
+        print(f"  checked-in model: {checked_in}", file=sys.stderr)
+        print(f"  generated model: {generated}", file=sys.stderr)
         for path in sorted(missing_files):
             print(f"  missing from generated output: {path}", file=sys.stderr)
         for path in sorted(unexpected_files):
@@ -133,7 +135,7 @@ def main():
         for protocol, mspec, driver_directory, extra_arguments in MODELS:
             output = temporary_root / protocol
             generate(protocol, mspec, output, extra_arguments)
-            has_drift = differs(output / "model", driver_directory / "model") or has_drift
+            has_drift = differs(driver_directory / "model", output / "model") or has_drift
         return 1 if has_drift else 0
 
 
