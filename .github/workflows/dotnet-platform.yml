@@ -25,6 +25,7 @@ on:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
       - protocols/modbus/**
+      - protocols/s7/**
       - .github/workflows/dotnet-platform.yml
   pull_request:
     branches: [develop, plc4net]
@@ -32,6 +33,7 @@ on:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
       - protocols/modbus/**
+      - protocols/s7/**
       - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
 
@@ -77,6 +79,12 @@ jobs:
           dotnet run --project plc4net/tools/code-gen --configuration Release -- \
             modbus protocols/modbus/src/main/resources/protocols/modbus/modbus.mspec "$out"
           diff -r "$out/model" plc4net/drivers/modbus/model
+      - name: Verify the generated S7 model
+        run: |
+          out="$(mktemp -d)"
+          dotnet run --project plc4net/tools/code-gen --configuration Release -- \
+            s7 protocols/s7/src/main/resources/protocols/s7/s7.mspec "$out" --manual-static-calls
+          diff -r "$out/model" plc4net/drivers/s7/model
 
   test:
     name: Build and test (${{ matrix.os }})
