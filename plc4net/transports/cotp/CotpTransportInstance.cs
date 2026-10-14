@@ -588,8 +588,7 @@ namespace org.apache.plc4net.transports.cotp
         // ── IAsyncTransportInstance ──────────────────────────────
         //
         // COTP itself has no read loop; these forward to the inner transport so
-        // a driver over COTP (S7) can still learn why the socket dropped. The
-        // data-listener side is unused by the S7 driver's polling model.
+        // a driver over COTP (S7) can wait for data arrival and learn why the socket dropped.
 
         public void RegisterDataListener(Action listener)
         {
