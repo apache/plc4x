@@ -32,7 +32,9 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +55,11 @@ class CotpFramingTest {
     private ServerSocket serverSocket;
     private ExecutorService serverExecutor;
     private int port;
+    /**
+     * Held until tearDown: a Socket nobody references is closed by its cleaner on the next GC, and
+     * the transport under test then sees the peer hang up in the middle of the test.
+     */
+    private final List<Socket> peerSockets = new CopyOnWriteArrayList<>();
 
     private static byte[] decodeHex(String hex) {
         byte[] out = new byte[hex.length() / 2];
@@ -72,6 +79,9 @@ class CotpFramingTest {
 
     @AfterEach
     void tearDown() throws Exception {
+        for (Socket peerSocket : peerSockets) {
+            peerSocket.close();
+        }
         if (serverSocket != null && !serverSocket.isClosed()) {
             serverSocket.close();
         }
@@ -98,6 +108,7 @@ class CotpFramingTest {
         serverExecutor.submit(() -> {
             try {
                 Socket socket = serverSocket.accept();
+                peerSockets.add(socket);
                 InputStream in = socket.getInputStream();
                 // Read the connection request (22 bytes) before answering.
                 byte[] request = new byte[22];
@@ -176,6 +187,7 @@ class CotpFramingTest {
         serverExecutor.submit(() -> {
             try {
                 Socket socket = serverSocket.accept();
+                peerSockets.add(socket);
                 InputStream in = socket.getInputStream();
                 byte[] request = new byte[22];
                 int read = 0;
