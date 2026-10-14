@@ -248,9 +248,9 @@ namespace org.apache.plc4net.drivers.s7
 
             // Say why the link went away when it does, instead of leaving the caller with a bare
             // timeout on its next request.
-            if (TransportInstance is IAsyncTransportInstance async)
+            if (TransportInstance is IAsyncTransportInstance asyncTransport)
             {
-                async.RegisterDisconnectListener(ex => Logger.LogWarning(ex, "The S7 transport disconnected"));
+                asyncTransport.RegisterDisconnectListener(ex => Logger.LogWarning(ex, "The S7 transport disconnected"));
             }
         }
 
@@ -469,9 +469,13 @@ namespace org.apache.plc4net.drivers.s7
 
             for (var i = 0; i < tags.Count; i++)
             {
-                var data = DataItemHeaderSize + PaddedSize(tags[i]);
-                var requestItem = write ? AddressItemSize + data : AddressItemSize;
-                var answerItem = write ? 1 : data;
+                // The generated model pads an odd-sized item only when a following item makes it
+                // non-final. The prospective item therefore adds padding for the current last
+                // item, while it is itself counted without padding until another item follows.
+                var previousPadding = job.Count > 0 && tags[job[job.Count - 1]].SizeInBytes % 2 != 0 ? 1 : 0;
+                var data = DataItemHeaderSize + tags[i].SizeInBytes;
+                var requestItem = write ? AddressItemSize + data + previousPadding : AddressItemSize;
+                var answerItem = write ? 1 : data + previousPadding;
 
                 if (job.Count > 0
                     && (requestSize + requestItem > pduLength
@@ -494,8 +498,6 @@ namespace org.apache.plc4net.drivers.s7
             }
             return jobs;
         }
-
-        private static int PaddedSize(S7Tag tag) => (tag.SizeInBytes + 1) & ~1;
 
         private int PduLength => NegotiatedPduLength > 0 ? NegotiatedPduLength : _requestedPduSize;
 

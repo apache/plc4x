@@ -52,7 +52,7 @@ namespace org.apache.plc4net.drivers.s7.test
         [InlineData("%MD12:REAL", MemoryArea.FLAGS_MARKERS, 0, 12, 0, TransportSize.REAL)]
         [InlineData("%M20:INT", MemoryArea.FLAGS_MARKERS, 0, 20, 0, TransportSize.INT)]
         [InlineData("%DB65535.DBW65535:INT", MemoryArea.DATA_BLOCKS, 65535, 65535, 0, TransportSize.INT)]
-        public void An_address_names_its_area_block_offset_and_type(
+        public void A_address_names_its_area_block_offset_and_type(
             string address, MemoryArea area, int block, int byteOffset, int bitOffset, TransportSize type)
         {
             var tag = S7Tag.Parse(address);

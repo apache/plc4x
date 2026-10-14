@@ -568,6 +568,17 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public void A_final_odd_sized_write_item_is_not_padded_when_planning_a_job()
+        {
+            // Twelve BYTE writes need 12 + 12 * (12 + 4 + 1) + 11 padding bytes = 227 bytes.
+            // The thirteenth adds its address and data but leaves itself unpadded, exactly filling
+            // 245 bytes. Treating it as padded would split the job at 246 bytes.
+            var jobs = S7Connection.PlanJobs(Tags(13), true, 245);
+
+            Assert.Equal("13", string.Join(",", jobs.Select(j => j.Count)));
+        }
+
+        [Fact]
         public void Nothing_to_do_is_no_job()
         {
             Assert.Empty(S7Connection.PlanJobs(new List<S7Tag>(), false, 240));

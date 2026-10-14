@@ -20,6 +20,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using org.apache.plc4net.api.value;
 using org.apache.plc4net.drivers.s7.readwrite.model;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
@@ -29,7 +30,7 @@ namespace org.apache.plc4net.drivers.s7.test
 {
     /// <summary>
     /// Round-trips the generated S7 <c>DataItem</c> - the <c>[dataIo]</c> that
-    /// reads and writes one <see cref="api.value.IPlcValue"/> keyed on the
+    /// reads and writes one <see cref="IPlcValue"/> keyed on the
     /// <c>dataProtocolId</c> parser argument. No shared test-suite vector
     /// exercises it (plc4j drives it straight from <c>S7ProtocolLogic</c>), so
     /// the byte vectors here are built from the IEC 61131 wire layout the mspec
@@ -208,7 +209,7 @@ namespace org.apache.plc4net.drivers.s7.test
 
         // ── helpers ─────────────────────────────────────────────
 
-        private static api.value.IPlcValue Parse(string protocolId, string hex, int stringLength = NoString) =>
+        private static IPlcValue Parse(string protocolId, string hex, int stringLength = NoString) =>
             DataItem.StaticParse(new ReadBuffer(FromHex(hex)), protocolId, ControllerType.ANY, stringLength);
 
         private static string RoundTrip(string protocolId, string hex, int stringLength = NoString)
