@@ -69,6 +69,10 @@ on:
         required: false
         default: 'false'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   PLC4X_TEST_HIGH_TEST_LOG_PRECISION: ${{ github.event.inputs.highLogPrecision }}
   PLC4X_TEST_PASS_LOGGER_TO_MODEL: ${{ github.event.inputs.passLoggerToModel }}
