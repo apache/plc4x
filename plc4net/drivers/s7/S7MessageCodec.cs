@@ -61,7 +61,8 @@ namespace org.apache.plc4net.drivers.s7
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), "The S7 message-size limit must be positive.");
+                    throw new ArgumentOutOfRangeException(
+                        nameof(MaximumMessageSize), "The S7 message-size limit must be positive.");
                 }
                 _maximumMessageSize = value;
             }
@@ -89,7 +90,10 @@ namespace org.apache.plc4net.drivers.s7
             var total = headerSize + parameterLength + dataLength;
             if (total > MaximumMessageSize)
             {
-                throw new MessageCodecException($"Implausible S7 message length {total}.");
+                throw new MessageCodecException(
+                    $"Implausible S7 message length {total}: maximum is {MaximumMessageSize}, " +
+                    $"parameter length is {parameterLength}, data length is {dataLength}, " +
+                    $"message type is 0x{header[1]:X2}.");
             }
             return total;
         }

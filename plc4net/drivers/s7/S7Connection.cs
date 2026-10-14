@@ -111,6 +111,8 @@ namespace org.apache.plc4net.drivers.s7
         private readonly SemaphoreSlim _exchangeGate = new SemaphoreSlim(1, 1);
         private readonly S7MessageCodec _codec;
 
+        // Set by an async transport's read thread. The exchange loop owns clearing it.
+        private TaskCompletionSource<bool>? _dataArrival;
         private int _tpduReference;
         private ushort _expectedTpduReference;
         private S7Response? _response;
@@ -244,15 +246,16 @@ namespace org.apache.plc4net.drivers.s7
                 remoteTsapHi: (byte)((remoteTsap >> 8) & 0xFF),
                 remoteTsapLo: (byte)(remoteTsap & 0xFF));
 
-            // A CPU ignores Read Var and Write Var until Setup Communication has run.
-            PerformSetupCommunication();
-
-            // Say why the link went away when it does, instead of leaving the caller with a bare
-            // timeout on its next request.
             if (TransportInstance is IAsyncTransportInstance asyncTransport)
             {
+                // The callback only releases the exchange loop; parsing remains on that loop,
+                // never on the transport's read thread.
+                asyncTransport.RegisterDataListener(OnDataArrival);
                 asyncTransport.RegisterDisconnectListener(ex => Logger.LogWarning(ex, "The S7 transport disconnected"));
             }
+
+            // A CPU ignores Read Var and Write Var until Setup Communication has run.
+            PerformSetupCommunication();
         }
 
         private void PerformSetupCommunication()
@@ -341,6 +344,8 @@ namespace org.apache.plc4net.drivers.s7
 
         private ushort NextTpduReference() => (ushort)(Interlocked.Increment(ref _tpduReference) & 0xFFFF);
 
+        private void OnDataArrival() => Volatile.Read(ref _dataArrival)?.TrySetResult(true);
+
         private void OnMessage(S7Message message)
         {
             ushort reference;
@@ -409,7 +414,41 @@ namespace org.apache.plc4net.drivers.s7
                         throw new TimeoutException(
                             $"No S7 answer to TPDU reference {reference} within {_readTimeoutMs} ms.");
                     }
-                    await Task.Delay((int)Math.Min(pollIntervalMs, remainingMs), cancellationToken).ConfigureAwait(false);
+                    var delayMs = (int)Math.Min(pollIntervalMs, remainingMs);
+                    var dataArrival = TransportInstance is IAsyncTransportInstance
+                        ? new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously)
+                        : null;
+                    if (dataArrival != null)
+                    {
+                        Volatile.Write(ref _dataArrival, dataArrival);
+                        // Do not miss bytes that arrived between ProcessIncomingData and listener setup.
+                        if (TransportInstance.GetNumBytesAvailable() > 0)
+                        {
+                            Interlocked.CompareExchange(ref _dataArrival, null, dataArrival);
+                            continue;
+                        }
+                    }
+
+                    try
+                    {
+                        if (dataArrival == null)
+                        {
+                            await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await Task.WhenAny(dataArrival.Task, Task.Delay(delayMs, cancellationToken))
+                                .ConfigureAwait(false);
+                            cancellationToken.ThrowIfCancellationRequested();
+                        }
+                    }
+                    finally
+                    {
+                        if (dataArrival != null)
+                        {
+                            Interlocked.CompareExchange(ref _dataArrival, null, dataArrival);
+                        }
+                    }
                     pollIntervalMs = Math.Min(pollIntervalMs * 2, MaximumPollIntervalMs);
                 }
             }
@@ -452,6 +491,11 @@ namespace org.apache.plc4net.drivers.s7
         {
             if (disposing)
             {
+                if (TransportInstance is IAsyncTransportInstance asyncTransport)
+                {
+                    asyncTransport.RemoveDataListener();
+                    asyncTransport.RemoveDisconnectListener();
+                }
                 _exchangeGate.Dispose();
             }
             base.Dispose(disposing);

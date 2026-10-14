@@ -48,6 +48,16 @@ namespace org.apache.plc4net.drivers.s7.test
             => Unwrapped(S7Frames.ReadAck(reference, (0xFF, 0x04, data ?? new byte[] { 0x12, 0x34 })));
 
         [Fact]
+        public void A_nonpositive_message_size_names_the_public_limit_property()
+        {
+            var (codec, _, _) = New();
+
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => codec.MaximumMessageSize = 0);
+
+            Assert.Equal(nameof(codec.MaximumMessageSize), exception.ParamName);
+        }
+
+        [Fact]
         public void An_acknowledgement_with_data_is_framed_by_the_lengths_in_its_header()
         {
             var (codec, received, transport) = New();
