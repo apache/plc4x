@@ -42,6 +42,7 @@
     <ProjectReference Include="..\..\transports\test\test.csproj" />
     <ProjectReference Include="..\..\transports\serial\serial.csproj" />
     <ProjectReference Include="..\..\transports\cotp\cotp.csproj" />
+    <ProjectReference Include="..\..\transports\udp\udp.csproj" />
   </ItemGroup>
 
 </Project>
