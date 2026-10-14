@@ -235,5 +235,14 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Throws<PlcInvalidFieldException>(
                 () => new S7Tag(MemoryArea.FLAGS_MARKERS, 0, 0, 1, TransportSize.BYTE));
         }
+
+        [Fact]
+        public void A_non_data_block_area_explains_why_its_block_number_must_be_zero()
+        {
+            var exception = Assert.Throws<PlcInvalidFieldException>(
+                () => new S7Tag(MemoryArea.FLAGS_MARKERS, 5, 0, 0, TransportSize.BYTE));
+
+            Assert.Contains("must use data block number 0", exception.Message);
+        }
     }
 }

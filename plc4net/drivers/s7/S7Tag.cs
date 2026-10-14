@@ -107,9 +107,15 @@ namespace org.apache.plc4net.drivers.s7
             {
                 throw new PlcInvalidFieldException(UnsupportedType(dataType.ToString()));
             }
-            if (dbNumber < 0 || dbNumber > MaxDataBlock || (area != MemoryArea.DATA_BLOCKS && dbNumber != 0))
+            if (dbNumber < 0 || dbNumber > MaxDataBlock)
             {
-                throw new PlcInvalidFieldException($"The S7 data block number {dbNumber} is out of range.");
+                throw new PlcInvalidFieldException(
+                    $"The S7 data block number must be between 0 and {MaxDataBlock}, but was {dbNumber}.");
+            }
+            if (area != MemoryArea.DATA_BLOCKS && dbNumber != 0)
+            {
+                throw new PlcInvalidFieldException(
+                    $"The S7 memory area {area} must use data block number 0, but was {dbNumber}.");
             }
             if (byteOffset < 0 || byteOffset > MaxByteOffset)
             {

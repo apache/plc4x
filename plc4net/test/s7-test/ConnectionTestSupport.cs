@@ -38,6 +38,7 @@ namespace org.apache.plc4net.drivers.s7.test
     internal static class ConnectionTestSupport
     {
         public const string S7Uri = "s7://192.168.0.1?remote-rack=0&remote-slot=1";
+        private const int DefaultFakeCpuTimeoutMs = 8000;
 
         public static TestTransportInstance NewTransport()
             => new TestTransportInstance(new TestTransportConfiguration());
@@ -114,22 +115,37 @@ namespace org.apache.plc4net.drivers.s7.test
             private readonly List<byte[]> _requests = new List<byte[]>();
 
             public FakeCpu(TestTransportInstance transport, params byte[]?[] answers)
-                : this(transport, 0, answers)
+                : this(transport, 0, DefaultFakeCpuTimeoutMs, answers)
             {
             }
 
             /// <param name="transport">The transport the driver writes to and reads from.</param>
             /// <param name="delayMs">How long the CPU takes to answer, so that whatever was buffered
             /// before is seen on its own first.</param>
+            /// <param name="timeoutMs">Maximum time to observe every expected request.</param>
             /// <param name="answers">The answers, in the order of the requests.</param>
             public FakeCpu(TestTransportInstance transport, int delayMs, params byte[]?[] answers)
+                : this(transport, delayMs, DefaultFakeCpuTimeoutMs, answers)
             {
+            }
+
+            public FakeCpu(TestTransportInstance transport, int delayMs, int timeoutMs, params byte[]?[] answers)
+            {
+                if (delayMs < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(delayMs));
+                }
+                if (timeoutMs <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(timeoutMs));
+                }
+
                 Running = Task.Run(async () =>
                 {
                     var pending = new List<byte>();
                     var next = 0;
-                    var deadline = Environment.TickCount64 + 8000;
-                    while (next < answers.Length && Environment.TickCount64 < deadline)
+                    var deadline = Environment.TickCount64 + timeoutMs;
+                    while (next < answers.Length)
                     {
                         pending.AddRange(transport.GetAllWrittenData());
                         while (pending.Count >= 4 && pending.Count >= ((pending[2] << 8) | pending[3]))
@@ -151,12 +167,17 @@ namespace org.apache.plc4net.drivers.s7.test
                                 transport.InjectTestData(answer);
                             }
                         }
+                        if (Environment.TickCount64 >= deadline)
+                        {
+                            throw new TimeoutException(
+                                $"Fake CPU observed {next} of {answers.Length} expected request(s) within {timeoutMs} ms.");
+                        }
                         await Task.Delay(1);
                     }
                 });
             }
 
-            /// <summary>Completes when every answer has been given.</summary>
+            /// <summary>Completes when every answer has been given, or faults if its deadline expires first.</summary>
             public Task Running { get; }
 
             /// <summary>The requests that the driver sent, in order, with the Data Transfer frames normalized.</summary>

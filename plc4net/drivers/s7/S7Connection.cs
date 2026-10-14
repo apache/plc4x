@@ -70,7 +70,8 @@ namespace org.apache.plc4net.drivers.s7
             CanSubscribe = false
         };
 
-        private const int PollIntervalMs = 2;
+        private const int InitialPollIntervalMs = 2;
+        private const int MaximumPollIntervalMs = 20;
         private const int DefaultReadTimeoutMs = 10000;
         private const int DefaultPduSize = 1024;
         private const int DefaultMaxAmq = 8;
@@ -86,7 +87,7 @@ namespace org.apache.plc4net.drivers.s7
         // What a job costs besides its items: the ten header bytes and the two of the parameter
         // (function code, item count); an acknowledgement has two more header bytes. An S7-ANY
         // item in the request is twelve bytes, a data item four bytes plus its data, which is
-        // padded to an even length.
+        // padded to an even length unless it is the final item.
         private const int JobSize = 12;
         private const int AckSize = 14;
         private const int AddressItemSize = 12;
@@ -388,6 +389,7 @@ namespace org.apache.plc4net.drivers.s7
 
                 _codec.Send(request);
                 var deadline = Environment.TickCount64 + _readTimeoutMs;
+                var pollIntervalMs = InitialPollIntervalMs;
 
                 while (true)
                 {
@@ -401,12 +403,14 @@ namespace org.apache.plc4net.drivers.s7
                     {
                         throw new S7DriverException("The S7 connection was closed.");
                     }
-                    if (Environment.TickCount64 >= deadline)
+                    var remainingMs = deadline - Environment.TickCount64;
+                    if (remainingMs <= 0)
                     {
                         throw new TimeoutException(
                             $"No S7 answer to TPDU reference {reference} within {_readTimeoutMs} ms.");
                     }
-                    await Task.Delay(PollIntervalMs, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay((int)Math.Min(pollIntervalMs, remainingMs), cancellationToken).ConfigureAwait(false);
+                    pollIntervalMs = Math.Min(pollIntervalMs * 2, MaximumPollIntervalMs);
                 }
             }
             catch (MessageCodecException ex)
