@@ -170,7 +170,6 @@
     <karaf.version>4.4.12</karaf.version>
     <logback.version>1.6.5</logback.version>
     <maven-artifact.version>3.10.0</maven-artifact.version>
-    <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
     <mockito.version>5.24.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <!-- Used by the maven-site skin declaration in
@@ -1045,11 +1044,6 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
             <version>${extra-enforcer-rules.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-dependency-tree</artifactId>
-            <version>${maven-dependency-tree.version}</version>
           </dependency>
         </dependencies>
       </plugin>
