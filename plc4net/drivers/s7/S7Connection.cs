@@ -489,6 +489,11 @@ namespace org.apache.plc4net.drivers.s7
                     job = new List<int>();
                     requestSize = JobSize;
                     answerSize = AckSize;
+
+                    // The item starts a new job, so it cannot pad an item from the old job.
+                    previousPadding = 0;
+                    requestItem = write ? AddressItemSize + data : AddressItemSize;
+                    answerItem = write ? 1 : data;
                 }
 
                 job.Add(i);

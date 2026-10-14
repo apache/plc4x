@@ -579,6 +579,16 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public void A_new_write_job_does_not_inherit_padding_from_the_previous_job()
+        {
+            // Two BYTE writes exactly fill 47 bytes. When starting the second job, its first
+            // item must not inherit padding from the final item of the first job.
+            var jobs = S7Connection.PlanJobs(Tags(4), true, 47);
+
+            Assert.Equal("2,2", string.Join(",", jobs.Select(j => j.Count)));
+        }
+
+        [Fact]
         public void Nothing_to_do_is_no_job()
         {
             Assert.Empty(S7Connection.PlanJobs(new List<S7Tag>(), false, 240));
