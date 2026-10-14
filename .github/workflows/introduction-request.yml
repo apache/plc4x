@@ -1,0 +1,123 @@
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+name: "Introduction request"
+
+# Asks first-time contributors to introduce themselves on dev@ before their pull-request is
+# reviewed, as the contribution guidelines require.
+#
+# This runs on a schedule instead of on pull_request: a first-time contributor's fork run waits
+# for maintainer approval and only gets a read-only token, and pull_request_target is disabled
+# for ASF repositories. It never checks out or executes pull-request code.
+on:
+  schedule:
+    - cron: '23 */4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  request-introduction:
+    name: Ask new contributors for an introduction
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const MARKER = '<!-- plc4x-introduction-request -->';
+            const LABEL = 'needs-introduction';
+            // Authors without a merged contribution to this repository
+            const NEW_AUTHOR = new Set(['FIRST_TIME_CONTRIBUTOR', 'FIRST_TIMER', 'NONE']);
+            const MAINTAINER = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
+            // Older pull-requests predate this workflow; the window also covers skipped schedules
+            const MAX_AGE_DAYS = 14;
+            const GUIDELINES = 'https://plc4x.apache.org/plc4x/latest/developers/contributing.html';
+            const CONTACT = 'https://plc4x.apache.org/plc4x/latest/users/contact.html#_mailing_lists';
+            const ARCHIVE = 'https://lists.apache.org/list.html?dev@plc4x.apache.org';
+
+            const { owner, repo } = context.repo;
+            const cutoff = Date.now() - MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+
+            const pulls = await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open', per_page: 100 });
+            const candidates = pulls.filter(pr =>
+              NEW_AUTHOR.has(pr.author_association) &&
+              pr.user.type !== 'Bot' &&
+              Date.parse(pr.created_at) >= cutoff &&
+              !pr.labels.some(label => label.name === LABEL));
+            core.info(`${candidates.length} open pull-request(s) from new contributors to check`);
+
+            let labelExists = false;
+            for (const pr of candidates) {
+              const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: pr.number, per_page: 100 });
+              if (comments.some(c => c.body?.includes(MARKER))) {
+                continue;
+              }
+              // A maintainer is already talking to the author, so the request would only add noise
+              if (comments.some(c => MAINTAINER.has(c.author_association))) {
+                core.info(`#${pr.number}: a maintainer already commented, skipping`);
+                continue;
+              }
+
+              if (!labelExists) {
+                try {
+                  await github.rest.issues.getLabel({ owner, repo, name: LABEL });
+                } catch (e) {
+                  if (e.status !== 404) throw e;
+                  await github.rest.issues.createLabel({
+                    owner, repo, name: LABEL, color: 'fbca04',
+                    description: 'Waiting for the author to introduce themselves on dev@plc4x.apache.org',
+                  });
+                }
+                labelExists = true;
+              }
+
+              const body = [
+                MARKER,
+                `Hi @${pr.user.login},`,
+                '',
+                'Before we review a pull-request from a new contributor, we ask them to introduce themselves on our developer mailing list, dev@plc4x.apache.org. ' +
+                  `Our [contribution guidelines](${GUIDELINES}#_ai_assisted_and_ai_generated_pull_requests) explain why: PLC4X is maintained by a small group of people, and reviewing a change costs us far more time than producing it.`,
+                '',
+                'Please post a short introduction covering:',
+                '',
+                '- who you are and your background, for example the protocols, PLCs or machines you work with',
+                '- what you want to achieve with this pull-request, and the use case behind it',
+                '- whether you plan to keep contributing',
+                '',
+                `To subscribe, send an empty mail to dev-subscribe@plc4x.apache.org (see [Getting in contact](${CONTACT})). ` +
+                  `Once your introduction is on the list, link the thread from the [archive](${ARCHIVE}) here. ` +
+                  `A maintainer will then remove the \`${LABEL}\` label and continue with the review.`,
+                '',
+                `Pull-requests without an introduction [may be closed](${GUIDELINES}#_please_introduce_yourself_first). ` +
+                  'If such a pull-request contains a valid finding, we may apply the change ourselves.',
+                '',
+                '<sub>This comment is posted automatically on pull-requests from first-time contributors.</sub>',
+              ].join('\n');
+
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+              await github.rest.issues.addLabels({ owner, repo, issue_number: pr.number, labels: [LABEL] });
+              core.info(`#${pr.number}: asked @${pr.user.login} for an introduction`);
+            }

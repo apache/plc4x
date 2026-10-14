@@ -102,6 +102,9 @@ This is not a formality.
 It tells us whom we are working with, what you already know and where mentoring would help, and it
 is the point at which a contribution turns into a conversation instead of a queue item.
 
+A bot reminds first-time contributors of this on their pull-request and labels it
+`needs-introduction` until a maintainer has seen the introduction.
+
 Pull-requests submitted without such an introduction may be rejected.
 If such a pull-request contains a valid finding, we reserve the right to simply apply the proposed
 change ourselves, in order to avoid encouraging further drive-by AI submissions.
