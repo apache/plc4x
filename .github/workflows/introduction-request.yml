@@ -28,6 +28,11 @@ on:
   schedule:
     - cron: '23 */4 * * *'
   workflow_dispatch:
+    inputs:
+      pull-request:
+        description: "Ask on this pull-request only, regardless of its author or age"
+        required: false
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}
@@ -61,22 +66,40 @@ jobs:
             const { owner, repo } = context.repo;
             const cutoff = Date.now() - MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 
-            const pulls = await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open', per_page: 100 });
-            const candidates = pulls.filter(pr =>
-              NEW_AUTHOR.has(pr.author_association) &&
-              pr.user.type !== 'Bot' &&
-              Date.parse(pr.created_at) >= cutoff &&
-              !pr.labels.some(label => label.name === LABEL));
-            core.info(`${candidates.length} open pull-request(s) from new contributors to check`);
+            // Read from the event payload, never interpolated into the script
+            const requested = String(context.payload.inputs?.['pull-request'] ?? '').trim();
+            let candidates;
+            if (requested) {
+              if (!/^[1-9][0-9]*$/.test(requested)) {
+                core.setFailed(`Not a pull-request number: ${requested}`);
+                return;
+              }
+              const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: Number(requested) });
+              if (pr.state !== 'open') {
+                core.setFailed(`#${pr.number} is not open`);
+                return;
+              }
+              // A maintainer picked this pull-request, so the author, age and label filters don't apply
+              candidates = [pr];
+            } else {
+              const pulls = await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open', per_page: 100 });
+              candidates = pulls.filter(pr =>
+                NEW_AUTHOR.has(pr.author_association) &&
+                pr.user.type !== 'Bot' &&
+                Date.parse(pr.created_at) >= cutoff &&
+                !pr.labels.some(label => label.name === LABEL));
+            }
+            core.info(`${candidates.length} open pull-request(s) to check`);
 
             let labelExists = false;
             for (const pr of candidates) {
               const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: pr.number, per_page: 100 });
               if (comments.some(c => c.body?.includes(MARKER))) {
+                core.info(`#${pr.number}: already asked, skipping`);
                 continue;
               }
               // A maintainer is already talking to the author, so the request would only add noise
-              if (comments.some(c => MAINTAINER.has(c.author_association))) {
+              if (!requested && comments.some(c => MAINTAINER.has(c.author_association))) {
                 core.info(`#${pr.number}: a maintainer already commented, skipping`);
                 continue;
               }
