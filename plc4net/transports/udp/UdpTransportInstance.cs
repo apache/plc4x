@@ -213,7 +213,14 @@ namespace org.apache.plc4net.transports.udp
                     || Volatile.Read(ref _listenerThreadId) == Environment.CurrentManagedThreadId;
                 if (!insideLoop && _receiveLoop != null && !_receiveLoop.IsCompleted)
                 {
-                    _receiveLoop.Wait(TimeSpan.FromSeconds(1));
+                    try
+                    {
+                        _receiveLoop.Wait(TimeSpan.FromSeconds(1));
+                    }
+                    catch (AggregateException)
+                    {
+                        // Close is best-effort shutdown; receive-loop errors were already reported.
+                    }
                 }
                 _shutdown.Dispose();
             }

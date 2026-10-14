@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using org.apache.plc4net.spi.transports;
 using org.apache.plc4net.transports.udp;
 using Xunit;
 
@@ -90,6 +91,19 @@ namespace org.apache.plc4net.spi.test.transports
 
             Assert.False(instance.IsOpen);
             Assert.True(WaitFor(() => instance.ResourcesReleased));
+        }
+
+        [Theory]
+        [InlineData("-1")]
+        [InlineData("65536")]
+        public void Configuration_rejects_a_local_port_outside_the_socket_range(string localPort)
+        {
+            var transport = new UdpTransport();
+
+            var exception = Assert.Throws<TransportException>(() => transport.CreateConfiguration(
+                new System.Collections.Generic.Dictionary<string, string> { ["local-port"] = localPort }));
+
+            Assert.Contains("local-port", exception.Message);
         }
 
         [Fact]

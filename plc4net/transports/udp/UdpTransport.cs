@@ -70,7 +70,7 @@ namespace org.apache.plc4net.transports.udp
             // Options may be written bare or prefixed with the transport code, matching
             // the TCP transport and the Java ConfigurationFactory convention.
             configuration.DefaultPort = GetInt(parameters, "default-port", configuration.DefaultPort);
-            configuration.LocalAddress = GetString(parameters, "local-address", configuration.LocalAddress) ?? configuration.LocalAddress;
+            configuration.LocalAddress = GetString(parameters, "local-address", configuration.LocalAddress);
             configuration.LocalPort = GetInt(parameters, "local-port", configuration.LocalPort);
             configuration.ReceiveBufferSize = GetInt(parameters, "receive-buffer-size", configuration.ReceiveBufferSize);
 
@@ -79,6 +79,11 @@ namespace org.apache.plc4net.transports.udp
             {
                 throw new TransportException(
                     $"default-port must be between 1 and 65535, but was {configuration.DefaultPort}.");
+            }
+            if (configuration.LocalPort < 0 || configuration.LocalPort > 65535)
+            {
+                throw new TransportException(
+                    $"local-port must be between 0 and 65535, but was {configuration.LocalPort}.");
             }
 
             // Clamp the ring-buffer size: 0/negative would crash the RingBuffer
@@ -220,7 +225,7 @@ namespace org.apache.plc4net.transports.udp
             }
         }
 
-        private static string? GetString(IReadOnlyDictionary<string, string> p, string key, string? fallback)
+        private static string GetString(IReadOnlyDictionary<string, string> p, string key, string fallback)
         {
             if (p.TryGetValue("udp." + key, out var prefixed))
             {
@@ -231,7 +236,9 @@ namespace org.apache.plc4net.transports.udp
 
         private static int GetInt(IReadOnlyDictionary<string, string> p, string key, int fallback)
         {
-            var raw = GetString(p, key, null);
+            string? raw = p.TryGetValue("udp." + key, out var prefixed)
+                ? prefixed
+                : p.TryGetValue(key, out var plain) ? plain : null;
             return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
                 ? value
                 : fallback;
