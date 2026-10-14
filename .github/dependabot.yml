@@ -23,15 +23,47 @@ updates:
   directory: /
   schedule:
     interval: daily
+  groups:
+    maven:
+      patterns:
+        - "*"
+    maven-security:
+      applies-to: security-updates
+      patterns:
+        - "*"
 - package-ecosystem: github-actions
   directory: /
   schedule:
     interval: daily
+  groups:
+    actions:
+      patterns:
+        - "*"
+    actions-security:
+      applies-to: security-updates
+      patterns:
+        - "*"
 - package-ecosystem: gomod
   directory: plc4go
   schedule:
     interval: daily
+  groups:
+    go:
+      patterns:
+        - "*"
+    go-security:
+      applies-to: security-updates
+      patterns:
+        - "*"
 - package-ecosystem: pip
   directory: plc4py
   schedule:
     interval: daily
+  groups:
+    pip:
+      patterns:
+        - "*"
+    pip-security:
+      applies-to: security-updates
+      patterns:
+        - "*"

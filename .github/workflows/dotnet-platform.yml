@@ -37,13 +37,17 @@ on:
       - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
 jobs:
   parser-generation:
     name: Generated parser artifacts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -66,7 +70,7 @@ jobs:
 
   protocol-model-generation:
     name: Generated protocol models
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7

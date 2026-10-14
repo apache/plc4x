@@ -37,7 +37,7 @@ jobs:
       # write permission is required for autolabeler
       # otherwise, read permission is required at least
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       # (Optional) GitHub Enterprise requires GHE_HOST variable set
       #- name: Set GHE_HOST
