@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: BobAnkh/auto-generate-changelog@v1.3.2
+      - uses: BobAnkh/auto-generate-changelog@e8e1af1493032e025901cfdeb9ea6e67e4ffe208  # v1.3.2
         with:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
           TYPE: 'feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,perf:Performance Improvements,chore(deps):Dependency Updates,chore:Miscellaneous,test:Testing,build:Build System,ci:Continuous Integration,revert:Reverts,style:Style,wip:Work In Progress,release:Release'
