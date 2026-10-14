@@ -96,7 +96,8 @@ namespace org.apache.plc4net.spi.test.transports
         [Theory]
         [InlineData("-1")]
         [InlineData("65536")]
-        public void Configuration_rejects_a_local_port_outside_the_socket_range(string localPort)
+        [InlineData("not-a-port")]
+        public void Configuration_rejects_an_invalid_local_port(string localPort)
         {
             var transport = new UdpTransport();
 

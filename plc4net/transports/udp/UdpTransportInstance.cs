@@ -228,6 +228,10 @@ namespace org.apache.plc4net.transports.udp
 
         public void RegisterDataListener(Action listener)
         {
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
             _dataListener = listener;
 
             // A datagram may have arrived and been buffered before the listener was
@@ -237,7 +241,7 @@ namespace org.apache.plc4net.transports.udp
             {
                 hasBufferedData = _ringBuffer.AvailableForReading > 0;
             }
-            if (listener != null && hasBufferedData)
+            if (hasBufferedData)
             {
                 NotifyData();
             }
@@ -403,7 +407,6 @@ namespace org.apache.plc4net.transports.udp
                 diag.WriteLine();
             }
             diag.WriteLine("└");
-            diag.Flush();
         }
     }
 }

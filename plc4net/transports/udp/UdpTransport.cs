@@ -239,9 +239,15 @@ namespace org.apache.plc4net.transports.udp
             string? raw = p.TryGetValue("udp." + key, out var prefixed)
                 ? prefixed
                 : p.TryGetValue(key, out var plain) ? plain : null;
-            return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
-                ? value
-                : fallback;
+            if (raw == null)
+            {
+                return fallback;
+            }
+            if (!int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+            {
+                throw new TransportException($"'{raw}' is not a valid integer for {key}.");
+            }
+            return value;
         }
 
     }
