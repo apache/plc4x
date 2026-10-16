@@ -41,16 +41,16 @@ namespace org.apache.plc4net.tools.modbusverify
     ///
     /// Modbus TCP:
     ///   modbus-verify &lt;host&gt; [port] [unit-id] [read-address]
-    ///   Defaults: port=502, unit-id=1, read-address=holding:0
+    ///   Defaults: port=502, unit-id=1, read-address=holding-register:1
     ///
     /// Modbus RTU (serial) — selected automatically when the first argument
     /// names a serial port (COMx, /dev/ttyUSB0, /dev/serial/...):
     ///   modbus-verify &lt;port&gt; [unit-id] [read-address]
     ///       [--baud 19200] [--parity Even|None|Odd] [--stop-bits One|Two] [--data-bits 8]
-    ///   Defaults: unit-id=1, read-address=holding:0, 19200-8-E-1
+    ///   Defaults: unit-id=1, read-address=holding-register:1, 19200-8-E-1
     ///
     /// A full connection string is also accepted verbatim as the first argument
-    /// (modbus-tcp:tcp://host:port?... or modbus-rtu://COMx?...).
+    /// (modbus-tcp:tcp://host:port?... or modbus-rtu:serial://COMx?...).
     /// </summary>
     public static class Program
     {
@@ -80,8 +80,15 @@ namespace org.apache.plc4net.tools.modbusverify
                 }
             }
 
+            if (positional.Count == 0)
+            {
+                Console.Error.WriteLine("A TCP host, serial port, or Modbus connection string is required.");
+                PrintUsage(Console.Error);
+                return 1;
+            }
+
             var target = positional[0];
-            return LooksLikeSerialTarget(target)
+            return IsRtuTarget(target)
                 ? await VerifyRtu(positional, flags).ConfigureAwait(false)
                 : await VerifyTcp(positional, flags).ConfigureAwait(false);
         }
@@ -89,12 +96,13 @@ namespace org.apache.plc4net.tools.modbusverify
         private static void PrintUsage(TextWriter w)
         {
             w.WriteLine("Modbus TCP:  modbus-verify <host> [port] [unit-id] [read-address]");
-            w.WriteLine("             modbus-verify 192.168.0.9 502 1 holding:0");
+            w.WriteLine("             modbus-verify 192.168.0.9 502 1 holding-register:1");
             w.WriteLine();
             w.WriteLine("Modbus RTU:  modbus-verify <COMx|/dev/ttyUSB0> [unit-id] [read-address] \\");
             w.WriteLine("                 [--baud 19200] [--parity Even] [--stop-bits One] [--data-bits 8]");
             w.WriteLine("                 [--quantity 1]");
-            w.WriteLine("             modbus-verify COM3 1 holding:0 --baud 19200 --parity Even");
+            w.WriteLine("             modbus-verify COM3 1 holding-register:1 --baud 19200 --parity Even");
+            w.WriteLine("             modbus-verify modbus-rtu:serial://COM3?unit-identifier=1 holding-register:1");
         }
 
         // Serial targets: COM1, COM12, /dev/ttyUSB0, /dev/ttyS1, /dev/serial/by-id/...
@@ -103,6 +111,17 @@ namespace org.apache.plc4net.tools.modbusverify
             && (s.StartsWith("COM", StringComparison.OrdinalIgnoreCase)
                 || s.StartsWith("/dev/tty", StringComparison.Ordinal)
                 || s.StartsWith("/dev/serial", StringComparison.Ordinal));
+
+        private static bool IsRtuTarget(string target)
+        {
+            if (!target.Contains("://", StringComparison.Ordinal))
+            {
+                return LooksLikeSerialTarget(target);
+            }
+
+            var connectionString = ConnectionString.Parse(target);
+            return string.Equals(connectionString.ProtocolCode, "modbus-rtu", StringComparison.OrdinalIgnoreCase);
+        }
 
         // ────────────────────────────────────────────────────────────
         //  Modbus RTU (serial)
@@ -133,29 +152,40 @@ namespace org.apache.plc4net.tools.modbusverify
                 return 1;
             }
 
-            if (positional[0].Contains("://"))
+            try
             {
-                url = positional[0];
-                var pre = ConnectionString.Parse(url);
-                port = pre.TransportConfig;
-                unitId = pre.GetIntParameter("unit-identifier", 1);
-                readAddress = positional.Count > 1 ? positional[1] : "holding:0";
-                baud = pre.GetParameter("baud-rate") ?? "19200";
-                parity = pre.GetParameter("parity") ?? "Even";
-                stopBits = pre.GetParameter("stop-bits") ?? "One";
-                dataBits = pre.GetParameter("data-bits") ?? "8";
+                if (positional[0].Contains("://"))
+                {
+                    url = positional[0];
+                    var pre = ConnectionString.Parse(url);
+                    port = pre.TransportConfig;
+                    unitId = pre.GetIntParameter("unit-identifier", 1);
+                    ValidateRtuConnectionString(pre);
+                    readAddress = positional.Count > 1 ? positional[1] : "holding-register:1";
+                    baud = pre.GetParameter("baud-rate") ?? "19200";
+                    parity = pre.GetParameter("parity") ?? "Even";
+                    stopBits = pre.GetParameter("stop-bits") ?? "One";
+                    dataBits = pre.GetParameter("data-bits") ?? "8";
+                }
+                else
+                {
+                    port = positional[0];
+                    unitId = positional.Count > 1 ? int.Parse(positional[1], CultureInfo.InvariantCulture) : 1;
+                    readAddress = positional.Count > 2 ? positional[2] : "holding-register:1";
+                    baud = Flag(flags, "19200", "baud", "baud-rate");
+                    parity = Flag(flags, "Even", "parity");
+                    stopBits = Flag(flags, "One", "stop-bits", "stopbits");
+                    dataBits = Flag(flags, "8", "data-bits", "databits");
+                    url = $"modbus-rtu:serial://{port}?unit-identifier={unitId}&baud-rate={baud}"
+                          + $"&parity={parity}&stop-bits={stopBits}&data-bits={dataBits}";
+                }
+
+                ValidateRtuUnitId(unitId);
             }
-            else
+            catch (Exception ex)
             {
-                port = positional[0];
-                unitId = positional.Count > 1 ? int.Parse(positional[1], CultureInfo.InvariantCulture) : 1;
-                readAddress = positional.Count > 2 ? positional[2] : "holding:0";
-                baud = Flag(flags, "19200", "baud", "baud-rate");
-                parity = Flag(flags, "Even", "parity");
-                stopBits = Flag(flags, "One", "stop-bits", "stopbits");
-                dataBits = Flag(flags, "8", "data-bits", "databits");
-                url = $"modbus-rtu://{port}?unit-identifier={unitId}&baud-rate={baud}"
-                      + $"&parity={parity}&stop-bits={stopBits}&data-bits={dataBits}";
+                w.WriteLine($"**{ex.GetType().Name}**: {ex.Message}");
+                return 1;
             }
 
             w.WriteLine("# Modbus RTU hardware verification report");
@@ -354,7 +384,7 @@ namespace org.apache.plc4net.tools.modbusverify
             return new[]
             {
                 function,
-                (byte) (tag.Address >> 8), (byte) tag.Address,
+                (byte) (tag.WireAddress >> 8), (byte) tag.WireAddress,
                 (byte) (quantity >> 8), (byte) quantity
             };
         }
@@ -512,24 +542,25 @@ namespace org.apache.plc4net.tools.modbusverify
             if (positional[0].Contains("://"))
             {
                 var pre = ConnectionString.Parse(positional[0]);
-                var hostPort = pre.TransportConfig.Split(':');
-                host = hostPort[0];
-                port = hostPort.Length > 1 ? int.Parse(hostPort[1], CultureInfo.InvariantCulture) : 502;
+                ValidateTcpConnectionString(pre);
+                (host, port) = ParseTcpEndpoint(pre.TransportConfig);
                 unitId = pre.GetIntParameter("unit-identifier", 1);
-                readAddress = positional.Count > 1 ? positional[1] : "holding:0";
+                readAddress = positional.Count > 1 ? positional[1] : "holding-register:1";
             }
             else
             {
                 host = positional[0];
                 port = positional.Count > 1 ? int.Parse(positional[1], CultureInfo.InvariantCulture) : 502;
                 unitId = positional.Count > 2 ? int.Parse(positional[2], CultureInfo.InvariantCulture) : 1;
-                readAddress = positional.Count > 3 ? positional[3] : "holding:0";
+                readAddress = positional.Count > 3 ? positional[3] : "holding-register:1";
             }
+
+            var endpoint = FormatTcpEndpoint(host, port);
 
             w.WriteLine("# Modbus TCP hardware verification report");
             w.WriteLine();
             w.WriteLine($"**Date**: {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC");
-            w.WriteLine($"**Target**: `modbus-tcp://{host}:{port}?unit-identifier={unitId}`");
+            w.WriteLine($"**Target**: `modbus-tcp:tcp://{endpoint}?unit-identifier={unitId}`");
             w.WriteLine($"**Read address**: `{readAddress}`");
             w.WriteLine();
 
@@ -540,16 +571,16 @@ namespace org.apache.plc4net.tools.modbusverify
                 w.WriteLine();
                 var tcpTransport = new TcpTransport();
                 tcp = (TcpTransportInstance)tcpTransport.CreateTransportInstance(
-                    $"{host}:{port}",
+                    endpoint,
                     new TcpTransportConfiguration { DefaultPort = port, ConnectTimeout = 5000 });
                 tcp.DiagnosticOutput = w;
-                w.WriteLine($"Connected to {host}:{port}.");
+                w.WriteLine($"Connected to {endpoint}.");
                 w.WriteLine();
 
                 w.WriteLine("## 2. Modbus read");
                 w.WriteLine();
                 var connString = ConnectionString.Parse(
-                    $"modbus-tcp:tcp://{host}:{port}?unit-identifier={unitId}");
+                    $"modbus-tcp:tcp://{endpoint}?unit-identifier={unitId}");
                 var connection = new ModbusTcpConnection(connString,
                     tcp ?? throw new InvalidOperationException("TCP transport was not created."));
                 connection.Connect();
@@ -618,6 +649,62 @@ namespace org.apache.plc4net.tools.modbusverify
                 throw new ArgumentException("--quantity must be an integer from 1 to 125.");
             }
             return quantity;
+        }
+
+        private static void ValidateRtuConnectionString(ConnectionString connectionString)
+        {
+            if (!string.Equals(connectionString.ProtocolCode, "modbus-rtu", StringComparison.OrdinalIgnoreCase)
+                || (!string.IsNullOrEmpty(connectionString.TransportCode)
+                    && !string.Equals(connectionString.TransportCode, "serial", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ArgumentException(
+                    "An RTU connection string must use modbus-rtu:serial://{port}.");
+            }
+        }
+
+        private static void ValidateTcpConnectionString(ConnectionString connectionString)
+        {
+            if (!string.Equals(connectionString.ProtocolCode, "modbus-tcp", StringComparison.OrdinalIgnoreCase)
+                || (!string.IsNullOrEmpty(connectionString.TransportCode)
+                    && !string.Equals(connectionString.TransportCode, "tcp", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ArgumentException(
+                    "A TCP connection string must use modbus-tcp:tcp://{host}[:{port}].");
+            }
+        }
+
+        private static void ValidateRtuUnitId(int unitId)
+        {
+            if (unitId < 1 || unitId > 247)
+            {
+                throw new ArgumentOutOfRangeException(nameof(unitId), unitId,
+                    "The Modbus RTU unit identifier must be between 1 and 247.");
+            }
+        }
+
+        private static (string Host, int Port) ParseTcpEndpoint(string transportConfig)
+        {
+            if (!Uri.TryCreate("tcp://" + transportConfig, UriKind.Absolute, out var endpoint)
+                || string.IsNullOrWhiteSpace(endpoint.Host)
+                || endpoint.AbsolutePath != "/")
+            {
+                throw new ArgumentException(
+                    $"'{transportConfig}' is not a valid TCP host[:port] endpoint.");
+            }
+
+            return (endpoint.Host.Trim('[', ']'), endpoint.IsDefaultPort ? 502 : endpoint.Port);
+        }
+
+        private static string FormatTcpEndpoint(string host, int port)
+        {
+            if (string.IsNullOrWhiteSpace(host) || port < 1 || port > 65535)
+            {
+                throw new ArgumentException($"'{host}:{port}' is not a valid TCP endpoint.");
+            }
+
+            return host.Contains(':')
+                ? $"[{host}]:{port}"
+                : $"{host}:{port}";
         }
 
         // RTU read-response frame layout: address(1) + function(1) + byteCount(1) + data(N) + crc(2).
