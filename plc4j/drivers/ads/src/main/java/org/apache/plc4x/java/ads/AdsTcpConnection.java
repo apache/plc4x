@@ -142,6 +142,13 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
 
     @Override
     protected void onConnect() throws PlcConnectionException {
+        // chunk() rejects a non-positive group size, and onRead/onWrite call it on the caller's
+        // thread - so an unusable cap would surface as an unchecked exception out of read()
+        // rather than as a failed future. Reject it here, where the caller expects to be told.
+        if (getConfiguration().getMaxSumCommandItems() < 1) {
+            throw new PlcConnectionException("max-sum-command-items must be at least 1, got "
+                + getConfiguration().getMaxSumCommandItems());
+        }
         messageCodec = new AdsTcpMessageCodec(transportInstance, this::handleIncomingMessage);
 
         startReceiving(() -> {
@@ -596,7 +603,32 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         List<String> orderedNames = readRequest.getTagNames().stream()
             .filter(resolved::containsKey).toList();
 
-        long expectedDataSize = orderedNames.stream()
+        // Cap the number of sub-commands per sum command: send consecutive groups of at most
+        // max-sum-command-items sequentially and merge the per-group results.
+        // thenComposeAsync, not thenCompose: the previous group's stage completes on the driver's
+        // receive thread, so composing synchronously would build and write the next sum command
+        // from that callback. The throttle itself no longer blocks the caller, so this is about
+        // where the work runs, not about a parked permit.
+        // Failure granularity: a group-level ReturnCode != OK fails only that group's tags; the
+        // other groups still return their real results. For a single group the outcome is the
+        // previous all-or-nothing behaviour, except that an unparseable sum response no longer
+        // overwrites tags that had already failed to resolve with INTERNAL_ERROR.
+        CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> merged =
+            CompletableFuture.completedFuture(new LinkedHashMap<>());
+        for (List<String> groupNames : chunk(orderedNames, getConfiguration().getMaxSumCommandItems())) {
+            merged = merged.thenComposeAsync(accumulated ->
+                multiReadChunk(groupNames, resolved).thenApply(groupValues -> {
+                    accumulated.putAll(groupValues);
+                    return accumulated;
+                }));
+        }
+
+        return merged.thenApply(accumulated -> assembleReadResponse(readRequest, initialFailures, accumulated));
+    }
+
+    private CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> multiReadChunk(List<String> groupNames,
+                                                                                     Map<String, ResolvedAdsTag> resolved) {
+        long expectedDataSize = groupNames.stream()
             .mapToLong(n -> 4L + resolved.get(n).sizeInBytes())  // 4-byte per-item return code + data
             .sum();
 
@@ -604,9 +636,9 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
             getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(),
             ReturnCode.OK, getInvokeId(),
-            ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), (long) orderedNames.size(),
+            ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), (long) groupNames.size(),
             expectedDataSize,
-            orderedNames.stream().map(n -> {
+            groupNames.stream().map(n -> {
                 ResolvedAdsTag t = resolved.get(n);
                 return new AdsMultiRequestItemRead(t.indexGroup(), t.indexOffset(), t.sizeInBytes());
             }).collect(Collectors.toList()),
@@ -615,11 +647,11 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         return sendAmsRequest(request, AdsReadWriteResponse.class).thenApply(response -> {
             Map<String, PlcResponseItem<PlcValue>> values = new LinkedHashMap<>();
             if (response.getResult() != ReturnCode.OK) {
-                for (String name : readRequest.getTagNames()) {
-                    PlcResponseCode code = initialFailures.getOrDefault(name, parsePlcResponseCode(response.getResult()));
+                PlcResponseCode code = parsePlcResponseCode(response.getResult());
+                for (String name : groupNames) {
                     values.put(name, new DefaultPlcResponseItem<>(code, null));
                 }
-                return new DefaultPlcReadResponse(readRequest, values);
+                return values;
             }
 
             // Sum-up response layout: N x ReturnCode (4 bytes each), then concatenated data.
@@ -628,19 +660,18 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             // Read per-item return codes.
             Map<String, ReturnCode> resultPerTag = new LinkedHashMap<>();
             try {
-                for (String n : orderedNames) {
+                for (String n : groupNames) {
                     resultPerTag.put(n, ReturnCode.enumForValue(rb.readUnsignedLong(32)));
                 }
             } catch (BufferException e) {
-                return buildFailureReadResponse(readRequest, Collections.emptyMap());
+                for (String name : groupNames) {
+                    values.put(name, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                }
+                return values;
             }
             // Now decode each item's payload — for items whose result wasn't OK, we still need
             // to advance the cursor by sizeInBytes to keep alignment for the rest.
-            for (String name : readRequest.getTagNames()) {
-                if (initialFailures.containsKey(name)) {
-                    values.put(name, new DefaultPlcResponseItem<>(initialFailures.get(name), null));
-                    continue;
-                }
+            for (String name : groupNames) {
                 ResolvedAdsTag tag = resolved.get(name);
                 ReturnCode code = resultPerTag.get(name);
                 if (code != ReturnCode.OK) {
@@ -664,8 +695,64 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                     values.put(name, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
-            return new DefaultPlcReadResponse(readRequest, values);
+            return values;
         });
+    }
+
+    /**
+     * Merges the per-group read results into one response. A tag that failed before the request
+     * went out keeps that failure code, a tag that was sent but came back in no group is reported
+     * as {@code INTERNAL_ERROR}, and the response follows the order the caller asked in rather
+     * than the order the groups completed.
+     */
+    static PlcReadResponse assembleReadResponse(PlcReadRequest readRequest,
+                                                Map<String, PlcResponseCode> initialFailures,
+                                                Map<String, PlcResponseItem<PlcValue>> accumulated) {
+        Map<String, PlcResponseItem<PlcValue>> values = new LinkedHashMap<>();
+        for (String name : readRequest.getTagNames()) {
+            if (initialFailures.containsKey(name)) {
+                values.put(name, new DefaultPlcResponseItem<>(initialFailures.get(name), null));
+                continue;
+            }
+            values.put(name, accumulated.getOrDefault(name,
+                new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null)));
+        }
+        return new DefaultPlcReadResponse(readRequest, values);
+    }
+
+    /** The write side of {@link #assembleReadResponse}, with the same three rules. */
+    static PlcWriteResponse assembleWriteResponse(PlcWriteRequest writeRequest,
+                                                  Map<String, PlcResponseCode> initialFailures,
+                                                  Map<String, PlcResponseCode> accumulated) {
+        Map<String, PlcResponseCode> codes = new LinkedHashMap<>();
+        for (String name : writeRequest.getTagNames()) {
+            if (initialFailures.containsKey(name)) {
+                codes.put(name, initialFailures.get(name));
+            } else {
+                codes.put(name, accumulated.getOrDefault(name, PlcResponseCode.INTERNAL_ERROR));
+            }
+        }
+        return new DefaultPlcWriteResponse(writeRequest, codes);
+    }
+
+    /**
+     * Partitions {@code items} into consecutive sub-lists of at most {@code maxPerChunk}
+     * elements, preserving order. An empty input yields an empty list of chunks. The chunks are
+     * copies rather than {@code subList} views because they outlive the loop in the async chain;
+     * both current call sites pass a list nobody mutates, so that is belt and braces.
+     */
+    static <T> List<List<T>> chunk(List<T> items, int maxPerChunk) {
+        if (maxPerChunk <= 0) {
+            throw new IllegalArgumentException("maxPerChunk must be positive, got " + maxPerChunk);
+        }
+        List<List<T>> chunks = new ArrayList<>(Math.ceilDiv(items.size(), maxPerChunk));
+        for (int i = 0; i < items.size(); i += maxPerChunk) {
+            // Defensive copy rather than a subList view: the chunks are captured in async
+            // lambdas and outlive this loop. Both call sites pass a list nobody mutates, so
+            // this is belt and braces.
+            chunks.add(new ArrayList<>(items.subList(i, Math.min(i + maxPerChunk, items.size()))));
+        }
+        return chunks;
     }
 
     private PlcResponseItem<PlcValue> decodePayload(ResolvedAdsTag tag, byte[] data) {
@@ -807,12 +894,35 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
                                                            Map<String, ResolvedAdsTag> resolved,
                                                            Map<String, byte[]> serialized,
                                                            Map<String, PlcResponseCode> initialFailures) {
+        List<String> names = new ArrayList<>(serialized.keySet());
+
+        // Cap the number of sub-commands per sum command: send consecutive groups of at most
+        // max-sum-command-items sequentially and merge the per-group results.
+        // thenComposeAsync for the same reason as the read side: the next group must not be built
+        // and written from the receive-thread callback that completed the previous one.
+        // A group that fails outright fails the whole request, so in a multi-group write that fails
+        // midway the earlier groups' writes may already have taken effect; they are not rolled back.
+        CompletableFuture<Map<String, PlcResponseCode>> merged =
+            CompletableFuture.completedFuture(new LinkedHashMap<>());
+        for (List<String> groupNames : chunk(names, getConfiguration().getMaxSumCommandItems())) {
+            merged = merged.thenComposeAsync(accumulated ->
+                multiWriteChunk(groupNames, resolved, serialized).thenApply(groupCodes -> {
+                    accumulated.putAll(groupCodes);
+                    return accumulated;
+                }));
+        }
+
+        return merged.thenApply(accumulated -> assembleWriteResponse(writeRequest, initialFailures, accumulated));
+    }
+
+    private CompletableFuture<Map<String, PlcResponseCode>> multiWriteChunk(List<String> groupNames,
+                                                                            Map<String, ResolvedAdsTag> resolved,
+                                                                            Map<String, byte[]> serialized) {
         // Concatenate per-tag payloads in request order.
-        int totalDataBytes = serialized.values().stream().mapToInt(b -> b.length).sum();
+        int totalDataBytes = groupNames.stream().mapToInt(n -> serialized.get(n).length).sum();
         byte[] payload = new byte[totalDataBytes];
         int p = 0;
-        List<String> names = new ArrayList<>(serialized.keySet());
-        for (String name : names) {
+        for (String name : groupNames) {
             byte[] b = serialized.get(name);
             System.arraycopy(b, 0, payload, p, b.length);
             p += b.length;
@@ -822,9 +932,9 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
             getConfiguration().getTargetAmsNetId(), getConfiguration().getTargetAmsPort(),
             getConfiguration().getSourceAmsNetId(), getConfiguration().getSourceAmsPort(),
             ReturnCode.OK, getInvokeId(),
-            ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), (long) names.size(),
-            (long) names.size() * 4L,
-            names.stream().map(n -> {
+            ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), (long) groupNames.size(),
+            (long) groupNames.size() * 4L,
+            groupNames.stream().map(n -> {
                 ResolvedAdsTag t = resolved.get(n);
                 return new AdsMultiRequestItemWrite(t.indexGroup(), t.indexOffset(), t.sizeInBytes());
             }).collect(Collectors.toList()),
@@ -833,33 +943,23 @@ public class AdsTcpConnection extends ConnectionBase<AdsConfiguration> {
         return sendAmsRequest(request, AdsReadWriteResponse.class).thenApply(response -> {
             Map<String, PlcResponseCode> codes = new LinkedHashMap<>();
             if (response.getResult() != ReturnCode.OK) {
-                for (String n : writeRequest.getTagNames()) {
-                    codes.put(n, initialFailures.getOrDefault(n, parsePlcResponseCode(response.getResult())));
+                PlcResponseCode code = parsePlcResponseCode(response.getResult());
+                for (String n : groupNames) {
+                    codes.put(n, code);
                 }
-                return new DefaultPlcWriteResponse(writeRequest, codes);
+                return codes;
             }
             ReadBufferByteBased rb = newLittleEndianBuffer(response.getData());
-            Map<String, ReturnCode> perTag = new LinkedHashMap<>();
             try {
-                for (String n : names) {
-                    perTag.put(n, ReturnCode.enumForValue(rb.readUnsignedLong(32)));
+                for (String n : groupNames) {
+                    codes.put(n, parsePlcResponseCode(ReturnCode.enumForValue(rb.readUnsignedLong(32))));
                 }
             } catch (BufferException e) {
-                for (String n : writeRequest.getTagNames()) {
-                    codes.put(n, initialFailures.getOrDefault(n, PlcResponseCode.INTERNAL_ERROR));
-                }
-                return new DefaultPlcWriteResponse(writeRequest, codes);
-            }
-            for (String n : writeRequest.getTagNames()) {
-                if (initialFailures.containsKey(n)) {
-                    codes.put(n, initialFailures.get(n));
-                } else if (perTag.containsKey(n)) {
-                    codes.put(n, parsePlcResponseCode(perTag.get(n)));
-                } else {
+                for (String n : groupNames) {
                     codes.put(n, PlcResponseCode.INTERNAL_ERROR);
                 }
             }
-            return new DefaultPlcWriteResponse(writeRequest, codes);
+            return codes;
         });
     }
 
