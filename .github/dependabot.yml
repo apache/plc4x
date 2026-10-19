@@ -31,6 +31,11 @@ updates:
       applies-to: security-updates
       patterns:
         - "*"
+    other-dependencies:
+      patterns:
+      - "*"
+      exclude-patterns:
+      - "com.fasterxml.woodstox:woodstox-core"
 - package-ecosystem: github-actions
   directory: /
   schedule:
