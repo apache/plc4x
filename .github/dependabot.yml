@@ -26,16 +26,13 @@ updates:
   groups:
     maven:
       patterns:
-        - "*"
-    maven-security:
-      applies-to: security-updates
-      patterns:
-        - "*"
-    other-dependencies:
-      patterns:
       - "*"
       exclude-patterns:
       - "com.fasterxml.woodstox:woodstox-core"
+    maven-security:
+      applies-to: security-updates
+      patterns:
+      - "*"
 - package-ecosystem: github-actions
   directory: /
   schedule:
@@ -43,11 +40,11 @@ updates:
   groups:
     actions:
       patterns:
-        - "*"
+      - "*"
     actions-security:
       applies-to: security-updates
       patterns:
-        - "*"
+      - "*"
 - package-ecosystem: gomod
   directory: plc4go
   schedule:
@@ -55,11 +52,11 @@ updates:
   groups:
     go:
       patterns:
-        - "*"
+      - "*"
     go-security:
       applies-to: security-updates
       patterns:
-        - "*"
+      - "*"
 - package-ecosystem: pip
   directory: plc4py
   schedule:
@@ -67,8 +64,8 @@ updates:
   groups:
     pip:
       patterns:
-        - "*"
+      - "*"
     pip-security:
       applies-to: security-updates
       patterns:
-        - "*"
+      - "*"
