@@ -27,8 +27,6 @@ updates:
     maven:
       patterns:
       - "*"
-      exclude-patterns:
-      - "com.fasterxml.woodstox:woodstox-core"
     maven-security:
       applies-to: security-updates
       patterns:
