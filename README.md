@@ -59,7 +59,7 @@ We are planning on shipping libraries for usage in:
 2. Go
 3. C (not ready for usage)
 4. Python (not ready for usage)
-5. C# (.Net) (not ready for usage - abandoned)
+5. C# (.Net) (work in progress)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -134,9 +134,7 @@ All requirements are retrieved by the build itself
 
 #### For building `PLC4Net` we also need:
 
-1. DotNet SDK 7.0 or above (the projects set `LangVersion 11.0`, which needs at least the 7.0 SDK)
-2. The `.NET Framework 4.5.2` targeting pack: the projects target `net452`, so the matching reference assemblies have to be available.
-   On `Windows` these come with the Visual Studio ".NET Framework 4.5.2 targeting pack" component, on `Mac`/`Linux` they are provided by `Mono`.
+1. .NET 8.0 SDK or a compatible newer SDK
 
 ### Building with Docker
 
@@ -194,6 +192,7 @@ The `Go` drivers can be built by enabling the `with-go` profile:
 ```
 
 The `C# / .Net` implementation is currently in a `work in progress` state.
+It includes Modbus TCP/RTU and S7 drivers, and TCP, serial, COTP and UDP transports.
 To be able to build the `C# / .Net` module, you currently need to activate the:
 `with-dotnet` profiles.
 
