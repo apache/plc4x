@@ -194,32 +194,6 @@ remotes that silently reap idle connections - a half-open TCP connection is unde
 first write fails. Connections that report active subscription handles are exempt from the TTL,
 because their subscription state lives on the connection.
 
-== The `logging` package
-
-`pkg/api/logging` no longer sets or resets the global zerolog level. `ErrorLevel()`, `WarnLevel()`,
-`InfoLevel()`, `DebugLevel()`, `TraceLevel()` and `ResetLogging()` are gone, together with the
-`init()` that used to force the global logger to error level the moment the package was imported.
-
-That `init()` was the real problem: importing a PLC4X package changed the logging of the whole
-process.
-
-Pass a logger to PLC4X instead, which is explicit and scoped to the connection:
-
-[source,go]
-----
-// 1.0.0
-logger := zerolog.New(os.Stderr).Level(zerolog.DebugLevel)
-connection, err := driverManager.GetConnection(ctx, connectionString,
-    options.WithCustomLogger(logger))
-----
-
-If you relied on PLC4X quietening zerolog for you, set the level yourself:
-
-[source,go]
-----
-zerolog.SetGlobalLevel(zerolog.ErrorLevel)
-----
-
 == Connection-string options need their transport prefix
 
 PLC4Go read a transport's options *unprefixed*, while PLC4J declares them on the transport and

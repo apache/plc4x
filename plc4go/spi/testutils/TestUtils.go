@@ -39,7 +39,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
@@ -328,8 +327,8 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 		}
 	})
 	interfaceMarshallerSetter.Do(func() {
-		logging.ZerologInterfacePLCMessageFormat = logging.PLCMessageAsString
-		zerolog.InterfaceMarshalFunc = logging.ZerologMessageInterfaceMarshalFunc
+		utils.ZerologInterfacePLCMessageFormat = utils.PLCMessageAsString
+		zerolog.InterfaceMarshalFunc = utils.ZerologMessageInterfaceMarshalFunc
 	})
 	logger = logger.With().Stack().Logger()
 	return logger
