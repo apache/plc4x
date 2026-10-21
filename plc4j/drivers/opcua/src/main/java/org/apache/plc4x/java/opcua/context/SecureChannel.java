@@ -848,25 +848,26 @@ public class SecureChannel {
 
                 return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, anonymousIdentityToken);
             case userTokenTypeUserName:
-                //Encrypt the password using the server nonce and server public key
-                byte[] remoteNonce = conversation.getRemoteNonce();
                 byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes(StandardCharsets.UTF_8);
-                ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + remoteNonce.length);
-                encodeableBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-                encodeableBuffer.putInt(passwordBytes.length + remoteNonce.length);
-                encodeableBuffer.put(passwordBytes);
-                encodeableBuffer.put(remoteNonce);
-                byte[] encodeablePassword = new byte[4 + passwordBytes.length + remoteNonce.length];
-                encodeableBuffer.position(0);
-                encodeableBuffer.get(encodeablePassword);
-
                 byte[] tokenPassword;
                 String encryptionAlgorithm;
                 if (tokenSecurityPolicy == SecurityPolicy.NONE) {
-                    // No encryption: the password is sent as-is and no algorithm is declared.
-                    tokenPassword = encodeablePassword;
-                    encryptionAlgorithm = "";
+                    // No encryption: send only the UTF-8 password, without a length prefix or nonce.
+                    tokenPassword = passwordBytes;
+                    // Part 4 allows null or empty; null also interoperates with servers such as asyncua.
+                    encryptionAlgorithm = null;
                 } else {
+                    // Encrypt the length, password and server nonce using the server public key.
+                    byte[] remoteNonce = conversation.getRemoteNonce();
+                    ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + remoteNonce.length);
+                    encodeableBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+                    encodeableBuffer.putInt(passwordBytes.length + remoteNonce.length);
+                    encodeableBuffer.put(passwordBytes);
+                    encodeableBuffer.put(remoteNonce);
+                    byte[] encodeablePassword = new byte[4 + passwordBytes.length + remoteNonce.length];
+                    encodeableBuffer.position(0);
+                    encodeableBuffer.get(encodeablePassword);
+
                     tokenPassword = conversation.encryptPassword(encodeablePassword, tokenSecurityPolicy);
                     encryptionAlgorithm = tokenSecurityPolicy.getAsymmetricEncryptionAlgorithm().getUri();
                 }
