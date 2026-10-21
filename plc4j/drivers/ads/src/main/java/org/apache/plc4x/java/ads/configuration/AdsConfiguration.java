@@ -69,6 +69,11 @@ public class AdsConfiguration implements Configuration {
     @Description("Maximum nesting depth accepted when parsing the data-type table uploaded from the device. An entry may contain further entries, so without a limit the depth of the tree is dictated by the device rather than by the driver, and a table of well under a megabyte can nest deeply enough to exhaust the parser's stack. Real type hierarchies are only a handful of levels deep, so the default is already generous; raise it for a device that is known to need more. Note that the JVM's own stack imposes a practical ceiling of a few thousand levels regardless of what is configured here.")
     protected int maxDataTypeTableDepth;
 
+    @ConfigurationParameter("max-sum-command-items")
+    @IntDefaultValue(500)
+    @Description("Maximum number of sub-commands packed into a single ADS sum command (ADSIGRP_MULTIPLE_READ / ADSIGRP_MULTIPLE_WRITE). Requests referencing more tags are split into consecutive groups of at most this size and sent sequentially. The ceiling and the reason for it are Beckhoff's: the PLC works off a whole ADS request before starting its next PLC cycle, so a request carrying very many sub-commands makes it collect everything into one response first, and \"this large number of ads-sub-commands will jitter the PLC execution\". See \"Number of Sub-ADS calls: Highly recommended to max. 500!\" in the TwinCAT 3 ADS-DLL C++ manual version 1.1.3, section \"ADS-sum command: Read or Write a list of variables with one single ADS-command\", https://download.beckhoff.com/download/document/automation/twincat3/TwinCAT_ADS-DLL_C_EN.pdf . This bounds the item count only; the same section separately requires the caller to bound the response byte length, which this driver does not do yet. Must be at least 1.")
+    protected int maxSumCommandItems;
+
     @ConfigurationParameter("load-symbol-and-data-type-tables")
     @BooleanDefaultValue(true)
     @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, reading and writing is limited to direct addresses (`{IndexGroup}/{IndexOffset}:{TYPE}`): symbolic addresses cannot be resolved without the tables and are rejected with a corresponding error. Browsing is unavailable for the same reason. Subscriptions are unaffected, as they resolve symbol handles on the device.")
@@ -120,6 +125,14 @@ public class AdsConfiguration implements Configuration {
 
     public void setMaxDataTypeTableDepth(int maxDataTypeTableDepth) {
         this.maxDataTypeTableDepth = maxDataTypeTableDepth;
+    }
+
+    public int getMaxSumCommandItems() {
+        return maxSumCommandItems;
+    }
+
+    public void setMaxSumCommandItems(int maxSumCommandItems) {
+        this.maxSumCommandItems = maxSumCommandItems;
     }
 
     public boolean isLoadSymbolAndDataTypeTables() {
