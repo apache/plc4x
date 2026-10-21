@@ -154,11 +154,11 @@
          "jackson.version" releases in a row can map to the same value (both 2.21.4 and
          2.22.2 pair with jackson-annotations 2.22). -->
     <jackson-api.version>2.22</jackson-api.version>
-    <jackson.version>2.22.3</jackson.version>
+    <jackson.version>2.22.4</jackson.version>
     <woodstox-core.version>7.2.2</woodstox-core.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
-    <javapoet.version>0.21.0</javapoet.version>
+    <javapoet.version>0.22.0</javapoet.version>
     <jaxb.version>4.0.5</jaxb.version>
     <jna.version>5.19.1</jna.version>
     <joda-time.version>2.15.0</joda-time.version>
@@ -180,7 +180,7 @@
     <semver4j.version>3.1.0</semver4j.version>
     <slf4j.version>2.0.20</slf4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
-    <testcontainers-virtualavr.version>0.0.3</testcontainers-virtualavr.version>
+    <testcontainers-virtualavr.version>0.0.4</testcontainers-virtualavr.version>
     <xmlunit.version>2.14.0</xmlunit.version>
 
     <skip-code-generation>false</skip-code-generation>
