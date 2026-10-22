@@ -984,6 +984,12 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             return new PlcRawByteArray(data);
         }
         PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+            if (tag.getDataType() == TransportSize.BOOL) {
+                // The optimizer reads BOOL arrays as bytes, with the first element in the
+                // least significant bit. DataItem's scalar BOOL parser consumes a whole byte.
+                // Decode only the declared elements, ignoring padding in the final byte.
+                return new PlcBOOL((data[i / 8] & (1 << (i % 8))) != 0);
+            }
             try {
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                     driverContext.getControllerType(), stringLength);
