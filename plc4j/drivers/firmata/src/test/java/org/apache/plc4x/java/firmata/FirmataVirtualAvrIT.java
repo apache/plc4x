@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.firmata;
 
-import com.github.pfichtner.testcontainers.virtualavr.DefaultVirtualAvrConnection;
 import com.github.pfichtner.testcontainers.virtualavr.VirtualAvrConnection;
 import com.github.pfichtner.testcontainers.virtualavr.VirtualAvrConnection.PinReportMode;
+import com.github.pfichtner.testcontainers.virtualavr.VirtualAvrContainer;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -35,11 +35,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
-import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -57,13 +56,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * over the TCP transport.
  *
  * <p>The container is built from {@code src/test/resources/virtualavr-tcp/Dockerfile}
- * — a thin extension over {@code pfichtner/virtualavr} that replaces the PTY-bridge
- * entrypoint with a single {@code socat TCP-LISTEN ... EXEC:"node /app/virtualavr.js
- * sketch.ino",pty,rawer,fdin=3,fdout=4} and bakes StandardFirmata in. The simulated
- * UART is exposed as a TCP listener on port 3030; the simulator's WebSocket
- * side-channel on port 8080 is used by {@link VirtualAvrConnection} to inject pin
- * transitions and read back pin state. No host-side {@code socat} or PTY is
- * involved, so this IT runs on every OS Docker supports — including macOS where
+ * — a thin extension over {@code pfichtner/virtualavr} that bakes StandardFirmata in.
+ * The simulated UART is exposed as a TCP listener on port 3030; the simulator's
+ * WebSocket * side-channel on port 8080 is used by {@link VirtualAvrConnection} to
+ * inject pin * transitions and read back pin state. No host-side {@code socat} or PTY
+ * is involved, so this IT runs on every OS Docker supports — including macOS where
  * {@code jSerialComm} won't open the temp-file PTY the upstream serial mode
  * produces.</p>
  *
@@ -90,17 +87,13 @@ public class FirmataVirtualAvrIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FirmataVirtualAvrIT.class);
 
-    private static final int CONTAINER_TCP_SERIAL_PORT = 3030;
-    private static final int CONTAINER_WEBSOCKET_PORT = 8080;
-
     private static final String ANALOG_PIN_A0 = "A0";
     private static final int[] DIGITAL_PINS = {2, 3, 4, 5};
 
     private static final double SINE_WAVE_PERIOD_MS = 2000;
     private static final int COUNTER_INCREMENT_MS = 500;
 
-    private GenericContainer<?> virtualAvr;
-    private VirtualAvrConnection virtualAvrConnection;
+    private VirtualAvrContainer<?> virtualAvr;
     private ScheduledExecutorService simulationExecutor;
     private ScheduledFuture<?> sineWaveFuture;
     private ScheduledFuture<?> counterFuture;
@@ -108,14 +101,13 @@ public class FirmataVirtualAvrIT {
     @BeforeEach
     @SuppressWarnings("resource")
     void setup() {
-        virtualAvr = new GenericContainer<>(
-            new ImageFromDockerfile()
-                .withFileFromClasspath("Dockerfile", "virtualavr-tcp/Dockerfile"))
-            .withExposedPorts(CONTAINER_TCP_SERIAL_PORT, CONTAINER_WEBSOCKET_PORT);
-        // No Wait.forListeningPort — that probe opens a TCP connection which
-        // consumes our single accept slot (socat runs without ",fork" so the
-        // next accept spawns a fresh simulator that would clash on port 8080).
-        // We retry the driver connect in openDriverAndAttachWebSocket() instead.
+        DockerImageName imageName = DockerImageName.parse(
+            new ImageFromDockerfile("pfichtner/virtualavr:firmata", false)
+                .withFileFromClasspath("Dockerfile", "virtualavr-tcp/Dockerfile")
+                .get())
+            .asCompatibleSubstituteFor(VirtualAvrContainer.DEFAULT_IMAGE_NAME);
+        virtualAvr = new VirtualAvrContainer<>(imageName)
+            .withTcpSerialListenMode();
         virtualAvr.start();
         simulationExecutor = Executors.newScheduledThreadPool(2);
     }
@@ -134,10 +126,6 @@ public class FirmataVirtualAvrIT {
                 Thread.currentThread().interrupt();
             }
         }
-        if (virtualAvrConnection != null) {
-            try { virtualAvrConnection.close(); } catch (Exception ignored) {}
-            virtualAvrConnection = null;
-        }
         if (virtualAvr != null) {
             virtualAvr.stop();
             virtualAvr = null;
@@ -153,24 +141,9 @@ public class FirmataVirtualAvrIT {
      */
     private PlcConnection openDriverAndAttachWebSocket() throws Exception {
         String url = "firmata:tcp://" + virtualAvr.getHost() + ":"
-            + virtualAvr.getMappedPort(CONTAINER_TCP_SERIAL_PORT)
+            + virtualAvr.serialTcpListenPort()
             + "?request-timeout-ms=30000";
-        PlcConnection connection = openWithRetry(url);
-
-        // Build the WebSocket URI manually — the library's static factory
-        // assumes the first mapped port is the WS port, which isn't true here.
-        URI wsUri = URI.create("ws://" + virtualAvr.getHost() + ":"
-            + virtualAvr.getMappedPort(CONTAINER_WEBSOCKET_PORT));
-        virtualAvrConnection = new DefaultVirtualAvrConnection(wsUri);
-        long wsDeadline = System.currentTimeMillis() + 10_000L;
-        while (!virtualAvrConnection.isConnected() && System.currentTimeMillis() < wsDeadline) {
-            //noinspection BusyWait
-            Thread.sleep(100);
-        }
-        if (!virtualAvrConnection.isConnected()) {
-            throw new AssertionError("Could not connect to virtualavr WebSocket at " + wsUri);
-        }
-        return connection;
+        return openWithRetry(url);
     }
 
     private PlcConnection openWithRetry(String url) throws Exception {
@@ -200,9 +173,9 @@ public class FirmataVirtualAvrIT {
         // AVR's pin register for pins it has been told to report on. Without
         // this, StandardFirmata never sees the transitions and the driver
         // gets no events even though our scheduler keeps firing.
-        virtualAvrConnection.pinReportMode(ANALOG_PIN_A0, PinReportMode.ANALOG);
+        virtualAvr.avr().pinReportMode(ANALOG_PIN_A0, PinReportMode.ANALOG);
         for (int pin : DIGITAL_PINS) {
-            virtualAvrConnection.pinReportMode(String.valueOf(pin), PinReportMode.DIGITAL);
+            virtualAvr.avr().pinReportMode(String.valueOf(pin), PinReportMode.DIGITAL);
         }
 
         AtomicInteger sinePhase = new AtomicInteger(0);
@@ -211,7 +184,7 @@ public class FirmataVirtualAvrIT {
                 int phase = sinePhase.getAndIncrement();
                 double radians = (2 * Math.PI * phase) / (SINE_WAVE_PERIOD_MS / 100);
                 int value = (int) ((Math.sin(radians) + 1) * 511.5);
-                virtualAvrConnection.pinState(ANALOG_PIN_A0, value);
+                virtualAvr.avr().pinState(ANALOG_PIN_A0, value);
                 LOGGER.info("Sine wave: phase={}, value={}", phase, value);
             } catch (Exception e) {
                 LOGGER.error("Error in sine wave simulation", e);
@@ -224,7 +197,7 @@ public class FirmataVirtualAvrIT {
                 int count = counter.getAndIncrement() % 16;
                 for (int i = 0; i < DIGITAL_PINS.length; i++) {
                     boolean bitValue = ((count >> i) & 1) == 1;
-                    virtualAvrConnection.pinState(String.valueOf(DIGITAL_PINS[i]), bitValue);
+                    virtualAvr.avr().pinState(String.valueOf(DIGITAL_PINS[i]), bitValue);
                 }
                 LOGGER.info("Counter: {} (binary: {})", count, Integer.toBinaryString(count));
             } catch (Exception e) {
