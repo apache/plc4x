@@ -27,7 +27,7 @@
 # The base image is pinned: 0.3.0 changed virtualavr.js to take a compiled HEX
 # file instead of compiling the sketch itself, and the floating `latest` tag
 # picked that up silently and broke this IT on every platform.
-FROM pfichtner/virtualavr:0.3.1
+FROM pfichtner/virtualavr:0.4.0
 
 # StandardFirmata.ino is LGPL-2.1 ©Firmata authors and is therefore not
 # compatible with this repository's Apache-2.0 source tree. Fetch it from
@@ -43,29 +43,9 @@ RUN curl -fsSL "${FIRMATA_REPO}/${FIRMATA_REF}/examples/StandardFirmata/Standard
 # image build time.
 RUN arduino-cli lib install Servo Firmata
 
-# virtualavr.js only runs compiled firmware; upstream's own entrypoint (which
-# this image replaces) compiles the sketch with virtualavr-compile-arduino
-# before every start. Compile it once here instead, so that every accept below
-# starts the simulator straight away.
+# Pre-compile the sketch once here so every container start skips compilation
+# and starts the simulator straight away.
 RUN virtualavr-compile-arduino /sketch/sketch.ino /sketch/firmware.hex
 
-# The upstream pfichtner/virtualavr HEALTHCHECK pings ws://localhost:8080,
-# which only starts when the simulator starts, which only happens on the
-# first TCP accept — so the inherited healthcheck would stay perpetually
-# unhealthy. Drop it.
-HEALTHCHECK NONE
+ENV FILENAME=firmware.hex
 
-EXPOSE 3030
-
-# Wrap socat in a tiny shell loop so the listener survives client
-# reconnects. ",fork" would let multiple clients run simultaneously but
-# would also spawn multiple simulators racing for WebSocket port 8080.
-# `while true; do socat ...; done` accepts one client at a time, exits
-# socat when the client disconnects, then re-runs socat for the next.
-#
-# Redirecting stdin to /dev/null avoids docker-attach's stdin buffer
-# closing on the child and tripping a clean shutdown of socat (which was
-# what made the container exit cleanly within seconds under Testcontainers'
-# default log-streaming attach during earlier testing).
-ENTRYPOINT ["/bin/sh", "-c", \
-            "while true; do socat TCP-LISTEN:3030,reuseaddr EXEC:'node /app/virtualavr.js /sketch/firmware.hex',pty,rawer,fdin=3,fdout=4; sleep 1; done </dev/null"]
