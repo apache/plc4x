@@ -108,7 +108,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			handle.monitoredInstance = tag.GetObjectId().ObjectIdInstance
 			handle.lifetimeSec = lifetime
 
-			code := m.sendSubscribeCOV(ctx, handle, lifetime)
+			code := m.sendSubscribeCOV(ctx, handle, lifetime, false)
 			responseCodes[tagName] = code
 			subscriptionValues[tagName] = handle.DefaultPlcSubscriptionHandle
 
@@ -131,8 +131,9 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	return result
 }
 
-// Unsubscribe sends a SubscribeCOV with lifetime=0 (BACnet cancel semantics)
-// for each handle in the unsubscription request, then drops the handle from
+// Unsubscribe sends a SubscribeCOV cancellation (no issueConfirmedNotifications
+// and no lifetime, ASHRAE 135 13.14.1) for each handle in the unsubscription
+// request, then drops the handle from
 // the routing map so further notifications are silently ignored.
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
@@ -149,7 +150,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			}
 			bh.mu.Lock()
 			bh.cancelled = true
-			_ = m.sendSubscribeCOV(ctx, bh, 0) // lifetime=0 cancels
+			_ = m.sendSubscribeCOV(ctx, bh, 0, true)
 			bh.mu.Unlock()
 			m.removeHandle(bh.subscriberProcessId)
 		}
@@ -181,7 +182,7 @@ func (m *Subscriber) refreshDue(ctx context.Context, now time.Time) {
 			h.mu.Unlock()
 			continue
 		}
-		if code := m.sendSubscribeCOV(ctx, h, h.lifetimeSec); code != apiModel.PlcResponseCode_OK {
+		if code := m.sendSubscribeCOV(ctx, h, h.lifetimeSec, false); code != apiModel.PlcResponseCode_OK {
 			h.retryAt = now.Add(max(time.Duration(h.lifetimeSec)*time.Second/10, time.Second))
 			m.log.Debug().
 				Uint32("processId", h.subscriberProcessId).
@@ -195,16 +196,22 @@ func (m *Subscriber) refreshDue(ctx context.Context, now time.Time) {
 
 // sendSubscribeCOV builds and dispatches a single SubscribeCOV confirmed
 // request. Returns the plc4go response code derived from the SimpleAck/Error
-// reply. lifetime=0 cancels an existing subscription.
-func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionHandle, lifetime uint32) apiModel.PlcResponseCode {
+// reply. cancel sends the cancellation form, which leaves out both
+// issueConfirmedNotifications and lifetime; lifetime=0 is not a cancellation
+// but an indefinite subscription.
+func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionHandle, lifetime uint32, cancel bool) apiModel.PlcResponseCode {
 	tag, ok := handle.tag.(BacNetPlcTag)
 	if !ok || tag == nil {
 		return apiModel.PlcResponseCode_INVALID_ADDRESS
 	}
 	subscriberProcessId := readWriteModel.CreateBACnetContextTagUnsignedInteger(0, uint(handle.subscriberProcessId))
 	monitoredObject := readWriteModel.CreateBACnetContextTagObjectIdentifier(1, tag.GetObjectId().getId(), tag.GetObjectId().ObjectIdInstance)
-	issueConfirmed := readWriteModel.CreateBACnetContextTagBoolean(2, handle.confirmedNotifications)
-	lifetimeTag := readWriteModel.CreateBACnetContextTagUnsignedInteger(3, uint(lifetime))
+	var issueConfirmed readWriteModel.BACnetContextTagBoolean
+	var lifetimeTag readWriteModel.BACnetContextTagUnsignedInteger
+	if !cancel {
+		issueConfirmed = readWriteModel.CreateBACnetContextTagBoolean(2, handle.confirmedNotifications)
+		lifetimeTag = readWriteModel.CreateBACnetContextTagUnsignedInteger(3, uint(lifetime))
+	}
 
 	serviceRequest := readWriteModel.NewBACnetConfirmedServiceRequestSubscribeCOV(
 		0, subscriberProcessId, monitoredObject, issueConfirmed, lifetimeTag,
