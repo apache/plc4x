@@ -258,7 +258,13 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            if (dataType == TransportSize.BOOL) {
+                int bitAddress = resolveBitAddress(byteOffset, bitOffset, selection[0]);
+                byteOffset = bitAddress / 8;
+                bitOffset = (byte) (bitAddress % 8);
+            } else {
+                byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            }
             int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -283,7 +289,13 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            if (dataType == TransportSize.BOOL) {
+                int bitAddress = resolveBitAddress(byteOffset, bitOffset, selection[0]);
+                byteOffset = bitAddress / 8;
+                bitOffset = (byte) (bitAddress % 8);
+            } else {
+                byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            }
             int numElements = checkNumElements(dataType, selection[1]);
 
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
@@ -322,7 +334,13 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
-            byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            if (dataType == TransportSize.BOOL) {
+                int bitAddress = resolveBitAddress(byteOffset, bitOffset, selection[0]);
+                byteOffset = bitAddress / 8;
+                bitOffset = (byte) (bitAddress % 8);
+            } else {
+                byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
+            }
             int numElements = checkNumElements(dataType, selection[1]);
 
             if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
@@ -431,6 +449,20 @@ public class S7Tag implements PlcTag, Serializable {
         if ((resolved > MAX_BYTE_OFFSET) || (resolved < 0)) {
             throw new PlcInvalidTagException("ByteOffset must be smaller than " + MAX_BYTE_OFFSET
                 + " and positive. The selection resolves to " + resolved);
+        }
+        return (int) resolved;
+    }
+
+    /**
+     * The bit address a selection on a BOOL array resolves to, counted in bits from the start of
+     * the area. BOOLs are packed eight to a byte, so the selection's start moves the written
+     * address by bits, not bytes: {@code %DB1:16.0[4..7]:BOOL} starts at 16.4.
+     */
+    protected static int resolveBitAddress(int byteOffset, byte bitOffset, int elementOffset) {
+        long resolved = ((long) byteOffset * 8) + bitOffset + elementOffset;
+        if ((resolved / 8 > MAX_BYTE_OFFSET) || (resolved < 0)) {
+            throw new PlcInvalidTagException("ByteOffset must be smaller than " + MAX_BYTE_OFFSET
+                + " and positive. The selection resolves to " + (resolved / 8) + "." + (resolved % 8));
         }
         return (int) resolved;
     }

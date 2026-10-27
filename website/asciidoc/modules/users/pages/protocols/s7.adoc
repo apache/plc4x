@@ -133,19 +133,22 @@ driver can express.
 Generally there are two types of addresses:
 
 ----
-Bit-Addresses  {Memory-Area-Code}{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
-Byte-Addresses {Memory-Area-Code}{Start-Byte-Address}:{Data-Type-Code}[{count}]
+Bit-Addresses  {Memory-Area-Code}{Start-Byte-Address}.{Bit-Offset}[{selection}]:BOOL
+Byte-Addresses {Memory-Area-Code}{Start-Byte-Address}[{selection}]:{Data-Type-Code}
 ----
 
-Bit addresses are only used if the datatype `BOOL` is used. The array notation of these can
-be omitted, in which case a `Count` of 1 is used by default. `Start-Byte-Address` and
-`Bit-Offset` both represent unsigned integer values.
+Bit addresses are only used if the datatype `BOOL` is used. `Start-Byte-Address` and
+`Bit-Offset` both represent unsigned integer values. BOOLs are packed eight to a byte, so the
+elements of a `BOOL` array are consecutive bits, and the start of a selection counts bits from
+the written bit offset: `%DB1:16.0[4..7]:BOOL` is the four bits 16.4 to 16.7, and
+`%DB1:16.6[0..3]:BOOL` is 16.6, 16.7, 17.0 and 17.1. For every other type the start counts
+elements of that type's size in bytes.
 
 In case of accessing data in the `data block` memory area, the syntax is a bit more complex:
 
 ----
-DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
-DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}:{Data-Type-Code}[{Count}]
+DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}.{Bit-Offset}[{selection}]:BOOL
+DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}[{selection}]:{Data-Type-Code}
 ----
 
 When reading a `STRING` datatype, currently 254 characters are automatically fetched from the
@@ -153,7 +156,7 @@ PLC. To limit the amount of data transferred, the `STRING` type declaration synt
 extended to allow declaring a shorter length:
 
 ----
-DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}:STRING({string-length})[{Count}]
+DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}[{selection}]:STRING({string-length})
 ----
 
 The data-block forms above carry some unnecessary boilerplate (the `.DB` in the middle, as
@@ -161,9 +164,9 @@ well as the `Short-Data-Type-Code`), so a shorter syntax is also accepted, and h
 identically to the long form:
 
 ----
-DB{Data-Block-Number}:{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
-DB{Data-Block-Number}:{Start-Byte-Address}:{Data-Type-Code}[{Count}]
-DB{Data-Block-Number}:{Start-Byte-Address}:STRING({string-length})[{Count}]
+DB{Data-Block-Number}:{Start-Byte-Address}.{Bit-Offset}[{selection}]:BOOL
+DB{Data-Block-Number}:{Start-Byte-Address}[{selection}]:{Data-Type-Code}
+DB{Data-Block-Number}:{Start-Byte-Address}[{selection}]:STRING({string-length})
 ----
 
 === Memory Areas

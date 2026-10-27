@@ -137,6 +137,36 @@ func TestTagHandlerConsumesTheSelectionOffset(t *testing.T) {
 	assert.Equal(t, uint16(2), dwords.(PlcTag).GetNumElements())
 }
 
+// BOOLs are packed eight to a byte, so the start of a selection on a BOOL array counts bits
+// from the written bit offset, not bytes.
+func TestTagHandlerStepsABoolSelectionByBits(t *testing.T) {
+	handler := NewTagHandler()
+
+	tests := []struct {
+		address    string
+		byteOffset uint16
+		bitOffset  uint8
+		elements   uint16
+	}{
+		{"%DB1:16.0[4..7]:BOOL", 16, 4, 4},
+		{"%DB1.DBX16.6[3]:BOOL", 17, 1, 1},
+		// Elements 9 to 16 of an array declared from 1 start at offset 8, one byte in.
+		{"%M10.0[9..16;1]:BOOL", 11, 0, 8},
+	}
+	for _, tt := range tests {
+		t.Run(tt.address, func(t *testing.T) {
+			tag, err := handler.ParseTag(tt.address)
+			require.NoError(t, err)
+			assert.Equal(t, tt.byteOffset, tag.(PlcTag).GetByteOffset())
+			assert.Equal(t, tt.bitOffset, tag.(PlcTag).GetBitOffset())
+			assert.Equal(t, tt.elements, tag.(PlcTag).GetNumElements())
+		})
+	}
+
+	_, err := handler.ParseTag("%DB1:16.0[2147483647]:BOOL")
+	assert.Error(t, err, "a selection past the addressable area is rejected")
+}
+
 // A bare index selects one element, which is a scalar - not a count of that many.
 func TestTagHandlerReadsABareIndexAsOneElement(t *testing.T) {
 	handler := NewTagHandler()
