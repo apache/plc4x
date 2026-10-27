@@ -39,9 +39,8 @@ public record S7ReadChunk(List<Slot> slots) {
     public record Slot(
         S7VarRequestParameterItem requestItem,
         // The tag describing the actual bytes being requested.
-        // For a block-read, this is a synthetic "block" tag; for a split-array tag
-        // it is a fragment with a reduced numberOfElements; otherwise it is the
-        // user-supplied tag.
+        // For a block-read, this is a synthetic "block" tag; for a split tag it is
+        // a byte fragment of its payload; otherwise it is the user-supplied tag.
         S7Tag fragmentTag,
         List<Binding> bindings) {}
 
@@ -54,9 +53,9 @@ public record S7ReadChunk(List<Slot> slots) {
         // Byte offset *within* the slot's response payload at which this user
         // tag's data starts. 0 for non-block-merged single-tag slots.
         int payloadByteOffset,
-        // Element index inside {@code originalTag} where this slot's data starts.
-        // Non-zero only for split-array tags.
-        int elementOffset,
+        // Byte offset inside the payload a read of {@code originalTag} returns, at which this
+        // slot's data starts. Non-zero only for split tags.
+        int fragmentByteOffset,
         // True if {@code originalTag} was split across multiple slots/chunks.
         boolean isSplitFragment) {}
 }

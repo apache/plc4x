@@ -23,7 +23,6 @@ import (
 	"context"
 	"runtime/debug"
 	"sync"
-	"time"
 
 	"github.com/rs/zerolog"
 
@@ -65,7 +64,6 @@ func NewReader(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm t
 }
 
 func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
-	// TODO: handle ctx
 	m.log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult, 1)
 	m.wg.Go(func() {
@@ -75,174 +73,108 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			}
 		}()
 
-		requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(readRequest.GetTagNames()))
-		for i, tagName := range readRequest.GetTagNames() {
-			tag := readRequest.GetTag(tagName)
-			address, err := encodeS7Address(tag)
+		chunks, err := splitRead(readRequest, m.driverContext.PduSize)
+		if err != nil {
+			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err))
+			return
+		}
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		plcValues := map[string]apiValues.PlcValue{}
+		// The reassembled payload of each tag that was read in fragments.
+		fragmented := map[string][]byte{}
+		for _, chunk := range chunks {
+			requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(chunk))
+			for i, item := range chunk {
+				requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(item.address)
+			}
+			m.log.Trace().Int("items", len(chunk)).Msg("Send read request")
+			response, err := exchange(ctx, m.log, m.tpduGenerator, m.messageCodec, m.tm, "read",
+				readWriteModel.NewS7ParameterReadVarRequest(requestItems), nil)
 			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
-				))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err))
 				return
 			}
-			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address)
-		}
-
-		// Create a read request template.
-		// tpuId will be inserted before sending in #readInternal so we insert 0 as dummy here
-		s7MessageRequest := readWriteModel.NewS7MessageRequest(
-			0,
-			readWriteModel.NewS7ParameterReadVarRequest(requestItems),
-			nil,
-		)
-
-		tpduId := m.tpduGenerator.getAndIncrement()
-
-		request := s7MessageRequest
-		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.GetParameter(), request.GetPayload())
-
-		// Assemble the finished paket
-		m.log.Trace().Msg("Assemble paket")
-		// TODO: why do we use a uint16 above and the cotp a uint8?
-		tpktPacket := readWriteModel.NewTPKTPacket(
-			readWriteModel.NewCOTPPacketData(
-				nil,
-				s7MessageRequest,
-				true,
-				uint8(tpduId),
-			),
-		)
-		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartTransaction("read")
-		transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
-			ctx, cancel := context.WithCancel(ctx)
-			context.AfterFunc(transactionContext, cancel)
-
-			// Send the  over the wire
-			m.log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, "read", tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-				if !ok {
-					return false
-				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				if !ok {
-					return false
-				}
-				payload := cotpPacketData.GetPayload()
-				if payload == nil {
-					return false
-				}
-				return payload.GetTpduReference() == tpduId
-			}, func(message spi.Message) error {
-				// Convert the response into an
-				m.log.Trace().Msg("convert response to ")
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				payload := cotpPacketData.GetPayload()
-				// Convert the s7 response into a PLC4X response
-				m.log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
-
-				if err != nil {
-					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-						readRequest,
-						nil,
-						errors.Wrap(err, "Error decoding response"),
-					))
-					return transaction.EndRequest()
-				}
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					readResponse,
-					nil,
-				))
-				return transaction.EndRequest()
-			}, func(err error) error {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "got timeout while waiting for response"),
-				))
-				return transaction.EndRequest()
-			}); err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
-					readRequest,
-					nil,
-					errors.Wrap(err, "error sending message"),
-				))
-				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
-					m.log.Debug().Err(err).Msg("Error failing request")
-				}
+			if err := m.applyReadResponse(response, chunk, readRequest, responseCodes, plcValues, fragmented); err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil,
+					errors.Wrap(err, "Error decoding response")))
+				return
 			}
-		})
+		}
+		// A tag read in fragments can only be decoded once all of them are in.
+		for tagName, data := range fragmented {
+			if responseCodes[tagName] != apiModel.PlcResponseCode_OK {
+				continue
+			}
+			plcValue, err := m.parse(ctx, readRequest.GetTag(tagName).(PlcTag), data)
+			if err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest, nil,
+					errors.Wrap(err, "Error decoding response")))
+				return
+			}
+			plcValues[tagName] = plcValue
+		}
+		m.log.Trace().Msg("Returning the response")
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(readRequest,
+			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil))
 	})
 	return result
 }
 
-func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
-	ctx := context.TODO()
-	var errorClass uint8
-	var errorCode uint8
-	switch messageResponseData := response.(type) {
-	case readWriteModel.S7MessageResponseData:
-		errorClass = messageResponseData.GetErrorClass()
-		errorCode = messageResponseData.GetErrorCode()
-	case readWriteModel.S7MessageResponse:
-		errorClass = messageResponseData.GetErrorClass()
-		errorCode = messageResponseData.GetErrorCode()
-	default:
-		return nil, errors.Errorf("unsupported response type %T", response)
+// applyReadResponse records what the response to one request of a read says about its tags.
+func (m *Reader) applyReadResponse(response readWriteModel.S7Message, chunk []readItem, readRequest apiModel.PlcReadRequest,
+	responseCodes map[string]apiModel.PlcResponseCode, plcValues map[string]apiValues.PlcValue, fragmented map[string][]byte) error {
+	errorClass, errorCode, err := headerError(response)
+	if err != nil {
+		return err
 	}
-	responseCodes := map[string]apiModel.PlcResponseCode{}
-	plcValues := map[string]apiValues.PlcValue{}
-
 	// If the result contains any form of non-null error code, handle this instead.
 	if (errorClass != 0) || (errorCode != 0) {
 		responseCode := mapPlcErrorCode(m.log, errorClass, errorCode)
-		for _, tagName := range readRequest.GetTagNames() {
-			responseCodes[tagName] = responseCode
-			plcValues[tagName] = spiValues.NewPlcNULL()
+		for _, item := range chunk {
+			mergeResponseCode(responseCodes, item.tagName, responseCode)
+			plcValues[item.tagName] = spiValues.NewPlcNULL()
 		}
-		m.log.Trace().Msg("Returning the response")
-		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+		return nil
 	}
 
-	// In all other cases all went well.
-	payload := response.GetPayload().(readWriteModel.S7PayloadReadVarResponse)
-
+	payload, ok := response.GetPayload().(readWriteModel.S7PayloadReadVarResponse)
+	if !ok {
+		return errors.Errorf("unexpected payload %T", response.GetPayload())
+	}
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(readRequest.GetTagNames()) != len(payload.GetItems()) {
-		return nil, errors.New("The number of requested items doesn't match the number of returned items")
+	if len(chunk) != len(payload.GetItems()) {
+		return errors.New("The number of requested items doesn't match the number of returned items")
 	}
-
-	payloadItems := payload.GetItems()
-	for i, tagName := range readRequest.GetTagNames() {
-		tag := readRequest.GetTag(tagName).(PlcTag)
-		payloadItem := payloadItems[i]
-
+	for i, item := range chunk {
+		payloadItem := payload.GetItems()[i]
 		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
-		// Decode the data according to the information from the request
-		m.log.Trace().Msg("decode data")
-		responseCodes[tagName] = responseCode
-		if responseCode == apiModel.PlcResponseCode_OK {
-			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), m.driverContext.ControllerType)
-			if err != nil {
-				return nil, errors.Wrap(err, "Error parsing data item")
-			}
-			plcValues[tagName] = plcValue
+		mergeResponseCode(responseCodes, item.tagName, responseCode)
+		if responseCode != apiModel.PlcResponseCode_OK {
+			continue
 		}
+		if item.split {
+			data, ok := fragmented[item.tagName]
+			if !ok {
+				data = make([]byte, payloadBytes(readAddressOf(readRequest.GetTag(item.tagName).(PlcTag))))
+				fragmented[item.tagName] = data
+			}
+			copy(data[item.fragmentByteOffset:], payloadItem.GetData())
+			continue
+		}
+		plcValue, err := m.parse(context.TODO(), readRequest.GetTag(item.tagName).(PlcTag), payloadItem.GetData())
+		if err != nil {
+			return errors.Wrap(err, "Error parsing data item")
+		}
+		plcValues[item.tagName] = plcValue
 	}
+	return nil
+}
 
-	// Return the response
-	m.log.Trace().Msg("Returning the response")
-	return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
+func (m *Reader) parse(ctx context.Context, tag PlcTag, data []byte) (apiValues.PlcValue, error) {
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	return parsePlcValue(ctxForModel, tag, data, m.driverContext.ControllerType)
 }
 
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Tag from PLC4X into
@@ -252,26 +184,41 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", tag)
 	}
+	return readAddressOf(s7Tag), nil
+}
+
+// readAddressOf is the address a read of the tag asks for. Strings, BOOL arrays and types without
+// an own transport size are requested as the characters or bytes they occupy; cyclic
+// subscriptions address their tags the same way.
+func readAddressOf(s7Tag PlcTag) readWriteModel.S7AddressAny {
 	transportSize := s7Tag.GetDataType()
 	numElements := s7Tag.GetNumElements()
 	if transportSize == readWriteModel.TransportSize_STRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringTag, ok := tag.(PlcStringTag); ok {
+		if s7StringTag, ok := s7Tag.(PlcStringTag); ok {
 			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2)
 	} else if transportSize == readWriteModel.TransportSize_WSTRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringTag, ok := tag.(PlcStringTag); ok {
+		if s7StringTag, ok := s7Tag.(PlcStringTag); ok {
 			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
 	} else if transportSize == readWriteModel.TransportSize_BOOL && numElements > 1 {
-		// BOOL arrays are read as packed bytes.
-		numElements = (numElements + 7) / 8
-		transportSize = readWriteModel.TransportSize_BYTE
+		// BOOL arrays are read as the bytes their bits are packed into, from bit 0 of the start
+		// byte: a byte read has no bit address, so parsePlcValue skips the bits before the tag's
+		// own bit offset.
+		return readWriteModel.NewS7AddressAny(
+			readWriteModel.TransportSize_BYTE,
+			packedBoolBytes(s7Tag),
+			s7Tag.GetBlockNumber(),
+			s7Tag.GetMemoryArea(),
+			s7Tag.GetByteOffset(),
+			0,
+		)
 	}
 	// Types without an own transport-size code (temporal types, 64-bit types, ...) have to be
 	// requested as plain byte arrays, the S7 denies them with "Data type not supported" otherwise.
@@ -286,9 +233,18 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 		s7Tag.GetMemoryArea(),
 		s7Tag.GetByteOffset(),
 		s7Tag.GetBitOffset(),
-	), nil
+	)
 }
 
+// packedBoolBytes is how many bytes the bits of a BOOL tag span, counting from bit 0 of its start
+// byte: a tag that starts at a bit offset other than 0 can spill into one more byte than its
+// element count alone needs.
+func packedBoolBytes(tag PlcTag) uint16 {
+	return uint16((uint32(tag.GetBitOffset()) + uint32(tag.GetNumElements()) + 7) / 8)
+}
+
+// parsePlcValue decodes the data a read of the tag returned. Every request addresses a BOOL array
+// from bit 0 of its start byte (see readAddressOf), so its elements begin at the tag's bit offset.
 func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
 	stringLength := int32(254)
 	if s7StringTag, ok := tag.(PlcStringTag); ok {
@@ -305,11 +261,13 @@ func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType 
 	case readWriteModel.TransportSize_BOOL:
 		// BOOL arrays arrive as packed bytes (LSB first), matching the write-side packing.
 		items := make([]apiValues.PlcValue, 0, numElements)
+		firstBit := tag.GetBitOffset()
 		for i := range numElements {
-			if int(i/8) >= len(data) {
-				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements", len(data), numElements)
+			bit := int(firstBit) + int(i)
+			if bit/8 >= len(data) {
+				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements from bit %d", len(data), numElements, firstBit)
 			}
-			items = append(items, spiValues.NewPlcBOOL((data[i/8]>>(i%8))&0x01 != 0))
+			items = append(items, spiValues.NewPlcBOOL((data[bit/8]>>(bit%8))&0x01 != 0))
 		}
 		return spiValues.NewPlcList(items), nil
 	default:

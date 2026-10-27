@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.userdata;
 
 import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
 import org.apache.plc4x.java.s7.readwrite.CycServiceItemAnyType;
+import org.apache.plc4x.java.s7.readwrite.CycServiceItemType;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
@@ -147,6 +148,30 @@ class S7CyclicSubscriptionServiceTest {
         assertEquals(MemoryArea.FLAGS_MARKERS, item.getMemoryArea());
         // address = (byteOffset << 3) | bitOffset = (10 << 3) | 0 = 80
         assertEquals(80, item.getAddress());
+    }
+
+    /**
+     * A subscription addresses its tag the way a read does, so the pushed data decodes the same:
+     * a BOOL array as the bytes its bits are packed into, from bit 0 of its start byte, a string
+     * as its characters. It used to subscribe BOOL with a count of bits and STRING with a count of
+     * strings, which a read never asks for.
+     */
+    @Test
+    void buildSubscribeRequest_addressesTagsLikeARead() {
+        S7CyclicSubscriptionService.IntervalSpec interval = new S7CyclicSubscriptionService.IntervalSpec(
+            TimeBase.B1SEC, (short) 1);
+        S7Message msg = S7CyclicSubscriptionService.buildSubscribeRequest(7, List.of(
+            S7Tag.of("%DB1:16.6[0..3]:BOOL"), S7Tag.of("%DB1:20:STRING(10)")), interval);
+
+        List<CycServiceItemType> items = ((S7PayloadUserDataItemCyclicServicesSubscribeRequest)
+            ((S7PayloadUserData) msg.getPayload()).getItems().get(0)).getItem();
+        CycServiceItemAnyType bools = (CycServiceItemAnyType) items.get(0);
+        assertEquals(TransportSize.BYTE, bools.getTransportSize());
+        assertEquals(2, bools.getLength(), "16.6 to 17.1 touch two bytes");
+        assertEquals(16 << 3, bools.getAddress(), "a byte read has no bit address");
+        CycServiceItemAnyType string = (CycServiceItemAnyType) items.get(1);
+        assertEquals(TransportSize.CHAR, string.getTransportSize());
+        assertEquals(12, string.getLength(), "two length bytes and ten characters");
     }
 
     @Test

@@ -86,6 +86,23 @@ func TestParsePlcValue(t *testing.T) {
 		assert.False(t, list[8].GetBool())
 		assert.True(t, list[9].GetBool())
 	})
+	t.Run("BOOL array starting inside a byte skips the leading bits", func(t *testing.T) {
+		// 16.6, 16.7, 17.0, 17.1: set, set, clear, set - with the bits after them set as well, so
+		// reading from the wrong bit shows.
+		tag := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
+		value, err := parsePlcValue(ctx, tag, []byte{0b11000000, 0b11111010}, anyController)
+		require.NoError(t, err)
+		var bools []bool
+		for _, item := range value.GetList() {
+			bools = append(bools, item.GetBool())
+		}
+		assert.Equal(t, []bool{true, true, false, true}, bools)
+	})
+	t.Run("BOOL array response too short for its bit offset", func(t *testing.T) {
+		tag := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
+		_, err := parsePlcValue(ctx, tag, []byte{0b11000000}, anyController)
+		assert.Error(t, err)
+	})
 }
 
 func TestEncodeS7Address(t *testing.T) {
@@ -111,6 +128,17 @@ func TestEncodeS7Address(t *testing.T) {
 		require.NoError(t, err)
 		addressAny := address.(readWriteModel.S7AddressAny)
 		assert.Equal(t, readWriteModel.TransportSize_BYTE, addressAny.GetTransportSize())
+		assert.Equal(t, uint16(2), addressAny.GetNumberOfElements())
+	})
+	t.Run("BOOL array starting inside a byte is requested from bit 0", func(t *testing.T) {
+		// 16.6 to 17.1 touch two bytes, although four elements alone would fit into one.
+		tag := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
+		address, err := encodeS7Address(tag)
+		require.NoError(t, err)
+		addressAny := address.(readWriteModel.S7AddressAny)
+		assert.Equal(t, readWriteModel.TransportSize_BYTE, addressAny.GetTransportSize())
+		assert.Equal(t, uint16(16), addressAny.GetByteAddress())
+		assert.Equal(t, uint8(0), addressAny.GetBitAddress(), "a byte read has no bit address")
 		assert.Equal(t, uint16(2), addressAny.GetNumberOfElements())
 	})
 	t.Run("STRING converts to CHAR elements", func(t *testing.T) {

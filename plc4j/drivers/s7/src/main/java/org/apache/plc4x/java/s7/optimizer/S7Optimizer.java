@@ -92,8 +92,7 @@ public class S7Optimizer {
             }
 
             int requestItemSize = S7_ADDRESS_ANY_SIZE;
-            int responseItemElementSize = elementSizeBytes(s7Tag);
-            int responseItemSize = roundUpEven(4 + s7Tag.getNumberOfElements() * responseItemElementSize);
+            int responseItemSize = roundUpEven(4 + payloadBytes(s7Tag));
 
             // Whole tag fits; either append to current chunk or roll over.
             if (responseItemSize <= context.getPduSize() - EMPTY_READ_RESPONSE_SIZE) {
@@ -114,35 +113,14 @@ public class S7Optimizer {
                 curRequestSize += requestItemSize;
                 curResponseSize += responseItemSize;
             } else {
-                // Tag too big for one PDU: byte-split into fragments.
+                // Tag too big for one PDU: fetch the bytes it covers in fragments.
                 if (!currentSlots.isEmpty()) {
                     chunks.add(new S7ReadChunk(currentSlots));
                     currentSlots = new ArrayList<>();
                     curRequestSize = EMPTY_READ_REQUEST_SIZE;
                     curResponseSize = EMPTY_READ_RESPONSE_SIZE;
                 }
-                int maxPayload = context.getPduSize() - (EMPTY_READ_RESPONSE_SIZE + 4);
-                int elementSize = s7Tag.getDataType().getSizeInBytes();
-                if (elementSize <= 0) {
-                    throw new PlcRuntimeException("Cannot split tag '" + tagName + "': element size unknown");
-                }
-                int elemsPerRequest = Math.max(1, maxPayload / elementSize);
-                int totalElems = s7Tag.getNumberOfElements();
-                int curElem = 0;
-                int curByteOffset = s7Tag.getByteOffset();
-                while (curElem < totalElems) {
-                    int n = Math.min(elemsPerRequest, totalElems - curElem);
-                    S7Tag fragment = new S7Tag(s7Tag.getDataType(), s7Tag.getMemoryArea(),
-                        s7Tag.getBlockNumber(), curByteOffset, (byte) 0, n);
-                    S7ReadChunk.Slot slot = new S7ReadChunk.Slot(
-                        new S7VarRequestParameterItemAddress(toS7Address(fragment)),
-                        fragment,
-                        Collections.singletonList(
-                            new S7ReadChunk.Binding(tagName, s7Tag, 0, curElem, true)));
-                    chunks.add(new S7ReadChunk(Collections.singletonList(slot)));
-                    curElem += n;
-                    curByteOffset += n * elementSize;
-                }
+                splitIntoByteFragments(tagName, s7Tag, context, chunks);
             }
         }
         if (!currentSlots.isEmpty()) {
@@ -151,9 +129,33 @@ public class S7Optimizer {
         return chunks;
     }
 
+    /**
+     * A tag too big for one PDU is fetched as plain byte fragments of the payload a read of it
+     * would return, one fragment per chunk. Each binding carries where its fragment goes in that
+     * payload; the connection decodes the tag once every fragment is in. Splitting the payload
+     * rather than the elements works for every type, including BOOL arrays, whose elements are
+     * bits, and strings, whose elements are bigger than their transport size says.
+     */
+    private static void splitIntoByteFragments(String tagName, S7Tag s7Tag, S7DriverContext context,
+                                               List<S7ReadChunk> chunks) {
+        int totalBytes = payloadBytes(s7Tag);
+        // Four bytes of item header, and the payload is padded to an even length.
+        int bytesPerRequest = Math.max(1, context.getPduSize() - EMPTY_READ_RESPONSE_SIZE - 5);
+        for (int curByte = 0; curByte < totalBytes; curByte += bytesPerRequest) {
+            int n = Math.min(bytesPerRequest, totalBytes - curByte);
+            S7Tag fragment = new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(),
+                s7Tag.getBlockNumber(), s7Tag.getByteOffset() + curByte, (byte) 0, n);
+            S7ReadChunk.Slot slot = new S7ReadChunk.Slot(
+                new S7VarRequestParameterItemAddress(toS7Address(fragment)),
+                fragment,
+                Collections.singletonList(new S7ReadChunk.Binding(tagName, s7Tag, 0, curByte, true)));
+            chunks.add(new S7ReadChunk(Collections.singletonList(slot)));
+        }
+    }
+
     public List<S7WriteChunk> splitWriteRequest(PlcWriteRequest request, S7DriverContext context) {
         List<S7WriteChunk> chunks = new ArrayList<>();
-        List<String> currentNames = new ArrayList<>();
+        List<S7WriteChunk.Item> currentItems = new ArrayList<>();
         int curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
@@ -165,47 +167,91 @@ public class S7Optimizer {
             if (!(plcTag instanceof S7Tag s7Tag)) {
                 throw new PlcRuntimeException("Unsupported tag type for tag " + tagName);
             }
-            int payloadBytes = computeWritePayloadBytes(s7Tag, request);
-            int requestItemSize = roundUpEven(S7_ADDRESS_ANY_SIZE + 4 + payloadBytes);
-            int responseItemSize = 1;
+            for (S7WriteChunk.Item item : writeItemsFor(tagName, s7Tag)) {
+                int payloadBytes = computeWritePayloadBytes(item.tag(), request, tagName);
+                int requestItemSize = roundUpEven(S7_ADDRESS_ANY_SIZE + 4 + payloadBytes);
+                int responseItemSize = 1;
 
-            if (curRequestSize + requestItemSize > context.getPduSize() ||
-                curResponseSize + responseItemSize > context.getPduSize()) {
-                if (currentNames.isEmpty()) {
-                    throw new PlcRuntimeException(
-                        "Tag '" + tagName + "' exceeds PDU size; write splitting not supported");
+                if (curRequestSize + requestItemSize > context.getPduSize() ||
+                    curResponseSize + responseItemSize > context.getPduSize()) {
+                    if (currentItems.isEmpty()) {
+                        throw new PlcRuntimeException(
+                            "Tag '" + tagName + "' exceeds PDU size; write splitting not supported");
+                    }
+                    chunks.add(new S7WriteChunk(currentItems));
+                    currentItems = new ArrayList<>();
+                    curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
+                    curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
                 }
-                chunks.add(new S7WriteChunk(currentNames));
-                currentNames = new ArrayList<>();
-                curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
-                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
+                currentItems.add(item);
+                curRequestSize += requestItemSize;
+                curResponseSize += responseItemSize;
             }
-            currentNames.add(tagName);
-            curRequestSize += requestItemSize;
-            curResponseSize += responseItemSize;
         }
-        if (!currentNames.isEmpty()) {
-            chunks.add(new S7WriteChunk(currentNames));
+        if (!currentItems.isEmpty()) {
+            chunks.add(new S7WriteChunk(currentItems));
         }
         return chunks;
+    }
+
+    /**
+     * The protocol items a tag is written with. A write of whole bytes overwrites every bit in
+     * them, so a BOOL array is only written packed for the bytes it covers completely; each bit it
+     * shares a byte with something else goes out as an item of its own, leaving the rest of that
+     * byte alone. Any other tag is a single item.
+     */
+    public static List<S7WriteChunk.Item> writeItemsFor(String tagName, S7Tag tag) {
+        if (!isPackedBoolArray(tag)) {
+            return List.of(new S7WriteChunk.Item(tagName, tag, 0));
+        }
+        List<S7WriteChunk.Item> items = new ArrayList<>();
+        int numElements = tag.getNumberOfElements();
+        int firstBit = tag.getByteOffset() * 8 + tag.getBitOffset();
+        int element = 0;
+        while (element < numElements) {
+            int bit = firstBit + element;
+            int wholeBytes = (bit % 8 == 0) ? (numElements - element) / 8 : 0;
+            int count = (wholeBytes > 0) ? wholeBytes * 8 : 1;
+            S7Tag piece = new S7Tag(TransportSize.BOOL, tag.getMemoryArea(), tag.getBlockNumber(),
+                bit / 8, (byte) (bit % 8), count);
+            items.add(new S7WriteChunk.Item(tagName, piece, element));
+            element += count;
+        }
+        return items;
     }
 
     // ------------------------------------------------------------------------
     // Helpers
     // ------------------------------------------------------------------------
 
-    protected static int elementSizeBytes(S7Tag s7Tag) {
-        if (s7Tag instanceof S7StringVarLengthTag varLen) {
-            return varLen.getDataType() == TransportSize.WSTRING ? 4 : 2;
-        }
-        if (s7Tag instanceof S7StringFixedLengthTag fixed) {
-            int chars = fixed.getStringLength() + 2;
-            return fixed.getDataType() == TransportSize.WSTRING ? chars * 2 : chars;
-        }
-        return s7Tag.getDataType().getSizeInBytes();
+    /**
+     * How many bytes of data a read of the tag returns: what {@link #toS7Address} asks for. A BOOL
+     * array returns the bytes its bits are packed into, a string its length bytes and characters,
+     * a type without an own transport size its bytes.
+     */
+    public static int payloadBytes(S7Tag tag) {
+        S7AddressAny address = (S7AddressAny) toS7Address(tag);
+        return address.getNumberOfElements() * address.getTransportSize().getSizeInBytes();
     }
 
-    private static int computeWritePayloadBytes(S7Tag s7Tag, PlcWriteRequest request) {
+    /**
+     * Whether the tag is a BOOL array, which S7 transfers as the bytes its bits are packed into
+     * rather than element by element.
+     */
+    public static boolean isPackedBoolArray(S7Tag s7Tag) {
+        return s7Tag.getDataType() == TransportSize.BOOL && s7Tag.getNumberOfElements() > 1;
+    }
+
+    /**
+     * How many bytes the bits of a BOOL tag span, counting from bit 0 of its start byte: a tag
+     * that starts at a bit offset other than 0 can spill into one more byte than its element
+     * count alone needs.
+     */
+    public static int packedBoolBytes(S7Tag s7Tag) {
+        return (s7Tag.getBitOffset() + s7Tag.getNumberOfElements() + 7) / 8;
+    }
+
+    private static int computeWritePayloadBytes(S7Tag s7Tag, PlcWriteRequest request, String tagName) {
         if (s7Tag.getDataType() == TransportSize.BOOL) {
             return (s7Tag.getNumberOfElements() + 7) / 8;
         }
@@ -214,28 +260,25 @@ public class S7Optimizer {
             return s7Tag.getNumberOfElements() * (fixed.getStringLength() + 2) * bytesPerChar;
         }
         if (s7Tag instanceof S7StringVarLengthTag varLen) {
-            int len = request.getPlcValue(getTagName(request, s7Tag)).getString().length();
+            int len = request.getPlcValue(tagName).getString().length();
             int bytesPerChar = varLen.getDataType() == TransportSize.WSTRING ? 2 : 1;
             return s7Tag.getNumberOfElements() * (len + 2) * bytesPerChar;
         }
         return s7Tag.getNumberOfElements() * s7Tag.getDataType().getSizeInBytes();
     }
 
-    private static String getTagName(PlcWriteRequest req, S7Tag tag) {
-        for (String n : req.getTagNames()) {
-            if (req.getTag(n) == tag) return n;
-        }
-        throw new PlcRuntimeException("Tag not found in request");
-    }
-
     protected static int roundUpEven(int n) {
         return (n & 1) == 0 ? n : n + 1;
     }
 
-    protected static org.apache.plc4x.java.s7.readwrite.S7Address toS7Address(S7Tag tag) {
+    /**
+     * The address a read of the tag asks for. Strings, BOOL arrays and types without an own
+     * transport size are requested as the characters or bytes they occupy; cyclic subscriptions
+     * address their tags the same way.
+     */
+    public static org.apache.plc4x.java.s7.readwrite.S7Address toS7Address(S7Tag tag) {
         TransportSize transportSize = tag.getDataType();
         int numElements = tag.getNumberOfElements();
-        byte bitOffset = tag.getBitOffset();
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
             int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
@@ -244,19 +287,18 @@ public class S7Optimizer {
             transportSize = TransportSize.CHAR;
             int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
             numElements = numElements * (len + 2) * 2;
-        } else if (transportSize == TransportSize.BOOL && numElements > 1) {
-            // BYTE reads must be byte-aligned and include the bits before the array's start.
-            // The binding retains the original bit offset for decoding the response.
-            numElements = (bitOffset + numElements + 7) / 8;
-            transportSize = TransportSize.BYTE;
-            bitOffset = 0;
+        } else if (isPackedBoolArray(tag)) {
+            // The bytes the bits are packed into, from bit 0 of the start byte: a byte read has no
+            // bit address, so the connection skips the bits before the tag's own bit offset.
+            return new S7AddressAny(TransportSize.BYTE, packedBoolBytes(tag), tag.getBlockNumber(),
+                tag.getMemoryArea(), tag.getByteOffset(), (byte) 0);
         }
         if (transportSize.getCode() == 0x00) {
             numElements = numElements * transportSize.getSizeInBytes();
             transportSize = TransportSize.BYTE;
         }
         return new S7AddressAny(transportSize, numElements, tag.getBlockNumber(),
-            tag.getMemoryArea(), tag.getByteOffset(), bitOffset);
+            tag.getMemoryArea(), tag.getByteOffset(), tag.getBitOffset());
     }
 
     protected static LinkedHashMap<String, PlcTag> toLinkedMap(PlcReadRequest request) {

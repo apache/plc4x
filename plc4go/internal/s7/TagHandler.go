@@ -151,7 +151,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -193,7 +193,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -234,7 +234,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -272,7 +272,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -316,7 +316,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -362,7 +362,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -423,7 +423,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		byteOffset, err = checkByteOffset(uint64(byteOffset) + uint64(offset))
+		byteOffset, bitOffset, err = applySelection(dataType, byteOffset, bitOffset, offset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error applying the array selection")
 		}
@@ -512,6 +512,20 @@ func bytesPerString(dataType readWriteModel.TransportSize, stringLength uint16) 
 // assumption.
 func assumedBytesPerVarLengthString(dataType readWriteModel.TransportSize) uint32 {
 	return bytesPerString(dataType, 254)
+}
+
+// applySelection moves an address to where its selection starts. The offset is what selectionOf
+// returned: the selection's start scaled by the element size. BOOLs are packed eight to a byte,
+// so for them the start counts bits from the written bit offset - "%DB1:16.0[4..7]:BOOL" starts
+// at 16.4, not at 20.0. A BOOL is one byte in SizeInBytes, so the offset is the index itself.
+func applySelection(dataType readWriteModel.TransportSize, byteOffset uint16, bitOffset uint8, offset uint64) (uint16, uint8, error) {
+	if dataType != readWriteModel.TransportSize_BOOL {
+		resolved, err := checkByteOffset(uint64(byteOffset) + offset)
+		return resolved, bitOffset, err
+	}
+	bitAddress := uint64(byteOffset)*8 + uint64(bitOffset) + offset
+	resolved, err := checkByteOffset(bitAddress / 8)
+	return resolved, uint8(bitAddress % 8), err
 }
 
 func checkByteOffset(byteOffset uint64) (uint16, error) {

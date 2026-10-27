@@ -84,14 +84,14 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             while (idx < entries.size()) {
                 TagEntry first = entries.get(idx);
                 int blockStart = first.tag.getByteOffset();
-                int blockEnd = blockStart + tagSizeInBytes(first.tag);
+                int blockEnd = blockStart + payloadBytes(first.tag);
                 List<TagEntry> group = new ArrayList<>();
                 group.add(first);
                 idx++;
                 while (idx < entries.size()) {
                     TagEntry next = entries.get(idx);
                     int nextStart = next.tag.getByteOffset();
-                    int nextEnd = nextStart + tagSizeInBytes(next.tag);
+                    int nextEnd = nextStart + payloadBytes(next.tag);
                     // Bool tags use bit offsets and overlap a single byte; never block-merge them.
                     if (next.tag.getDataType() == TransportSize.BOOL || first.tag.getDataType() == TransportSize.BOOL) {
                         break;
@@ -158,11 +158,11 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     int offsetInWindow = b.payloadByteOffset() - windowStart;
                     // A tag the window does not hold completely is left to the null-check in the
                     // connection, which reports it as an error rather than a half-decoded value.
-                    if (offsetInWindow < 0 || offsetInWindow + tagSizeInBytes(b.originalTag()) > windowLength) {
+                    if (offsetInWindow < 0 || offsetInWindow + payloadBytes(b.originalTag()) > windowLength) {
                         continue;
                     }
                     visible.add(new S7ReadChunk.Binding(b.tagName(), b.originalTag(),
-                        offsetInWindow, b.elementOffset(), b.isSplitFragment()));
+                        offsetInWindow, b.fragmentByteOffset(), b.isSplitFragment()));
                 }
                 if (visible.isEmpty()) {
                     // Nothing in this slot can be decoded, so there is no point in requesting it.
@@ -193,17 +193,6 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             return area.getShortName() + "/" + s7Tag.getBlockNumber();
         }
         return area.getShortName();
-    }
-
-    private static int tagSizeInBytes(S7Tag tag) {
-        if (tag.getDataType() == TransportSize.BOOL) {
-            return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
-        }
-        if (tag instanceof S7StringFixedLengthTag fixed) {
-            int bytesPerChar = fixed.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            return tag.getNumberOfElements() * (fixed.getStringLength() + 2) * bytesPerChar;
-        }
-        return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
     }
 
     private record TagEntry(String tagName, S7Tag tag) {}

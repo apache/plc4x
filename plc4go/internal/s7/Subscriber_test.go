@@ -91,6 +91,25 @@ func TestBuildCyclicSubscribeRequest(t *testing.T) {
 	assert.Equal(t, uint32(10<<3), item.GetAddress())
 }
 
+// A subscription addresses its tag the way a read does, so the pushed data decodes the same: a
+// BOOL array as the bytes its bits are packed into, from bit 0 of its start byte, a string as its
+// characters. It used to subscribe BOOL with a count of bits and STRING with a count of strings,
+// which a read never asks for.
+func TestBuildCyclicSubscribeRequestAddressesTagsLikeARead(t *testing.T) {
+	bools := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
+	str := NewStringTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 20, 0, 1, 10, readWriteModel.TransportSize_STRING)
+	message := roundTrip(t, buildCyclicSubscribeRequest(43, []PlcTag{bools, str}, cyclicInterval{readWriteModel.TimeBase_B1SEC, 2}))
+	request := message.GetPayload().(readWriteModel.S7PayloadUserData).GetItems()[0].(readWriteModel.S7PayloadUserDataItemCyclicServicesSubscribeRequest)
+
+	boolItem := request.GetItem()[0].(readWriteModel.CycServiceItemAnyType)
+	assert.Equal(t, readWriteModel.TransportSize_BYTE, boolItem.GetTransportSize())
+	assert.Equal(t, uint16(2), boolItem.GetLength(), "16.6 to 17.1 touch two bytes")
+	assert.Equal(t, uint32(16<<3), boolItem.GetAddress(), "a byte read has no bit address")
+	stringItem := request.GetItem()[1].(readWriteModel.CycServiceItemAnyType)
+	assert.Equal(t, readWriteModel.TransportSize_CHAR, stringItem.GetTransportSize())
+	assert.Equal(t, uint16(12), stringItem.GetLength(), "two length bytes and ten characters")
+}
+
 func TestBuildAlarmQueryRequest(t *testing.T) {
 	message := roundTrip(t, buildAlarmQueryRequest(44, readWriteModel.QueryType_ALARM_S))
 	payload := message.GetPayload().(readWriteModel.S7PayloadUserData).GetItems()[0]
