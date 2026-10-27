@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.s7.userdata;
 
+import org.apache.plc4x.java.s7.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
 import org.apache.plc4x.java.s7.readwrite.CycServiceItemAnyType;
 import org.apache.plc4x.java.s7.readwrite.CycServiceItemType;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
+import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.S7Message;
 import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
@@ -254,16 +256,20 @@ public final class S7CyclicSubscriptionService {
     }
 
     private static CycServiceItemType toCycServiceItem(S7Tag tag) {
+        // The same address a read of the tag uses, so the pushed data is what a read returns: a
+        // BOOL array as the bytes its bits are packed into, from bit 0 of its start byte, a
+        // string as its characters, a type without an own transport size as its bytes.
+        S7AddressAny readAddress = (S7AddressAny) S7Optimizer.toS7Address(tag);
         // address is a 24-bit field encoding bit-addressed memory: byteOffset shifted left
         // by 3 plus the bit number. Same encoding as a regular S7AddressAny request.
-        int address = (tag.getByteOffset() << 3) | (tag.getBitOffset() & 0x07);
+        int address = (readAddress.getByteAddress() << 3) | (readAddress.getBitAddress() & 0x07);
         return new CycServiceItemAnyType(
             /*byteLength=*/(short) 0x0a,        // 10 bytes after byteLength field
             /*syntaxId=*/SYNTAX_ID_ANY,
-            tag.getDataType(),
-            tag.getNumberOfElements(),
-            tag.getBlockNumber(),
-            tag.getMemoryArea(),
+            readAddress.getTransportSize(),
+            readAddress.getNumberOfElements(),
+            readAddress.getDbNumber(),
+            readAddress.getArea(),
             address);
     }
 

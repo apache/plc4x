@@ -232,7 +232,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
 			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), tag.GetBitOffset(), m.driverContext.ControllerType)
+			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), m.driverContext.ControllerType)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -252,19 +252,26 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", tag)
 	}
+	return readAddressOf(s7Tag), nil
+}
+
+// readAddressOf is the address a read of the tag asks for. Strings, BOOL arrays and types without
+// an own transport size are requested as the characters or bytes they occupy; cyclic
+// subscriptions address their tags the same way.
+func readAddressOf(s7Tag PlcTag) readWriteModel.S7AddressAny {
 	transportSize := s7Tag.GetDataType()
 	numElements := s7Tag.GetNumElements()
 	if transportSize == readWriteModel.TransportSize_STRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringTag, ok := tag.(PlcStringTag); ok {
+		if s7StringTag, ok := s7Tag.(PlcStringTag); ok {
 			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2)
 	} else if transportSize == readWriteModel.TransportSize_WSTRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringTag, ok := tag.(PlcStringTag); ok {
+		if s7StringTag, ok := s7Tag.(PlcStringTag); ok {
 			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
@@ -279,7 +286,7 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 			s7Tag.GetMemoryArea(),
 			s7Tag.GetByteOffset(),
 			0,
-		), nil
+		)
 	}
 	// Types without an own transport-size code (temporal types, 64-bit types, ...) have to be
 	// requested as plain byte arrays, the S7 denies them with "Data type not supported" otherwise.
@@ -294,7 +301,7 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 		s7Tag.GetMemoryArea(),
 		s7Tag.GetByteOffset(),
 		s7Tag.GetBitOffset(),
-	), nil
+	)
 }
 
 // packedBoolBytes is how many bytes the bits of a BOOL tag span, counting from bit 0 of its start
@@ -304,10 +311,9 @@ func packedBoolBytes(tag PlcTag) uint16 {
 	return uint16((uint32(tag.GetBitOffset()) + uint32(tag.GetNumElements()) + 7) / 8)
 }
 
-// parsePlcValue decodes the data a request for the tag returned. firstBit is where in data the
-// first element of a BOOL array is: a read fetches the bytes from bit 0 of the tag's start byte,
-// so the elements begin at its bit offset.
-func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, firstBit uint8, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
+// parsePlcValue decodes the data a read of the tag returned. Every request addresses a BOOL array
+// from bit 0 of its start byte (see readAddressOf), so its elements begin at the tag's bit offset.
+func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
 	stringLength := int32(254)
 	if s7StringTag, ok := tag.(PlcStringTag); ok {
 		stringLength = int32(s7StringTag.stringLength)
@@ -323,6 +329,7 @@ func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, firstBit uint8,
 	case readWriteModel.TransportSize_BOOL:
 		// BOOL arrays arrive as packed bytes (LSB first), matching the write-side packing.
 		items := make([]apiValues.PlcValue, 0, numElements)
+		firstBit := tag.GetBitOffset()
 		for i := range numElements {
 			bit := int(firstBit) + int(i)
 			if bit/8 >= len(data) {

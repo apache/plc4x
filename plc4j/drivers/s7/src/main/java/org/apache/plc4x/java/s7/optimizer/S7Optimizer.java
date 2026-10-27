@@ -271,7 +271,12 @@ public class S7Optimizer {
         return (n & 1) == 0 ? n : n + 1;
     }
 
-    protected static org.apache.plc4x.java.s7.readwrite.S7Address toS7Address(S7Tag tag) {
+    /**
+     * The address a read of the tag asks for. Strings, BOOL arrays and types without an own
+     * transport size are requested as the characters or bytes they occupy; cyclic subscriptions
+     * address their tags the same way.
+     */
+    public static org.apache.plc4x.java.s7.readwrite.S7Address toS7Address(S7Tag tag) {
         TransportSize transportSize = tag.getDataType();
         int numElements = tag.getNumberOfElements();
         if (transportSize == TransportSize.STRING) {

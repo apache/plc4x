@@ -34,32 +34,32 @@ func TestParsePlcValue(t *testing.T) {
 
 	t.Run("single BOOL", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 1, readWriteModel.TransportSize_BOOL)
-		value, err := parsePlcValue(ctx, tag, []byte{0x01}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0x01}, anyController)
 		require.NoError(t, err)
 		assert.True(t, value.GetBool())
 	})
 	t.Run("single INT", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 1, readWriteModel.TransportSize_INT)
-		value, err := parsePlcValue(ctx, tag, []byte{0x00, 0x04}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0x00, 0x04}, anyController)
 		require.NoError(t, err)
 		assert.Equal(t, int16(4), value.GetInt16())
 	})
 	t.Run("single REAL", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 1, readWriteModel.TransportSize_REAL)
-		value, err := parsePlcValue(ctx, tag, []byte{0x41, 0x28, 0x00, 0x00}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0x41, 0x28, 0x00, 0x00}, anyController)
 		require.NoError(t, err)
 		assert.Equal(t, float32(10.5), value.GetFloat32())
 	})
 	t.Run("single STRING with fixed length", func(t *testing.T) {
 		tag := NewStringTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 0, 0, 1, 5, readWriteModel.TransportSize_STRING)
 		// maxLen=5, curLen=3, "ABC" + 2 bytes padding
-		value, err := parsePlcValue(ctx, tag, []byte{0x05, 0x03, 'A', 'B', 'C', 0x00, 0x00}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0x05, 0x03, 'A', 'B', 'C', 0x00, 0x00}, anyController)
 		require.NoError(t, err)
 		assert.Equal(t, "ABC", value.GetString())
 	})
 	t.Run("INT array", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 2, readWriteModel.TransportSize_INT)
-		value, err := parsePlcValue(ctx, tag, []byte{0x00, 0x01, 0x00, 0x02}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0x00, 0x01, 0x00, 0x02}, anyController)
 		require.NoError(t, err)
 		require.True(t, value.IsList())
 		list := value.GetList()
@@ -69,13 +69,13 @@ func TestParsePlcValue(t *testing.T) {
 	})
 	t.Run("BYTE array stays raw", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 4, readWriteModel.TransportSize_BYTE)
-		value, err := parsePlcValue(ctx, tag, []byte{0xDE, 0xAD, 0xBE, 0xEF}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0xDE, 0xAD, 0xBE, 0xEF}, anyController)
 		require.NoError(t, err)
 		assert.Equal(t, []byte{0xDE, 0xAD, 0xBE, 0xEF}, value.GetRaw())
 	})
 	t.Run("BOOL array unpacks bits LSB first", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_FLAGS_MARKERS, 0, 0, 0, 10, readWriteModel.TransportSize_BOOL)
-		value, err := parsePlcValue(ctx, tag, []byte{0b00000011, 0b00000010}, 0, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0b00000011, 0b00000010}, anyController)
 		require.NoError(t, err)
 		require.True(t, value.IsList())
 		list := value.GetList()
@@ -90,7 +90,7 @@ func TestParsePlcValue(t *testing.T) {
 		// 16.6, 16.7, 17.0, 17.1: set, set, clear, set - with the bits after them set as well, so
 		// reading from the wrong bit shows.
 		tag := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
-		value, err := parsePlcValue(ctx, tag, []byte{0b11000000, 0b11111010}, 6, anyController)
+		value, err := parsePlcValue(ctx, tag, []byte{0b11000000, 0b11111010}, anyController)
 		require.NoError(t, err)
 		var bools []bool
 		for _, item := range value.GetList() {
@@ -100,7 +100,7 @@ func TestParsePlcValue(t *testing.T) {
 	})
 	t.Run("BOOL array response too short for its bit offset", func(t *testing.T) {
 		tag := NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 6, 4, readWriteModel.TransportSize_BOOL)
-		_, err := parsePlcValue(ctx, tag, []byte{0b11000000}, 6, anyController)
+		_, err := parsePlcValue(ctx, tag, []byte{0b11000000}, anyController)
 		assert.Error(t, err)
 	})
 }

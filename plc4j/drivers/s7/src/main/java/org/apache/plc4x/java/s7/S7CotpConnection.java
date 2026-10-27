@@ -726,7 +726,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
         try {
             entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.OK,
-                parsePlcValue(tag, raw.getRaw(), tag.getBitOffset())));
+                parsePlcValue(tag, raw.getRaw())));
         } catch (BufferException e) {
             LOGGER.warn("Error decoding tag {}", entry.getKey(), e);
             entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
@@ -763,8 +763,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             slice = new byte[sliceLen];
             System.arraycopy(data, b.payloadByteOffset(), slice, 0, Math.min(sliceLen, data.length - b.payloadByteOffset()));
         }
-        // A BOOL array is read from bit 0 of its start byte (see S7Optimizer.toS7Address).
-        PlcValue value = parsePlcValue(originalTag, slice, originalTag.getBitOffset());
+        PlcValue value = parsePlcValue(originalTag, slice);
         out.put(b.tagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
     }
 
@@ -1003,16 +1002,12 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         return null;
     }
 
-    private PlcValue parsePlcValue(S7Tag tag, byte[] data) throws BufferException {
-        return parsePlcValue(tag, data, 0);
-    }
-
     /**
-     * @param firstBit where in {@code data} the first element of a BOOL array is: a read fetches
-     *                 the bytes from bit 0 of the tag's start byte, so the elements begin at its
-     *                 bit offset
+     * Decodes what a read of the tag returned. Every request addresses a BOOL array from bit 0 of
+     * its start byte (see {@link S7Optimizer#toS7Address}), so its elements begin at the tag's bit
+     * offset.
      */
-    private PlcValue parsePlcValue(S7Tag tag, byte[] data, int firstBit) throws BufferException {
+    private PlcValue parsePlcValue(S7Tag tag, byte[] data) throws BufferException {
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data,
             WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
             WithOption.WithSignedIntegerEncoding("twos-complement"),
@@ -1029,6 +1024,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         PlcValue[] resultItems = new PlcValue[tag.getNumberOfElements()];
         if (tag.getDataType() == TransportSize.BOOL) {
             // BOOL arrays are requested as packed bytes (LSB first), matching the write-side packing.
+            int firstBit = tag.getBitOffset();
             if (data.length < (firstBit + resultItems.length + 7) / 8) {
                 throw new BufferException("BOOL array response too short: got " + data.length
                     + " bytes for " + resultItems.length + " elements from bit " + firstBit);
@@ -1320,6 +1316,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                 continue;
             }
             try {
+                // Subscribed with the read address, so the data is what a read returns.
                 PlcValue value = parsePlcValue(handle.getTag(), items.get(idx));
                 values.put(handle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
             } catch (Exception e) {

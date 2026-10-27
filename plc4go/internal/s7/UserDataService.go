@@ -387,16 +387,20 @@ func pickCyclicInterval(requested time.Duration) cyclicInterval {
 func buildCyclicSubscribeRequest(tpduId uint16, tags []PlcTag, interval cyclicInterval) readWriteModel.TPKTPacket {
 	items := make([]readWriteModel.CycServiceItemType, len(tags))
 	for i, tag := range tags {
+		// The same address a read of the tag uses, so the pushed data is what a read returns: a
+		// BOOL array as the bytes its bits are packed into, from bit 0 of its start byte, a
+		// string as its characters, a type without an own transport size as its bytes.
+		readAddress := readAddressOf(tag)
 		// The 24-bit address encodes bit-addressed memory: byteOffset shifted left by 3
 		// plus the bit number - same as in a regular S7AddressAny.
-		address := uint32(tag.GetByteOffset())<<3 | uint32(tag.GetBitOffset()&0x07)
+		address := uint32(readAddress.GetByteAddress())<<3 | uint32(readAddress.GetBitAddress()&0x07)
 		items[i] = readWriteModel.NewCycServiceItemAnyType(
 			0x0a, // byteLength: 10 bytes after the byteLength field
 			0x10, // syntaxId: ANY
-			tag.GetDataType(),
-			tag.GetNumElements(),
-			tag.GetBlockNumber(),
-			tag.GetMemoryArea(),
+			readAddress.GetTransportSize(),
+			readAddress.GetNumberOfElements(),
+			readAddress.GetDbNumber(),
+			readAddress.GetArea(),
 			address,
 		)
 	}
