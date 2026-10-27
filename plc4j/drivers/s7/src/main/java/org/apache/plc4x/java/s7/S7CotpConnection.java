@@ -99,7 +99,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 /**
  * S7 connection over the COTP transport. The COTP transport handles TPKT framing and the
@@ -983,15 +982,26 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         if (tag.getDataType() == TransportSize.BYTE) {
             return new PlcRawByteArray(data);
         }
-        PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+        PlcValue[] resultItems = new PlcValue[tag.getNumberOfElements()];
+        if (tag.getDataType() == TransportSize.BOOL) {
+            // BOOL arrays are requested as packed bytes (LSB first), matching the write-side packing.
+            if (data.length < (resultItems.length + 7) / 8) {
+                throw new BufferException("BOOL array response too short: got " + data.length
+                    + " bytes for " + resultItems.length + " elements");
+            }
+            for (int i = 0; i < resultItems.length; i++) {
+                resultItems[i] = PlcBOOL.of(((data[i / 8] >> (i % 8)) & 0x01) != 0);
+            }
+            return DefaultPlcValueHandler.of(tag, resultItems);
+        }
+        for (int i = 0; i < resultItems.length; i++) {
             try {
-                return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
+                resultItems[i] = DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                     driverContext.getControllerType(), stringLength);
             } catch (BufferException e) {
-                LOGGER.warn("Error parsing element {} of tag {}", i, tag.getDataType().name(), e);
-                return null;
+                throw new BufferException("Error parsing element " + i + " of tag " + tag.getDataType().name(), e);
             }
-        }).toArray(PlcValue[]::new);
+        }
         return DefaultPlcValueHandler.of(tag, resultItems);
     }
 

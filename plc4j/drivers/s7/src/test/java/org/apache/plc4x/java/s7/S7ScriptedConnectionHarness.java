@@ -23,13 +23,16 @@ import org.apache.plc4x.java.s7.readwrite.ControllerType;
 import org.apache.plc4x.java.s7.readwrite.S7Message;
 import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
 import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
+import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
@@ -162,6 +165,19 @@ public final class S7ScriptedConnectionHarness {
     public static byte[] headerErrorResponse(int tpduReference, int errorClass, int errorCode) throws Exception {
         return wireBytes(new S7MessageResponseData(tpduReference, null, null,
             (short) errorClass, (short) errorCode));
+    }
+
+    /**
+     * A read-var response carrying one item with the given raw data, which is what a controller
+     * sends back for a single-item read request.
+     */
+    public static byte[] readVarResponse(int tpduReference, DataTransportSize transportSize, byte[] data)
+        throws Exception {
+        return wireBytes(new S7MessageResponseData(tpduReference,
+            new S7ParameterReadVarResponse((short) 1),
+            new S7PayloadReadVarResponse(List.of(
+                new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data))),
+            (short) 0, (short) 0));
     }
 
     /**
