@@ -25,6 +25,7 @@ import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
 import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
@@ -32,7 +33,9 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
@@ -182,6 +185,15 @@ public final class S7ScriptedConnectionHarness {
             new S7ParameterReadVarResponse((short) 1),
             new S7PayloadReadVarResponse(List.of(
                 new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data))),
+            (short) 0, (short) 0));
+    }
+
+    /** A write-var response carrying the given status for each item of the request, in order. */
+    public static byte[] writeVarResponse(int tpduReference, List<DataTransportErrorCode> statuses)
+        throws Exception {
+        return wireBytes(new S7MessageResponseData(tpduReference,
+            new S7ParameterWriteVarResponse((short) statuses.size()),
+            new S7PayloadWriteVarResponse(statuses.stream().map(S7VarPayloadStatusItem::new).toList()),
             (short) 0, (short) 0));
     }
 

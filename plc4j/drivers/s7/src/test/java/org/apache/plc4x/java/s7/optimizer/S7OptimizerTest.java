@@ -108,6 +108,47 @@ class S7OptimizerTest {
         assertEquals(1, chunks.size());
     }
 
+    /**
+     * A write of whole bytes overwrites every bit in them, so only the bytes a BOOL array covers
+     * completely are written packed; each bit it shares a byte with goes out on its own.
+     */
+    @Test
+    void boolArrayWriteItems() {
+        assertEquals(List.of("16.0 x16 @0"), describe("%DB1:16.0[0..15]:BOOL"));
+        assertEquals(List.of("16.0 x8 @0", "17.0 x1 @8", "17.1 x1 @9"), describe("%DB1:16.0[0..9]:BOOL"));
+        assertEquals(List.of("16.6 x1 @0", "16.7 x1 @1", "17.0 x8 @2", "18.0 x1 @10", "18.1 x1 @11"),
+            describe("%DB1:16.6[0..11]:BOOL"));
+        assertEquals(List.of("16.3 x1 @0", "16.4 x1 @1", "16.5 x1 @2"), describe("%DB1:16.3[0..2]:BOOL"));
+    }
+
+    @Test
+    void otherTagsAreWrittenAsOneItem() {
+        S7Tag tag = S7Tag.of("%DB1.DBW0[0..3]:INT");
+        assertEquals(List.of(new S7WriteChunk.Item("t", tag, 0)), S7Optimizer.writeItemsFor("t", tag));
+        S7Tag bool = S7Tag.of("%DB1:16.3:BOOL");
+        assertEquals(List.of(new S7WriteChunk.Item("t", bool, 0)), S7Optimizer.writeItemsFor("t", bool));
+    }
+
+    @Test
+    void boolArrayWriteItemsSplitAcrossPdus() {
+        // 7 leading bits, one whole byte, 7 trailing bits: 15 items, more than one 240 byte PDU holds.
+        LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags = new LinkedHashMap<>();
+        tags.put("bools", new DefaultPlcTagValueItem<>(S7Tag.of("%DB1:16.1[0..21]:BOOL"), null));
+        S7DriverContext pdu240 = new S7DriverContext();
+        pdu240.setPduSize(240);
+        List<S7WriteChunk> chunks = optimizer.splitWriteRequest(new DefaultPlcWriteRequest(null, tags), pdu240);
+        assertTrue(chunks.size() > 1);
+        assertEquals(15, chunks.stream().mapToInt(c -> c.items().size()).sum());
+        chunks.forEach(c -> assertEquals(List.of("bools"), c.tagNames()));
+    }
+
+    private static List<String> describe(String address) {
+        return S7Optimizer.writeItemsFor("t", S7Tag.of(address)).stream()
+            .map(i -> i.tag().getByteOffset() + "." + i.tag().getBitOffset() + " x"
+                + i.tag().getNumberOfElements() + " @" + i.firstElement())
+            .toList();
+    }
+
     @Test
     void emptyWriteRequestProducesNoChunks() {
         PlcWriteRequest req = new DefaultPlcWriteRequest(null, new LinkedHashMap<>());
@@ -123,7 +164,8 @@ class S7OptimizerTest {
         assertEquals(1, b.elementOffset());
         assertTrue(b.isSplitFragment());
 
-        S7WriteChunk wc = new S7WriteChunk(java.util.List.of("x"));
+        S7WriteChunk wc = new S7WriteChunk(java.util.List.of(
+            new S7WriteChunk.Item("x", S7Tag.of("%MW0:INT"), 0), new S7WriteChunk.Item("x", S7Tag.of("%MW2:INT"), 1)));
         assertEquals(1, wc.tagNames().size());
     }
 }

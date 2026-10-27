@@ -178,7 +178,7 @@ public class S7Optimizer {
 
     public List<S7WriteChunk> splitWriteRequest(PlcWriteRequest request, S7DriverContext context) {
         List<S7WriteChunk> chunks = new ArrayList<>();
-        List<String> currentNames = new ArrayList<>();
+        List<S7WriteChunk.Item> currentItems = new ArrayList<>();
         int curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
@@ -190,29 +190,57 @@ public class S7Optimizer {
             if (!(plcTag instanceof S7Tag s7Tag)) {
                 throw new PlcRuntimeException("Unsupported tag type for tag " + tagName);
             }
-            int payloadBytes = computeWritePayloadBytes(s7Tag, request);
-            int requestItemSize = roundUpEven(S7_ADDRESS_ANY_SIZE + 4 + payloadBytes);
-            int responseItemSize = 1;
+            for (S7WriteChunk.Item item : writeItemsFor(tagName, s7Tag)) {
+                int payloadBytes = computeWritePayloadBytes(item.tag(), request, tagName);
+                int requestItemSize = roundUpEven(S7_ADDRESS_ANY_SIZE + 4 + payloadBytes);
+                int responseItemSize = 1;
 
-            if (curRequestSize + requestItemSize > context.getPduSize() ||
-                curResponseSize + responseItemSize > context.getPduSize()) {
-                if (currentNames.isEmpty()) {
-                    throw new PlcRuntimeException(
-                        "Tag '" + tagName + "' exceeds PDU size; write splitting not supported");
+                if (curRequestSize + requestItemSize > context.getPduSize() ||
+                    curResponseSize + responseItemSize > context.getPduSize()) {
+                    if (currentItems.isEmpty()) {
+                        throw new PlcRuntimeException(
+                            "Tag '" + tagName + "' exceeds PDU size; write splitting not supported");
+                    }
+                    chunks.add(new S7WriteChunk(currentItems));
+                    currentItems = new ArrayList<>();
+                    curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
+                    curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
                 }
-                chunks.add(new S7WriteChunk(currentNames));
-                currentNames = new ArrayList<>();
-                curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
-                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
+                currentItems.add(item);
+                curRequestSize += requestItemSize;
+                curResponseSize += responseItemSize;
             }
-            currentNames.add(tagName);
-            curRequestSize += requestItemSize;
-            curResponseSize += responseItemSize;
         }
-        if (!currentNames.isEmpty()) {
-            chunks.add(new S7WriteChunk(currentNames));
+        if (!currentItems.isEmpty()) {
+            chunks.add(new S7WriteChunk(currentItems));
         }
         return chunks;
+    }
+
+    /**
+     * The protocol items a tag is written with. A write of whole bytes overwrites every bit in
+     * them, so a BOOL array is only written packed for the bytes it covers completely; each bit it
+     * shares a byte with something else goes out as an item of its own, leaving the rest of that
+     * byte alone. Any other tag is a single item.
+     */
+    public static List<S7WriteChunk.Item> writeItemsFor(String tagName, S7Tag tag) {
+        if (!isPackedBoolArray(tag)) {
+            return List.of(new S7WriteChunk.Item(tagName, tag, 0));
+        }
+        List<S7WriteChunk.Item> items = new ArrayList<>();
+        int numElements = tag.getNumberOfElements();
+        int firstBit = tag.getByteOffset() * 8 + tag.getBitOffset();
+        int element = 0;
+        while (element < numElements) {
+            int bit = firstBit + element;
+            int wholeBytes = (bit % 8 == 0) ? (numElements - element) / 8 : 0;
+            int count = (wholeBytes > 0) ? wholeBytes * 8 : 1;
+            S7Tag piece = new S7Tag(TransportSize.BOOL, tag.getMemoryArea(), tag.getBlockNumber(),
+                bit / 8, (byte) (bit % 8), count);
+            items.add(new S7WriteChunk.Item(tagName, piece, element));
+            element += count;
+        }
+        return items;
     }
 
     // ------------------------------------------------------------------------
@@ -247,7 +275,7 @@ public class S7Optimizer {
         return (s7Tag.getBitOffset() + s7Tag.getNumberOfElements() + 7) / 8;
     }
 
-    private static int computeWritePayloadBytes(S7Tag s7Tag, PlcWriteRequest request) {
+    private static int computeWritePayloadBytes(S7Tag s7Tag, PlcWriteRequest request, String tagName) {
         if (s7Tag.getDataType() == TransportSize.BOOL) {
             return (s7Tag.getNumberOfElements() + 7) / 8;
         }
@@ -256,18 +284,11 @@ public class S7Optimizer {
             return s7Tag.getNumberOfElements() * (fixed.getStringLength() + 2) * bytesPerChar;
         }
         if (s7Tag instanceof S7StringVarLengthTag varLen) {
-            int len = request.getPlcValue(getTagName(request, s7Tag)).getString().length();
+            int len = request.getPlcValue(tagName).getString().length();
             int bytesPerChar = varLen.getDataType() == TransportSize.WSTRING ? 2 : 1;
             return s7Tag.getNumberOfElements() * (len + 2) * bytesPerChar;
         }
         return s7Tag.getNumberOfElements() * s7Tag.getDataType().getSizeInBytes();
-    }
-
-    private static String getTagName(PlcWriteRequest req, S7Tag tag) {
-        for (String n : req.getTagNames()) {
-            if (req.getTag(n) == tag) return n;
-        }
-        throw new PlcRuntimeException("Tag not found in request");
     }
 
     protected static int roundUpEven(int n) {

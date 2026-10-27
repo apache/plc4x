@@ -838,30 +838,22 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     private CompletableFuture<Void> sendWriteChunk(S7WriteChunk chunk, PlcWriteRequest writeRequest,
                                                    Map<String, PlcResponseCode> out) {
-        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(chunk.tagNames().size());
-        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(chunk.tagNames().size());
-        for (String tagName : chunk.tagNames()) {
-            S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(s7Tag)));
-            S7VarPayloadDataItem item = serializePlcValue(s7Tag, writeRequest.getPlcValue(tagName));
-            if (item == null) {
+        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(chunk.items().size());
+        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(chunk.items().size());
+        // The tag each item that goes out belongs to, in item order, to map the statuses back.
+        List<String> sentTagNames = new ArrayList<>(chunk.items().size());
+        for (S7WriteChunk.Item item : chunk.items()) {
+            String tagName = item.tagName();
+            PlcValue value = valueOfItem(item, writeRequest.getTag(tagName), writeRequest.getPlcValue(tagName));
+            S7VarPayloadDataItem payloadItem = (value == null) ? null : serializePlcValue(item.tag(), value);
+            if (payloadItem == null) {
+                // Skip this item in the actual request - would otherwise corrupt the layout.
                 out.put(tagName, PlcResponseCode.INVALID_DATA);
-                // Skip this tag in the actual request — would otherwise corrupt the layout.
                 continue;
             }
-            payloadItems.add(item);
-        }
-        if (parameterItems.size() != payloadItems.size()) {
-            // At least one serialization failed; remaining tags can still go through.
-            // Re-build the parallel lists trimmed to successful ones.
-            parameterItems = new ArrayList<>();
-            payloadItems = new ArrayList<>();
-            for (String tagName : chunk.tagNames()) {
-                if (out.get(tagName) == PlcResponseCode.INVALID_DATA) continue;
-                S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-                parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(s7Tag)));
-                payloadItems.add(serializePlcValue(s7Tag, writeRequest.getPlcValue(tagName)));
-            }
+            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(item.tag())));
+            payloadItems.add(payloadItem);
+            sentTagNames.add(tagName);
         }
         if (parameterItems.isEmpty()) {
             return CompletableFuture.completedFuture(null);
@@ -869,16 +861,10 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         S7Message request = new S7MessageRequest(getTpduId(),
             new S7ParameterWriteVarRequest(parameterItems),
             new S7PayloadWriteVarRequest(payloadItems));
-        final List<String> sentTagNames = new ArrayList<>();
-        for (String tagName : chunk.tagNames()) {
-            if (out.get(tagName) != PlcResponseCode.INVALID_DATA) {
-                sentTagNames.add(tagName);
-            }
-        }
         return executeThrottled(() -> sendInternal(request))
             .handle((response, error) -> {
                 if (error != null) {
-                    for (String n : sentTagNames) out.put(n, PlcResponseCode.INTERNAL_ERROR);
+                    for (String n : sentTagNames) mergeWriteCode(out, n, PlcResponseCode.INTERNAL_ERROR);
                     return null;
                 }
                 short errorClass = 0, errorCode = 0;
@@ -891,24 +877,52 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                 }
                 if (errorClass != 0 || errorCode != 0) {
                     PlcResponseCode code = mapPlcErrorCode(errorClass, errorCode);
-                    for (String n : sentTagNames) out.put(n, code);
+                    for (String n : sentTagNames) mergeWriteCode(out, n, code);
                     return null;
                 }
                 if (!(response.getPayload() instanceof S7PayloadWriteVarResponse payload)) {
-                    for (String n : sentTagNames) out.put(n, PlcResponseCode.INTERNAL_ERROR);
+                    for (String n : sentTagNames) mergeWriteCode(out, n, PlcResponseCode.INTERNAL_ERROR);
                     return null;
                 }
                 List<S7VarPayloadStatusItem> items = payload.getItems();
                 for (int i = 0; i < sentTagNames.size(); i++) {
                     String n = sentTagNames.get(i);
                     if (i >= items.size()) {
-                        out.put(n, PlcResponseCode.INTERNAL_ERROR);
+                        mergeWriteCode(out, n, PlcResponseCode.INTERNAL_ERROR);
                     } else {
-                        out.put(n, mapDataTransportError(items.get(i).getReturnCode()));
+                        mergeWriteCode(out, n, mapDataTransportError(items.get(i).getReturnCode()));
                     }
                 }
                 return null;
             });
+    }
+
+    /**
+     * A tag written in several items is only OK if all of them were, so the first failure sticks.
+     */
+    private static void mergeWriteCode(Map<String, PlcResponseCode> out, String tagName, PlcResponseCode code) {
+        PlcResponseCode current = out.get(tagName);
+        if (current == null || current == PlcResponseCode.OK) {
+            out.put(tagName, code);
+        }
+    }
+
+    /**
+     * The part of a tag's value one write item carries: all of it, unless the item is a piece of a
+     * BOOL array, in which case the piece's elements of the list - a single one unwrapped. Null
+     * when the value is not a list with an element for every BOOL, so that no piece of it is
+     * written: every piece checks the whole list, not just its own elements.
+     */
+    private static PlcValue valueOfItem(S7WriteChunk.Item item, PlcTag tag, PlcValue value) {
+        if (item.tag() == tag) {
+            return value;
+        }
+        if (!(value instanceof PlcList list) || list.getLength() < ((S7Tag) tag).getNumberOfElements()) {
+            return null;
+        }
+        int first = item.firstElement();
+        int count = item.tag().getNumberOfElements();
+        return (count == 1) ? list.getIndex(first) : new PlcList(list.getList().subList(first, first + count));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

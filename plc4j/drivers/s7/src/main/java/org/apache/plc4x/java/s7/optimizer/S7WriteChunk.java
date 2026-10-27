@@ -18,10 +18,29 @@
  */
 package org.apache.plc4x.java.s7.optimizer;
 
+import org.apache.plc4x.java.s7.tag.S7Tag;
+
 import java.util.List;
 
 /**
- * One PDU-sized worth of write protocol items. Writes are not block-merged; each user
- * tag becomes exactly one slot whose response status is mapped back by tag name.
+ * One PDU-sized worth of write protocol items. Writes are not block-merged; a user tag becomes
+ * one item, except a BOOL array that shares a byte with something else, which is written in
+ * several (see {@link S7Optimizer#writeItemsFor}). Each item's response status is mapped back to
+ * its tag by name.
  */
-public record S7WriteChunk(List<String> tagNames) {}
+public record S7WriteChunk(List<Item> items) {
+
+    /**
+     * One write protocol item.
+     *
+     * @param tagName      the user tag the item writes to
+     * @param tag          the part of that tag the item writes - the tag itself unless it was split
+     * @param firstElement the index of the tag's first element the item carries
+     */
+    public record Item(String tagName, S7Tag tag, int firstElement) {}
+
+    /** The user tags this chunk writes to, each once, in order. */
+    public List<String> tagNames() {
+        return items.stream().map(Item::tagName).distinct().toList();
+    }
+}

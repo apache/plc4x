@@ -36,6 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Writer struct {
@@ -69,23 +70,26 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
-		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetTagNames()))
-		payloadItems := make([]readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetTagNames()))
-		for i, tagName := range writeRequest.GetTagNames() {
-			tag := writeRequest.GetTag(tagName)
-			plcValue := writeRequest.GetValue(tagName)
-			s7Address, err := encodeS7Address(tag)
+		var parameterItems []readWriteModel.S7VarRequestParameterItem
+		var payloadItems []readWriteModel.S7VarPayloadDataItem
+		for _, item := range writeItemsOf(writeRequest) {
+			s7Address, err := encodeS7Address(item.tag)
 			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName)))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", item.tagName)))
 				return
 			}
-			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
-			value, err := serializePlcValue(tag, plcValue, m.driverContext.ControllerType)
+			parameterItems = append(parameterItems, readWriteModel.NewS7VarRequestParameterItemAddress(s7Address))
+			plcValue, err := item.valueOf(writeRequest.GetValue(item.tagName))
 			if err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", tagName)))
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", item.tagName)))
 				return
 			}
-			payloadItems[i] = value
+			value, err := serializePlcValue(item.tag, plcValue, m.driverContext.ControllerType)
+			if err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", item.tagName)))
+				return
+			}
+			payloadItems = append(payloadItems, value)
 		}
 		tpduId := m.tpduGenerator.getAndIncrement()
 
@@ -189,23 +193,91 @@ func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRe
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(writeRequest.GetTagNames()) != len(payload.GetItems()) {
+	items := writeItemsOf(writeRequest)
+	if len(items) != len(payload.GetItems()) {
 		return nil, errors.New("The number of requested items doesn't match the number of returned items")
 	}
 
 	payloadItems := payload.GetItems()
-	for i, tagName := range writeRequest.GetTagNames() {
-		payloadItem := payloadItems[i]
-
-		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
-		// Decode the data according to the information from the request
-		m.log.Trace().Msg("decode data")
-		responseCodes[tagName] = responseCode
+	for i, item := range items {
+		responseCode := decodeResponseCode(payloadItems[i].GetReturnCode())
+		// A tag written in several items is only OK if all of them were, so the first failure
+		// sticks.
+		if current, ok := responseCodes[item.tagName]; !ok || current == apiModel.PlcResponseCode_OK {
+			responseCodes[item.tagName] = responseCode
+		}
 	}
 
 	// Return the response
 	m.log.Trace().Msg("Returning the response")
 	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+}
+
+// writeItem is one protocol item of a write.
+type writeItem struct {
+	// tagName is the user tag the item writes to.
+	tagName string
+	// tag is the part of that tag the item writes - the tag itself unless it was split.
+	tag apiModel.PlcTag
+	// firstElement is the index of the tag's first element the item carries.
+	firstElement uint16
+	// split is set for a piece of a BOOL array, whose value is a part of the tag's list.
+	split bool
+}
+
+// writeItemsOf is every protocol item the request is written with, in order.
+func writeItemsOf(writeRequest apiModel.PlcWriteRequest) []writeItem {
+	var items []writeItem
+	for _, tagName := range writeRequest.GetTagNames() {
+		items = append(items, writeItemsFor(tagName, writeRequest.GetTag(tagName))...)
+	}
+	return items
+}
+
+// writeItemsFor is the protocol items a tag is written with. A write of whole bytes overwrites
+// every bit in them, so a BOOL array is only written packed for the bytes it covers completely;
+// each bit it shares a byte with something else goes out as an item of its own, leaving the rest
+// of that byte alone. Any other tag is a single item.
+func writeItemsFor(tagName string, tag apiModel.PlcTag) []writeItem {
+	s7Tag, ok := tag.(PlcTag)
+	if !ok || s7Tag.GetDataType() != readWriteModel.TransportSize_BOOL || s7Tag.GetNumElements() <= 1 {
+		return []writeItem{{tagName: tagName, tag: tag}}
+	}
+	var items []writeItem
+	numElements := uint32(s7Tag.GetNumElements())
+	firstBit := uint32(s7Tag.GetByteOffset())*8 + uint32(s7Tag.GetBitOffset())
+	for element := uint32(0); element < numElements; {
+		bit := firstBit + element
+		count := uint32(1)
+		if wholeBytes := (numElements - element) / 8; bit%8 == 0 && wholeBytes > 0 {
+			count = wholeBytes * 8
+		}
+		piece := NewTag(s7Tag.GetMemoryArea(), s7Tag.GetBlockNumber(), uint16(bit/8), uint8(bit%8),
+			uint16(count), readWriteModel.TransportSize_BOOL)
+		items = append(items, writeItem{tagName: tagName, tag: piece, firstElement: uint16(element), split: true})
+		element += count
+	}
+	return items
+}
+
+// valueOf is the part of the tag's value the item carries: all of it, unless the item is a piece
+// of a BOOL array, in which case the piece's elements of the list - a single one unwrapped.
+func (m writeItem) valueOf(value apiValues.PlcValue) (apiValues.PlcValue, error) {
+	if !m.split {
+		return value, nil
+	}
+	if !value.IsList() {
+		return nil, errors.New("expected a list value for a multi-element BOOL tag")
+	}
+	list := value.GetList()
+	count := m.tag.(PlcTag).GetNumElements()
+	if len(list) < int(m.firstElement)+int(count) {
+		return nil, errors.Errorf("expected at least %d list elements, got %d", int(m.firstElement)+int(count), len(list))
+	}
+	if count == 1 {
+		return list[m.firstElement], nil
+	}
+	return spiValues.NewPlcList(list[m.firstElement : m.firstElement+count]), nil
 }
 
 func serializePlcValue(tag apiModel.PlcTag, plcValue apiValues.PlcValue, controllerType readWriteModel.ControllerType) (readWriteModel.S7VarPayloadDataItem, error) {

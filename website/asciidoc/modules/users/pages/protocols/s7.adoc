@@ -144,6 +144,12 @@ the written bit offset: `%DB1:16.0[4..7]:BOOL` is the four bits 16.4 to 16.7, an
 `%DB1:16.6[0..3]:BOOL` is 16.6, 16.7, 17.0 and 17.1. For every other type the start counts
 elements of that type's size in bytes.
 
+Writing a `BOOL` array changes only its own bits: the bytes it covers completely are written
+whole, and each bit it shares a byte with something else is written as an item of its own. An
+array that does not start and end on a byte boundary therefore takes more protocol items than
+its size suggests, and the Java driver spreads them over several requests if one PDU cannot hold
+them all - such a write is then not applied in one step.
+
 In case of accessing data in the `data block` memory area, the syntax is a bit more complex:
 
 ----

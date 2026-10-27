@@ -20,14 +20,18 @@
 package s7
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
@@ -71,4 +75,82 @@ func TestSerializePlcValue(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, []byte{0x00, 0x01, 0x00, 0x02}, item.GetData())
 	})
+}
+
+// A write of whole bytes overwrites every bit in them, so only the bytes a BOOL array covers
+// completely are written packed; each bit it shares a byte with goes out on its own.
+func TestWriteItemsFor(t *testing.T) {
+	handler := NewTagHandler()
+	describe := func(address string) []string {
+		tag, err := handler.ParseTag(address)
+		require.NoError(t, err)
+		var pieces []string
+		for _, item := range writeItemsFor("t", tag) {
+			piece := item.tag.(PlcTag)
+			pieces = append(pieces, fmt.Sprintf("%d.%d x%d @%d", piece.GetByteOffset(), piece.GetBitOffset(),
+				piece.GetNumElements(), item.firstElement))
+		}
+		return pieces
+	}
+
+	assert.Equal(t, []string{"16.0 x16 @0"}, describe("%DB1:16.0[0..15]:BOOL"))
+	assert.Equal(t, []string{"16.0 x8 @0", "17.0 x1 @8", "17.1 x1 @9"}, describe("%DB1:16.0[0..9]:BOOL"))
+	assert.Equal(t, []string{"16.6 x1 @0", "16.7 x1 @1", "17.0 x8 @2", "18.0 x1 @10", "18.1 x1 @11"},
+		describe("%DB1:16.6[0..11]:BOOL"))
+	assert.Equal(t, []string{"16.3 x1 @0", "16.4 x1 @1", "16.5 x1 @2"}, describe("%DB1:16.3[0..2]:BOOL"))
+	assert.Equal(t, []string{"0.0 x4 @0"}, describe("%DB1.DBW0[0..3]:INT"), "any other tag is one item")
+	assert.Equal(t, []string{"16.3 x1 @0"}, describe("%DB1:16.3:BOOL"), "and so is a single BOOL")
+}
+
+func TestWriteItemValueOf(t *testing.T) {
+	list := spiValues.NewPlcList([]apiValues.PlcValue{
+		spiValues.NewPlcBOOL(true), spiValues.NewPlcBOOL(false), spiValues.NewPlcBOOL(true),
+	})
+	single := writeItem{tag: NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 16, 7, 1, readWriteModel.TransportSize_BOOL),
+		firstElement: 2, split: true}
+	value, err := single.valueOf(list)
+	require.NoError(t, err)
+	assert.True(t, value.GetBool())
+	assert.False(t, value.IsList(), "a single bit is written as a scalar")
+
+	packed := writeItem{tag: NewTag(readWriteModel.MemoryArea_DATA_BLOCKS, 1, 17, 0, 8, readWriteModel.TransportSize_BOOL),
+		firstElement: 1, split: true}
+	_, err = packed.valueOf(list)
+	assert.Error(t, err, "the list has no elements 1 to 8")
+
+	_, err = single.valueOf(spiValues.NewPlcBOOL(true))
+	assert.Error(t, err, "a BOOL array takes a list")
+}
+
+// The PLC answers per item, and a tag written in several items is only OK if all of them were.
+func TestToPlc4xWriteResponseMergesTheItemsOfATag(t *testing.T) {
+	handler := NewTagHandler()
+	bools, err := handler.ParseTag("%DB1:16.0[0..9]:BOOL")
+	require.NoError(t, err)
+	word, err := handler.ParseTag("%DB1.DBW20:INT")
+	require.NoError(t, err)
+	request := spiModel.NewDefaultPlcWriteRequest(
+		map[string]apiModel.PlcTag{"bools": bools, "word": word},
+		[]string{"bools", "word"},
+		map[string]apiValues.PlcValue{},
+		nil, nil)
+
+	// bools is three items - byte 16, 17.0 and 17.1 - and the second one fails.
+	statuses := []readWriteModel.DataTransportErrorCode{
+		readWriteModel.DataTransportErrorCode_OK,
+		readWriteModel.DataTransportErrorCode_ACCESS_DENIED,
+		readWriteModel.DataTransportErrorCode_OK,
+		readWriteModel.DataTransportErrorCode_OK,
+	}
+	var items []readWriteModel.S7VarPayloadStatusItem
+	for _, status := range statuses {
+		items = append(items, readWriteModel.NewS7VarPayloadStatusItem(status))
+	}
+	response := readWriteModel.NewS7MessageResponseData(1, readWriteModel.NewS7ParameterWriteVarResponse(uint8(len(items))),
+		readWriteModel.NewS7PayloadWriteVarResponse(items), 0, 0)
+
+	writeResponse, err := (&Writer{log: zerolog.Nop()}).ToPlc4xWriteResponse(response, request)
+	require.NoError(t, err)
+	assert.Equal(t, apiModel.PlcResponseCode_ACCESS_DENIED, writeResponse.GetResponseCode("bools"))
+	assert.Equal(t, apiModel.PlcResponseCode_OK, writeResponse.GetResponseCode("word"))
 }
