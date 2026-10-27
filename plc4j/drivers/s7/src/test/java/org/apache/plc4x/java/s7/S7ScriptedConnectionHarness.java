@@ -153,6 +153,11 @@ public final class S7ScriptedConnectionHarness {
         return S7Message.staticParse(readBuffer(frame)).getTpduReference();
     }
 
+    /** An outgoing frame as the S7 message it carries, for tests that inspect what went out. */
+    public static S7Message parseFrame(byte[] frame) throws Exception {
+        return S7Message.staticParse(readBuffer(frame));
+    }
+
     /** Same, for tests that need to answer a specific request they watched go out. */
     public static int tpduReferenceOfFrame(byte[] frame) throws Exception {
         return tpduReferenceOf(frame);

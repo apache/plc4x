@@ -232,7 +232,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
 			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), m.driverContext.ControllerType)
+			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData(), tag.GetBitOffset(), m.driverContext.ControllerType)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -269,9 +269,17 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 		}
 		numElements = numElements * (stringLength + 2) * 2
 	} else if transportSize == readWriteModel.TransportSize_BOOL && numElements > 1 {
-		// BOOL arrays are read as packed bytes.
-		numElements = (numElements + 7) / 8
-		transportSize = readWriteModel.TransportSize_BYTE
+		// BOOL arrays are read as the bytes their bits are packed into, from bit 0 of the start
+		// byte: a byte read has no bit address, so parsePlcValue skips the bits before the tag's
+		// own bit offset.
+		return readWriteModel.NewS7AddressAny(
+			readWriteModel.TransportSize_BYTE,
+			packedBoolBytes(s7Tag),
+			s7Tag.GetBlockNumber(),
+			s7Tag.GetMemoryArea(),
+			s7Tag.GetByteOffset(),
+			0,
+		), nil
 	}
 	// Types without an own transport-size code (temporal types, 64-bit types, ...) have to be
 	// requested as plain byte arrays, the S7 denies them with "Data type not supported" otherwise.
@@ -289,7 +297,17 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 	), nil
 }
 
-func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
+// packedBoolBytes is how many bytes the bits of a BOOL tag span, counting from bit 0 of its start
+// byte: a tag that starts at a bit offset other than 0 can spill into one more byte than its
+// element count alone needs.
+func packedBoolBytes(tag PlcTag) uint16 {
+	return uint16((uint32(tag.GetBitOffset()) + uint32(tag.GetNumElements()) + 7) / 8)
+}
+
+// parsePlcValue decodes the data a request for the tag returned. firstBit is where in data the
+// first element of a BOOL array is: a read fetches the bytes from bit 0 of the tag's start byte,
+// so the elements begin at its bit offset.
+func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, firstBit uint8, controllerType readWriteModel.ControllerType) (apiValues.PlcValue, error) {
 	stringLength := int32(254)
 	if s7StringTag, ok := tag.(PlcStringTag); ok {
 		stringLength = int32(s7StringTag.stringLength)
@@ -306,10 +324,11 @@ func parsePlcValue(ctx context.Context, tag PlcTag, data []byte, controllerType 
 		// BOOL arrays arrive as packed bytes (LSB first), matching the write-side packing.
 		items := make([]apiValues.PlcValue, 0, numElements)
 		for i := range numElements {
-			if int(i/8) >= len(data) {
-				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements", len(data), numElements)
+			bit := int(firstBit) + int(i)
+			if bit/8 >= len(data) {
+				return nil, errors.Errorf("BOOL array response too short: got %d bytes for %d elements from bit %d", len(data), numElements, firstBit)
 			}
-			items = append(items, spiValues.NewPlcBOOL((data[i/8]>>(i%8))&0x01 != 0))
+			items = append(items, spiValues.NewPlcBOOL((data[bit/8]>>(bit%8))&0x01 != 0))
 		}
 		return spiValues.NewPlcList(items), nil
 	default:

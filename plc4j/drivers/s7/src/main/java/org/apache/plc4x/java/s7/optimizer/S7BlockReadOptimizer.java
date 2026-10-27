@@ -197,7 +197,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
 
     private static int tagSizeInBytes(S7Tag tag) {
         if (tag.getDataType() == TransportSize.BOOL) {
-            return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
+            return packedBoolBytes(tag);
         }
         if (tag instanceof S7StringFixedLengthTag fixed) {
             int bytesPerChar = fixed.getDataType() == TransportSize.WSTRING ? 2 : 1;

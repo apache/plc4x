@@ -470,7 +470,7 @@ func (s *Subscriber) handleCyclicPush(message readWriteModel.S7MessageUserData) 
 			responseCodes[handle.tagName] = apiModel.PlcResponseCode_NOT_FOUND
 			continue
 		}
-		value, err := parsePlcValue(context.Background(), handle.tag.(PlcTag), items[handle.itemIndex], s.connection.driverContext.ControllerType)
+		value, err := parsePlcValue(context.Background(), handle.tag.(PlcTag), items[handle.itemIndex], 0, s.connection.driverContext.ControllerType)
 		if err != nil {
 			s.log.Debug().Err(err).Str("tagName", handle.tagName).Msg("Cyclic push decode failed")
 			responseCodes[handle.tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
