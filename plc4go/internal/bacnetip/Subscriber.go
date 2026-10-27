@@ -39,8 +39,8 @@ import (
 )
 
 // Subscriber drives BACnet COV (Change-of-Value) subscriptions: it issues
-// SubscribeCOV requests on Subscribe, refreshes them at lifetime/2 via a
-// background ticker, fans incoming UnconfirmedCOVNotification /
+// SubscribeCOV requests on Subscribe, re-issues them at lifetime/2 when the
+// connection's refresh loop calls refreshDue, fans incoming UnconfirmedCOVNotification /
 // ConfirmedCOVNotification APDUs out to registered consumers, and tears
 // everything down on Unsubscribe.
 //
@@ -154,13 +154,50 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			if bh == nil {
 				continue
 			}
+			bh.mu.Lock()
+			bh.cancelled = true
 			_ = m.sendSubscribeCOV(ctx, bh, 0) // lifetime=0 cancels
+			bh.mu.Unlock()
 			m.removeHandle(bh.subscriberProcessId)
 		}
 		// Build a response with OK for every handle the caller passed.
 		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, nil))
 	})
 	return result
+}
+
+// refreshDue re-issues SubscribeCOV for every handle whose lifetime is half
+// used up, so the device keeps the subscription alive past its lifetime. A
+// failed refresh is retried after a tenth of the lifetime (at least a second),
+// not on every call. Handles with lifetime 0 never expire and are skipped.
+func (m *Subscriber) refreshDue(ctx context.Context, now time.Time) {
+	m.handlesMu.RLock()
+	handles := make([]*SubscriptionHandle, 0, len(m.handles))
+	for _, h := range m.handles {
+		handles = append(handles, h)
+	}
+	m.handlesMu.RUnlock()
+
+	for _, h := range handles {
+		if ctx.Err() != nil {
+			return
+		}
+		h.mu.Lock()
+		if h.cancelled || h.lifetimeSec == 0 || now.Before(h.retryAt) ||
+			now.Sub(h.lastIssuedAt) < time.Duration(h.lifetimeSec)*time.Second/2 {
+			h.mu.Unlock()
+			continue
+		}
+		if code := m.sendSubscribeCOV(ctx, h, h.lifetimeSec); code != apiModel.PlcResponseCode_OK {
+			h.retryAt = now.Add(max(time.Duration(h.lifetimeSec)*time.Second/10, time.Second))
+			m.log.Debug().
+				Uint32("processId", h.subscriberProcessId).
+				Str("tagName", h.tagName).
+				Stringer("responseCode", code).
+				Msg("COV refresh failed")
+		}
+		h.mu.Unlock()
+	}
 }
 
 // sendSubscribeCOV builds and dispatches a single SubscribeCOV confirmed

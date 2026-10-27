@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"sync"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -50,13 +51,25 @@ type SubscriptionHandle struct {
 	monitoredInstance uint32
 
 	// lifetimeSec mirrors the SubscribeCOV "lifetime" field. 0 means "until
-	// explicitly cancelled". A refresher goroutine re-issues the subscription at
-	// lifetimeSec/2.
+	// explicitly cancelled". The connection's refresh loop re-issues the
+	// subscription at lifetimeSec/2 (Subscriber.refreshDue).
 	lifetimeSec uint32
 
+	// mu serializes the refresh loop against Unsubscribe, so a refresh in flight
+	// cannot re-create a subscription Unsubscribe just cancelled. It guards
+	// lastIssuedAt, retryAt and cancelled.
+	mu sync.Mutex
+
 	// lastIssuedAt is the wall-clock time at which the (re-)subscription request
-	// was last sent successfully; used by the refresh ticker.
+	// was last sent successfully; used by the refresh loop.
 	lastIssuedAt time.Time
+
+	// retryAt holds back the next refresh attempt after a failed one, so an
+	// unreachable device is not asked again on every tick.
+	retryAt time.Time
+
+	// cancelled is set by Unsubscribe; the refresh loop skips the handle from then on.
+	cancelled bool
 
 	// confirmedNotifications controls whether the remote device will use
 	// ConfirmedCOVNotification (true) or UnconfirmedCOVNotification (false).
