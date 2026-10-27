@@ -235,6 +235,7 @@ public class S7Optimizer {
     protected static org.apache.plc4x.java.s7.readwrite.S7Address toS7Address(S7Tag tag) {
         TransportSize transportSize = tag.getDataType();
         int numElements = tag.getNumberOfElements();
+        byte bitOffset = tag.getBitOffset();
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
             int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
@@ -244,15 +245,18 @@ public class S7Optimizer {
             int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
             numElements = numElements * (len + 2) * 2;
         } else if (transportSize == TransportSize.BOOL && numElements > 1) {
-            numElements = (numElements + 7) / 8;
+            // BYTE reads must be byte-aligned and include the bits before the array's start.
+            // The binding retains the original bit offset for decoding the response.
+            numElements = (bitOffset + numElements + 7) / 8;
             transportSize = TransportSize.BYTE;
+            bitOffset = 0;
         }
         if (transportSize.getCode() == 0x00) {
             numElements = numElements * transportSize.getSizeInBytes();
             transportSize = TransportSize.BYTE;
         }
         return new S7AddressAny(transportSize, numElements, tag.getBlockNumber(),
-            tag.getMemoryArea(), tag.getByteOffset(), tag.getBitOffset());
+            tag.getMemoryArea(), tag.getByteOffset(), bitOffset);
     }
 
     protected static LinkedHashMap<String, PlcTag> toLinkedMap(PlcReadRequest request) {

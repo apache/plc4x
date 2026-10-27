@@ -23,7 +23,9 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.S7ScriptedConnectionHarness.ScriptedS7Transport;
 import org.apache.plc4x.java.s7.readwrite.*;
+import org.apache.plc4x.java.s7.tag.S7Tag;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.junit.jupiter.api.Test;
@@ -65,6 +67,32 @@ class S7ConnectionBoolArrayTest {
         PlcReadResponse response = read("%DB42:214.0" + array + ":BOOL",
             DataTransportSize.BYTE_WORD_DWORD, payload);
 
+        assertBoolArray(response, expected);
+    }
+
+    @ParameterizedTest(name = "{0}: payload {1} yields {2}")
+    @CsvSource({
+        "%DB1.DBX13.3[0..7]:BOOL, 1f7c, 11000001",
+        "%DB1.DBX13.5[0..2]:BOOL, 1f, 000",
+        "%DB1.DBX13.1[0..6]:BOOL, 81, 0000001",
+        "%DB1.DBX13.2[0..5]:BOOL, 83, 000001",
+        "%DB1.DBX13.3[0..4]:BOOL, 87, 00001",
+        "%DB1.DBX13.4[0..3]:BOOL, 8f, 0001",
+        "%DB1.DBX13.5[0..2]:BOOL, 9f, 001",
+        "%DB1.DBX13.6[0..1]:BOOL, bf, 01",
+        "%DB1.DBX13.7[0..1]:BOOL, 7ffe, 00",
+        "%DB1.DBX13.7[0..1]:BOOL, 8001, 11",
+        "%DB1:13.7[0..8]:BOOL, 8042, 101000010",
+        "%DB1:13.7[0..9]:BOOL, 8042fe, 1010000100",
+        "%DB1:13.7[0..9]:BOOL, 804201, 1010000101"
+    })
+    void readsPackedBoolArrayFromNonzeroBit(String address, String payload, String expected) throws Exception {
+        PlcReadResponse response = read(address, DataTransportSize.BYTE_WORD_DWORD, payload);
+
+        assertBoolArray(response, expected);
+    }
+
+    private static void assertBoolArray(PlcReadResponse response, String expected) {
         assertEquals(PlcResponseCode.OK, response.getResponseCode("value"));
         PlcValue value = response.getPlcValue("value");
         assertTrue(value.isList());
@@ -122,7 +150,30 @@ class S7ConnectionBoolArrayTest {
                 Thread.sleep(10);
             }
             assertEquals(1, transport.writeCount(), "the read request should reach the transport");
-            int reference = S7ScriptedConnectionHarness.tpduReferenceOfFrame(transport.writtenFrames().get(0));
+            S7Message request = S7Message.staticParse(new ReadBufferByteBased(transport.writtenFrames().get(0),
+                WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
+                WithOption.WithSignedIntegerEncoding("twos-complement"),
+                WithOption.WithFloatEncoding("IEEE754"),
+                WithByteBasedOption.WithByteOrder("BIG_ENDIAN")));
+            S7Tag tag = S7Tag.of(address);
+            if (tag.getDataType() == TransportSize.BOOL) {
+                S7ParameterReadVarRequest parameter = assertInstanceOf(S7ParameterReadVarRequest.class,
+                    request.getParameter());
+                assertEquals(1, parameter.getItems().size());
+                S7VarRequestParameterItemAddress item = assertInstanceOf(S7VarRequestParameterItemAddress.class,
+                    parameter.getItems().get(0));
+                S7AddressAny wireAddress = assertInstanceOf(S7AddressAny.class, item.getAddress());
+                boolean array = tag.getNumberOfElements() > 1;
+                // Packed arrays read whole bytes; scalar BIT reads retain their selected bit.
+                // The fixture contains exactly the bytes needed, including leading/trailing bits.
+                assertAll("BOOL wire address",
+                    () -> assertEquals(array ? TransportSize.BYTE : TransportSize.BOOL, wireAddress.getTransportSize()),
+                    () -> assertEquals(payload.length() / 2, wireAddress.getNumberOfElements()),
+                    () -> assertEquals(tag.getBlockNumber(), wireAddress.getDbNumber()),
+                    () -> assertEquals(tag.getByteOffset(), wireAddress.getByteAddress()),
+                    () -> assertEquals(array ? 0 : tag.getBitOffset(), wireAddress.getBitAddress()));
+            }
+            int reference = request.getTpduReference();
             // Echo the request reference so the real decoder and response correlation are exercised.
             S7Message reply = new S7MessageResponseData(reference,
                 new S7ParameterReadVarResponse((short) 1),

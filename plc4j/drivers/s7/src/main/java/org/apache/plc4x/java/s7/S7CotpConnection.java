@@ -739,7 +739,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     private static int sliceLengthFor(S7Tag tag) {
         if (tag.getDataType() == TransportSize.BOOL) {
-            return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
+            return (tag.getBitOffset() + tag.getNumberOfElements() + 7) / 8;
         }
         if (tag instanceof S7StringFixedLengthTag fixed) {
             int bytesPerChar = fixed.getDataType() == TransportSize.WSTRING ? 2 : 1;
@@ -985,10 +985,10 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
         PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
             if (tag.getDataType() == TransportSize.BOOL) {
-                // The optimizer reads BOOL arrays as bytes, with the first element in the
-                // least significant bit. DataItem's scalar BOOL parser consumes a whole byte.
-                // Decode only the declared elements, ignoring padding in the final byte.
-                return new PlcBOOL((data[i / 8] & (1 << (i % 8))) != 0);
+                // The optimizer reads whole bytes, so skip the bits before the array's start.
+                // DataItem's scalar BOOL parser consumes a whole byte per element instead.
+                int bitIndex = tag.getBitOffset() + i;
+                return new PlcBOOL((data[bitIndex / 8] & (1 << (bitIndex % 8))) != 0);
             }
             try {
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
