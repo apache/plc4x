@@ -614,8 +614,16 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         for (String t : readRequest.getTagNames()) {
             finalValues.put(t, rejectedTags.get(t));
         }
+        Set<String> splitTagNames = new HashSet<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (S7ReadChunk chunk : chunks) {
+            for (S7ReadChunk.Slot slot : chunk.slots()) {
+                for (S7ReadChunk.Binding b : slot.bindings()) {
+                    if (b.isSplitFragment()) {
+                        splitTagNames.add(b.tagName());
+                    }
+                }
+            }
             chain = chain.thenCompose(v -> sendReadChunk(chunk, finalValues));
         }
         return chain.thenApply(v -> {
@@ -623,8 +631,8 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             for (Map.Entry<String, PlcResponseItem<PlcValue>> e : finalValues.entrySet()) {
                 if (e.getValue() == null) {
                     e.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
-                } else {
-                    unpackReassembledBoolArray(e, readRequest.getTag(e.getKey()));
+                } else if (splitTagNames.contains(e.getKey())) {
+                    decodeReassembledTag(e, (S7Tag) readRequest.getTag(e.getKey()));
                 }
             }
             return new DefaultPlcReadResponse(readRequest, finalValues);
@@ -708,19 +716,17 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
     }
 
     /**
-     * A BOOL array split across PDUs is reassembled as the raw bytes it covers; its bits can only
-     * be unpacked once every fragment is in.
+     * A tag split across PDUs is reassembled as the raw payload a read of it returns; it can only
+     * be decoded once every fragment is in.
      */
-    private void unpackReassembledBoolArray(Map.Entry<String, PlcResponseItem<PlcValue>> entry,
-                                            org.apache.plc4x.java.api.model.PlcTag tag) {
-        if (!(tag instanceof S7Tag s7Tag) || !S7Optimizer.isPackedBoolArray(s7Tag)
-            || entry.getValue().getResponseCode() != PlcResponseCode.OK
+    private void decodeReassembledTag(Map.Entry<String, PlcResponseItem<PlcValue>> entry, S7Tag tag) {
+        if (entry.getValue().getResponseCode() != PlcResponseCode.OK
             || !(entry.getValue().getValue() instanceof PlcRawByteArray raw)) {
             return;
         }
         try {
             entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.OK,
-                parsePlcValue(s7Tag, raw.getRaw(), s7Tag.getBitOffset())));
+                parsePlcValue(tag, raw.getRaw(), tag.getBitOffset())));
         } catch (BufferException e) {
             LOGGER.warn("Error decoding tag {}", entry.getKey(), e);
             entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
@@ -731,25 +737,25 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         throws BufferException {
         S7Tag originalTag = b.originalTag();
         if (b.isSplitFragment()) {
-            // Split-array reassembly: we expect a BYTE array in PlcRawByteArray for now.
-            int elementSize = originalTag.getDataType().getSizeInBytes();
-            int byteOffsetInOriginal = b.elementOffset() * elementSize;
+            // Split reassembly: the fragments are collected in a PlcRawByteArray of the tag's
+            // whole payload, which is decoded once they are all in (see decodeReassembledTag).
             PlcResponseItem<PlcValue> existing = out.get(b.tagName());
             byte[] full;
-            if (existing != null && existing.getValue() instanceof PlcRawByteArray prba) {
+            if (existing != null && existing.getResponseCode() != PlcResponseCode.OK) {
+                // An earlier fragment failed, so the tag has failed.
+                return;
+            } else if (existing != null && existing.getValue() instanceof PlcRawByteArray prba) {
                 full = prba.getRaw();
             } else {
-                full = new byte[S7Optimizer.isPackedBoolArray(originalTag)
-                    ? S7Optimizer.packedBoolBytes(originalTag)
-                    : originalTag.getNumberOfElements() * elementSize];
+                full = new byte[S7Optimizer.payloadBytes(originalTag)];
                 out.put(b.tagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(full)));
             }
-            int copyLen = Math.min(data.length, full.length - byteOffsetInOriginal);
-            System.arraycopy(data, 0, full, byteOffsetInOriginal, copyLen);
+            int copyLen = Math.min(data.length, full.length - b.fragmentByteOffset());
+            System.arraycopy(data, 0, full, b.fragmentByteOffset(), copyLen);
             return;
         }
         // Slice block-merged payload.
-        int sliceLen = sliceLengthFor(originalTag);
+        int sliceLen = S7Optimizer.payloadBytes(originalTag);
         byte[] slice;
         if (b.payloadByteOffset() == 0 && data.length == sliceLen) {
             slice = data;
@@ -760,17 +766,6 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         // A BOOL array is read from bit 0 of its start byte (see S7Optimizer.toS7Address).
         PlcValue value = parsePlcValue(originalTag, slice, originalTag.getBitOffset());
         out.put(b.tagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
-    }
-
-    private static int sliceLengthFor(S7Tag tag) {
-        if (tag.getDataType() == TransportSize.BOOL) {
-            return S7Optimizer.packedBoolBytes(tag);
-        }
-        if (tag instanceof S7StringFixedLengthTag fixed) {
-            int bytesPerChar = fixed.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            return tag.getNumberOfElements() * (fixed.getStringLength() + 2) * bytesPerChar;
-        }
-        return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
     }
 
     private static void mergeBindingFailure(Map<String, PlcResponseItem<PlcValue>> out,

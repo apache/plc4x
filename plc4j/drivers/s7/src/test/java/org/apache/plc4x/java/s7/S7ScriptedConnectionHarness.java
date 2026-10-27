@@ -38,6 +38,10 @@ import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
+import org.apache.plc4x.java.s7.readwrite.TransportSize;
+import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
 import org.apache.plc4x.java.spi.buffers.bytebased.ReadBufferByteBased;
@@ -49,7 +53,9 @@ import org.apache.plc4x.java.spi.transports.api.exceptions.TransportException;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -185,6 +191,60 @@ public final class S7ScriptedConnectionHarness {
             new S7ParameterReadVarResponse((short) 1),
             new S7PayloadReadVarResponse(List.of(
                 new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data))),
+            (short) 0, (short) 0));
+    }
+
+    /**
+     * Plays a PLC holding the given data block for every read request the driver sends until the
+     * future completes: each single-item read is answered with the memory it asks for. Chunks
+     * go out one after another, so each request is answered as it arrives.
+     *
+     * @param requests collects the frames that were answered
+     * @param failing  index of a request to answer with {@code ACCESS_DENIED} instead, or -1
+     */
+    public static void answerReadsFromDataBlock(ScriptedS7Transport transport, CompletableFuture<?> future,
+                                                byte[] db, List<byte[]> requests, int failing)
+        throws Exception {
+        long deadline = System.currentTimeMillis() + 5_000;
+        while (!future.isDone() && System.currentTimeMillis() < deadline) {
+            if (transport.writeCount() > requests.size()) {
+                byte[] request = transport.writtenFrames().get(requests.size());
+                boolean fail = requests.size() == failing;
+                requests.add(request);
+                transport.deliver(readFromDataBlock(request, db, fail));
+                transport.runDataListener();
+            } else {
+                Thread.sleep(5);
+            }
+        }
+    }
+
+    private static byte[] readFromDataBlock(byte[] request, byte[] db, boolean fail) throws Exception {
+        S7ParameterReadVarRequest parameter = (S7ParameterReadVarRequest) parseFrame(request).getParameter();
+        if (parameter.getItems().size() != 1) {
+            throw new IllegalStateException("expected a single-item read, got " + parameter.getItems().size());
+        }
+        S7AddressAny address = (S7AddressAny)
+            ((S7VarRequestParameterItemAddress) parameter.getItems().get(0)).getAddress();
+        int start = address.getByteAddress();
+        byte[] data;
+        DataTransportSize transportSize;
+        if (address.getTransportSize() == TransportSize.BOOL) {
+            data = new byte[]{(byte) ((db[start] >> address.getBitAddress()) & 0x01)};
+            transportSize = DataTransportSize.BIT;
+        } else {
+            if (address.getBitAddress() != 0) {
+                throw new IllegalStateException("only a BOOL read has a bit address, got " + address);
+            }
+            data = Arrays.copyOfRange(db, start,
+                start + address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
+            transportSize = DataTransportSize.BYTE_WORD_DWORD;
+        }
+        return wireBytes(new S7MessageResponseData(tpduReferenceOf(request),
+            new S7ParameterReadVarResponse((short) 1),
+            new S7PayloadReadVarResponse(List.of(fail
+                ? new S7VarPayloadDataItem(DataTransportErrorCode.ACCESS_DENIED, DataTransportSize.NULL, new byte[0])
+                : new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data))),
             (short) 0, (short) 0));
     }
 

@@ -22,15 +22,9 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.S7ScriptedConnectionHarness.ScriptedS7Transport;
-import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
-import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
-import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -131,37 +125,11 @@ class S7BoolArrayReadTest {
             .build()
             .execute();
 
-        // Chunks go out one after another, so each request is answered as it arrives.
-        long deadline = System.currentTimeMillis() + 5_000;
-        while (!future.isDone() && System.currentTimeMillis() < deadline) {
-            if (transport.writeCount() > requests.size()) {
-                byte[] request = transport.writtenFrames().get(requests.size());
-                requests.add(request);
-                transport.deliver(answerFromDataBlock(request, db));
-                transport.runDataListener();
-            } else {
-                Thread.sleep(5);
-            }
-        }
+        S7ScriptedConnectionHarness.answerReadsFromDataBlock(transport, future, db, requests, -1);
 
         PlcReadResponse response = future.get(5, TimeUnit.SECONDS);
         connection.close();
         assertEquals(PlcResponseCode.OK, response.getResponseCode("bools"));
         return response.getPlcValue("bools").getList().stream().map(PlcValue::getBoolean).toList();
-    }
-
-    /** What a PLC sends back for a single-item byte read of data block 1. */
-    private static byte[] answerFromDataBlock(byte[] request, byte[] db) throws Exception {
-        S7ParameterReadVarRequest parameter = (S7ParameterReadVarRequest)
-            S7ScriptedConnectionHarness.parseFrame(request).getParameter();
-        assertEquals(1, parameter.getItems().size());
-        S7AddressAny address = (S7AddressAny)
-            ((S7VarRequestParameterItemAddress) parameter.getItems().get(0)).getAddress();
-        assertEquals(TransportSize.BYTE, address.getTransportSize());
-        assertEquals(0, address.getBitAddress(), "a byte read has no bit address");
-        int start = address.getByteAddress();
-        return S7ScriptedConnectionHarness.readVarResponse(
-            S7ScriptedConnectionHarness.tpduReferenceOfFrame(request), DataTransportSize.BYTE_WORD_DWORD,
-            Arrays.copyOfRange(db, start, start + address.getNumberOfElements()));
     }
 }

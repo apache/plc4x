@@ -161,7 +161,7 @@ class S7OptimizerTest {
         S7ReadChunk.Binding b = new S7ReadChunk.Binding("name", S7Tag.of("%MW0:INT"), 4, 1, true);
         assertEquals("name", b.tagName());
         assertEquals(4, b.payloadByteOffset());
-        assertEquals(1, b.elementOffset());
+        assertEquals(1, b.fragmentByteOffset());
         assertTrue(b.isSplitFragment());
 
         S7WriteChunk wc = new S7WriteChunk(java.util.List.of(
