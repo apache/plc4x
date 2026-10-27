@@ -123,7 +123,7 @@ func TestWriteItemValueOf(t *testing.T) {
 }
 
 // The PLC answers per item, and a tag written in several items is only OK if all of them were.
-func TestToPlc4xWriteResponseMergesTheItemsOfATag(t *testing.T) {
+func TestApplyWriteResponseMergesTheItemsOfATag(t *testing.T) {
 	handler := NewTagHandler()
 	bools, err := handler.ParseTag("%DB1:16.0[0..9]:BOOL")
 	require.NoError(t, err)
@@ -149,8 +149,12 @@ func TestToPlc4xWriteResponseMergesTheItemsOfATag(t *testing.T) {
 	response := readWriteModel.NewS7MessageResponseData(1, readWriteModel.NewS7ParameterWriteVarResponse(uint8(len(items))),
 		readWriteModel.NewS7PayloadWriteVarResponse(items), 0, 0)
 
-	writeResponse, err := (&Writer{log: zerolog.Nop()}).ToPlc4xWriteResponse(response, request)
-	require.NoError(t, err)
-	assert.Equal(t, apiModel.PlcResponseCode_ACCESS_DENIED, writeResponse.GetResponseCode("bools"))
-	assert.Equal(t, apiModel.PlcResponseCode_OK, writeResponse.GetResponseCode("word"))
+	var sent []writeChunkItem
+	for _, item := range writeItemsOf(request) {
+		sent = append(sent, writeChunkItem{item: item})
+	}
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	require.NoError(t, (&Writer{log: zerolog.Nop()}).applyWriteResponse(response, sent, responseCodes))
+	assert.Equal(t, apiModel.PlcResponseCode_ACCESS_DENIED, responseCodes["bools"])
+	assert.Equal(t, apiModel.PlcResponseCode_OK, responseCodes["word"])
 }

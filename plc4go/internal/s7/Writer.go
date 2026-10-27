@@ -23,7 +23,6 @@ import (
 	"context"
 	"runtime/debug"
 	"sync"
-	"time"
 
 	"github.com/rs/zerolog"
 
@@ -70,15 +69,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack())))
 			}
 		}()
-		var parameterItems []readWriteModel.S7VarRequestParameterItem
-		var payloadItems []readWriteModel.S7VarPayloadDataItem
+		var items []writeChunkItem
 		for _, item := range writeItemsOf(writeRequest) {
 			s7Address, err := encodeS7Address(item.tag)
 			if err != nil {
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding s7 address for tag %s", item.tagName)))
 				return
 			}
-			parameterItems = append(parameterItems, readWriteModel.NewS7VarRequestParameterItemAddress(s7Address))
 			plcValue, err := item.valueOf(writeRequest.GetValue(item.tagName))
 			if err != nil {
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", item.tagName)))
@@ -89,128 +86,83 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Error encoding value for tag %s", item.tagName)))
 				return
 			}
-			payloadItems = append(payloadItems, value)
+			items = append(items, writeChunkItem{
+				item:      item,
+				parameter: readWriteModel.NewS7VarRequestParameterItemAddress(s7Address),
+				payload:   value,
+			})
 		}
-		tpduId := m.tpduGenerator.getAndIncrement()
 
-		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest := readWriteModel.NewS7MessageRequest(
-			tpduId,
-			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems),
-		)
-
-		// Assemble the finished paket
-		m.log.Trace().Msg("Assemble paket")
-		// TODO: why do we use a uint16 above and the cotp a uint8?
-		tpktPacket := readWriteModel.NewTPKTPacket(
-			readWriteModel.NewCOTPPacketData(
-				nil,
-				s7MessageRequest,
-				true,
-				uint8(tpduId),
-			),
-		)
-
-		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartTransaction("write")
-		transaction.Submit("writeOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
-			ctx, cancel := context.WithCancel(ctx)
-			context.AfterFunc(transactionContext, cancel)
-			// Send the over the wire
-			if err := m.messageCodec.SendRequest(ctx, "write", tpktPacket, func(message spi.Message) bool {
-				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
-				if !ok {
-					return false
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		chunks, tooBig := splitWrite(items, m.driverContext.PduSize)
+		for _, tagName := range tooBig {
+			mergeResponseCode(responseCodes, tagName, apiModel.PlcResponseCode_INVALID_DATA)
+		}
+		for _, chunk := range chunks {
+			// The pieces of a tag that is already known to fail are not written.
+			var parameterItems []readWriteModel.S7VarRequestParameterItem
+			var payloadItems []readWriteModel.S7VarPayloadDataItem
+			var sent []writeChunkItem
+			for _, item := range chunk {
+				if code, ok := responseCodes[item.item.tagName]; ok && code == apiModel.PlcResponseCode_INVALID_DATA {
+					continue
 				}
-				cotpPacketData, ok := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				if !ok {
-					return false
-				}
-				payload := cotpPacketData.GetPayload()
-				if payload == nil {
-					return false
-				}
-				return payload.GetTpduReference() == tpduId
-			}, func(message spi.Message) error {
-				// Convert the response into an
-				m.log.Trace().Msg("convert response to ")
-				tpktPacket := message.(readWriteModel.TPKTPacket)
-				cotpPacketData := tpktPacket.GetPayload().(readWriteModel.COTPPacketData)
-				payload := cotpPacketData.GetPayload()
-				// Convert the s7 response into a PLC4X response
-				m.log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
-
-				if err != nil {
-					utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error decoding response")))
-					return transaction.EndRequest()
-				}
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, readResponse, nil))
-				return transaction.EndRequest()
-			}, func(err error) error {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.New("got timeout while waiting for response")))
-				return transaction.EndRequest()
-			}); err != nil {
-				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message")))
-				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
-					m.log.Debug().Err(err).Msg("Error failing request")
-				}
+				parameterItems = append(parameterItems, item.parameter)
+				payloadItems = append(payloadItems, item.payload)
+				sent = append(sent, item)
 			}
-		})
+			if len(sent) == 0 {
+				continue
+			}
+			m.log.Trace().Int("items", len(sent)).Msg("Send write request")
+			response, err := exchange(ctx, m.log, m.tpduGenerator, m.messageCodec, m.tm, "write",
+				readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
+				readWriteModel.NewS7PayloadWriteVarRequest(payloadItems))
+			if err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, err))
+				return
+			}
+			if err := m.applyWriteResponse(response, sent, responseCodes); err != nil {
+				utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "Error decoding response")))
+				return
+			}
+		}
+		m.log.Trace().Msg("Returning the response")
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcWriteRequestResult(writeRequest,
+			spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil))
 	})
 	return result
 }
 
-func (m *Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
-	var errorClass uint8
-	var errorCode uint8
-	switch messageResponseData := response.(type) {
-	case readWriteModel.S7MessageResponseData:
-		errorClass = messageResponseData.GetErrorClass()
-		errorCode = messageResponseData.GetErrorCode()
-	case readWriteModel.S7MessageResponse:
-		errorClass = messageResponseData.GetErrorClass()
-		errorCode = messageResponseData.GetErrorCode()
-	default:
-		return nil, errors.Errorf("unsupported response type %T", response)
+// applyWriteResponse records what the response to one request of a write says about its tags.
+func (m *Writer) applyWriteResponse(response readWriteModel.S7Message, sent []writeChunkItem, responseCodes map[string]apiModel.PlcResponseCode) error {
+	errorClass, errorCode, err := headerError(response)
+	if err != nil {
+		return err
 	}
-	responseCodes := map[string]apiModel.PlcResponseCode{}
-
 	// If the result contains any form of non-null error code, handle this instead.
 	if (errorClass != 0) || (errorCode != 0) {
 		responseCode := mapPlcErrorCode(m.log, errorClass, errorCode)
-		for _, tagName := range writeRequest.GetTagNames() {
-			responseCodes[tagName] = responseCode
+		for _, item := range sent {
+			mergeResponseCode(responseCodes, item.item.tagName, responseCode)
 		}
-		m.log.Trace().Msg("Returning the response")
-		return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+		return nil
 	}
 
-	// In all other cases all went well.
-	payload := response.GetPayload().(readWriteModel.S7PayloadWriteVarResponse)
-
+	payload, ok := response.GetPayload().(readWriteModel.S7PayloadWriteVarResponse)
+	if !ok {
+		return errors.Errorf("unexpected payload %T", response.GetPayload())
+	}
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	items := writeItemsOf(writeRequest)
-	if len(items) != len(payload.GetItems()) {
-		return nil, errors.New("The number of requested items doesn't match the number of returned items")
+	if len(sent) != len(payload.GetItems()) {
+		return errors.New("The number of requested items doesn't match the number of returned items")
 	}
-
-	payloadItems := payload.GetItems()
-	for i, item := range items {
-		responseCode := decodeResponseCode(payloadItems[i].GetReturnCode())
-		// A tag written in several items is only OK if all of them were, so the first failure
-		// sticks.
-		if current, ok := responseCodes[item.tagName]; !ok || current == apiModel.PlcResponseCode_OK {
-			responseCodes[item.tagName] = responseCode
-		}
+	for i, item := range sent {
+		mergeResponseCode(responseCodes, item.item.tagName, decodeResponseCode(payload.GetItems()[i].GetReturnCode()))
 	}
-
-	// Return the response
-	m.log.Trace().Msg("Returning the response")
-	return spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+	return nil
 }
 
 // writeItem is one protocol item of a write.
