@@ -111,10 +111,6 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := writeBuffer.PopContext("handles", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-
-	if err := writeBuffer.WriteUint32("nextProcessId", 32, d.nextProcessId.Load()); err != nil {
-		return err
-	}
 	if err := writeBuffer.PushContext("_options", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}

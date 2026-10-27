@@ -22,7 +22,6 @@ package bacnetip
 import (
 	"context"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -54,11 +53,6 @@ type Subscriber struct {
 	handles   map[uint32]*SubscriptionHandle
 	handlesMu sync.RWMutex
 
-	// nextProcessId is a monotonic counter that allocates unique subscriber
-	// process ids per Connection. BACnet spec allows any uint32 value as the
-	// id; starting at 1 keeps 0 reserved for "no subscription".
-	nextProcessId atomic.Uint32
-
 	wg sync.WaitGroup `ignore:"true"`
 
 	log      zerolog.Logger       `ignore:"true"`
@@ -75,7 +69,6 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 		log:      logger,
 		_options: _options,
 	}
-	s.nextProcessId.Store(1)
 	return s
 }
 
@@ -102,7 +95,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				continue
 			}
-			processId := m.nextProcessId.Add(1)
+			processId := m.connection.nextCovProcessId.Add(1)
 			handle := NewSubscriptionHandle(
 				m, tagName, tag,
 				internalReq.GetType(tagName),
