@@ -168,7 +168,7 @@
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
     <!-- Karaf the generated driver features are verified against, and the karaf-maven-plugin version -->
     <karaf.version>4.4.12</karaf.version>
-    <logback.version>1.6.5</logback.version>
+    <logback.version>1.6.6</logback.version>
     <maven-artifact.version>3.10.0</maven-artifact.version>
     <mockito.version>5.24.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
