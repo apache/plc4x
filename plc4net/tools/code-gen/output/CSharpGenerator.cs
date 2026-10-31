@@ -56,23 +56,34 @@ namespace org.apache.plc4net.tools.codegen.output
 
         /// <summary>Generates every file; key is a relative path.</summary>
         /// <summary>Fails generation on model states that would silently
-        /// produce wrong or non-compiling drivers: a non-big-endian
-        /// <c>byteOrder</c> (no C# read/write path emits the swaps yet) and
-        /// enum fields keyed on an accessor the enum does not expose as a
-        /// non-external argument (the reverse lookup would never be
-        /// emitted, and generated code would not compile).</summary>
+        /// produce wrong or non-compiling drivers: a <c>byteOrder</c> other
+        /// than <c>BIG_ENDIAN</c> / <c>LITTLE_ENDIAN</c> on a type, any
+        /// declared <c>byteOrder</c> at all on an enum or a dataIo (their
+        /// generated code has no parse/serialize body to scope it to - see
+        /// <see cref="IsLittleEndian"/>), and enum fields keyed on an
+        /// accessor the enum does not expose as a non-external argument (the
+        /// reverse lookup would never be emitted, and generated code would
+        /// not compile).</summary>
         private void ValidateModel()
         {
-            foreach (var t in _protocol.Types.Cast<TypeDefinition>()
-                         .Concat<TypeDefinition>(_protocol.Enums)
-                         .Concat(_protocol.DataIos))
+            foreach (var t in _protocol.Types)
+            {
+                if (t.Attributes.TryGetValue("byteOrder", out var order)
+                    && order is StringLiteral o && o.Value != "BIG_ENDIAN" && o.Value != "LITTLE_ENDIAN")
+                {
+                    throw new NotSupportedException(
+                        $"type '{t.Name}' declares byteOrder '{o.Value}'; "
+                        + "only BIG_ENDIAN and LITTLE_ENDIAN are implemented");
+                }
+            }
+            foreach (var t in _protocol.Enums.Cast<TypeDefinition>().Concat(_protocol.DataIos))
             {
                 if (t.Attributes.TryGetValue("byteOrder", out var order)
                     && order is StringLiteral o && o.Value != "BIG_ENDIAN")
                 {
                     throw new NotSupportedException(
                         $"type '{t.Name}' declares byteOrder '{o.Value}'; "
-                        + "little-endian generation is not implemented yet");
+                        + "little-endian generation is only implemented for complex types, not enums or dataIo");
                 }
             }
 
@@ -356,6 +367,19 @@ namespace org.apache.plc4net.tools.codegen.output
 
         // ── StaticParse ─────────────────────────────────────────
 
+        /// <summary>
+        /// True for a type whose mspec declaration itself carries
+        /// <c>byteOrder='"LITTLE_ENDIAN"'</c> - never true for a discriminated
+        /// child, a type-switch case, or a type a field merely references: none
+        /// of those repeat the attribute, because they inherit it from the
+        /// ambient buffer their parent already pushed (see
+        /// <see cref="ReadBuffer.PushByteOrder"/>). Only the declaring type's
+        /// own <c>StaticParse</c> / <c>Serialize</c> pushes and pops it.
+        /// </summary>
+        private static bool IsLittleEndian(ComplexTypeDefinition type) =>
+            type.Attributes.TryGetValue("byteOrder", out var order)
+            && order is StringLiteral { Value: "LITTLE_ENDIAN" };
+
         private void EmitStaticParse(
             CodeWriter c, ComplexTypeDefinition type, CSharpExpressionRenderer r, FieldScope scope)
         {
@@ -371,6 +395,15 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line($"public static {hide}{type.Name} StaticParse(ReadBuffer readBuffer{Comma(args)})");
             c.Line("{");
             c.Indent();
+
+            var littleEndian = IsLittleEndian(type);
+            if (littleEndian)
+            {
+                c.Line("readBuffer.PushByteOrder(org.apache.plc4net.spi.generation.ByteOrder.LITTLE_ENDIAN);");
+                c.Line("try");
+                c.Line("{");
+                c.Indent();
+            }
 
             // `curPos` is "bytes since this type's parse began". A child that
             // needs it receives _startPos from the parent (the byte count is
@@ -392,6 +425,20 @@ namespace org.apache.plc4net.tools.codegen.output
                 var ctorArgs = string.Join(", ", AllValueFields(type).Select(f => Camel(f.Name))
                     .Concat(RetainedDiscriminators(type).Select(d => Camel(d.Name))));
                 c.Line($"return new {type.Name}({ctorArgs});");
+            }
+
+            if (littleEndian)
+            {
+                // The type-switch case above already returned from inside the
+                // try; finally still pops before control actually leaves.
+                c.Outdent();
+                c.Line("}");
+                c.Line("finally");
+                c.Line("{");
+                c.Indent();
+                c.Line("readBuffer.PopByteOrder();");
+                c.Outdent();
+                c.Line("}");
             }
 
             c.Outdent();
@@ -601,6 +648,18 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("{");
             c.Indent();
 
+            // A discriminated child never declares its own byteOrder (see
+            // IsLittleEndian); it always serializes while still inside the
+            // declaring parent's try, from the ambient PushByteOrder below.
+            var littleEndian = IsLittleEndian(type);
+            if (littleEndian)
+            {
+                c.Line("writeBuffer.PushByteOrder(org.apache.plc4net.spi.generation.ByteOrder.LITTLE_ENDIAN);");
+                c.Line("try");
+                c.Line("{");
+                c.Indent();
+            }
+
             var serScope = scope.ForSerialize();
             var serRender = new CSharpExpressionRenderer(serScope) { StaticHelperClass = r.StaticHelperClass };
 
@@ -618,6 +677,18 @@ namespace org.apache.plc4net.tools.codegen.output
             if (type.IsDiscriminatedParent)
             {
                 c.Line("SerializeChild(writeBuffer);");
+            }
+
+            if (littleEndian)
+            {
+                c.Outdent();
+                c.Line("}");
+                c.Line("finally");
+                c.Line("{");
+                c.Indent();
+                c.Line("writeBuffer.PopByteOrder();");
+                c.Outdent();
+                c.Line("}");
             }
 
             c.Outdent();

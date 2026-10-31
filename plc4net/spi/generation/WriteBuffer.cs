@@ -18,6 +18,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace org.apache.plc4net.spi.generation
@@ -25,11 +26,17 @@ namespace org.apache.plc4net.spi.generation
     public class WriteBuffer
     {
         private readonly BitWriter _writer;
+        private readonly Stack<ByteOrder> _byteOrder = new Stack<ByteOrder>(new[] { ByteOrder.BIG_ENDIAN });
 
         public WriteBuffer()
         {
             _writer = new BitWriter();
         }
+
+        /// <summary>See <see cref="ReadBuffer.PushByteOrder"/>.</summary>
+        public void PushByteOrder(ByteOrder order) => _byteOrder.Push(order);
+
+        public void PopByteOrder() => _byteOrder.Pop();
 
         public int GetPos()
         {
@@ -66,7 +73,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(value, bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(value, bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteUint(String logicalName, int bitLength, uint value)
@@ -75,7 +82,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(value, bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(value, bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteUlong(String logicalName, int bitLength, ulong value)
@@ -84,7 +91,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(value, bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(value, bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteSbyte(String logicalName, int bitLength, sbyte value)
@@ -102,7 +109,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(unchecked((ulong)value), bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(unchecked((ulong)value), bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteInt(String logicalName, int bitLength, int value)
@@ -111,7 +118,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(unchecked((ulong)value), bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(unchecked((ulong)value), bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteLong(String logicalName, int bitLength, long value)
@@ -120,11 +127,17 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
-            _writer.WriteBits(unchecked((ulong)value), bitLength);
+            _writer.WriteBits(ByteOrderSupport.Swap(unchecked((ulong)value), bitLength, _byteOrder.Peek()), bitLength);
         }
 
         public void WriteFloat(String logicalName, int bitLength, float value)
         {
+            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+            {
+                // No mspec here declares a little-endian float/double field yet;
+                // fail loud rather than silently writing it big-endian.
+                throw new NotImplementedException("Little-endian floating point is not supported yet");
+            }
             if (bitLength == 32)
             {
                 // The previous version called WriteByte(8, bytes[i]) against a
@@ -176,6 +189,10 @@ namespace org.apache.plc4net.spi.generation
 
         public void WriteDouble(String logicalName, int bitLength, double value)
         {
+            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+            {
+                throw new NotImplementedException("Little-endian floating point is not supported yet");
+            }
             if (bitLength == 32)
             {
                 WriteFloat(logicalName, 32, (float)value);

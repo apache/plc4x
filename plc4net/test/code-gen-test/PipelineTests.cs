@@ -558,16 +558,83 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
-        public void A_little_endian_byte_order_is_rejected_not_generated_wrong()
+        public void A_little_endian_byte_order_generates_a_push_pop_wrapped_parse_and_serialize()
         {
             var model = MspecModelBuilder.Build(@"
 [type LePacket byteOrder='""LITTLE_ENDIAN""'
     [simple uint 16 a]
 ]
 ");
+            var code = new CSharpGenerator(model, "le", "le.readwrite").Generate()["model/LePacket.cs"];
+
+            Assert.Contains(
+                "readBuffer.PushByteOrder(org.apache.plc4net.spi.generation.ByteOrder.LITTLE_ENDIAN);", code);
+            Assert.Contains("readBuffer.PopByteOrder();", code);
+            Assert.Contains(
+                "writeBuffer.PushByteOrder(org.apache.plc4net.spi.generation.ByteOrder.LITTLE_ENDIAN);", code);
+            Assert.Contains("writeBuffer.PopByteOrder();", code);
+            // GetLengthInBits is pure field-width arithmetic - byte order never
+            // reaches a buffer there, so it gets no wrapper.
+            Assert.DoesNotContain("PushByteOrder", code.Substring(code.IndexOf("GetLengthInBits")));
+        }
+
+        [Fact]
+        public void An_unrecognized_byte_order_is_still_rejected()
+        {
+            var model = MspecModelBuilder.Build(@"
+[type MePacket byteOrder='""MIDDLE_ENDIAN""'
+    [simple uint 16 a]
+]
+");
             var ex = Assert.Throws<System.NotSupportedException>(
-                () => new CSharpGenerator(model, "le", "le.readwrite").Generate());
-            Assert.Contains("LePacket", ex.Message);
+                () => new CSharpGenerator(model, "me", "me.readwrite").Generate());
+            Assert.Contains("MePacket", ex.Message);
+            Assert.Contains("MIDDLE_ENDIAN", ex.Message);
+        }
+
+        [Fact]
+        public void A_discriminated_childs_own_parse_does_not_repeat_the_byte_order_push()
+        {
+            // Mirrors SlmpMessage / SlmpRequestFrame3E: only the declaring
+            // parent pushes LITTLE_ENDIAN; the child inherits it from the same
+            // buffer and never pushes its own.
+            var model = MspecModelBuilder.Build(@"
+[discriminatedType LeMessage byteOrder='""LITTLE_ENDIAN""'
+    [discriminator uint 8 kind]
+    [typeSwitch kind
+        ['0x01' LeChild
+            [simple uint 16 a]
+        ]
+    ]
+]
+");
+            var files = new CSharpGenerator(model, "le", "le.readwrite").Generate();
+
+            Assert.Contains("PushByteOrder", files["model/LeMessage.cs"]);
+            Assert.DoesNotContain("PushByteOrder", files["model/LeChild.cs"]);
+            Assert.DoesNotContain("PopByteOrder", files["model/LeChild.cs"]);
+        }
+
+        [Fact]
+        public void The_real_slmp_mspec_generates_without_throwing()
+        {
+            // Fail loud rather than passing vacuously outside the repo layout.
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var mspec = Path.Combine(repoRoot!,
+                "protocols", "slmp", "src", "main", "resources",
+                "protocols", "slmp", "slmp.mspec");
+
+            var model = MspecModelBuilder.BuildFile(mspec);
+            var files = new CSharpGenerator(
+                model, "slmp", "org.apache.plc4net.drivers.slmp.readwrite").Generate();
+
+            Assert.Contains("model/SlmpMessage.cs", files.Keys);
+            Assert.Contains("model/SlmpRequestFrame3E.cs", files.Keys);
+            Assert.Contains("model/SlmpDeviceCode.cs", files.Keys);
+            Assert.Contains("PushByteOrder", files["model/SlmpMessage.cs"]);
+            Assert.DoesNotContain("PushByteOrder", files["model/SlmpRequestFrame3E.cs"]);
+            Assert.All(files.Values, src => Assert.Contains("DO NOT EDIT", src));
         }
 
         [Fact]
