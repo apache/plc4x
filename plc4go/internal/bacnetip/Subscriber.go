@@ -21,6 +21,8 @@ package bacnetip
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -134,7 +136,11 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 // Unsubscribe sends a SubscribeCOV cancellation (no issueConfirmedNotifications
 // and no lifetime, ASHRAE 135 13.14.1) for each handle in the unsubscription
 // request, then drops the handle from
-// the routing map so further notifications are silently ignored.
+// the routing map so further notifications are silently ignored. The handle is
+// dropped whatever the device answers, so it is no longer refreshed; a
+// cancellation the device did not acknowledge (Error, Reject, Abort, timeout)
+// is reported in the result's error, as the device may hold the subscription
+// until its lifetime ends.
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
 	m.wg.Go(func() {
@@ -143,6 +149,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("unsupported unsubscription request type")))
 			return
 		}
+		var failed []string
 		for _, handle := range req.GetSubscriptionHandles() {
 			bh := m.findHandle(handle)
 			if bh == nil {
@@ -150,12 +157,18 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			}
 			bh.mu.Lock()
 			bh.cancelled = true
-			_ = m.sendSubscribeCOV(ctx, bh, 0, true)
+			code := m.sendSubscribeCOV(ctx, bh, 0, true)
 			bh.mu.Unlock()
 			m.removeHandle(bh.subscriberProcessId)
+			if code != apiModel.PlcResponseCode_OK {
+				failed = append(failed, fmt.Sprintf("%s (process id %d): %s", bh.tagName, bh.subscriberProcessId, code))
+			}
 		}
-		// Build a response with OK for every handle the caller passed.
-		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, nil))
+		var err error
+		if len(failed) > 0 {
+			err = errors.Errorf("COV cancellation not acknowledged for %s", strings.Join(failed, ", "))
+		}
+		utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, err))
 	})
 	return result
 }

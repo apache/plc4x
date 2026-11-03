@@ -100,3 +100,44 @@ func TestSubscriber_UnsubscribeSendsACancellationNotAnIndefiniteSubscription(t *
 	}
 	assert.Nil(t, s.lookupHandle(handle.subscriberProcessId), "the handle is gone after Unsubscribe")
 }
+
+// A device that refuses the cancellation keeps the subscription until its
+// lifetime ends, holding one of its limited slots: Unsubscribe must report it
+// instead of claiming success. The handle is dropped either way, so it is no
+// longer refreshed.
+func TestSubscriber_UnsubscribeReportsARefusedCancellation(t *testing.T) {
+	for name, reply := range map[string]readWriteModel.APDU{
+		"reject": readWriteModel.NewAPDUReject(0,
+			readWriteModel.NewBACnetRejectReasonTagged(1, readWriteModel.BACnetRejectReason_UNRECOGNIZED_SERVICE, 0)),
+		"abort": readWriteModel.NewAPDUAbort(false, 0,
+			readWriteModel.NewBACnetAbortReasonTagged(1, readWriteModel.BACnetAbortReason_OTHER, 0)),
+	} {
+		t.Run(name, func(t *testing.T) {
+			codec := &recordCodec{captureCodec: newCaptureCodec(nil), sent: make(chan spi.Message, 4)}
+			conn := &Connection{configuration: createDefaultConfiguration(), messageCodec: codec}
+			conn.driverContext = NewDriverContext(conn.configuration)
+			s := NewSubscriber(conn)
+
+			handle := subscribeOne(t, s, codec.captureCodec, "ai1", 1)
+			sentSubscribeCOV(t, codec)
+
+			results := s.Unsubscribe(testutils.TestContext(t), spiModel.NewDefaultPlcUnsubscriptionRequest(
+				[]apiModel.PlcSubscriptionHandle{handle.DefaultPlcSubscriptionHandle}))
+			sentSubscribeCOV(t, codec)
+			select {
+			case h := <-codec.handlers:
+				require.NoError(t, h.handleMessage(wrapAPDU(reply, false, nil)))
+			case <-time.After(time.Second):
+				t.Fatal("Unsubscribe never sent its request")
+			}
+			select {
+			case result := <-results:
+				require.Error(t, result.GetErr(), "a refused cancellation is not a success")
+				assert.Contains(t, result.GetErr().Error(), "ai1")
+			case <-time.After(time.Second):
+				t.Fatal("Unsubscribe did not deliver a result")
+			}
+			assert.Nil(t, s.lookupHandle(handle.subscriberProcessId), "the handle is dropped all the same")
+		})
+	}
+}
