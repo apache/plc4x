@@ -805,7 +805,7 @@
   - Set the correct parent pom artifact ids for the language generation modules ([61bed6d](https://github.com/apache/plc4x/commit/61bed6d09364fdbb155e9529638eda84c1bf217d))
   - Set the correct parent pom artifact ids for the language generation modules ([7efed5c](https://github.com/apache/plc4x/commit/7efed5c868c4fedd7034503bffed48e2a13a9773))
   - Tried getting the build back to work. ([f5f0064](https://github.com/apache/plc4x/commit/f5f00644dfae9aeafcb91bc8c2c814dda9d749f2))
-  - Addressed some surefire and junit 5 releated isses, that only occured when validating the RC. ([4286a89](https://github.com/apache/plc4x/commit/4286a897970d530aac851f42dfef0029e627a685))
+  - Addressed some surefire and junit 5 releated isses, that only occurred when validating the RC. ([4286a89](https://github.com/apache/plc4x/commit/4286a897970d530aac851f42dfef0029e627a685))
   - Addressed some surefire and junit 5 releated isses, that only occured when validating the RC. ([a88fbfe](https://github.com/apache/plc4x/commit/a88fbfe7a0d4b7075e2d5de1213d4ef3be795e92))
   - Fixed reading the max int and min int values as var length signed integer. ([f3a55f2](https://github.com/apache/plc4x/commit/f3a55f2abbc8c5a262936de193a93f69feae5cbb))
   - Restricted the NioEventLoopGroup to one thread, instead of the default of double the CPU-cores. ([a35f415](https://github.com/apache/plc4x/commit/a35f41534e25905559bf3b86199ade57e33df967))
