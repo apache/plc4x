@@ -18,6 +18,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace org.apache.plc4net.spi.generation
@@ -29,6 +30,7 @@ namespace org.apache.plc4net.spi.generation
         private readonly BitReader _reader;
         private readonly int _startBit;
         private readonly int _endBit;
+        private readonly Stack<ByteOrder> _byteOrder = new Stack<ByteOrder>(new[] { ByteOrder.BIG_ENDIAN });
 
         public ReadBuffer(byte[] data) : this(data, 0, data?.Length ?? throw new ArgumentNullException(nameof(data)))
         {
@@ -63,6 +65,17 @@ namespace org.apache.plc4net.spi.generation
         {
             _reader.Position = _startBit;
         }
+
+        /// <summary>
+        /// Scopes <see cref="ByteOrder.LITTLE_ENDIAN"/> (or back to
+        /// <see cref="ByteOrder.BIG_ENDIAN"/>) to the type whose generated
+        /// <c>StaticParse</c> declares it. Must be paired with
+        /// <see cref="PopByteOrder"/>, normally via <c>try</c> / <c>finally</c>
+        /// so an early return (a type-switch case) still pops it.
+        /// </summary>
+        public void PushByteOrder(ByteOrder order) => _byteOrder.Push(order);
+
+        public void PopByteOrder() => _byteOrder.Pop();
 
         public int GetPos()
         {
@@ -121,7 +134,7 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
             EnsureReadable(bitLength);
-            return (ushort)_reader.ReadBits(bitLength);
+            return (ushort)ByteOrderSupport.Swap(_reader.ReadBits(bitLength), bitLength, _byteOrder.Peek());
         }
 
         public uint ReadUint(String logicalName, int bitLength)
@@ -131,7 +144,7 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
             EnsureReadable(bitLength);
-            return (uint)_reader.ReadBits(bitLength);
+            return (uint)ByteOrderSupport.Swap(_reader.ReadBits(bitLength), bitLength, _byteOrder.Peek());
         }
 
         public ulong ReadUlong(String logicalName, int bitLength)
@@ -144,7 +157,7 @@ namespace org.apache.plc4net.spi.generation
             // further bitLength bits, consuming 2*bitLength-32 bits instead of
             // bitLength, so it never round-tripped against WriteBuffer.WriteUlong.
             EnsureReadable(bitLength);
-            return _reader.ReadBits(bitLength);
+            return ByteOrderSupport.Swap(_reader.ReadBits(bitLength), bitLength, _byteOrder.Peek());
         }
 
         public sbyte ReadSbyte(String logicalName, int bitLength)
@@ -164,7 +177,7 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
             EnsureReadable(bitLength);
-            return (short)_reader.ReadSignedBits(bitLength);
+            return (short)ReadSignedRaw(bitLength);
         }
 
         public int ReadInt(String logicalName, int bitLength)
@@ -174,7 +187,7 @@ namespace org.apache.plc4net.spi.generation
                 throw new ArgumentOutOfRangeException(nameof(bitLength));
             }
             EnsureReadable(bitLength);
-            return (int)_reader.ReadSignedBits(bitLength);
+            return (int)ReadSignedRaw(bitLength);
         }
 
         public long ReadLong(String logicalName, int bitLength)
@@ -185,11 +198,35 @@ namespace org.apache.plc4net.spi.generation
             }
             // Same over-read as ReadUlong had.
             EnsureReadable(bitLength);
+            return ReadSignedRaw(bitLength);
+        }
+
+        /// <summary>
+        /// The big-endian path is exactly the previous implementation
+        /// (<c>BitReader.ReadSignedBits</c>), untouched. The little-endian path
+        /// cannot use it directly - it sign-extends before the byte order is
+        /// known to be wrong - so it reads the raw bit pattern, byte-swaps it,
+        /// and sign-extends the swapped pattern itself.
+        /// </summary>
+        private long ReadSignedRaw(int bitLength)
+        {
+            var order = _byteOrder.Peek();
+            if (order == ByteOrder.LITTLE_ENDIAN && bitLength > 8 && bitLength % 8 == 0)
+            {
+                var swapped = ByteOrderSupport.Swap(_reader.ReadBits(bitLength), bitLength, order);
+                return ByteOrderSupport.SignExtend(swapped, bitLength);
+            }
             return _reader.ReadSignedBits(bitLength);
         }
 
         public float ReadFloat(String logicalName, int bitLength)
         {
+            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+            {
+                // No mspec here declares a little-endian float/double field yet;
+                // fail loud rather than silently reading it big-endian.
+                throw new NotImplementedException("Little-endian floating point is not supported yet");
+            }
             if (bitLength == 32)
             {
                 // Reinterpret the 32 raw bits as IEEE-754. Going via
@@ -216,6 +253,10 @@ namespace org.apache.plc4net.spi.generation
 
         public double ReadDouble(String logicalName, int bitLength)
         {
+            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+            {
+                throw new NotImplementedException("Little-endian floating point is not supported yet");
+            }
             if (bitLength == 32)
             {
                 // Was BitConverter.ToDouble over a 4 byte array, which always threw.

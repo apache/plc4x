@@ -227,6 +227,162 @@ namespace org.apache.plc4net.spi.test.generation
             Assert.Contains("Not enough data", ex.Message);
         }
 
+        // ── little-endian byte order ────────────────────────────
+
+        private static ReadBuffer LittleEndianReader(Action<WriteBuffer> write)
+        {
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            write(wb);
+            wb.PopByteOrder();
+            var rb = new ReadBuffer(wb.GetBytes());
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            return rb;
+        }
+
+        [Fact]
+        public void Default_byte_order_is_still_big_endian()
+        {
+            // No push at all - every existing S7 / Modbus call site. Locks in
+            // that adding the byte-order stack changed nothing by default.
+            var rb = new ReadBuffer(new byte[] { 0x12, 0x34 });
+
+            Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16));
+        }
+
+        [Fact]
+        public void Little_endian_16_bit_unsigned_is_read_off_the_wire_byte_reversed()
+        {
+            // 0x34, 0x12 little-endian is 0x1234, not 0x3412 - a wrong
+            // direction swap or a no-op would both produce a different value.
+            var rb = new ReadBuffer(new byte[] { 0x34, 0x12 });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16));
+        }
+
+        [Fact]
+        public void Little_endian_24_bit_unsigned_reverses_exactly_three_bytes()
+        {
+            // SLMP's device number: 3 bytes, little-endian. The unused high
+            // byte of the uint must not end up in the swap.
+            var rb = new ReadBuffer(new byte[] { 0x03, 0x02, 0x01 });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Equal(0x010203u, rb.ReadUint("", 24));
+        }
+
+        [Fact]
+        public void Little_endian_32_bit_and_64_bit_unsigned_reverse_their_whole_width()
+        {
+            var rb32 = new ReadBuffer(new byte[] { 0x04, 0x03, 0x02, 0x01 });
+            rb32.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            Assert.Equal(0x01020304u, rb32.ReadUint("", 32));
+
+            var rb64 = new ReadBuffer(new byte[] { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 });
+            rb64.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            Assert.Equal(0x0102030405060708u, rb64.ReadUlong("", 64));
+        }
+
+        [Fact]
+        public void Little_endian_8_bit_fields_are_unaffected()
+        {
+            // A single byte has no order to reverse.
+            var rb = new ReadBuffer(new byte[] { 0xAB });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Equal((byte)0xAB, rb.ReadByte("", 8));
+        }
+
+        [Theory]
+        [InlineData((ushort)0x1234)]
+        [InlineData((ushort)0)]
+        [InlineData(ushort.MaxValue)]
+        public void Little_endian_16_bit_unsigned_round_trips(ushort value)
+        {
+            var rb = LittleEndianReader(wb => wb.WriteUshort("", 16, value));
+
+            Assert.Equal(value, rb.ReadUshort("", 16));
+        }
+
+        [Theory]
+        [InlineData(0x010203u)]
+        [InlineData(0u)]
+        [InlineData(0xFFFFFFu)]
+        public void Little_endian_24_bit_unsigned_round_trips(uint value)
+        {
+            var rb = LittleEndianReader(wb => wb.WriteUint("", 24, value));
+
+            Assert.Equal(value, rb.ReadUint("", 24));
+        }
+
+        [Fact]
+        public void Little_endian_write_then_default_read_produces_the_reversed_wire_bytes()
+        {
+            // Proves the WriteBuffer side swaps too, independently of ReadBuffer:
+            // write 0x1234 little-endian, then read the raw wire bytes back
+            // big-endian (no push) and see them reversed.
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            wb.WriteUshort("", 16, 0x1234);
+            wb.PopByteOrder();
+
+            Assert.Equal(new byte[] { 0x34, 0x12 }, wb.GetBytes());
+        }
+
+        [Theory]
+        [InlineData(-1, 16)]
+        [InlineData(-2, 16)]
+        [InlineData(short.MinValue, 16)]
+        [InlineData(1, 24)]
+        [InlineData(-1, 24)]
+        public void Little_endian_signed_fields_round_trip_sign_extended(int value, int bitLength)
+        {
+            var rb = LittleEndianReader(wb => wb.WriteInt("", bitLength, value));
+
+            Assert.Equal(value, rb.ReadInt("", bitLength));
+        }
+
+        [Fact]
+        public void Little_endian_negative_16_bit_signed_is_read_off_the_wire_byte_reversed()
+        {
+            // -2 as a 16 bit two's-complement value is 0xFFFE; little-endian on
+            // the wire that is [0xFE, 0xFF] - the low byte first.
+            var rb = new ReadBuffer(new byte[] { 0xFE, 0xFF });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Equal(-2, rb.ReadInt("", 16));
+        }
+
+        [Fact]
+        public void Pop_restores_the_byte_order_the_matching_push_replaced()
+        {
+            var rb = new ReadBuffer(new byte[] { 0x34, 0x12, 0x12, 0x34 });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16)); // little-endian
+            rb.PopByteOrder();
+
+            Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16)); // back to default big-endian
+        }
+
+        [Fact]
+        public void Little_endian_floating_point_fails_loudly_instead_of_reading_big_endian()
+        {
+            var rb = new ReadBuffer(new byte[] { 0x41, 0xB0, 0x00, 0x00 });
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Throws<NotImplementedException>(() => rb.ReadFloat("", 32));
+        }
+
+        [Fact]
+        public void Little_endian_floating_point_write_fails_loudly_too()
+        {
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            Assert.Throws<NotImplementedException>(() => wb.WriteFloat("", 32, 1.0f));
+        }
+
         [Fact]
         public void A_window_reads_the_selected_bytes_without_crossing_its_end()
         {

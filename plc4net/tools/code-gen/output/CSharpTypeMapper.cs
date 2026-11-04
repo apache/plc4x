@@ -28,9 +28,13 @@ namespace org.apache.plc4net.tools.codegen.output
     /// </summary>
     /// <remarks>
     /// Targets plc4net's hand-written buffer API: <c>ReadUshort("name", 16)</c>
-    /// with the width passed explicitly, no context stack and no byte-order
-    /// argument (the buffers are MSB-first / big-endian, which is what every
-    /// mspec-described protocol here uses).
+    /// with the width passed explicitly, and no byte-order argument - a
+    /// multi-byte read/write always comes out big-endian (MSB-first) *unless*
+    /// the buffer has <c>LITTLE_ENDIAN</c> pushed on its byte-order stack, which
+    /// only the <c>StaticParse</c> / <c>Serialize</c> of a type whose own mspec
+    /// declaration carries <c>byteOrder='"LITTLE_ENDIAN"'</c> does. The call
+    /// this class emits is identical either way; the swap happens inside the
+    /// buffer method, not at the call site.
     /// </remarks>
     public static class CSharpTypeMapper
     {
