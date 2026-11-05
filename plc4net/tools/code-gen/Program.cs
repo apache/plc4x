@@ -110,9 +110,8 @@ try
     {
         var target = Path.Combine(stageRoot, relativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-        // The repository's .editorconfig says insert_final_newline=false, so the
-        // generated files end at the closing brace like every other .cs file.
-        File.WriteAllText(target, source.TrimEnd('\r', '\n'));
+        // Keep exactly one final LF in every generated source file.
+        File.WriteAllText(target, source.TrimEnd('\r', '\n') + "\n");
     }
 
     if (Directory.Exists(modelDir))
