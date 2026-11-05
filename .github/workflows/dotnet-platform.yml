@@ -26,6 +26,8 @@ on:
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
       - protocols/modbus/**
       - protocols/s7/**
+      - protocols/slmp/**
+      - .editorconfig
       - .github/workflows/dotnet-platform.yml
   pull_request:
     branches: [develop, plc4net]
@@ -34,6 +36,8 @@ on:
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
       - protocols/modbus/**
       - protocols/s7/**
+      - protocols/slmp/**
+      - .editorconfig
       - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
 
@@ -84,6 +88,8 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
+      - name: Test protocol model checks
+        run: python -m unittest discover -s plc4net/tools/code-gen -p 'test_generate_protocol_models.py' -v
       - name: Verify generated protocol models
         run: ./mvnw -B -f plc4net/pom.xml -Pcheck-generated-code generate-sources
 

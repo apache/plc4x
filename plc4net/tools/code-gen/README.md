@@ -36,7 +36,10 @@ files. Separate multiple sources with semicolons.
 
 Generation is staged and then replaces `<output-dir>/model`, so a failed
 write leaves the previous generated model intact. The files follow the
-repository's `.editorconfig`: LF line endings and no final newline. Regenerating these protocol model files is an explicit
+generated-model `.editorconfig` override: LF line endings and a final newline.
+The CI model check also rejects generated C# files without a final LF, even
+when the checked-in files match the generator output.
+Regenerating these protocol model files is an explicit
 driver-maintenance step; the driver slices that consume them commit the
 result. This is separate from the checked-in ANTLR parser artifacts below,
 whose reproducibility is enforced by CI.

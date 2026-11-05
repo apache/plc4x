@@ -59,6 +59,20 @@ MODELS = (
         PLC4NET_ROOT / "drivers" / "s7",
         ("--manual-static-calls",),
     ),
+    (
+        "slmp",
+        REPOSITORY_ROOT
+        / "protocols"
+        / "slmp"
+        / "src"
+        / "main"
+        / "resources"
+        / "protocols"
+        / "slmp"
+        / "slmp.mspec",
+        PLC4NET_ROOT / "drivers" / "slmp",
+        (),
+    ),
 )
 
 
@@ -101,7 +115,16 @@ def differs(checked_in, generated):
         if (checked_in / path).read_bytes().replace(b"\r\n", b"\n")
         != (generated / path).read_bytes().replace(b"\r\n", b"\n")
     ]
-    if missing_files or unexpected_files or changed_files:
+    missing_final_newlines = [
+        root / path
+        for root, paths in (
+            (checked_in, checked_in_files),
+            (generated, generated_files),
+        )
+        for path in sorted(paths)
+        if path.suffix == ".cs" and not (root / path).read_bytes().endswith(b"\n")
+    ]
+    if missing_files or unexpected_files or changed_files or missing_final_newlines:
         print("Generated model differs:", file=sys.stderr)
         print(f"  checked-in model: {checked_in}", file=sys.stderr)
         print(f"  generated model: {generated}", file=sys.stderr)
@@ -111,6 +134,8 @@ def differs(checked_in, generated):
             print(f"  unexpected generated output: {path}", file=sys.stderr)
         for path in sorted(changed_files):
             print(f"  changed generated file: {path}", file=sys.stderr)
+        for path in missing_final_newlines:
+            print(f"  missing final LF: {path}", file=sys.stderr)
         return True
     return False
 
