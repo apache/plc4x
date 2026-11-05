@@ -59,6 +59,20 @@ MODELS = (
         PLC4NET_ROOT / "drivers" / "s7",
         ("--manual-static-calls",),
     ),
+    (
+        "slmp",
+        REPOSITORY_ROOT
+        / "protocols"
+        / "slmp"
+        / "src"
+        / "main"
+        / "resources"
+        / "protocols"
+        / "slmp"
+        / "slmp.mspec",
+        PLC4NET_ROOT / "drivers" / "slmp",
+        (),
+    ),
 )
 
 
