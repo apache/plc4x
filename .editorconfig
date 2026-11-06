@@ -30,7 +30,7 @@ insert_final_newline=true
 [plc4net/spi/generation/{ReadBuffer,WriteBuffer}.cs]
 insert_final_newline=true
 
-[plc4net/test/spi-test/generation/BufferTests.cs]
+[plc4net/test/{spi-test/generation/BufferTests,code-gen-test/PipelineTests}.cs]
 insert_final_newline=true
 
 [{*.yml,*.yaml}]

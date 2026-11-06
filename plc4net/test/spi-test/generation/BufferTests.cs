@@ -443,6 +443,69 @@ namespace org.apache.plc4net.spi.test.generation
             Assert.Equal(32, wb.GetPos());
         }
 
+        [Theory]
+        [InlineData(0.0d, 0x00000000u)]
+        [InlineData(-0.0d, 0x80000000u)]
+        [InlineData(double.PositiveInfinity, 0x7F800000u)]
+        [InlineData(double.NegativeInfinity, 0xFF800000u)]
+        [InlineData(double.MaxValue, 0x7F800000u)]
+        [InlineData(double.MinValue, 0xFF800000u)]
+        [InlineData(double.Epsilon, 0x00000000u)]
+        [InlineData(-double.Epsilon, 0x80000000u)]
+        [InlineData(0.3333333333333333d, 0x3EAAAAABu)]
+        [InlineData(-0.3333333333333333d, 0xBEAAAAABu)]
+        [InlineData(1e-40d, 0x000116C2u)]
+        [InlineData(-1e-40d, 0x800116C2u)]
+        public void Double_at_32_bits_preserves_float_conversion_semantics(double value, uint expectedBits)
+        {
+            foreach (var order in new[] { ByteOrder.LITTLE_ENDIAN, ByteOrder.BIG_ENDIAN })
+            {
+                // Expected bits are fixed independently of the double-to-float cast under test.
+                var wire = new byte[4];
+                for (var i = 0; i < wire.Length; i++)
+                {
+                    var shift = order == ByteOrder.LITTLE_ENDIAN ? i * 8 : (3 - i) * 8;
+                    wire[i] = (byte)(expectedBits >> shift);
+                }
+                var wb = new WriteBuffer();
+                wb.PushByteOrder(order);
+                wb.WriteDouble("", 32, value);
+                Assert.Equal(wire, wb.GetBytes());
+                Assert.Equal(32, wb.GetPos());
+
+                var rb = new ReadBuffer(wire);
+                rb.PushByteOrder(order);
+                var expected = (double)BitConverter.Int32BitsToSingle(unchecked((int)expectedBits));
+                Assert.Equal(BitConverter.DoubleToInt64Bits(expected),
+                    BitConverter.DoubleToInt64Bits(rb.ReadDouble("", 32)));
+                Assert.Equal(32, rb.GetPos());
+            }
+        }
+
+        [Theory]
+        [InlineData(ByteOrder.LITTLE_ENDIAN, "4523C17F")]
+        [InlineData(ByteOrder.BIG_ENDIAN, "7FC12345")]
+        public void Double_at_32_bits_converts_nan_without_requiring_payload_preservation(ByteOrder order, string hex)
+        {
+            var rb = new ReadBuffer(Convert.FromHexString(hex));
+            rb.PushByteOrder(order);
+            Assert.True(double.IsNaN(rb.ReadDouble("", 32)));
+            Assert.Equal(32, rb.GetPos());
+
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(order);
+            wb.WriteDouble("", 32, double.NaN);
+            Assert.Equal(32, wb.GetPos());
+            var wire = wb.GetBytes();
+            if (order == ByteOrder.LITTLE_ENDIAN)
+            {
+                Array.Reverse(wire);
+            }
+            var bits = ((uint)wire[0] << 24) | ((uint)wire[1] << 16) | ((uint)wire[2] << 8) | wire[3];
+            Assert.Equal(0x7F800000u, bits & 0x7F800000u);
+            Assert.NotEqual(0u, bits & 0x007FFFFFu);
+        }
+
         [Fact]
         public void Floating_point_byte_order_scopes_restore_the_default()
         {
