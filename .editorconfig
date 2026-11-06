@@ -26,6 +26,13 @@ indent_size=4
 [plc4net/drivers/{modbus,s7,slmp}/model/*.cs]
 insert_final_newline=true
 
+# Shared floating-point buffers and their regression tests.
+[plc4net/spi/generation/{ReadBuffer,WriteBuffer}.cs]
+insert_final_newline=true
+
+[plc4net/test/spi-test/generation/BufferTests.cs]
+insert_final_newline=true
+
 [{*.yml,*.yaml}]
 indent_style=space
 indent_size=2
