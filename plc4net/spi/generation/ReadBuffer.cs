@@ -221,22 +221,18 @@ namespace org.apache.plc4net.spi.generation
 
         public float ReadFloat(String logicalName, int bitLength)
         {
-            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
-            {
-                // No mspec here declares a little-endian float/double field yet;
-                // fail loud rather than silently reading it big-endian.
-                throw new NotImplementedException("Little-endian floating point is not supported yet");
-            }
             if (bitLength == 32)
             {
-                // Reinterpret the 32 raw bits as IEEE-754. Going via
-                // BitConverter.GetBytes would reorder them on a little-endian host.
-                EnsureReadable(32);
-                return BitConverter.Int32BitsToSingle((int)_reader.ReadBits(32));
+                // Apply wire byte order before reinterpreting the IEEE-754 bits.
+                return BitConverter.Int32BitsToSingle(unchecked((int)ReadUint(logicalName, 32)));
             }
             // KNX DPT 9.x: a 16 bit fixed-point form, not IEEE-754 half precision.
             if (bitLength == 16)
             {
+                if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+                {
+                    throw new NotImplementedException("Little-endian KNX floating point is not supported");
+                }
                 EnsureReadable(16);
                 var sign = _reader.ReadBool();
                 var exp = (int)_reader.ReadBits(4);
@@ -253,10 +249,6 @@ namespace org.apache.plc4net.spi.generation
 
         public double ReadDouble(String logicalName, int bitLength)
         {
-            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
-            {
-                throw new NotImplementedException("Little-endian floating point is not supported yet");
-            }
             if (bitLength == 32)
             {
                 // Was BitConverter.ToDouble over a 4 byte array, which always threw.
@@ -264,8 +256,7 @@ namespace org.apache.plc4net.spi.generation
             }
             if (bitLength == 64)
             {
-                EnsureReadable(64);
-                return BitConverter.Int64BitsToDouble((long)_reader.ReadBits(64));
+                return BitConverter.Int64BitsToDouble(unchecked((long)ReadUlong(logicalName, 64)));
             }
             throw new NotImplementedException("This encoding is currently not supported");
         }

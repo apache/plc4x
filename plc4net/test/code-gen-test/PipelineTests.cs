@@ -579,6 +579,92 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
+        public async System.Threading.Tasks.Task A_generated_little_endian_float_model_reads_and_writes_fixed_wire_bytes()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var model = MspecModelBuilder.Build(@"
+[type FloatPacket byteOrder='""LITTLE_ENDIAN""'
+    [simple float 32 singleValue]
+    [simple float 64 doubleValue]
+]
+");
+            var files = new CSharpGenerator(model, "lefloat", "lefloat.readwrite").Generate();
+            var temp = Path.Combine(Path.GetTempPath(), "plc4net-float-model-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                foreach (var (relativePath, source) in files)
+                {
+                    var target = Path.Combine(temp, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                    File.WriteAllText(target, source);
+                }
+                var spiProject = Path.Combine(repoRoot!, "plc4net", "spi", "spi.csproj");
+                File.WriteAllText(Path.Combine(temp, "generated.csproj"),
+                    "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><TargetFramework>net8.0</TargetFramework>"
+                    + "<OutputType>Exe</OutputType><Nullable>enable</Nullable></PropertyGroup><ItemGroup>"
+                    + $"<ProjectReference Include=\"{SecurityElement.Escape(spiProject)}\" />"
+                    + "</ItemGroup></Project>");
+                File.WriteAllText(Path.Combine(temp, "Program.cs"), """
+                    using System;
+                    using System.Linq;
+                    using lefloat.readwrite.model;
+                    using org.apache.plc4net.spi.generation;
+
+                    var wire = Convert.FromHexString("0000C03F00000000000036C0");
+                    var packet = new FloatPacket(1.5f, -22.0d);
+                    var writer = new WriteBuffer();
+                    packet.Serialize(writer);
+                    if (!writer.GetBytes().SequenceEqual(wire) || writer.GetPos() != 96 || packet.GetLengthInBits() != 96)
+                        throw new Exception("Generated little-endian serialization differs from the fixed wire vector.");
+                    // The generated serializer must restore the caller's default byte order.
+                    writer.WriteFloat("tail", 32, 1.5f);
+                    if (!writer.GetBytes().SequenceEqual(wire.Concat(Convert.FromHexString("3FC00000"))))
+                        throw new Exception("Generated serializer did not restore byte order.");
+                    var reader = new ReadBuffer(wire.Concat(Convert.FromHexString("3FC00000")).ToArray());
+                    var parsed = FloatPacket.StaticParse(reader);
+                    if (parsed.SingleValue != 1.5f || parsed.DoubleValue != -22.0d || reader.GetPos() != 96)
+                        throw new Exception("Generated little-endian parser differs from the fixed wire vector.");
+                    if (reader.ReadFloat("tail", 32) != 1.5f || reader.GetPos() != 128)
+                        throw new Exception("Generated parser did not restore byte order.");
+                    Console.WriteLine("Generated floating-point model verified.");
+                    """);
+                var start = new ProcessStartInfo("dotnet")
+                {
+                    WorkingDirectory = temp,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                };
+                foreach (var argument in new[] { "run", "--project", "generated.csproj", "--configuration", "Release", "--property:RestoreIgnoreFailedSources=true" })
+                {
+                    start.ArgumentList.Add(argument);
+                }
+                using var process = Process.Start(start)!;
+                var stdout = process.StandardOutput.ReadToEndAsync();
+                var stderr = process.StandardError.ReadToEndAsync();
+                var exit = process.WaitForExitAsync();
+                if (await System.Threading.Tasks.Task.WhenAny(exit, System.Threading.Tasks.Task.Delay(60000)) != exit)
+                {
+                    process.Kill(entireProcessTree: true);
+                    await exit;
+                    Assert.Fail("Timed out running the generated floating-point model.");
+                }
+                var output = await stdout;
+                var errors = await stderr;
+                Assert.True(process.ExitCode == 0, output + errors);
+                Assert.Contains("Generated floating-point model verified.", output);
+            }
+            finally
+            {
+                if (Directory.Exists(temp))
+                {
+                    Directory.Delete(temp, recursive: true);
+                }
+            }
+        }
+
+        [Fact]
         public void An_unrecognized_byte_order_is_still_rejected()
         {
             var model = MspecModelBuilder.Build(@"

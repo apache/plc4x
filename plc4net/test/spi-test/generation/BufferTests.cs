@@ -365,22 +365,208 @@ namespace org.apache.plc4net.spi.test.generation
             Assert.Equal((ushort)0x1234, rb.ReadUshort("", 16)); // back to default big-endian
         }
 
+        [Theory]
+        [InlineData(0x00000000u, "00000000", "00000000")]
+        [InlineData(0x80000000u, "00000080", "80000000")]
+        [InlineData(0x3FC00000u, "0000C03F", "3FC00000")]
+        [InlineData(0xC1B00000u, "0000B0C1", "C1B00000")]
+        [InlineData(0x00000001u, "01000000", "00000001")]
+        [InlineData(0x00800000u, "00008000", "00800000")]
+        [InlineData(0x7F7FFFFFu, "FFFF7F7F", "7F7FFFFF")]
+        [InlineData(0x7F800000u, "0000807F", "7F800000")]
+        [InlineData(0xFF800000u, "000080FF", "FF800000")]
+        [InlineData(0x7FC12345u, "4523C17F", "7FC12345")]
+        public void Float32_matches_fixed_wire_vectors_in_both_byte_orders(
+            uint bits, string littleEndianHex, string bigEndianHex)
+        {
+            foreach (var order in new[] { ByteOrder.LITTLE_ENDIAN, ByteOrder.BIG_ENDIAN })
+            {
+                var wire = Convert.FromHexString(order == ByteOrder.LITTLE_ENDIAN ? littleEndianHex : bigEndianHex);
+                var rb = new ReadBuffer(wire);
+                rb.PushByteOrder(order);
+                Assert.Equal(bits, unchecked((uint)BitConverter.SingleToInt32Bits(rb.ReadFloat("", 32))));
+                Assert.Equal(32, rb.GetPos());
+
+                var wb = new WriteBuffer();
+                wb.PushByteOrder(order);
+                wb.WriteFloat("", 32, BitConverter.Int32BitsToSingle(unchecked((int)bits)));
+                Assert.Equal(wire, wb.GetBytes());
+                Assert.Equal(32, wb.GetPos());
+            }
+        }
+
+        [Theory]
+        [InlineData(0x0000000000000000UL, "0000000000000000", "0000000000000000")]
+        [InlineData(0x8000000000000000UL, "0000000000000080", "8000000000000000")]
+        [InlineData(0x3FF8000000000000UL, "000000000000F83F", "3FF8000000000000")]
+        [InlineData(0xC036000000000000UL, "00000000000036C0", "C036000000000000")]
+        [InlineData(0x0000000000000001UL, "0100000000000000", "0000000000000001")]
+        [InlineData(0x0010000000000000UL, "0000000000001000", "0010000000000000")]
+        [InlineData(0x7FEFFFFFFFFFFFFFUL, "FFFFFFFFFFFFEF7F", "7FEFFFFFFFFFFFFF")]
+        [InlineData(0x7FF0000000000000UL, "000000000000F07F", "7FF0000000000000")]
+        [InlineData(0xFFF0000000000000UL, "000000000000F0FF", "FFF0000000000000")]
+        [InlineData(0x7FF8123456789ABCUL, "BC9A78563412F87F", "7FF8123456789ABC")]
+        public void Double64_matches_fixed_wire_vectors_in_both_byte_orders(
+            ulong bits, string littleEndianHex, string bigEndianHex)
+        {
+            foreach (var order in new[] { ByteOrder.LITTLE_ENDIAN, ByteOrder.BIG_ENDIAN })
+            {
+                var wire = Convert.FromHexString(order == ByteOrder.LITTLE_ENDIAN ? littleEndianHex : bigEndianHex);
+                var rb = new ReadBuffer(wire);
+                rb.PushByteOrder(order);
+                Assert.Equal(bits, unchecked((ulong)BitConverter.DoubleToInt64Bits(rb.ReadDouble("", 64))));
+                Assert.Equal(64, rb.GetPos());
+
+                var wb = new WriteBuffer();
+                wb.PushByteOrder(order);
+                wb.WriteDouble("", 64, BitConverter.Int64BitsToDouble(unchecked((long)bits)));
+                Assert.Equal(wire, wb.GetBytes());
+                Assert.Equal(64, wb.GetPos());
+            }
+        }
+
+        [Theory]
+        [InlineData(ByteOrder.LITTLE_ENDIAN, "0000C03F")]
+        [InlineData(ByteOrder.BIG_ENDIAN, "3FC00000")]
+        public void Double_at_32_bits_uses_float_wire_encoding(ByteOrder order, string hex)
+        {
+            var wire = Convert.FromHexString(hex);
+            var rb = new ReadBuffer(wire);
+            rb.PushByteOrder(order);
+            Assert.Equal(1.5d, rb.ReadDouble("", 32));
+            Assert.Equal(32, rb.GetPos());
+
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(order);
+            wb.WriteDouble("", 32, 1.5d);
+            Assert.Equal(wire, wb.GetBytes());
+            Assert.Equal(32, wb.GetPos());
+        }
+
+        [Theory]
+        [InlineData(0.0d, 0x00000000u)]
+        [InlineData(-0.0d, 0x80000000u)]
+        [InlineData(double.PositiveInfinity, 0x7F800000u)]
+        [InlineData(double.NegativeInfinity, 0xFF800000u)]
+        [InlineData(double.MaxValue, 0x7F800000u)]
+        [InlineData(double.MinValue, 0xFF800000u)]
+        [InlineData(double.Epsilon, 0x00000000u)]
+        [InlineData(-double.Epsilon, 0x80000000u)]
+        [InlineData(0.3333333333333333d, 0x3EAAAAABu)]
+        [InlineData(-0.3333333333333333d, 0xBEAAAAABu)]
+        [InlineData(1e-40d, 0x000116C2u)]
+        [InlineData(-1e-40d, 0x800116C2u)]
+        public void Double_at_32_bits_preserves_float_conversion_semantics(double value, uint expectedBits)
+        {
+            foreach (var order in new[] { ByteOrder.LITTLE_ENDIAN, ByteOrder.BIG_ENDIAN })
+            {
+                // Expected bits are fixed independently of the double-to-float cast under test.
+                var wire = new byte[4];
+                for (var i = 0; i < wire.Length; i++)
+                {
+                    var shift = order == ByteOrder.LITTLE_ENDIAN ? i * 8 : (3 - i) * 8;
+                    wire[i] = (byte)(expectedBits >> shift);
+                }
+                var wb = new WriteBuffer();
+                wb.PushByteOrder(order);
+                wb.WriteDouble("", 32, value);
+                Assert.Equal(wire, wb.GetBytes());
+                Assert.Equal(32, wb.GetPos());
+
+                var rb = new ReadBuffer(wire);
+                rb.PushByteOrder(order);
+                var expected = (double)BitConverter.Int32BitsToSingle(unchecked((int)expectedBits));
+                Assert.Equal(BitConverter.DoubleToInt64Bits(expected),
+                    BitConverter.DoubleToInt64Bits(rb.ReadDouble("", 32)));
+                Assert.Equal(32, rb.GetPos());
+            }
+        }
+
+        [Theory]
+        [InlineData(ByteOrder.LITTLE_ENDIAN, "4523C17F")]
+        [InlineData(ByteOrder.BIG_ENDIAN, "7FC12345")]
+        public void Double_at_32_bits_converts_nan_without_requiring_payload_preservation(ByteOrder order, string hex)
+        {
+            var rb = new ReadBuffer(Convert.FromHexString(hex));
+            rb.PushByteOrder(order);
+            Assert.True(double.IsNaN(rb.ReadDouble("", 32)));
+            Assert.Equal(32, rb.GetPos());
+
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(order);
+            wb.WriteDouble("", 32, double.NaN);
+            Assert.Equal(32, wb.GetPos());
+            var wire = wb.GetBytes();
+            if (order == ByteOrder.LITTLE_ENDIAN)
+            {
+                Array.Reverse(wire);
+            }
+            var bits = ((uint)wire[0] << 24) | ((uint)wire[1] << 16) | ((uint)wire[2] << 8) | wire[3];
+            Assert.Equal(0x7F800000u, bits & 0x7F800000u);
+            Assert.NotEqual(0u, bits & 0x007FFFFFu);
+        }
+
         [Fact]
-        public void Little_endian_floating_point_fails_loudly_instead_of_reading_big_endian()
+        public void Floating_point_byte_order_scopes_restore_the_default()
+        {
+            var wb = new WriteBuffer();
+            wb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            wb.WriteFloat("", 32, 1.5f);
+            wb.PushByteOrder(ByteOrder.BIG_ENDIAN);
+            wb.WriteDouble("", 64, 1.5d);
+            wb.PopByteOrder();
+            wb.WriteDouble("", 64, 1.5d);
+            wb.PopByteOrder();
+            wb.WriteFloat("", 32, 1.5f);
+            var wire = Convert.FromHexString("0000C03F3FF8000000000000000000000000F83F3FC00000");
+            Assert.Equal(wire, wb.GetBytes());
+
+            var rb = new ReadBuffer(wire);
+            rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            Assert.Equal(1.5f, rb.ReadFloat("", 32));
+            rb.PushByteOrder(ByteOrder.BIG_ENDIAN);
+            Assert.Equal(1.5d, rb.ReadDouble("", 64));
+            rb.PopByteOrder();
+            Assert.Equal(1.5d, rb.ReadDouble("", 64));
+            rb.PopByteOrder();
+            Assert.Equal(1.5f, rb.ReadFloat("", 32));
+            Assert.Equal(192, rb.GetPos());
+        }
+
+        [Theory]
+        [InlineData(ByteOrder.LITTLE_ENDIAN)]
+        [InlineData(ByteOrder.BIG_ENDIAN)]
+        public void Truncated_floating_point_reads_fail_without_consuming_data(ByteOrder order)
+        {
+            var rb32 = new ReadBuffer(new byte[3]);
+            rb32.PushByteOrder(order);
+            Assert.Throws<ParseException>(() => rb32.ReadFloat("", 32));
+            Assert.Throws<ParseException>(() => rb32.ReadDouble("", 32));
+            Assert.Equal(0, rb32.GetPos());
+            var rb64 = new ReadBuffer(new byte[7]);
+            rb64.PushByteOrder(order);
+            Assert.Throws<ParseException>(() => rb64.ReadDouble("", 64));
+            Assert.Equal(0, rb64.GetPos());
+        }
+
+        [Fact]
+        public void Little_endian_knx_float_remains_unsupported_without_consuming_data()
         {
             var rb = new ReadBuffer(new byte[] { 0x41, 0xB0, 0x00, 0x00 });
             rb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
 
-            Assert.Throws<NotImplementedException>(() => rb.ReadFloat("", 32));
+            Assert.Throws<NotImplementedException>(() => rb.ReadFloat("", 16));
+            Assert.Equal(0, rb.GetPos());
         }
 
         [Fact]
-        public void Little_endian_floating_point_write_fails_loudly_too()
+        public void Little_endian_knx_float_write_remains_unsupported_without_emitting_data()
         {
             var wb = new WriteBuffer();
             wb.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
 
-            Assert.Throws<NotImplementedException>(() => wb.WriteFloat("", 32, 1.0f));
+            Assert.Throws<NotImplementedException>(() => wb.WriteFloat("", 16, 1.0f));
+            Assert.Equal(0, wb.GetPos());
         }
 
         [Fact]

@@ -22,8 +22,7 @@ insert_final_newline=false
 indent_style=space
 indent_size=4
 
-# Protocol models emitted by the PLC4Net C# generator.
-[plc4net/drivers/{modbus,s7,slmp}/model/*.cs]
+[*.cs]
 insert_final_newline=true
 
 [{*.yml,*.yaml}]

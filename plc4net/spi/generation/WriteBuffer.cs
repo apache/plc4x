@@ -132,22 +132,17 @@ namespace org.apache.plc4net.spi.generation
 
         public void WriteFloat(String logicalName, int bitLength, float value)
         {
-            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
-            {
-                // No mspec here declares a little-endian float/double field yet;
-                // fail loud rather than silently writing it big-endian.
-                throw new NotImplementedException("Little-endian floating point is not supported yet");
-            }
             if (bitLength == 32)
             {
-                // The previous version called WriteByte(8, bytes[i]) against a
-                // (value, bitLength) signature, so it wrote the constant 8 with a
-                // bit width taken from the data.
-                _writer.WriteBits(unchecked((uint)BitConverter.SingleToInt32Bits(value)), 32);
+                WriteUint(logicalName, 32, unchecked((uint)BitConverter.SingleToInt32Bits(value)));
                 return;
             }
             if (bitLength == 16)
             {
+                if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
+                {
+                    throw new NotImplementedException("Little-endian KNX floating point is not supported");
+                }
                 // KNX DPT 9.x fixed point. The previous version had an empty branch
                 // here and silently emitted nothing.
                 WriteKnxFloat16(value);
@@ -189,10 +184,6 @@ namespace org.apache.plc4net.spi.generation
 
         public void WriteDouble(String logicalName, int bitLength, double value)
         {
-            if (_byteOrder.Peek() == ByteOrder.LITTLE_ENDIAN)
-            {
-                throw new NotImplementedException("Little-endian floating point is not supported yet");
-            }
             if (bitLength == 32)
             {
                 WriteFloat(logicalName, 32, (float)value);
@@ -200,7 +191,7 @@ namespace org.apache.plc4net.spi.generation
             }
             if (bitLength == 64)
             {
-                _writer.WriteBits(unchecked((ulong)BitConverter.DoubleToInt64Bits(value)), 64);
+                WriteUlong(logicalName, 64, unchecked((ulong)BitConverter.DoubleToInt64Bits(value)));
                 return;
             }
             throw new NotImplementedException("This encoding is currently not supported");
