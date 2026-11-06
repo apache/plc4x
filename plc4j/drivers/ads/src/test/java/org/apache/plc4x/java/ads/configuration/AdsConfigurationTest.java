@@ -39,6 +39,7 @@ class AdsConfigurationTest {
         cfg.setTimeoutRequest(1234);
         cfg.setLoadSymbolAndDataTypeTables(false);
         cfg.setMaxDataTypeTableDepth(64);
+        cfg.setMaxSumCommandItems(2);
 
         assertEquals(target, cfg.getTargetAmsNetId());
         assertEquals(851, cfg.getTargetAmsPort());
@@ -47,6 +48,7 @@ class AdsConfigurationTest {
         assertEquals(1234, cfg.getTimeoutRequest());
         assertFalse(cfg.isLoadSymbolAndDataTypeTables());
         assertEquals(64, cfg.getMaxDataTypeTableDepth());
+        assertEquals(2, cfg.getMaxSumCommandItems());
         assertTrue(cfg.toString().contains("targetAmsPort=851"));
     }
 
@@ -67,6 +69,33 @@ class AdsConfigurationTest {
 
         assertEquals(20, defaults.getMaxDataTypeTableDepth(),
             "an unconfigured connection must get a usable budget, never 0");
+    }
+
+    /**
+     * The cap is Beckhoff's recommended ceiling for sub-ADS calls in one sum command. A default
+     * that failed to resolve would arrive as 0, and chunk() rejects a non-positive chunk size, so
+     * every sum read and write would fail outright - the default is pinned here rather than
+     * assumed.
+     */
+    @Test
+    void maxSumCommandItemsDefaultsToFiveHundred() throws Exception {
+        AdsConfiguration defaults = new ConfigurationFactory()
+            .createConfiguration(AdsConfiguration.class, REQUIRED_PARAMS);
+
+        assertEquals(500, defaults.getMaxSumCommandItems(),
+            "Beckhoff recommends at most 500 sub-ADS calls per sum command");
+    }
+
+    /**
+     * Lowering the cap is what makes the split testable end-to-end: the driver testsuite drives
+     * three tags with a cap of two rather than putting 501 tags in XML.
+     */
+    @Test
+    void maxSumCommandItemsCanBeLowered() throws Exception {
+        AdsConfiguration lowered = new ConfigurationFactory().createConfiguration(
+            AdsConfiguration.class, REQUIRED_PARAMS + "&max-sum-command-items=2");
+
+        assertEquals(2, lowered.getMaxSumCommandItems());
     }
 
     @Test
