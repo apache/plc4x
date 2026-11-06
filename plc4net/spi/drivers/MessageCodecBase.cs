@@ -100,7 +100,7 @@ namespace org.apache.plc4net.spi.drivers
         /// <summary>Parses exactly one complete frame.</summary>
         protected abstract TMessage ParseMessage(ReadBuffer readBuffer);
 
-        public void Send(TMessage message)
+        public virtual void Send(TMessage message)
         {
             if (message == null)
             {
