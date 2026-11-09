@@ -156,8 +156,11 @@ type Connection struct {
 	requestInterceptor interceptors.RequestInterceptor
 	sync.Mutex
 
-	// indicates if the tunneling requests loop is running
-	handleTunnelingRequests bool
+	// connectionCtx lives from Connect to Close. Work the connection does on its own, like
+	// handling the tunnelling requests nobody waits for, runs on it rather than on the context
+	// Connect was called with, which usually ends as soon as the connection is handed out.
+	connectionCtx       context.Context
+	cancelConnectionCtx context.CancelFunc
 
 	connectionId string
 	tracer       tracer.Tracer
@@ -224,15 +227,14 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 			spiModel.NewDefaultPlcWriteResponse,
 			_options...,
 		),
-		subscribers:             []*Subscriber{},
-		valueCache:              map[uint16][]byte{},
-		valueCacheMutex:         sync.RWMutex{},
-		metadata:                &ConnectionMetadata{},
-		DeviceConnections:       map[uint16]*KnxDeviceConnection{},
-		handleTunnelingRequests: true,
-		passLogToModel:          passLoggerToModel,
-		log:                     customLogger,
-		_options:                _options,
+		subscribers:       []*Subscriber{},
+		valueCache:        map[uint16][]byte{},
+		valueCacheMutex:   sync.RWMutex{},
+		metadata:          &ConnectionMetadata{},
+		DeviceConnections: map[uint16]*KnxDeviceConnection{},
+		passLogToModel:    passLoggerToModel,
+		log:               customLogger,
+		_options:          _options,
 	}
 
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
@@ -266,6 +268,8 @@ func (m *Connection) GetTracer() tracer.Tracer {
 func (m *Connection) Connect(ctx context.Context) error {
 	// Reset invalidation state before we start a new connection attempt.
 	m.invalidated.Store(false)
+	connectionCtx, cancelConnectionCtx := context.WithCancel(context.WithoutCancel(ctx))
+	m.connectionCtx, m.cancelConnectionCtx = connectionCtx, cancelConnectionCtx
 
 	// Open the UDP Connection
 	err := m.messageCodec.Connect(ctx)
@@ -338,8 +342,14 @@ func (m *Connection) Connect(ctx context.Context) error {
 					}
 				}()
 				defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
-				for m.handleTunnelingRequests {
-					incomingMessage := <-defaultIncomingMessageChannel
+				for {
+					var incomingMessage spi.Message
+					select {
+					case <-connectionCtx.Done():
+						m.log.Debug().Msg("Tunneling handler stopped")
+						return
+					case incomingMessage = <-defaultIncomingMessageChannel:
+					}
 					tunnelingRequest, ok := incomingMessage.(driverModel.TunnelingRequest)
 					if !ok {
 						tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
@@ -379,10 +389,9 @@ func (m *Connection) Connect(ctx context.Context) error {
 							m.removeDeviceConnection(sourceAddress)
 						}
 					} else {
-						m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
+						m.handleIncomingTunnelingRequest(connectionCtx, tunnelingRequest)
 					}
 				}
-				m.log.Warn().Msg("Tunneling handler shat down")
 			})
 
 			// Start sending periodic ConnectionStateRequests, otherwise the
@@ -435,6 +444,7 @@ func serviceFamilyName(serviceId driverModel.ServiceId) string {
 
 func (m *Connection) doSomethingAndClose(something func() error) error {
 	err := something()
+	m.stopConnectionContext()
 	return errors.Join(err, m.messageCodec.Disconnect())
 }
 
@@ -497,6 +507,13 @@ func (m *Connection) sendKeepalive() {
 	}
 }
 
+// stopConnectionContext ends the work the connection does on its own.
+func (m *Connection) stopConnectionContext() {
+	if m.cancelConnectionCtx != nil {
+		m.cancelConnectionCtx()
+	}
+}
+
 // stopConnectionStateTimer stops the keepalive-ticker. Calling it more than once
 // (or without a prior start) is a no-op.
 func (m *Connection) stopConnectionStateTimer() {
@@ -532,6 +549,8 @@ func (m *Connection) Close() error {
 
 	// Send a disconnect request from the gateway.
 	_, err := m.sendGatewayDisconnectionRequest(ctx)
+	// Whatever the gateway says, the connection is gone.
+	m.stopConnectionContext()
 	if err != nil {
 		return errors.Wrap(err, "got an error while disconnecting")
 	}

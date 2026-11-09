@@ -29,9 +29,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
@@ -411,7 +413,10 @@ func (g *fakeKnxGateway) sendLoop() {
 // closes it when the test ends.
 func connectToFakeGateway(t *testing.T, ctx context.Context, g *fakeKnxGateway) *Connection {
 	t.Helper()
-	_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+	// The frames the codec logs at trace level slow it down so much, under the race detector,
+	// that the gateway would miss its ACKs.
+	_options := append(testutils.EnrichOptionsWithOptionsForTesting(t),
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t).Level(zerolog.DebugLevel)))
 	transportInstance, err := udp.NewTransport(_options...).CreateTransportInstance(g.url(), map[string][]string{}, _options...)
 	require.NoError(t, err)
 	connection := NewConnection(transportInstance, map[string][]string{}, NewTagHandler(), _options...)

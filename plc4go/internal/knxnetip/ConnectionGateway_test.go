@@ -198,3 +198,51 @@ func Test_Connection_DeviceReadMemory_noData(t *testing.T) {
 		t.Fatal("DeviceReadMemory did not complete")
 	}
 }
+
+// A connection outlives the context it was connected with (the connection cache cancels it as
+// soon as the connection is handed out), but the tunnelling ACKs, the heartbeat and everything
+// else written to the socket later failed with "i/o timeout" once that context's deadline had
+// passed, and the tunnelling handler sent its T_ACKs on the cancelled context.
+func Test_Connection_outlivesTheConnectContext(t *testing.T) {
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connectCtx, cancelConnect := context.WithTimeout(t.Context(), time.Second)
+	connection := connectToFakeGateway(t, connectCtx, gateway)
+	cancelConnect()
+	time.Sleep(1500 * time.Millisecond) // past the deadline of the connect context
+
+	gateway.SendGroupValueWrite(driverModel.NewKnxAddress(1, 1, 5), []byte{0x09, 0x01}, 1, nil)
+	time.Sleep(1200 * time.Millisecond) // the gateway waits a second for the ACK
+	assert.Empty(t, gateway.Violations())
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	result := <-connection.DeviceReadProperty(ctx, driverModel.NewKnxAddress(1, 1, 5), 0, 56, 1, 1)
+	require.NoError(t, result.err)
+	assert.Equal(t, uint16(15), result.value.GetUint16())
+	require.NoError(t, connection.Ping(ctx))
+	time.Sleep(1200 * time.Millisecond)
+	assert.Empty(t, gateway.Violations())
+}
+
+// The tunnelling handler acknowledged unsolicited T_Data_Connected frames of a device on the
+// context the connection was opened with; once that was cancelled, nothing was acknowledged.
+func Test_Connection_acknowledgesUnsolicitedDataAfterTheConnectContextEnded(t *testing.T) {
+	device := newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil)
+	gateway := newFakeKnxGateway(t, device)
+	connectCtx, cancelConnect := context.WithCancel(t.Context())
+	connectToFakeGateway(t, connectCtx, gateway)
+	cancelConnect()
+
+	// A device repeats a response whose T_ACK it did not get.
+	gateway.mu.Lock()
+	device.connected, device.pending, device.seqSend = true, true, 0
+	gateway.deviceSends(device, driverModel.NewApduDataContainer(true, 0, driverModel.NewApduDataDeviceDescriptorResponse(0, []byte{0x07, 0xB0})))
+	gateway.mu.Unlock()
+
+	require.Eventually(t, func() bool {
+		gateway.mu.Lock()
+		defer gateway.mu.Unlock()
+		return !device.pending
+	}, 3*time.Second, 10*time.Millisecond, "the response was never acknowledged")
+	assert.Empty(t, gateway.Violations())
+}
