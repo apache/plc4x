@@ -21,11 +21,16 @@ package knxnetip
 
 import (
 	"bytes"
+	"context"
 	"testing"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
 // Tests of the connection against fakeKnxGateway, over the real codec and udp transport.
@@ -52,4 +57,47 @@ func Test_Connection_codecUsesTheConnectionLogger(t *testing.T) {
 	connectToFakeGateway(t, t.Context(), gateway)
 
 	assert.Empty(t, global.String())
+}
+
+// Individual addresses were compared with == and != on the generated model types, which are
+// pointers, so a frame never matched the address it was meant for: a device that does not exist
+// was only noticed when the context ran out, instead of from the gateway's negative L_Data.con.
+func Test_Connection_DeviceConnect_deviceThatDoesNotExist(t *testing.T) {
+	gateway := newFakeKnxGateway(t)
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	select {
+	case result := <-connection.DeviceConnect(ctx, driverModel.NewKnxAddress(1, 1, 9)):
+		require.Error(t, result.err)
+		assert.ErrorContains(t, result.err, "error connecting to device at: 1.1.9")
+		assert.NotErrorIs(t, result.err, context.DeadlineExceeded)
+	case <-ctx.Done():
+		t.Fatal("DeviceConnect did not complete")
+	}
+	_, connected := connection.getDeviceConnection(driverModel.NewKnxAddress(1, 1, 9))
+	assert.False(t, connected)
+	assert.Empty(t, gateway.Violations())
+}
+
+// The device connections were keyed by the address pointer, so a lookup with another instance of
+// the same address never found the connection.
+func Test_Connection_deviceConnectionsAreKeyedByAddressValue(t *testing.T) {
+	connection := &Connection{DeviceConnections: map[uint16]*KnxDeviceConnection{}}
+	deviceConnection := &KnxDeviceConnection{address: driverModel.NewKnxAddress(1, 2, 3)}
+	connection.addDeviceConnection(deviceConnection)
+
+	found, ok := connection.getDeviceConnection(driverModel.NewKnxAddress(1, 2, 3))
+	assert.True(t, ok)
+	assert.Same(t, deviceConnection, found)
+	_, ok = connection.getDeviceConnection(driverModel.NewKnxAddress(1, 2, 4))
+	assert.False(t, ok)
+	addresses := connection.deviceConnectionAddresses()
+	require.Len(t, addresses, 1)
+	assert.Equal(t, "1.2.3", KnxAddressToString(addresses[0]))
+
+	connection.removeDeviceConnection(driverModel.NewKnxAddress(1, 2, 3))
+	_, ok = connection.getDeviceConnection(driverModel.NewKnxAddress(1, 2, 3))
+	assert.False(t, ok)
 }

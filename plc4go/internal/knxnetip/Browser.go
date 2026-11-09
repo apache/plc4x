@@ -188,13 +188,19 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 			readResult.GetResponse().GetResponseCode("groupAddressTableAddress").GetName())
 	}
 	groupAddressTableStartAddress := readResult.GetResponse().GetValue("groupAddressTableAddress").GetUint32()
+	// The read connected to the device, if it wasn't already, and read its device descriptor.
+	deviceConnection, ok := m.connection.getDeviceConnection(knxAddress)
+	if !ok {
+		return nil, errors.Errorf("not connected to the device at %s", knxAddressString)
+	}
+	deviceDescriptor := deviceConnection.deviceDescriptor
 
 	// Then read one byte at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
 	readRequestBuilder = m.connection.ReadRequestBuilder()
 	// Depending on the type of device, query an USINT (1 byte) or UINT (2 bytes)
 	// TODO: Do this correctly depending on the device connection device-descriptor
-	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddTagAddress("numberOfAddressTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressTableStartAddress))
 	} else {
@@ -216,7 +222,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	}
 	numGroupAddresses := readResult.GetResponse().GetValue("numberOfAddressTableEntries").GetUint16()
 
-	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		groupAddressTableStartAddress += 2
 	} else {
 		groupAddressTableStartAddress += 3
@@ -285,7 +291,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// Then read one uint16 at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
 	readRequestBuilder = m.connection.ReadRequestBuilder()
-	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddTagAddress("numberOfGroupAddressAssociationTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressAssociationTableAddress))
 	} else {
@@ -314,7 +320,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	// Reasons for splitting up:
 	// - Max APDU Size exceeded
 	// - Max 63 bytes readable in one request, due to max of count tag
-	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddTagAddress("groupAddressAssociationTable",
 			fmt.Sprintf("%s#%X[0..%d]:UDINT", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries-1))
 	} else {
@@ -339,14 +345,14 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 	groupAddressComObjectNumberMapping := map[driverModel.KnxGroupAddress]uint16{}
 	if readResult.GetResponse().GetValue("groupAddressAssociationTable").IsList() {
 		for _, groupAddressAssociation := range readResult.GetResponse().GetValue("groupAddressAssociationTable").GetList() {
-			groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[knxAddress].deviceDescriptor,
+			groupAddress, comObjectNumber := m.parseAssociationTable(deviceDescriptor,
 				knxGroupAddresses, groupAddressAssociation)
 			if groupAddress != nil {
 				groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 			}
 		}
 	} else {
-		groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[knxAddress].deviceDescriptor,
+		groupAddress, comObjectNumber := m.parseAssociationTable(deviceDescriptor,
 			knxGroupAddresses, readResult.GetResponse().GetValue("groupAddressAssociationTable"))
 		if groupAddress != nil {
 			groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
@@ -360,7 +366,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 
 	// In case of System B devices, the com object table is read as a property array
 	// In this case we can even read only the com objects we're interested in.
-	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder = m.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
 		for _, comObjectNumber := range groupAddressComObjectNumberMapping {
@@ -422,7 +428,7 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 				nil,
 			))
 		}
-	} else if (m.connection.DeviceConnections[knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
+	} else if (deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
 		// Com Object Table is programmatically, so we have to look up the address which is extracted from the XML data
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application

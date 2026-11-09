@@ -94,6 +94,7 @@ func (m *ConnectionMetadata) CanBrowse() bool {
 }
 
 type KnxDeviceConnection struct {
+	address          driverModel.KnxAddress
 	counter          uint8
 	deviceDescriptor uint16
 	maxApdu          uint16
@@ -148,7 +149,9 @@ type Connection struct {
 	CommunicationChannelId        uint8
 	SequenceCounter               int32
 	TunnelingRequestExpectationId int32
-	DeviceConnections             map[driverModel.KnxAddress]*KnxDeviceConnection
+	// DeviceConnections holds the transport layer connections to the devices on the bus, keyed by
+	// knxAddressKey. It is guarded by the connection's mutex: use the deviceConnection accessors.
+	DeviceConnections map[uint16]*KnxDeviceConnection
 
 	requestInterceptor interceptors.RequestInterceptor
 	sync.Mutex
@@ -225,7 +228,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		valueCache:              map[uint16][]byte{},
 		valueCacheMutex:         sync.RWMutex{},
 		metadata:                &ConnectionMetadata{},
-		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
+		DeviceConnections:       map[uint16]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
 		passLogToModel:          passLoggerToModel,
 		log:                     customLogger,
@@ -373,10 +376,7 @@ func (m *Connection) Connect(ctx context.Context) error {
 					if ok {
 						_, ok := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
 						if ok {
-							if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
-								// Remove the connection
-								delete(m.DeviceConnections, sourceAddress)
-							}
+							m.removeDeviceConnection(sourceAddress)
 						}
 					} else {
 						m.handleIncomingTunnelingRequest(ctx, tunnelingRequest)
@@ -520,7 +520,7 @@ func (m *Connection) Close() error {
 	m.stopConnectionStateTimer()
 
 	// Disconnect from all knx devices we are still connected to.
-	for targetAddress := range m.DeviceConnections {
+	for _, targetAddress := range m.deviceConnectionAddresses() {
 		disconnects := m.DeviceDisconnect(ctx, targetAddress)
 		select {
 		case _ = <-disconnects:

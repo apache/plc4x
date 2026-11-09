@@ -98,7 +98,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					// If this is an individual address, and it is targeted at us, we need to ack that.
 					ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 					targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
-					if targetAddress == m.ClientKnxAddress {
+					if knxAddressEqual(targetAddress, m.ClientKnxAddress) {
 						m.log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
@@ -110,7 +110,7 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 				// If this is an individual address, and it is targeted at us, we need to ack that.
 				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 				targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
-				if targetAddress == m.ClientKnxAddress {
+				if knxAddressEqual(targetAddress, m.ClientKnxAddress) {
 					m.log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
@@ -247,6 +247,46 @@ func knxAddressEqual(a, b driverModel.KnxAddress) bool {
 		a.GetSubGroup() == b.GetSubGroup()
 }
 
+// knxAddressKey turns an individual knx address into a value which identifies it, for use as a
+// map key: the generated model types are pointers, so two instances of one address would be two
+// different keys.
+func knxAddressKey(address driverModel.KnxAddress) uint16 {
+	return uint16(address.GetMainGroup()&0x0F)<<12 | uint16(address.GetMiddleGroup()&0x0F)<<8 | uint16(address.GetSubGroup())
+}
+
+// getDeviceConnection returns the transport layer connection to the device at the given address.
+func (m *Connection) getDeviceConnection(address driverModel.KnxAddress) (*KnxDeviceConnection, bool) {
+	m.Lock()
+	defer m.Unlock()
+	connection, ok := m.DeviceConnections[knxAddressKey(address)]
+	return connection, ok
+}
+
+// addDeviceConnection registers the transport layer connection to a device.
+func (m *Connection) addDeviceConnection(connection *KnxDeviceConnection) {
+	m.Lock()
+	defer m.Unlock()
+	m.DeviceConnections[knxAddressKey(connection.address)] = connection
+}
+
+// removeDeviceConnection forgets the transport layer connection to the device at the given address.
+func (m *Connection) removeDeviceConnection(address driverModel.KnxAddress) {
+	m.Lock()
+	defer m.Unlock()
+	delete(m.DeviceConnections, knxAddressKey(address))
+}
+
+// deviceConnectionAddresses returns the addresses of all devices with a transport layer connection.
+func (m *Connection) deviceConnectionAddresses() []driverModel.KnxAddress {
+	m.Lock()
+	defer m.Unlock()
+	addresses := make([]driverModel.KnxAddress, 0, len(m.DeviceConnections))
+	for _, connection := range m.DeviceConnections {
+		addresses = append(addresses, connection.address)
+	}
+	return addresses
+}
+
 func (m *Connection) sliceEqual(a, b []byte) bool {
 	if len(a) != len(b) {
 		return false
@@ -287,7 +327,7 @@ func (m *Connection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 
 	m.Lock()
 	defer m.Unlock()
 
-	connection, ok := m.DeviceConnections[targetAddress]
+	connection, ok := m.DeviceConnections[knxAddressKey(targetAddress)]
 	if !ok {
 		return 0
 	}

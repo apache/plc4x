@@ -491,7 +491,7 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 		}
 		// Check if the address matches
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		if ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()) != targetAddress {
+		if !knxAddressEqual(ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()), targetAddress) {
 			return false
 		}
 		apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainer)
@@ -581,7 +581,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 		// Check if the address matches
-		if curTargetAddress != targetAddress {
+		if !knxAddressEqual(curTargetAddress, targetAddress) {
 			return false
 		}
 		apduControlContainer, ok := dataFrameExt.GetApdu().(driverModel.ApduControlContainer)
@@ -628,7 +628,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress driverModel.KnxAddress, authenticationLevel uint8, buildingKey []byte) (driverModel.ApduDataExtAuthorizeResponse, error) {
 	// Check if there is already a connection available,
 	// if not, create a new one.
-	connection, ok := m.DeviceConnections[targetAddress]
+	connection, ok := m.getDeviceConnection(targetAddress)
 	if !ok {
 		return nil, errors.New("not connected")
 	}
@@ -692,10 +692,10 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 		// Check if the addresses match
-		if curTargetAddress != m.ClientKnxAddress {
+		if !knxAddressEqual(curTargetAddress, m.ClientKnxAddress) {
 			return false
 		}
-		if dataFrameExt.GetSourceAddress() != targetAddress {
+		if !knxAddressEqual(dataFrameExt.GetSourceAddress(), targetAddress) {
 			return false
 		}
 		// Check if the counter matches
@@ -788,7 +788,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 			return false
 		}
 		// Check if the address matches
-		if dataFrameExt.GetSourceAddress() != targetAddress {
+		if !knxAddressEqual(dataFrameExt.GetSourceAddress(), targetAddress) {
 			return false
 		}
 		// Check if the counter matches
@@ -891,7 +891,7 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 			return false
 		}
 		// Check if the address matches
-		if dataFrameExt.GetSourceAddress() != targetAddress {
+		if !knxAddressEqual(dataFrameExt.GetSourceAddress(), targetAddress) {
 			return false
 		}
 		// Check if the counter matches
@@ -1003,7 +1003,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 				return false
 			}
 			// Check if the address matches
-			if dataFrameExt.GetSourceAddress() != targetAddress {
+			if !knxAddressEqual(dataFrameExt.GetSourceAddress(), targetAddress) {
 				return false
 			}
 			// Check if the counter matches
@@ -1127,7 +1127,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 			}
 
 			// Check if the address matches
-			if dataFrameExt.GetSourceAddress() != targetAddress {
+			if !knxAddressEqual(dataFrameExt.GetSourceAddress(), targetAddress) {
 				return false
 			}
 			// Check if the counter matches
@@ -1218,12 +1218,12 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 				return false
 			}
 			// Check if the addresses match
-			if dataFrameExt.GetSourceAddress() != m.ClientKnxAddress {
+			if !knxAddressEqual(dataFrameExt.GetSourceAddress(), m.ClientKnxAddress) {
 				return false
 			}
 			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
-			if curTargetAddress != targetAddress {
+			if !knxAddressEqual(curTargetAddress, targetAddress) {
 				return false
 			}
 			// Check if the counter matches

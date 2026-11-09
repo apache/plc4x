@@ -221,7 +221,7 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 			}
 		}()
 		// If we're already connected, use that connection instead.
-		if connection, ok := m.DeviceConnections[targetAddress]; ok {
+		if connection, ok := m.getDeviceConnection(targetAddress); ok {
 			sendResponse(connection, nil)
 			return
 		}
@@ -239,12 +239,13 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 
 		// Create the new connection object.
 		connection := &KnxDeviceConnection{
+			address: targetAddress,
 			counter: 0,
 			// I was told this value on the knx-forum.
 			// Seems the max payload is 3 bytes less ...
 			maxApdu: 0, // This is the default max APDU Size
 		}
-		m.DeviceConnections[targetAddress] = connection
+		m.addDeviceConnection(connection)
 
 		// If the connection request was successful, try to read the device-descriptor
 		deviceDescriptorResponse, err := m.sendDeviceDeviceDescriptorReadRequest(ctx, targetAddress)
@@ -325,11 +326,11 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 				sendResponse(nil, errors.Errorf("panic-ed %v", err))
 			}
 		}()
-		if connection, ok := m.DeviceConnections[targetAddress]; ok {
+		if connection, ok := m.getDeviceConnection(targetAddress); ok {
 			_, err := m.sendDeviceDisconnectionRequest(ctx, targetAddress)
 
 			// Remove the connection from the list.
-			delete(m.DeviceConnections, targetAddress)
+			m.removeDeviceConnection(targetAddress)
 
 			sendResponse(connection, err)
 		} else {
@@ -367,7 +368,7 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
-		connection, ok := m.DeviceConnections[targetAddress]
+		connection, ok := m.getDeviceConnection(targetAddress)
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
 			var deviceConnectionResult KnxDeviceConnectResult
@@ -435,7 +436,7 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
-		connection, ok := m.DeviceConnections[targetAddress]
+		connection, ok := m.getDeviceConnection(targetAddress)
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
 			var deviceConnectionResult KnxDeviceConnectResult
@@ -528,7 +529,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
-		connection, ok := m.DeviceConnections[targetAddress]
+		connection, ok := m.getDeviceConnection(targetAddress)
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
 			var deviceConnectionResult KnxDeviceConnectResult
@@ -607,7 +608,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 
 		// Check if there is already a connection available,
 		// if not, create a new one.
-		connection, ok := m.DeviceConnections[targetAddress]
+		connection, ok := m.getDeviceConnection(targetAddress)
 		if !ok {
 			connections := m.DeviceConnect(ctx, targetAddress)
 			var deviceConnectionResult KnxDeviceConnectResult
