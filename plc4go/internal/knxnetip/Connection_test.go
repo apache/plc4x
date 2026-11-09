@@ -271,3 +271,50 @@ func Test_ConnectionMetadata_GetConnectionAttributes(t *testing.T) {
 	assert.Equal(t, "10:20:30:40:50:60", attributes["DeviceMacAddress"])
 	assert.Equal(t, "core, tunneling", attributes["SupportedServices"])
 }
+
+// A T_ACK is sent for a T_Data_Connected, and for nothing else (KNX 3/3/4, transport layer):
+// not for an unnumbered T_Data_Individual, and not for a control PDU like a T_ACK, T_NAK or
+// T_Connect, which would answer the device's acknowledgement with one of ours.
+func Test_Connection_handleIncomingTunnelingRequest_acknowledgesOnlyConnectedData(t *testing.T) {
+	device := driverModel.NewKnxAddress(1, 1, 5)
+	client := driverModel.NewKnxAddress(1, 1, 250)
+	frameTo := func(apdu driverModel.Apdu) driverModel.TunnelingRequest {
+		return driverModel.NewTunnelingRequest(
+			driverModel.NewTunnelingRequestDataBlock(1, 0),
+			driverModel.NewLDataInd(0, nil, driverModel.NewLDataExtended(true, true, driverModel.CEMIPriority_SYSTEM,
+				false, false, false, 6, 0, device, KnxAddressToByteArray(client), apdu)))
+	}
+	descriptor := driverModel.NewApduDataDeviceDescriptorResponse(0, []byte{0x07, 0xB0})
+	for _, test := range []struct {
+		name    string
+		apdu    driverModel.Apdu
+		wantAck bool
+	}{
+		{"T_Data_Connected", driverModel.NewApduDataContainer(true, 3, descriptor), true},
+		{"T_Data_Individual", driverModel.NewApduDataContainer(false, 0, descriptor), false},
+		{"T_ACK", driverModel.NewApduControlContainer(true, 3, driverModel.NewApduControlAck()), false},
+		{"T_NAK", driverModel.NewApduControlContainer(true, 3, driverModel.NewApduControlNack()), false},
+		{"T_Connect", driverModel.NewApduControlContainer(false, 0, driverModel.NewApduControlConnect()), false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			connection, codec := newStubbedConnection(t, nil, nil)
+			connection.ClientKnxAddress = client
+			connection.CommunicationChannelId = 1
+
+			connection.handleIncomingTunnelingRequest(t.Context(), frameTo(test.apdu))
+			connection.wg.Wait()
+
+			if !test.wantAck {
+				assert.Empty(t, codec.sentRequests)
+				return
+			}
+			require.Len(t, codec.sentRequests, 1)
+			frame := codec.sentRequests[0].(driverModel.TunnelingRequest).GetCemi().(driverModel.LDataReq).GetDataFrame().(driverModel.LDataExtended)
+			ack, ok := frame.GetApdu().(driverModel.ApduControlContainer)
+			require.True(t, ok)
+			assert.IsType(t, driverModel.NewApduControlAck(), ack.GetControlApdu())
+			assert.Equal(t, uint8(3), ack.GetCounter())
+			assert.Equal(t, KnxAddressToByteArray(device), frame.GetDestinationAddress())
+		})
+	}
+}

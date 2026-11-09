@@ -92,10 +92,13 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 
 					m.handleValueCacheUpdate(ctx, destinationAddress, payload)
 				default:
-					if dataFrame.GetGroupAddress() {
+					// A T_Data_Connected to us (numbered data, on a transport layer connection)
+					// has to be acknowledged, also one nobody waits for, e.g. a response the
+					// device repeats because our T_ACK got lost. Nothing else is acknowledged:
+					// not a T_Data_Individual, and not a group telegram (KNX 3/3/4).
+					if dataFrame.GetGroupAddress() || !container.GetNumbered() {
 						return
 					}
-					// If this is an individual address, and it is targeted at us, we need to ack that.
 					ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 					targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
 					if knxAddressEqual(targetAddress, m.ClientKnxAddress) {
@@ -104,16 +107,9 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					}
 				}
 			case driverModel.ApduControlContainer:
-				if dataFrame.GetGroupAddress() {
-					return
-				}
-				// If this is an individual address, and it is targeted at us, we need to ack that.
-				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-				targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
-				if knxAddressEqual(targetAddress, m.ClientKnxAddress) {
-					m.log.Info().Msg("Acknowleding an unhandled contol message.")
-					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
-				}
+				// Control PDUs (T_Connect, T_Disconnect, T_ACK, T_NAK) are never acknowledged:
+				// a T_ACK answering the device's T_ACK would acknowledge a response it may not
+				// even have sent yet.
 			}
 		default:
 			m.log.Info().Msg("Unknown unhandled message.")
