@@ -290,12 +290,10 @@ func (m *Connection) Connect(ctx context.Context) error {
 	m.metadata.SupportedServices = []string{}
 	supportsTunneling := false
 	for _, serviceId := range searchResponse.GetDibSuppSvcFamilies().GetServiceIds() {
-		m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.(interface{ GetTypeName() string }).GetTypeName())
+		m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceFamilyName(serviceId))
 		// If this is an instance of the "tunneling", service, this connection supports tunneling
-		_, ok := serviceId.(driverModel.KnxNetIpTunneling)
-		if ok {
+		if _, ok := serviceId.(driverModel.KnxNetIpTunneling); ok {
 			supportsTunneling = true
-			break
 		}
 	}
 
@@ -405,6 +403,34 @@ func (m *Connection) Connect(ctx context.Context) error {
 
 	m.invalidated.Store(false)
 	return nil
+}
+
+// serviceFamilyName names a service family of a SEARCH_RESPONSE for the connection metadata,
+// e.g. "KnxNetIpTunneling v1".
+func serviceFamilyName(serviceId driverModel.ServiceId) string {
+	var name string
+	switch serviceId.(type) {
+	case driverModel.KnxNetIpCore:
+		name = "KnxNetIpCore"
+	case driverModel.KnxNetIpDeviceManagement:
+		name = "KnxNetIpDeviceManagement"
+	case driverModel.KnxNetIpTunneling:
+		name = "KnxNetIpTunneling"
+	case driverModel.KnxNetIpRouting:
+		name = "KnxNetIpRouting"
+	case driverModel.KnxNetRemoteLogging:
+		name = "KnxNetRemoteLogging"
+	case driverModel.KnxNetRemoteConfigurationAndDiagnosis:
+		name = "KnxNetRemoteConfigurationAndDiagnosis"
+	case driverModel.KnxNetObjectServer:
+		name = "KnxNetObjectServer"
+	default:
+		return fmt.Sprintf("ServiceFamily(0x%02X)", serviceId.GetServiceType())
+	}
+	if versioned, ok := serviceId.(interface{ GetVersion() uint8 }); ok {
+		return fmt.Sprintf("%s v%d", name, versioned.GetVersion())
+	}
+	return name
 }
 
 func (m *Connection) doSomethingAndClose(something func() error) error {
