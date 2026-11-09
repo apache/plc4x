@@ -246,3 +246,24 @@ func Test_Connection_acknowledgesUnsolicitedDataAfterTheConnectContextEnded(t *t
 	}, 3*time.Second, 10*time.Millisecond, "the response was never acknowledged")
 	assert.Empty(t, gateway.Violations())
 }
+
+// The GroupValue_Response was matched by comparing its source, an individual address, with the
+// group address that was read, via reflect.DeepEqual: never equal, so a read of a group address
+// without a cached value always timed out.
+func Test_Connection_ReadGroupAddress(t *testing.T) {
+	gateway := newFakeKnxGateway(t)
+	gateway.SetGroupValue([]byte{0x09, 0x03}, []byte{0x00, 45})
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	usint := driverModel.KnxDatapointType_USINT
+	select {
+	case result := <-connection.ReadGroupAddress(ctx, []byte{0x09, 0x03}, &usint):
+		require.NoError(t, result.err)
+		assert.Equal(t, uint8(45), result.value.GetUint8())
+	case <-ctx.Done():
+		t.Fatal("ReadGroupAddress did not complete")
+	}
+	assert.Empty(t, gateway.Violations())
+}

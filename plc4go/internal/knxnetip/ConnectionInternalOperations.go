@@ -21,7 +21,6 @@ package knxnetip
 
 import (
 	"context"
-	"reflect"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -266,8 +265,9 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		if !ok {
 			return false
 		}
-		// Check if it's a value response for the given group address
-		return dataFrameExt.GetGroupAddress() && reflect.DeepEqual(dataFrameExt.GetSourceAddress(), groupAddress)
+		// Check if it's a value response for the given group address: the group address is the
+		// destination, the source is the device that answered.
+		return dataFrameExt.GetGroupAddress() && m.sliceEqual(dataFrameExt.GetDestinationAddress(), groupAddress)
 	}, func(message spi.Message) error {
 		tunnelingRequest := message.(driverModel.TunnelingRequest)
 		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
