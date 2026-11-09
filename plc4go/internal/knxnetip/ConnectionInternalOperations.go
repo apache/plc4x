@@ -662,7 +662,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		),
 	)
 
-	result := make(chan driverModel.ApduDataExtAuthorizeResponse, 1)
+	result := make(chan deviceResponse[driverModel.ApduDataExtAuthorizeResponse], 1)
 	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, "send_device_authentication", deviceAuthenticationRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
@@ -711,18 +711,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		apduDataOther := apduDataContainer.GetDataApdu().(driverModel.ApduDataOther)
 		apduAuthorizeResponse := apduDataOther.GetExtendedApdu().(driverModel.ApduDataExtAuthorizeResponse)
 
-		// Acknowledge the receipt
-		_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-			// If the error flag is set, there was an error authenticating
-			if lDataInd.GetDataFrame().GetErrorFlag() {
-				errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(targetAddress))
-			} else if err != nil {
-				errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-			} else {
-				result <- apduAuthorizeResponse
-			}
-		})
-
+		result <- deviceResponse[driverModel.ApduDataExtAuthorizeResponse]{apduAuthorizeResponse, lDataInd.GetDataFrame().GetErrorFlag()}
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
@@ -738,7 +727,14 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 
 	select {
 	case response := <-result:
-		return response, nil
+		if err := m.acknowledgeDeviceResponse(ctx, targetAddress, counter); err != nil {
+			return nil, err
+		}
+		// If the error flag is set, there was an error authenticating
+		if response.errorFlag {
+			return nil, errors.New("error authenticating at device: " + KnxAddressToString(targetAddress))
+		}
+		return response.response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
 	}
@@ -772,7 +768,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		),
 	)
 
-	result := make(chan driverModel.ApduDataDeviceDescriptorResponse, 1)
+	result := make(chan deviceResponse[driverModel.ApduDataDeviceDescriptorResponse], 1)
 	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, "send_device_descriptor_read_request", deviceDescriptorReadRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
@@ -811,18 +807,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		dataContainer := dataFrame.GetApdu().(driverModel.ApduDataContainer)
 		deviceDescriptorResponse := dataContainer.GetDataApdu().(driverModel.ApduDataDeviceDescriptorResponse)
 
-		// Acknowledge the receipt
-		_ = m.sendDeviceAck(ctx, targetAddress, dataFrame.GetApdu().GetCounter(), func(err error) {
-			// If the error flag is set, there was an error authenticating
-			if lDataInd.GetDataFrame().GetErrorFlag() {
-				errorResult <- errors.New("error reading device descriptor from device: " + KnxAddressToString(targetAddress))
-			} else if err != nil {
-				errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-			} else {
-				result <- deviceDescriptorResponse
-			}
-		})
-
+		result <- deviceResponse[driverModel.ApduDataDeviceDescriptorResponse]{deviceDescriptorResponse, lDataInd.GetDataFrame().GetErrorFlag()}
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
@@ -838,7 +823,13 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 
 	select {
 	case response := <-result:
-		return response, nil
+		if err := m.acknowledgeDeviceResponse(ctx, targetAddress, counter); err != nil {
+			return nil, err
+		}
+		if response.errorFlag {
+			return nil, errors.New("error reading device descriptor from device: " + KnxAddressToString(targetAddress))
+		}
+		return response.response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
 	}
@@ -875,7 +866,7 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		),
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyValueResponse, 1)
+	result := make(chan deviceResponse[driverModel.ApduDataExtPropertyValueResponse], 1)
 	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, "send_device_property_read_request", propertyReadRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequest)
@@ -919,18 +910,7 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		dataApduOther := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
 		propertyValueResponse := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyValueResponse)
 
-		// Acknowledge the receipt
-		_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-			// If the error flag is set, there was an error authenticating
-			if lDataInd.GetDataFrame().GetErrorFlag() {
-				errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(targetAddress))
-			} else if err != nil {
-				errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-			} else {
-				result <- propertyValueResponse
-			}
-		})
-
+		result <- deviceResponse[driverModel.ApduDataExtPropertyValueResponse]{propertyValueResponse, lDataInd.GetDataFrame().GetErrorFlag()}
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
@@ -946,7 +926,13 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 
 	select {
 	case response := <-result:
-		return response, nil
+		if err := m.acknowledgeDeviceResponse(ctx, targetAddress, counter); err != nil {
+			return nil, err
+		}
+		if response.errorFlag {
+			return nil, errors.New("error reading property value from device: " + KnxAddressToString(targetAddress))
+		}
+		return response.response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
 	}
@@ -983,7 +969,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 		),
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse, 1)
+	result := make(chan deviceResponse[driverModel.ApduDataExtPropertyDescriptionResponse], 1)
 	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(
 		ctx,
@@ -1032,18 +1018,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 			dataApduOther := dataContainer.GetDataApdu().(driverModel.ApduDataOther)
 			propertyDescriptionResponse := dataApduOther.GetExtendedApdu().(driverModel.ApduDataExtPropertyDescriptionResponse)
 
-			// Acknowledge the receipt
-			_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-				// If the error flag is set, there was an error authenticating
-				if lDataInd.GetDataFrame().GetErrorFlag() {
-					errorResult <- errors.Errorf("error reading property description from device: %s", KnxAddressToString(targetAddress))
-				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
-				} else {
-					result <- propertyDescriptionResponse
-				}
-			})
-
+			result <- deviceResponse[driverModel.ApduDataExtPropertyDescriptionResponse]{propertyDescriptionResponse, lDataInd.GetDataFrame().GetErrorFlag()}
 			return nil
 		},
 		func(err error) error {
@@ -1061,7 +1036,13 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 
 	select {
 	case response := <-result:
-		return response, nil
+		if err := m.acknowledgeDeviceResponse(ctx, targetAddress, counter); err != nil {
+			return nil, err
+		}
+		if response.errorFlag {
+			return nil, errors.Errorf("error reading property description from device: %s", KnxAddressToString(targetAddress))
+		}
+		return response.response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
 	}
@@ -1097,7 +1078,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 		),
 	)
 
-	result := make(chan driverModel.ApduDataMemoryResponse, 1)
+	result := make(chan deviceResponse[driverModel.ApduDataMemoryResponse], 1)
 	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(
 		ctx,
@@ -1143,18 +1124,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 			dataContainer := dataFrameExt.GetApdu().(driverModel.ApduDataContainer)
 			dataApduMemoryResponse := dataContainer.GetDataApdu().(driverModel.ApduDataMemoryResponse)
 
-			// Acknowledge the receipt
-			_ = m.sendDeviceAck(ctx, targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
-				// If the error flag is set, there was an error authenticating
-				if lDataInd.GetDataFrame().GetErrorFlag() {
-					errorResult <- errors.Errorf("error reading memory from device: %s", KnxAddressToString(targetAddress))
-				} else if err != nil {
-					errorResult <- errors.Errorf("error sending ack to device: %s", KnxAddressToString(targetAddress))
-				} else {
-					result <- dataApduMemoryResponse
-				}
-			})
-
+			result <- deviceResponse[driverModel.ApduDataMemoryResponse]{dataApduMemoryResponse, lDataInd.GetDataFrame().GetErrorFlag()}
 			return nil
 		},
 		func(err error) error {
@@ -1172,9 +1142,47 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 
 	select {
 	case response := <-result:
-		return response, nil
+		if err := m.acknowledgeDeviceResponse(ctx, targetAddress, counter); err != nil {
+			return nil, err
+		}
+		if response.errorFlag {
+			return nil, errors.Errorf("error reading memory from device: %s", KnxAddressToString(targetAddress))
+		}
+		return response.response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
+	}
+}
+
+// deviceResponse is a T_Data_Connected response of a device, handed from the expectation
+// handler to the request waiting for it.
+type deviceResponse[T any] struct {
+	response  T
+	errorFlag bool
+}
+
+// acknowledgeDeviceResponse sends the T_ACK for a T_Data_Connected response of a device and waits
+// for the gateway to confirm it. It must never be called from an expectation handler: those run
+// on the codec worker while it holds the expectation lock, which sending a request needs, so the
+// worker would wait for itself, and with it every tunnelling ACK the gateway waits for.
+func (m *Connection) acknowledgeDeviceResponse(ctx context.Context, targetAddress driverModel.KnxAddress, counter uint8) error {
+	ackResult := make(chan error, 1)
+	if err := m.sendDeviceAck(ctx, targetAddress, counter, func(err error) {
+		select {
+		case ackResult <- err:
+		default:
+		}
+	}); err != nil {
+		return errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
+	}
+	select {
+	case err := <-ackResult:
+		if err != nil {
+			return errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
+		}
+		return nil
+	case <-ctx.Done():
+		return errors.Wrapf(ctx.Err(), "error sending ack to device: %s", KnxAddressToString(targetAddress))
 	}
 }
 

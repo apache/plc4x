@@ -22,6 +22,7 @@ package knxnetip
 import (
 	"bytes"
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -100,4 +101,31 @@ func Test_Connection_deviceConnectionsAreKeyedByAddressValue(t *testing.T) {
 	connection.removeDeviceConnection(driverModel.NewKnxAddress(1, 2, 3))
 	_, ok = connection.getDeviceConnection(driverModel.NewKnxAddress(1, 2, 3))
 	assert.False(t, ok)
+}
+
+// The responses of a device were acknowledged from inside the expectation handler, which runs on
+// the codec worker while it holds the expectation lock; registering the T_ACK's expectation then
+// waited for that lock forever. The codec stopped, and with it the acknowledgement of the
+// gateway's tunnelling requests.
+func Test_Connection_DeviceConnect_existingDevice(t *testing.T) {
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	select {
+	case result := <-connection.DeviceConnect(ctx, driverModel.NewKnxAddress(1, 1, 5)):
+		require.NoError(t, result.err)
+		assert.Equal(t, uint16(0x07B0), result.connection.deviceDescriptor)
+		assert.Equal(t, uint16(15), result.connection.maxApdu)
+	case <-ctx.Done():
+		t.Fatal("DeviceConnect did not complete")
+	}
+	_, connected := connection.getDeviceConnection(driverModel.NewKnxAddress(1, 1, 5))
+	assert.True(t, connected)
+
+	// The gateway still gets its tunnelling requests acknowledged.
+	gateway.SendGroupValueWrite(driverModel.NewKnxAddress(1, 1, 5), []byte{0x09, 0x01}, 1, nil)
+	time.Sleep(1500 * time.Millisecond)
+	assert.NotContains(t, strings.Join(gateway.Violations(), "\n"), "never acknowledged")
 }
