@@ -20,8 +20,11 @@
 package knxnetip
 
 import (
+	"bytes"
 	"testing"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,4 +38,18 @@ func Test_Connection_Connect_listsTheServiceFamilies(t *testing.T) {
 
 	assert.Equal(t, []string{"KnxNetIpCore v1", "KnxNetIpTunneling v1"}, connection.metadata.SupportedServices)
 	assert.Empty(t, gateway.Violations())
+}
+
+// The connection created its codec without the options, so the codec logged to the global
+// logger instead of the connection's.
+func Test_Connection_codecUsesTheConnectionLogger(t *testing.T) {
+	var global bytes.Buffer
+	previous := log.Logger
+	log.Logger = zerolog.New(&global).Level(zerolog.TraceLevel)
+	t.Cleanup(func() { log.Logger = previous })
+
+	gateway := newFakeKnxGateway(t)
+	connectToFakeGateway(t, t.Context(), gateway)
+
+	assert.Empty(t, global.String())
 }

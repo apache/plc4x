@@ -244,7 +244,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 			connection.buildingKey = bc
 		}
 	}
-	connection.messageCodec = NewMessageCodec(transportInstance, connection.interceptIncomingMessage)
+	connection.messageCodec = NewMessageCodec(transportInstance, connection.interceptIncomingMessage, _options...)
 	return connection
 }
 
