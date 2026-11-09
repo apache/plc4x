@@ -300,6 +300,26 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	return result
 }
 
+// connectedDevice returns the transport layer connection to the device at the given address,
+// connecting to it first if there is none yet.
+func (m *Connection) connectedDevice(ctx context.Context, targetAddress driverModel.KnxAddress) (*KnxDeviceConnection, error) {
+	if connection, ok := m.getDeviceConnection(targetAddress); ok {
+		return connection, nil
+	}
+	select {
+	case result := <-m.DeviceConnect(ctx, targetAddress):
+		if result.err != nil {
+			return nil, errors.Wrapf(result.err, "error connecting to device at: %s", KnxAddressToString(targetAddress))
+		}
+		if result.connection == nil {
+			return nil, errors.Errorf("unable to connect to device at: %s", KnxAddressToString(targetAddress))
+		}
+		return result.connection, nil
+	case <-ctx.Done():
+		return nil, errors.Wrap(ctx.Err(), "context done while connecting to device")
+	}
+}
+
 func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceDisconnectResult {
 	result := make(chan KnxDeviceDisconnectResult, 1)
 
@@ -366,27 +386,9 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 				sendResponse(errors.Errorf("panic-ed %v", err))
 			}
 		}()
-		// Check if there is already a connection available,
-		// if not, create a new one.
-		connection, ok := m.getDeviceConnection(targetAddress)
-		if !ok {
-			connections := m.DeviceConnect(ctx, targetAddress)
-			var deviceConnectionResult KnxDeviceConnectResult
-			select {
-			case deviceConnectionResult = <-connections:
-			case <-ctx.Done():
-				sendResponse(errors.Wrap(ctx.Err(), "context done while connecting to device"))
-				return
-			}
-			// If we didn't get a connect, abort
-			if deviceConnectionResult.err != nil {
-				sendResponse(errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)))
-			}
-		}
-
-		// If we successfully got a connection, read the property
-		if connection == nil {
-			sendResponse(errors.New("unable to connect to device"))
+		// Connect to the device, if there is no connection yet.
+		if _, err := m.connectedDevice(ctx, targetAddress); err != nil {
+			sendResponse(err)
 			return
 		}
 		authenticationLevel := uint8(0)
@@ -434,30 +436,9 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
-		// Check if there is already a connection available,
-		// if not, create a new one.
-		connection, ok := m.getDeviceConnection(targetAddress)
-		if !ok {
-			connections := m.DeviceConnect(ctx, targetAddress)
-			var deviceConnectionResult KnxDeviceConnectResult
-			select {
-			case deviceConnectionResult = <-connections:
-			case <-ctx.Done():
-				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
-				return
-			}
-			// If we didn't get a connect, abort
-			if deviceConnectionResult.err != nil {
-				sendResponse(nil,
-					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
-				)
-			}
-		}
-
-		// If we successfully got a connection, read the property
-		if connection == nil {
-			sendResponse(nil, 0, errors.New("unable to connect to device"))
+		// Connect to the device, if there is no connection yet.
+		if _, err := m.connectedDevice(ctx, targetAddress); err != nil {
+			sendResponse(nil, 0, err)
 			return
 		}
 		propertyValueResponse, err := m.sendDevicePropertyReadRequest(ctx, targetAddress, objectId, propertyId, propertyIndex, numElements)
@@ -527,33 +508,11 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 				sendResponse(nil, 0, errors.Errorf("panic-ed %v", err))
 			}
 		}()
-		// Check if there is already a connection available,
-		// if not, create a new one.
-		connection, ok := m.getDeviceConnection(targetAddress)
-		if !ok {
-			connections := m.DeviceConnect(ctx, targetAddress)
-			var deviceConnectionResult KnxDeviceConnectResult
-			select {
-			case deviceConnectionResult = <-connections:
-			case <-ctx.Done():
-				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
-				return
-			}
-			// If we didn't get a connect, abort
-			if deviceConnectionResult.err != nil {
-				sendResponse(
-					nil,
-					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
-				)
-			}
-		}
-
-		if connection == nil {
-			sendResponse(nil, 0, errors.New("unable to connect to device"))
+		// Connect to the device, if there is no connection yet.
+		if _, err := m.connectedDevice(ctx, targetAddress); err != nil {
+			sendResponse(nil, 0, err)
 			return
 		}
-		// If we successfully got a connection, read the property
 		propertyDescriptionResponse, err := m.sendDevicePropertyDescriptionReadRequest(ctx, targetAddress, objectId, propertyId)
 		if err != nil {
 			sendResponse(nil, 0, err)
@@ -606,31 +565,10 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			datapointType = &dpt
 		}
 
-		// Check if there is already a connection available,
-		// if not, create a new one.
-		connection, ok := m.getDeviceConnection(targetAddress)
-		if !ok {
-			connections := m.DeviceConnect(ctx, targetAddress)
-			var deviceConnectionResult KnxDeviceConnectResult
-			select {
-			case deviceConnectionResult = <-connections:
-			case <-ctx.Done():
-				sendResponse(nil, 0, errors.Wrap(ctx.Err(), "context done while connecting to device"))
-				return
-			}
-			// If we didn't get a connect, abort
-			if deviceConnectionResult.err != nil {
-				sendResponse(
-					nil,
-					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
-				)
-			}
-		}
-
-		if connection == nil {
-			// Complete the result channel so callers blocked on it don't hang forever.
-			sendResponse(nil, 0, errors.New("unable to connect to device"))
+		// Connect to the device, if there is no connection yet.
+		connection, err := m.connectedDevice(ctx, targetAddress)
+		if err != nil {
+			sendResponse(nil, 0, err)
 			return
 		}
 		// If we successfully got a connection, read the property

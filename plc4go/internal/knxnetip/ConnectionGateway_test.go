@@ -129,3 +129,17 @@ func Test_Connection_DeviceConnect_existingDevice(t *testing.T) {
 	time.Sleep(1500 * time.Millisecond)
 	assert.NotContains(t, strings.Join(gateway.Violations(), "\n"), "never acknowledged")
 }
+
+// DeviceReadProperty, DeviceReadPropertyDescriptor, DeviceReadMemory and DeviceAuthenticate
+// connect to the device first if they are not connected yet, but ignored the connection
+// DeviceConnect returned and reported "unable to connect to device" every time.
+func Test_Connection_DeviceReadProperty_connectsFirst(t *testing.T) {
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+	result := <-connection.DeviceReadProperty(ctx, driverModel.NewKnxAddress(1, 1, 5), 0, 56, 1, 1)
+	require.NoError(t, result.err)
+	assert.Equal(t, uint16(15), result.value.GetUint16())
+}
