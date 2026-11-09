@@ -354,7 +354,9 @@ func (m *Connection) Connect(ctx context.Context) error {
 					if !ok {
 						tunnelingResponse, ok := incomingMessage.(driverModel.TunnelingResponse)
 						if ok {
-							m.log.Warn().Interface("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
+							// The gateway's ACK of a tunnelling request nobody waits for: only
+							// group value writes wait for theirs.
+							m.log.Trace().Interface("tunnelingResponse", tunnelingResponse).Msg("Got an unhandled TunnelingResponse message")
 						} else {
 							m.log.Warn().Interface("incomingMessage", incomingMessage).Msg("Not a TunnelingRequest or TunnelingResponse message")
 						}
