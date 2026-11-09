@@ -21,10 +21,12 @@ package knxnetip
 
 import (
 	"context"
+	"encoding/hex"
 
 	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type ValueDecoder struct {
@@ -39,10 +41,57 @@ func NewValueDecoder(rb utils.ReadBuffer) ValueDecoder {
 
 func (m ValueDecoder) Decode(typeName string) api.PlcValue {
 	ctx := context.TODO()
-	datatype, _ := driverModel.KnxDatapointTypeByName(typeName)
+	datatype, ok := driverModel.KnxDatapointTypeByName(typeName)
+	if !ok {
+		return nil
+	}
 	plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, m.rb, datatype)
 	if err != nil {
 		return nil
 	}
 	return plcValue
+}
+
+// RawGroupValue is the payload of a group value whose datatype the driver doesn't know, as it
+// arrives on the bus: the byte carrying the embedded data bits, then the data bytes. It is the
+// api.RawPlcValue the api promises for such a value: the application decodes it with
+// RawDecodeValue once it knows the datatype, and may do so again after RawReset.
+type RawGroupValue struct {
+	spiValues.PlcRawByteArray
+	readBuffer utils.ReadBufferByteBased
+}
+
+var _ api.RawPlcValue = (*RawGroupValue)(nil)
+
+func NewRawGroupValue(payload []byte) *RawGroupValue {
+	return &RawGroupValue{
+		PlcRawByteArray: spiValues.NewPlcRawByteArray(payload),
+		readBuffer:      utils.NewReadBufferByteBased(payload),
+	}
+}
+
+// RawDecodeValue decodes the next value of the given datatype, a KnxDatapointType name, from the
+// payload. It returns nil if the payload holds no such value, and leaves nothing more to decode
+// then, so a caller looping on RawHasMore ends.
+func (m *RawGroupValue) RawDecodeValue(typeName string) api.PlcValue {
+	plcValue := NewValueDecoder(m.readBuffer).Decode(typeName)
+	if plcValue == nil {
+		m.readBuffer.Reset(uint32(len(m.Values)))
+	}
+	return plcValue
+}
+
+// RawHasMore tells if there is payload left to decode.
+func (m *RawGroupValue) RawHasMore() bool {
+	return m.readBuffer.HasMore(1)
+}
+
+// RawReset starts decoding the payload from its beginning again.
+func (m *RawGroupValue) RawReset() {
+	m.readBuffer.Reset(0)
+}
+
+// GetString returns the payload in hex.
+func (m *RawGroupValue) GetString() string {
+	return hex.EncodeToString(m.Values)
 }

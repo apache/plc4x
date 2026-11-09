@@ -325,3 +325,45 @@ func Test_Subscriber_consumerMapRace(t *testing.T) {
 	})
 	wg.Wait()
 }
+
+// A group address subscribed without a datatype ("*/*/*") delivers the raw payload. The api
+// promises a values.RawPlcValue for that, which the application decodes once it knows the
+// datatype, but the driver handed out a plain raw byte array: an application asserting the
+// documented type panicked, and so did one logging it with GetString.
+func Test_Subscriber_handleValueChange_withoutDatatypeDeliversARawPlcValue(t *testing.T) {
+	connection := newSubscriberTestConnection(t)
+	subscriber := NewSubscriber(connection, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+	handles := subscribe(t, connection, subscriber, apiModel.SubscriptionChangeOfState, map[string]string{
+		"everything": "*/*/*",
+	})
+
+	var value apiValues.PlcValue
+	handles["everything"].Register(func(event apiModel.PlcSubscriptionEvent) {
+		require.Equal(t, apiModel.PlcResponseCode_OK, event.GetResponseCode("everything"))
+		value = event.GetValue("everything")
+	})
+	// A 2 byte value: the embedded-data byte, then the value.
+	subscriber.handleValueChange(t.Context(), groupAddress123, []byte{0x00, 0x0C, 0x33}, true)
+
+	require.NotNil(t, value)
+	raw, ok := value.(apiValues.RawPlcValue)
+	require.True(t, ok, "got a %T", value)
+	assert.Equal(t, "000c33", raw.GetString())
+	assert.Equal(t, []byte{0x00, 0x0C, 0x33}, raw.GetRaw())
+
+	// Decoded as the datatype the application knows, as often as it needs to.
+	for range 2 {
+		raw.RawReset()
+		require.True(t, raw.RawHasMore())
+		decoded := raw.RawDecodeValue("UINT")
+		require.NotNil(t, decoded)
+		assert.Equal(t, uint16(0x0C33), decoded.GetUint16())
+		assert.False(t, raw.RawHasMore())
+	}
+
+	// A datatype that doesn't fit the payload decodes to nothing and doesn't leave the
+	// application looping on RawHasMore.
+	raw.RawReset()
+	assert.Nil(t, raw.RawDecodeValue("ULINT"))
+	assert.False(t, raw.RawHasMore())
+}

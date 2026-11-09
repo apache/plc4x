@@ -296,12 +296,7 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 				// If we don't know the datatype, we'll create a RawPlcValue instead
 				// so the application can decode the content later on.
 				if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
-					// If this is an unknown 1 byte payload, we need the first byte.
-					if !rb.HasMore(1) {
-						rb.Reset(0)
-					}
-					plcValue := spiValues.NewPlcRawByteArray(rb.GetBytes())
-					plcValueList = append(plcValueList, plcValue)
+					plcValueList = append(plcValueList, NewRawGroupValue(payload))
 				} else {
 					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(ctx, rb, elementType)
 					if err2 == nil {
