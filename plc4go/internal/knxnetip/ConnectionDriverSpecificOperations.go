@@ -300,6 +300,18 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	return result
 }
 
+// parseMemoryValue decodes one value of the given datapoint type from device memory. The datapoint
+// parser expects the layout of a group value payload, where a value of up to 6 bits shares the
+// first byte with the APCI and any value of 8 bits or more follows a reserved byte. Memory holds
+// the bare value, so that reserved byte is put in front of it here.
+func parseMemoryValue(ctx context.Context, data []byte, datapointType driverModel.KnxDatapointType) (values.PlcValue, error) {
+	payload := data
+	if datapointType.DatapointMainType().SizeInBits() >= 8 {
+		payload = append([]byte{0}, data...)
+	}
+	return driverModel.KnxDatapointParseWithBuffer(ctx, utils.NewReadBufferByteBased(payload), datapointType)
+}
+
 // connectedDevice returns the transport layer connection to the device at the given address,
 // connecting to it first if there is none yet.
 func (m *Connection) connectedDevice(ctx context.Context, targetAddress driverModel.KnxAddress) (*KnxDeviceConnection, error) {
@@ -571,24 +583,31 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			sendResponse(nil, 0, err)
 			return
 		}
-		// If we successfully got a connection, read the property
 		// Depending on the gateway Max APDU and the device Max APDU, split this up into multiple requests.
 		// An APDU starts with the last 6 bits of the first data byte containing the count
 		// followed by the 16-bit address, so these are already used.
-		elementSize := datapointType.DatapointMainType().SizeInBits() / 8
+		// A value of less than 8 bits still takes a byte of memory.
+		elementSize := uint8(max(1, datapointType.DatapointMainType().SizeInBits()/8))
 		remainingRequestElements := numElements
 		curStartingAddress := address
 		var results []values.PlcValue
 		for remainingRequestElements > 0 {
 			// As the maxApdu can change, we have to do this in the loop.
-			maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
-			maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
-			numElements := uint8(math.Min(float64(remainingRequestElements), float64(maxNumElementsPerRequest)))
-			numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
+			maxNumBytes := uint8(min(max(int(connection.maxApdu)-3, 1), 63))
+			numElements := min(remainingRequestElements, max(1, maxNumBytes/elementSize))
+			numBytes := numElements * elementSize
 			memoryReadResponse, err := m.sendDeviceMemoryReadRequest(ctx, targetAddress, curStartingAddress, numBytes)
 			if err != nil {
 				// Complete the result channel so callers blocked on it don't hang forever.
 				sendResponse(nil, 0, errors.Wrap(err, "error reading device memory"))
+				return
+			}
+			data := memoryReadResponse.GetData()
+			// A device answers memory it doesn't have, or more than it can send at once, with no
+			// data at all. Retrying would ask for the same again.
+			if len(data) < int(elementSize) {
+				sendResponse(nil, 0, errors.Errorf("the device at %s returned no data for %d bytes at 0x%04X",
+					KnxAddressToString(targetAddress), numBytes, curStartingAddress))
 				return
 			}
 
@@ -596,14 +615,13 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			// Update the connection.maxApdu value. This is required
 			// as some devices seem to be sending back less than the
 			// number of bytes specified than the maxApdu.
-			if uint8(len(memoryReadResponse.GetData())) < numBytes {
-				connection.maxApdu = uint16(len(memoryReadResponse.GetData()) + 3)
+			if uint8(len(data)) < numBytes {
+				connection.maxApdu = uint16(len(data) + 3)
 			}
 
 			// Parse the data according to the property type information
-			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
-			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-				plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *datapointType)
+			for len(data) >= int(elementSize) && remainingRequestElements > 0 {
+				plcValue, err := parseMemoryValue(ctx, data[:elementSize], *datapointType)
 				// Return the result
 				if err != nil {
 					sendResponse(nil, 0, err)
@@ -612,10 +630,10 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 				results = append(results, plcValue)
 
 				// Update the counters and addresses.
+				data = data[elementSize:]
 				remainingRequestElements--
 				curStartingAddress = curStartingAddress + uint16(elementSize)
 			}
-			// If there are still remaining bytes, keep them for the next time.
 		}
 		if len(results) > 1 {
 			var plcList values.PlcValue
@@ -623,6 +641,8 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			sendResponse(plcList, 1, nil)
 		} else if len(results) == 1 {
 			sendResponse(results[0], 1, nil)
+		} else {
+			sendResponse(nil, 0, errors.New("no elements to read"))
 		}
 	})
 

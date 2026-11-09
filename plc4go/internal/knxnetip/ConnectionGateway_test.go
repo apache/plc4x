@@ -143,3 +143,58 @@ func Test_Connection_DeviceReadProperty_connectsFirst(t *testing.T) {
 	require.NoError(t, result.err)
 	assert.Equal(t, uint16(15), result.value.GetUint16())
 }
+
+// DeviceReadMemory decoded the memory with the datapoint parser, which expects the layout of a
+// group value payload: a reserved byte in front of every value of eight bits or more. Memory
+// holds the bare values, so a UINT read ran out of data and a USINT read skipped every other
+// byte.
+func Test_Connection_DeviceReadMemory_decodesBareValues(t *testing.T) {
+	memory := map[uint16][]byte{0x4000: {0x00, 0x02, 0x09, 0x01, 0x09, 0x02}}
+	for _, test := range []struct {
+		datapointType driverModel.KnxDatapointType
+		numElements   uint8
+		want          []uint64
+	}{
+		{driverModel.KnxDatapointType_UINT, 3, []uint64{2, 0x0901, 0x0902}},
+		{driverModel.KnxDatapointType_USINT, 4, []uint64{0, 2, 9, 1}},
+		{driverModel.KnxDatapointType_UDINT, 1, []uint64{0x00020901}},
+		{driverModel.KnxDatapointType_UINT, 1, []uint64{2}},
+	} {
+		t.Run(test.datapointType.String(), func(t *testing.T) {
+			gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), memory))
+			connection := connectToFakeGateway(t, t.Context(), gateway)
+
+			ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+			defer cancel()
+			result := <-connection.DeviceReadMemory(ctx, driverModel.NewKnxAddress(1, 1, 5), 0x4000, test.numElements, &test.datapointType)
+			require.NoError(t, result.err)
+			var got []uint64
+			if result.value.IsList() {
+				for _, value := range result.value.GetList() {
+					got = append(got, value.GetUint64())
+				}
+			} else {
+				got = append(got, result.value.GetUint64())
+			}
+			assert.Equal(t, test.want, got)
+			assert.Empty(t, gateway.Violations())
+		})
+	}
+}
+
+// A device answers a Memory_Read of memory it does not have with no data. That shrank the
+// assumed APDU length until no byte fit into a request any more, and the read never ended.
+func Test_Connection_DeviceReadMemory_noData(t *testing.T) {
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+	uint16Type := driverModel.KnxDatapointType_UINT
+	select {
+	case result := <-connection.DeviceReadMemory(ctx, driverModel.NewKnxAddress(1, 1, 5), 0x5000, 1, &uint16Type):
+		assert.ErrorContains(t, result.err, "no data")
+	case <-ctx.Done():
+		t.Fatal("DeviceReadMemory did not complete")
+	}
+}
