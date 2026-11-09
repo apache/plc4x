@@ -267,3 +267,29 @@ func Test_Connection_ReadGroupAddress(t *testing.T) {
 	}
 	assert.Empty(t, gateway.Violations())
 }
+
+// The reader and the browser were created without the connection's options, so they (and the
+// default browser under the browser) logged to the global logger.
+func Test_Connection_readerAndBrowserUseTheConnectionLogger(t *testing.T) {
+	var global bytes.Buffer
+	previous := log.Logger
+	log.Logger = zerolog.New(&global).Level(zerolog.TraceLevel)
+	t.Cleanup(func() { log.Logger = previous })
+
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+
+	readRequest, err := connection.ReadRequestBuilder().AddTagAddress("maxApdu", "1.1.5#0/56").Build()
+	require.NoError(t, err)
+	readResult := <-readRequest.Execute(ctx)
+	require.NoError(t, readResult.GetErr())
+	// The group objects of a device that does not exist: the browser logs the failure.
+	browseRequest, err := connection.BrowseRequestBuilder().AddQuery("objects", "1.1.9#com-obj").Build()
+	require.NoError(t, err)
+	browseResult := <-browseRequest.Execute(ctx)
+	require.NoError(t, browseResult.GetErr())
+
+	assert.Empty(t, global.String())
+}

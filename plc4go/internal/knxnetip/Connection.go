@@ -607,7 +607,7 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilder(
-		m.tagHandler, NewReader(m))
+		m.tagHandler, NewReader(m, append(m._options, options.WithCustomLogger(m.log))...))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
@@ -627,7 +627,8 @@ func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return spiModel.NewDefaultPlcBrowseRequestBuilder(m.tagHandler, NewBrowser(m, m.messageCodec))
+	return spiModel.NewDefaultPlcBrowseRequestBuilder(m.tagHandler,
+		NewBrowser(m, m.messageCodec, append(m._options, options.WithCustomLogger(m.log))...))
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
