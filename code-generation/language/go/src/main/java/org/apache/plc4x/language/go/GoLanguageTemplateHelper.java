@@ -433,6 +433,32 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return ", utils.WithEncoding(\"" + encoding + "\")";
     }
 
+    /**
+     * Renders the trailing {@code , utils.WithEncoding("...")} argument for a float field whose
+     * {@code floatEncoding} is not IEEE 754 (e.g. {@code "KNXFloat"}), or the empty string. IEEE 754
+     * is what the byte buffers do without an encoding, so it is left out.
+     *
+     * @param field the field being rendered, may be {@code null}
+     * @return the writer/reader argument to append, or {@code ""}
+     */
+    private String getFloatEncodingOption(TypedField field) {
+        if (field == null) {
+            return "";
+        }
+        final Optional<Term> encodingTerm = field.getAttribute("floatEncoding");
+        if (encodingTerm.isEmpty()) {
+            return "";
+        }
+        String encoding = encodingTerm.get().asLiteral()
+            .orElseThrow(() -> new FreemarkerException("Float encoding must be a literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new FreemarkerException("Float encoding must be a quoted string value")).getValue();
+        if ("IEEE754".equals(encoding)) {
+            return "";
+        }
+        return ", utils.WithEncoding(\"" + encoding + "\")";
+    }
+
     @Deprecated
     public String getSpecialReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
         return "/*TODO: migrate me*/" + getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, field);
@@ -489,7 +515,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "readBuffer.ReadFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + getFloatEncodingOption(field) + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
                     return "/*TODO: migrate me*/" + "readBuffer.ReadFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
@@ -758,7 +784,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + getFloatEncodingOption(field) + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
                     return "/*TODO: migrate me*/" + "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";

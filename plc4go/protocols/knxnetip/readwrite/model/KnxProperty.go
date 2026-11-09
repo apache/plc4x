@@ -102,7 +102,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -913,7 +913,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct

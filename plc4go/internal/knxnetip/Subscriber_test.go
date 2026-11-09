@@ -367,3 +367,32 @@ func Test_Subscriber_handleValueChange_withoutDatatypeDeliversARawPlcValue(t *te
 	assert.Nil(t, raw.RawDecodeValue("ULINT"))
 	assert.False(t, raw.RawHasMore())
 }
+
+// KNX's 2 byte float (DPT 9) was decoded as no format at all: a temperature of 21.5 °C read 4.08.
+func Test_Subscriber_handleValueChange_decodesKnxFloats(t *testing.T) {
+	for _, test := range []struct {
+		payload []byte
+		want    float32
+	}{
+		{[]byte{0x00, 0x0C, 0x33}, 21.5},
+		{[]byte{0x00, 0x0C, 0x38}, 21.6},
+		{[]byte{0x00, 0x8B, 0xCD}, -21.5},
+		{[]byte{0x00, 0x00, 0x00}, 0},
+		{[]byte{0x00, 0x7F, 0xFF}, 670760.96},
+		{[]byte{0x00, 0xF8, 0x00}, -671088.64},
+	} {
+		connection := newSubscriberTestConnection(t)
+		subscriber := NewSubscriber(connection, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+		handles := subscribe(t, connection, subscriber, apiModel.SubscriptionEvent, map[string]string{
+			"temperature": "1/2/3:DPT_Value_Temp",
+		})
+		var value apiValues.PlcValue
+		handles["temperature"].Register(func(event apiModel.PlcSubscriptionEvent) {
+			require.Equal(t, apiModel.PlcResponseCode_OK, event.GetResponseCode("temperature"))
+			value = event.GetValue("temperature")
+		})
+		subscriber.handleValueChange(t.Context(), groupAddress123, test.payload, true)
+		require.NotNil(t, value, "% X", test.payload)
+		assert.InDelta(t, test.want, value.GetFloat32(), 0.001, "% X", test.payload)
+	}
+}

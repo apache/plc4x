@@ -1700,7 +1700,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1714,7 +1714,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1728,7 +1728,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1742,7 +1742,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1756,7 +1756,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1770,7 +1770,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1784,7 +1784,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1798,7 +1798,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1812,7 +1812,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1826,7 +1826,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1840,7 +1840,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1854,7 +1854,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1868,7 +1868,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1882,7 +1882,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1896,7 +1896,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1910,7 +1910,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1924,7 +1924,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1938,7 +1938,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1952,7 +1952,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1966,7 +1966,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1980,7 +1980,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1994,7 +1994,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2008,7 +2008,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -3509,7 +3509,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -3523,7 +3523,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (value)
-		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16, utils.WithEncoding("KNXFloat"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -6921,7 +6921,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (tempsetpcomf)
-		tempsetpcomf, _tempsetpcomfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpcomf", 16)
+		tempsetpcomf, _tempsetpcomfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpcomf", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpcomfErr != nil {
 			return nil, errors.Wrap(_tempsetpcomfErr, "Error parsing 'tempsetpcomf' field")
 		}
@@ -6929,7 +6929,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = tempsetpcomf // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (tempsetpstdby)
-		tempsetpstdby, _tempsetpstdbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpstdby", 16)
+		tempsetpstdby, _tempsetpstdbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpstdby", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpstdbyErr != nil {
 			return nil, errors.Wrap(_tempsetpstdbyErr, "Error parsing 'tempsetpstdby' field")
 		}
@@ -6937,7 +6937,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = tempsetpstdby // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (tempsetpeco)
-		tempsetpeco, _tempsetpecoErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpeco", 16)
+		tempsetpeco, _tempsetpecoErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpeco", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpecoErr != nil {
 			return nil, errors.Wrap(_tempsetpecoErr, "Error parsing 'tempsetpeco' field")
 		}
@@ -6955,7 +6955,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (tempsetpshiftcomf)
-		tempsetpshiftcomf, _tempsetpshiftcomfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshiftcomf", 16)
+		tempsetpshiftcomf, _tempsetpshiftcomfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshiftcomf", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpshiftcomfErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftcomfErr, "Error parsing 'tempsetpshiftcomf' field")
 		}
@@ -6963,7 +6963,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = tempsetpshiftcomf // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (tempsetpshiftstdby)
-		tempsetpshiftstdby, _tempsetpshiftstdbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshiftstdby", 16)
+		tempsetpshiftstdby, _tempsetpshiftstdbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshiftstdby", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpshiftstdbyErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftstdbyErr, "Error parsing 'tempsetpshiftstdby' field")
 		}
@@ -6971,7 +6971,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = tempsetpshiftstdby // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (tempsetpshifteco)
-		tempsetpshifteco, _tempsetpshiftecoErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshifteco", 16)
+		tempsetpshifteco, _tempsetpshiftecoErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("tempsetpshifteco", 16, utils.WithEncoding("KNXFloat"))
 		if _tempsetpshiftecoErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftecoErr, "Error parsing 'tempsetpshifteco' field")
 		}
@@ -8303,7 +8303,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (roomTemperatureSetpointComfort)
-		roomTemperatureSetpointComfort, _roomTemperatureSetpointComfortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointComfort", 16)
+		roomTemperatureSetpointComfort, _roomTemperatureSetpointComfortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointComfort", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointComfortErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointComfortErr, "Error parsing 'roomTemperatureSetpointComfort' field")
 		}
@@ -8311,7 +8311,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointComfort // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointStandby)
-		roomTemperatureSetpointStandby, _roomTemperatureSetpointStandbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointStandby", 16)
+		roomTemperatureSetpointStandby, _roomTemperatureSetpointStandbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointStandby", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointStandbyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointStandbyErr, "Error parsing 'roomTemperatureSetpointStandby' field")
 		}
@@ -8319,7 +8319,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointStandby // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointEconomy)
-		roomTemperatureSetpointEconomy, _roomTemperatureSetpointEconomyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointEconomy", 16)
+		roomTemperatureSetpointEconomy, _roomTemperatureSetpointEconomyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointEconomy", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointEconomyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointEconomyErr, "Error parsing 'roomTemperatureSetpointEconomy' field")
 		}
@@ -8327,7 +8327,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointEconomy // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointBuildingProtection)
-		roomTemperatureSetpointBuildingProtection, _roomTemperatureSetpointBuildingProtectionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointBuildingProtection", 16)
+		roomTemperatureSetpointBuildingProtection, _roomTemperatureSetpointBuildingProtectionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointBuildingProtection", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointBuildingProtectionErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointBuildingProtectionErr, "Error parsing 'roomTemperatureSetpointBuildingProtection' field")
 		}
@@ -8345,7 +8345,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
-		roomTemperatureSetpointShiftComfort, _roomTemperatureSetpointShiftComfortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftComfort", 16)
+		roomTemperatureSetpointShiftComfort, _roomTemperatureSetpointShiftComfortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftComfort", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointShiftComfortErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftComfortErr, "Error parsing 'roomTemperatureSetpointShiftComfort' field")
 		}
@@ -8353,7 +8353,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointShiftComfort // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointShiftStandby)
-		roomTemperatureSetpointShiftStandby, _roomTemperatureSetpointShiftStandbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftStandby", 16)
+		roomTemperatureSetpointShiftStandby, _roomTemperatureSetpointShiftStandbyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftStandby", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointShiftStandbyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftStandbyErr, "Error parsing 'roomTemperatureSetpointShiftStandby' field")
 		}
@@ -8361,7 +8361,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointShiftStandby // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointShiftEconomy)
-		roomTemperatureSetpointShiftEconomy, _roomTemperatureSetpointShiftEconomyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftEconomy", 16)
+		roomTemperatureSetpointShiftEconomy, _roomTemperatureSetpointShiftEconomyErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftEconomy", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointShiftEconomyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftEconomyErr, "Error parsing 'roomTemperatureSetpointShiftEconomy' field")
 		}
@@ -8369,7 +8369,7 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = roomTemperatureSetpointShiftEconomy // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (roomTemperatureSetpointShiftBuildingProtection)
-		roomTemperatureSetpointShiftBuildingProtection, _roomTemperatureSetpointShiftBuildingProtectionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftBuildingProtection", 16)
+		roomTemperatureSetpointShiftBuildingProtection, _roomTemperatureSetpointShiftBuildingProtectionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("roomTemperatureSetpointShiftBuildingProtection", 16, utils.WithEncoding("KNXFloat"))
 		if _roomTemperatureSetpointShiftBuildingProtectionErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftBuildingProtectionErr, "Error parsing 'roomTemperatureSetpointShiftBuildingProtection' field")
 		}
@@ -9539,7 +9539,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
@@ -9549,7 +9549,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
@@ -9559,7 +9559,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
@@ -9569,7 +9569,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
@@ -9579,7 +9579,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
@@ -9589,7 +9589,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
@@ -9599,7 +9599,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
@@ -9609,7 +9609,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
@@ -9619,7 +9619,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
@@ -9629,7 +9629,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
@@ -9639,7 +9639,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
@@ -9649,7 +9649,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
@@ -9659,7 +9659,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
@@ -9669,7 +9669,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
@@ -9679,7 +9679,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Power: // REAL
@@ -9689,7 +9689,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
@@ -9699,7 +9699,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
@@ -9709,7 +9709,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
@@ -9719,7 +9719,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
@@ -9729,7 +9729,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
@@ -9739,7 +9739,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
@@ -9749,7 +9749,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Coefficient: // REAL
@@ -9759,7 +9759,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
@@ -10829,7 +10829,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
@@ -10839,7 +10839,7 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
@@ -13059,17 +13059,17 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (tempsetpcomf)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpcomf", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpcomf", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpcomf' field")
 		}
 
 		// Simple Field (tempsetpstdby)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpstdby", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpstdby", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpstdby' field")
 		}
 
 		// Simple Field (tempsetpeco)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpeco", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpeco", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpeco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
@@ -13079,17 +13079,17 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (tempsetpshiftcomf)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshiftcomf", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshiftcomf", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshiftcomf' field")
 		}
 
 		// Simple Field (tempsetpshiftstdby)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshiftstdby", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshiftstdby", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshiftstdby' field")
 		}
 
 		// Simple Field (tempsetpshifteco)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshifteco", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("tempsetpshifteco", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshifteco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
@@ -13939,22 +13939,22 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (roomTemperatureSetpointComfort)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointComfort", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointComfort", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointComfort' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointStandby)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointStandby", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointStandby", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointStandby' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointEconomy)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointEconomy", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointEconomy", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointEconomy' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointBuildingProtection)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointBuildingProtection", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointBuildingProtection", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointBuildingProtection' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
@@ -13964,22 +13964,22 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftComfort", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftComfort", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftComfort' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftStandby)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftStandby", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftStandby", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftStandby' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftEconomy)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftEconomy", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftEconomy", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftEconomy' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftBuildingProtection)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftBuildingProtection", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("roomTemperatureSetpointShiftBuildingProtection", 16, value.GetFloat32(), utils.WithEncoding("KNXFloat")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftBuildingProtection' field")
 		}
 	default:
