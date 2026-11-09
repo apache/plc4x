@@ -414,9 +414,10 @@ func (g *fakeKnxGateway) sendLoop() {
 func connectToFakeGateway(t *testing.T, ctx context.Context, g *fakeKnxGateway) *Connection {
 	t.Helper()
 	// The frames the codec logs at trace level slow it down so much, under the race detector,
-	// that the gateway would miss its ACKs.
-	_options := append(testutils.EnrichOptionsWithOptionsForTesting(t),
-		options.WithCustomLogger(testutils.ProduceTestingLogger(t).Level(zerolog.DebugLevel)))
+	// that the gateway would miss its ACKs. Deliberately not EnrichOptionsWithOptionsForTesting:
+	// its worker pool stops after the test and shows up in the goroutine counts of the
+	// discoverer tests.
+	_options := []options.WithOption{options.WithCustomLogger(testutils.ProduceTestingLogger(t).Level(zerolog.DebugLevel))}
 	transportInstance, err := udp.NewTransport(_options...).CreateTransportInstance(g.url(), map[string][]string{}, _options...)
 	require.NoError(t, err)
 	connection := NewConnection(transportInstance, map[string][]string{}, NewTagHandler(), _options...)
