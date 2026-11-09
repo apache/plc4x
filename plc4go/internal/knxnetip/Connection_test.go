@@ -46,6 +46,7 @@ type stubCodec struct {
 
 	transportInstance transports.TransportInstance
 	sentRequests      []spi.Message
+	accepts           []spi.AcceptsMessage
 	// respond is invoked for every SendRequest. Returning an error makes the
 	// codec report a send-failure, otherwise the (optional) reply is handed to
 	// the handleMessage / handleError callbacks.
@@ -56,8 +57,9 @@ func (s *stubCodec) GetTransportInstance() transports.TransportInstance {
 	return s.transportInstance
 }
 
-func (s *stubCodec) SendRequest(_ context.Context, _ string, message spi.Message, _ spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
+func (s *stubCodec) SendRequest(_ context.Context, _ string, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError) error {
 	s.sentRequests = append(s.sentRequests, message)
+	s.accepts = append(s.accepts, acceptsMessage)
 	if s.respond == nil {
 		return nil
 	}
@@ -317,4 +319,38 @@ func Test_Connection_handleIncomingTunnelingRequest_acknowledgesOnlyConnectedDat
 			assert.Equal(t, KnxAddressToByteArray(device), frame.GetDestinationAddress())
 		})
 	}
+}
+
+// The expectations of a device disconnect and of an authorization type-asserted the frames they
+// were offered without checking: the confirmation of any other control PDU to the same device,
+// or any L_Data.con at all, panicked the codec worker, which lost the frame.
+func Test_Connection_deviceExpectationsDontPanicOnOtherFrames(t *testing.T) {
+	device := driverModel.NewKnxAddress(1, 1, 5)
+	client := driverModel.NewKnxAddress(1, 1, 250)
+	confirmation := func(apdu driverModel.Apdu) driverModel.TunnelingRequest {
+		return driverModel.NewTunnelingRequest(
+			driverModel.NewTunnelingRequestDataBlock(1, 0),
+			driverModel.NewLDataCon(0, nil, driverModel.NewLDataExtended(true, true, driverModel.CEMIPriority_SYSTEM,
+				false, false, false, 6, 0, client, KnxAddressToByteArray(device), apdu)))
+	}
+	ackConfirmation := confirmation(driverModel.NewApduControlContainer(true, 0, driverModel.NewApduControlAck()))
+
+	// Nothing answers: each request fails right after it was sent.
+	connection, codec := newStubbedConnection(t, nil, func(_ spi.Message, _ spi.HandleMessage, handleError spi.HandleError) error {
+		return handleError(errors.New("no answer"))
+	})
+	connection.ClientKnxAddress = client
+	connection.CommunicationChannelId = 1
+	connection.DeviceConnections = map[uint16]*KnxDeviceConnection{}
+	connection.addDeviceConnection(&KnxDeviceConnection{address: device})
+
+	_, _ = connection.sendDeviceDisconnectionRequest(t.Context(), device)
+	_, _ = connection.sendDeviceAuthentication(t.Context(), device, 0, []byte{1, 2, 3, 4})
+	require.Len(t, codec.accepts, 2)
+	for _, accepts := range codec.accepts {
+		assert.NotPanics(t, func() {
+			assert.False(t, accepts(ackConfirmation))
+		})
+	}
+	assert.True(t, codec.accepts[0](confirmation(driverModel.NewApduControlContainer(false, 0, driverModel.NewApduControlDisconnect()))))
 }

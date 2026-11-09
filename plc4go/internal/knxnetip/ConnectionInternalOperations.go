@@ -588,8 +588,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		if !ok {
 			return false
 		}
-		apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
-		return apduControlDisconnect != nil
+		_, ok = apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
+		return ok
 	}, func(message spi.Message) error {
 		tunnelingRequest := message.(driverModel.TunnelingRequest)
 		lDataCon := tunnelingRequest.GetCemi().(driverModel.LDataCon)
@@ -669,7 +669,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 			return false
 		}
-		lDataInd := tunnelingRequest.GetCemi().(driverModel.LDataInd)
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataInd)
 		if !ok {
 			return false
 		}
