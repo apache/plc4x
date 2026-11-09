@@ -201,3 +201,21 @@ func TestTagHandler_GroupAddressBracketsAreAMatchExpression(t *testing.T) {
 		assert.NoError(t, err, address)
 	}
 }
+
+// The datatype of a group address is optional, but an address without one failed with
+// "Unknown type": the optional group matches the empty string. "*/*/*" is how a client
+// subscribes to everything on the bus.
+func TestTagHandler_GroupAddressWithoutDatatype(t *testing.T) {
+	handler := NewTagHandler()
+
+	for _, address := range []string{"*/*/*", "1/2/3", "1/2", "*/*", "1234", "*"} {
+		tag, err := handler.ParseTag(address)
+		require.NoError(t, err, address)
+		groupAddressTag, ok := tag.(GroupAddressTag)
+		require.True(t, ok, address)
+		assert.Equal(t, driverModel.KnxDatapointType_DPT_UNKNOWN, *groupAddressTag.GetTagType(), address)
+	}
+
+	_, err := handler.ParseTag("1/2/3:NOT_A_TYPE")
+	assert.ErrorContains(t, err, "Unknown type NOT_A_TYPE")
+}

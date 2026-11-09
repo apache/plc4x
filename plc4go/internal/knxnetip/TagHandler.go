@@ -80,35 +80,37 @@ func selectionOf(expression string, tagAddress string) (uint64, uint64, error) {
 	return uint64(dimension.GetLowerBound() - dimension.GetBase()), elements, nil
 }
 
+// groupAddressDatatype returns the datatype a group address names, or DPT_UNKNOWN if it names
+// none: the optional datatype group is in the match as an empty string then.
+func groupAddressDatatype(match map[string]string) (driverModel.KnxDatapointType, error) {
+	tagTypeName := match["datatype"]
+	if tagTypeName == "" {
+		return driverModel.KnxDatapointType_DPT_UNKNOWN, nil
+	}
+	tagType, ok := driverModel.KnxDatapointTypeByName(tagTypeName)
+	if !ok {
+		return driverModel.KnxDatapointType_DPT_UNKNOWN, errors.Errorf("Unknown type %s", tagTypeName)
+	}
+	return tagType, nil
+}
+
 func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.groupAddress1Level, tagAddress); match != nil {
-		tagTypeName, ok := match["datatype"]
-		var tagType driverModel.KnxDatapointType
-		if ok {
-			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
-			if !ok {
-				return nil, errors.Errorf("Unknown type %s", tagTypeName)
-			}
+		tagType, err := groupAddressDatatype(match)
+		if err != nil {
+			return nil, err
 		}
 		return NewGroupAddress1LevelPlcTag(match["mainGroup"], &tagType), nil
 	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, tagAddress); match != nil {
-		tagTypeName, ok := match["datatype"]
-		var tagType driverModel.KnxDatapointType
-		if ok {
-			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
-			if !ok {
-				return nil, errors.Errorf("Unknown type %s", tagTypeName)
-			}
+		tagType, err := groupAddressDatatype(match)
+		if err != nil {
+			return nil, err
 		}
 		return NewGroupAddress2LevelPlcTag(match["mainGroup"], match["subGroup"], &tagType), nil
 	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, tagAddress); match != nil {
-		tagTypeName, ok := match["datatype"]
-		var tagType driverModel.KnxDatapointType
-		if ok {
-			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
-			if !ok {
-				return nil, errors.Errorf("Unknown type %s", tagTypeName)
-			}
+		tagType, err := groupAddressDatatype(match)
+		if err != nil {
+			return nil, err
 		}
 		return NewGroupAddress3LevelPlcTag(match["mainGroup"], match["middleGroup"], match["subGroup"], &tagType), nil
 	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, tagAddress); match != nil {
