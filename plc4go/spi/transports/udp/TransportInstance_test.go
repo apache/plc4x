@@ -765,3 +765,28 @@ func TestTransportInstance_Write(t *testing.T) {
 		})
 	}
 }
+
+// A Write bounded by a context deadline armed that deadline on the socket and left it there: every
+// later Write without a deadline failed with "i/o timeout" once it had passed. A codec writes
+// unsolicited frames (e.g. a protocol ACK) on its own context, which has no deadline.
+func TestTransportInstance_Write_clearsAnExpiredDeadline(t *testing.T) {
+	listener, err := nettest.NewLocalPacketListener("udp")
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		assert.NoError(t, listener.Close())
+	})
+	udp, err := net.DialUDP("udp", nil, listener.LocalAddr().(*net.UDPAddr))
+	require.NoError(t, err)
+	m := &TransportInstance{udpConn: udp, log: log.Logger}
+	m.connected.Store(true)
+	t.Cleanup(func() {
+		assert.NoError(t, m.Close())
+	})
+
+	bounded, cancel := context.WithTimeout(t.Context(), 50*time.Millisecond)
+	defer cancel()
+	require.NoError(t, m.Write(bounded, []byte{1}))
+	time.Sleep(100 * time.Millisecond)
+
+	assert.NoError(t, m.Write(context.Background(), []byte{2}))
+}

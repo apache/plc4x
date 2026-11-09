@@ -251,8 +251,12 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if deadline, ok := ctx.Deadline(); ok {
 		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
 		if err := m.udpConn.SetWriteDeadline(deadline); err != nil {
-			return errors.Wrap(err, "error setting read deadline")
+			return errors.Wrap(err, "error setting write deadline")
 		}
+	} else if err := m.udpConn.SetWriteDeadline(time.Time{}); err != nil {
+		// Clear whatever deadline a previous bounded Write left armed - an
+		// expired one would fail this (unbounded) write instantly.
+		return errors.Wrap(err, "error clearing write deadline")
 	}
 	var num int
 	var err error
