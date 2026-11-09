@@ -261,7 +261,17 @@ func (wb *byteWriteBuffer) WriteBigInt(_ string, bitLength uint8, value *big.Int
 	return errors.New("not implemented yet")
 }
 
-func (wb *byteWriteBuffer) WriteFloat32(_ string, bitLength uint8, value float32, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
+	if isKnxFloat(wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)) {
+		if bitLength != 16 {
+			return errors.Errorf("a KNX float has 16 bits, not %d", bitLength)
+		}
+		raw, err := encodeKnxFloat(value)
+		if err != nil {
+			return err
+		}
+		return wb.WriteUint16(logicalName, 16, raw)
+	}
 	wb.move(uint(bitLength))
 	res := math.Float32bits(value)
 	if wb.byteOrder == binary.LittleEndian {

@@ -410,7 +410,17 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 	return res, nil
 }
 
-func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (float32, error) {
+func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float32, error) {
+	if isKnxFloat(BufferCommons{}.ExtractEncoding(UpcastReaderArgs(readerArgs...)...)) {
+		if bitLength != 16 {
+			return 0, errors.Errorf("a KNX float has 16 bits, not %d", bitLength)
+		}
+		raw, err := rb.ReadUint16(logicalName, 16)
+		if err != nil {
+			return 0, errors.Wrap(err, "error reading KNX float")
+		}
+		return decodeKnxFloat(raw), nil
+	}
 	if bitLength == 32 {
 		_uintValue, err := rb.bits.ReadBits(bitLength)
 		if err != nil {
