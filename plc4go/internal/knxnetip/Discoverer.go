@@ -30,19 +30,20 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"golang.org/x/net/ipv4"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-// knxMulticastDiscoveryUrl is the KNXnet/IP system-setup multicast address all
+// knxMulticastDiscoveryAddress is the KNXnet/IP system-setup multicast address all
 // KNXnet/IP routers/interfaces listen on for SearchRequests.
-const knxMulticastDiscoveryUrl = "udp://224.0.23.12:3671"
+var knxMulticastDiscoveryAddress = &net.UDPAddr{IP: net.IPv4(224, 0, 23, 12), Port: 3671}
 
 // discoveryWindow is how long each per-address scan waits for SearchResponses
 // to arrive after sending the SearchRequest.
@@ -61,6 +62,10 @@ type Discoverer struct {
 	closeCtx    context.Context
 	closeCancel context.CancelFunc
 
+	// discoveryWindow is how long a scan waits for SearchResponses (discoveryWindow by
+	// default, shorter in the tests).
+	discoveryWindow time.Duration
+
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
@@ -69,22 +74,15 @@ func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	closeCtx, closeCancel := context.WithCancel(context.Background())
 	return &Discoverer{
-		closeCtx:    closeCtx,
-		closeCancel: closeCancel,
-		log:         customLogger,
-		_options:    _options,
+		closeCtx:        closeCtx,
+		closeCancel:     closeCancel,
+		discoveryWindow: discoveryWindow,
+		log:             customLogger,
+		_options:        _options,
 	}
 }
 
 func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	udpTransport := udp.NewTransport()
-
-	// Create a connection string for the KNX broadcast discovery address.
-	connectionUrl, err := url.Parse(knxMulticastDiscoveryUrl)
-	if err != nil {
-		return err
-	}
-
 	allInterfaces, err := net.Interfaces()
 	if err != nil {
 		return err
@@ -175,7 +173,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 							Msg("panic-ed")
 					}
 				}()
-				d.scanAddress(scanCtx, connectionUrl, ipv4Addr, udpTransport, callback)
+				d.scanAddress(scanCtx, knxMulticastDiscoveryAddress, ipv4Addr, callback)
 			})
 		}
 	}
@@ -194,105 +192,120 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	return nil
 }
 
-// scanAddress opens one udp socket bound to the given local ipv4 address, sends
-// a SearchRequest to the KNXnet/IP discovery multicast address and reports every
-// SearchResponse it receives within the discovery window to callback.
+// scanAddress opens one udp socket bound to the given local ipv4 address, sends a
+// SearchRequest to the given destination (the KNXnet/IP discovery multicast address) and
+// reports every SearchResponse it receives within the discovery window to callback.
 //
+// The socket is not connected: a gateway answers from its own unicast address to the endpoint
+// the request names, and a socket connected to the multicast address would drop all of that.
 // Every resource it acquires is released again before it returns, on all paths.
-func (d *Discoverer) scanAddress(ctx context.Context, connectionUrl *url.URL, ipv4Addr net.IP, udpTransport *udp.Transport, callback func(event apiModel.PlcDiscoveryItem)) {
+func (d *Discoverer) scanAddress(ctx context.Context, destination *net.UDPAddr, ipv4Addr net.IP, callback func(event apiModel.PlcDiscoveryItem)) {
 	if err := ctx.Err(); err != nil {
 		d.log.Debug().Err(err).Msg("done")
 		return
 	}
-	// Create a new "connection" (Actually open a local udp socket and target outgoing packets to that address)
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(*connectionUrl, nil,
-		&net.UDPAddr{IP: ipv4Addr, Port: 0})
+	conn, err := net.ListenUDP("udp4", &net.UDPAddr{IP: ipv4Addr})
 	if err != nil {
-		d.log.Error().Err(err).Msg("error creating transport instance")
+		d.log.Error().Err(err).Stringer("localAddress", ipv4Addr).Msg("error opening the discovery socket")
 		return
 	}
-	udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
-	if !ok {
-		d.log.Error().Type("transportInstanceType", transportInstance).Msg("unexpected transport instance type")
-		if err := transportInstance.Close(); err != nil {
-			d.log.Debug().Err(err).Msg("error closing transport instance")
-		}
-		return
-	}
-
-	d.log.Debug().Stringer("udpTransportInstance", udpTransportInstance).Msg("Scanning")
-	// Create a codec for sending and receiving messages.
-	codec := NewMessageCodec(
-		udpTransportInstance,
-		nil,
-		append(d._options, options.WithCustomLogger(d.log))...,
-	)
-	// Explicitly start the worker. This also connects the transport instance.
-	if err := codec.Connect(ctx); err != nil {
-		d.log.Error().Err(err).Msg("Error connecting")
-		// The codec never took ownership of the transport instance, so the socket
-		// (if it got opened at all) has to be closed here.
-		if err := udpTransportInstance.Close(); err != nil {
-			d.log.Debug().Err(err).Msg("error closing transport instance")
-		}
-		return
-	}
-	// Disconnecting stops the codecs receive worker and closes the udp socket.
 	defer func() {
-		if err := codec.Disconnect(); err != nil {
-			d.log.Debug().Err(err).Msg("error disconnecting codec")
+		if err := conn.Close(); err != nil {
+			d.log.Debug().Err(err).Msg("error closing the discovery socket")
 		}
 	}()
+	localAddress := conn.LocalAddr().(*net.UDPAddr)
+	if destination.IP.IsMulticast() {
+		// Send the request out of the interface this address belongs to, not the one the
+		// routing table picks for the multicast group.
+		if netInterface := interfaceOf(ipv4Addr); netInterface != nil {
+			if err := ipv4.NewPacketConn(conn).SetMulticastInterface(netInterface); err != nil {
+				d.log.Debug().Err(err).Str("interface", netInterface.Name).Msg("error selecting the multicast interface")
+			}
+		}
+	}
+	d.log.Debug().Stringer("localAddress", localAddress).Stringer("destination", destination).Msg("Scanning")
 
-	localAddress := udpTransportInstance.LocalAddress
-	localAddr := driverModel.NewIPAddress(localAddress.IP)
-
-	// Prepare the discovery packet data
-	discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
-		driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
-	searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
-	// Send the search request.
-	if err := codec.Send(ctx, "device_scan_search_request", searchRequestMessage); err != nil {
-		d.log.Debug().Err(err).Interface("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
+	// The request names the socket it is sent from: that is where the gateways answer.
+	searchRequestMessage := driverModel.NewSearchRequest(driverModel.NewHPAIDiscoveryEndpoint(
+		driverModel.HostProtocolCode_IPV4_UDP, driverModel.NewIPAddress(localAddress.IP.To4()), uint16(localAddress.Port)))
+	data, err := searchRequestMessage.Serialize()
+	if err != nil {
+		d.log.Error().Err(err).Msg("error serializing the search request")
+		return
+	}
+	if _, err := conn.WriteToUDP(data, destination); err != nil {
+		d.log.Debug().Err(err).Stringer("destination", destination).Msg("Error sending the search request")
 		return
 	}
 
 	// Keep on reading responses till the discovery window is done.
-	timeout := time.NewTimer(discoveryReceiveTick)
-	defer timeout.Stop()
-	deadline := time.Now().Add(discoveryWindow)
+	window := d.discoveryWindow
+	if window <= 0 {
+		window = discoveryWindow
+	}
+	deadline := time.Now().Add(window)
+	buf := make([]byte, 1500)
+	ctxForModel := options.GetLoggerContextForModel(ctx, d.log)
 	for time.Now().Before(deadline) {
-		tick := discoveryReceiveTick
-		if remaining := time.Until(deadline); remaining < tick {
-			tick = remaining
-		}
-		if !timeout.Stop() {
-			select {
-			case <-timeout.C:
-			default:
-			}
-		}
-		timeout.Reset(tick)
-		select {
-		case <-ctx.Done():
-			d.log.Debug().Err(ctx.Err()).Msg("done")
+		if err := ctx.Err(); err != nil {
+			d.log.Debug().Err(err).Msg("done")
 			return
-		case message := <-codec.GetDefaultIncomingMessageChannel():
-			discoveryItem, ok := d.discoveryItemFromMessage(message)
-			if !ok {
+		}
+		// Wake up at least every tick to notice a cancelled context.
+		readDeadline := time.Now().Add(discoveryReceiveTick)
+		if deadline.Before(readDeadline) {
+			readDeadline = deadline
+		}
+		_ = conn.SetReadDeadline(readDeadline)
+		n, source, err := conn.ReadFromUDP(buf)
+		if err != nil {
+			var netErr net.Error
+			if errors.As(err, &netErr) && netErr.Timeout() {
 				continue
 			}
-			// Pass the event back to the callback
-			callback(discoveryItem)
-		case <-timeout.C:
+			d.log.Debug().Err(err).Msg("error receiving search responses")
+			return
+		}
+		message, err := driverModel.KnxNetIpMessageParse[driverModel.KnxNetIpMessage](ctxForModel, buf[:n])
+		if err != nil {
+			d.log.Debug().Err(err).Stringer("source", source).Msg("unparseable datagram")
 			continue
 		}
+		discoveryItem, ok := d.discoveryItemFromMessage(message, source)
+		if !ok {
+			continue
+		}
+		// Pass the event back to the callback
+		callback(discoveryItem)
 	}
 }
 
+// interfaceOf returns the network interface the given address is configured on.
+func interfaceOf(address net.IP) *net.Interface {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		return nil
+	}
+	for _, netInterface := range interfaces {
+		addrs, err := netInterface.Addrs()
+		if err != nil {
+			continue
+		}
+		for _, addr := range addrs {
+			if ipNet, ok := addr.(*net.IPNet); ok && ipNet.IP.Equal(address) {
+				return &netInterface
+			}
+		}
+	}
+	return nil
+}
+
 // discoveryItemFromMessage turns a received message into a discovery item. It
-// returns false for anything which isn't a usable SearchResponse.
-func (d *Discoverer) discoveryItemFromMessage(message spi.Message) (apiModel.PlcDiscoveryItem, bool) {
+// returns false for anything which isn't a usable SearchResponse. A gateway names
+// the control endpoint to connect to; one behind NAT names 0.0.0.0:0, which means
+// the address the response came from.
+func (d *Discoverer) discoveryItemFromMessage(message spi.Message, source *net.UDPAddr) (apiModel.PlcDiscoveryItem, bool) {
 	if message == nil {
 		return nil, false
 	}
@@ -312,8 +325,15 @@ func (d *Discoverer) discoveryItemFromMessage(message spi.Message) (apiModel.Plc
 		d.log.Debug().Int("addrLength", len(addr)).Msg("unexpected address length")
 		return nil, false
 	}
-	remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-		addr[0], addr[1], addr[2], addr[3], controlEndpoint.GetIpPort()))
+	host := fmt.Sprintf("%d.%d.%d.%d:%d", addr[0], addr[1], addr[2], addr[3], controlEndpoint.GetIpPort())
+	if net.IP(addr[:4]).IsUnspecified() && controlEndpoint.GetIpPort() == 0 {
+		if source == nil {
+			d.log.Debug().Msg("search response without a control endpoint")
+			return nil, false
+		}
+		host = source.String()
+	}
+	remoteUrl, err := url.Parse("udp://" + host)
 	if err != nil {
 		d.log.Debug().Err(err).Msg("error building discovery url")
 		return nil, false

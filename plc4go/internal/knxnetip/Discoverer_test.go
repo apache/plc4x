@@ -23,6 +23,7 @@ import (
 	"context"
 	"net"
 	"runtime"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -258,7 +259,7 @@ func TestDiscovererDiscoveryItemFromMessage(t *testing.T) {
 			t.Cleanup(func() {
 				require.NoError(t, d.Close())
 			})
-			got, ok := d.discoveryItemFromMessage(tt.message)
+			got, ok := d.discoveryItemFromMessage(tt.message, nil)
 			require.Equal(t, tt.wantOk, ok)
 			if !tt.wantOk {
 				assert.Nil(t, got)
@@ -271,4 +272,68 @@ func TestDiscovererDiscoveryItemFromMessage(t *testing.T) {
 			assert.Equal(t, tt.wantRemoteHost, got.GetTransportUrl().Host)
 		})
 	}
+}
+
+// A gateway answers a SEARCH_REQUEST from its own unicast address to the endpoint named in the
+// request, never from the multicast address the request went to. The scan used a socket
+// connected to 224.0.23.12:3671, which drops every such datagram, so Discover found nothing. A
+// stand-in for the multicast group on loopback receives the request here and a second socket
+// answers, as a gateway would.
+func TestDiscoverer_scanAddress_receivesUnicastResponses(t *testing.T) {
+	group, err := net.ListenUDP("udp4", &net.UDPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = group.Close() })
+	gateway, err := net.ListenUDP("udp4", &net.UDPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = gateway.Close() })
+
+	requestEndpoint := make(chan string, 1)
+	go func() {
+		buf := make([]byte, 1500)
+		n, from, err := group.ReadFromUDP(buf)
+		if err != nil {
+			return
+		}
+		request, err := driverModel.KnxNetIpMessageParse[driverModel.SearchRequest](context.Background(), buf[:n])
+		if err != nil {
+			requestEndpoint <- "unparseable: " + err.Error()
+			return
+		}
+		endpoint := request.GetHpaiIDiscoveryEndpoint()
+		addr := endpoint.GetIpAddress().GetAddr()
+		requestEndpoint <- (&net.UDPAddr{IP: net.IP(addr), Port: int(endpoint.GetIpPort())}).String() + " from " + from.String()
+		to := &net.UDPAddr{IP: net.IP(addr), Port: int(endpoint.GetIpPort())}
+		for _, response := range []driverModel.SearchResponse{
+			buildTestSearchResponse("Gateway A", []byte{127, 0, 0, 1}, 3671),
+			// A gateway behind NAT names no control endpoint: the client uses the source.
+			buildTestSearchResponse("Gateway B", []byte{0, 0, 0, 0}, 0),
+		} {
+			data, err := response.Serialize()
+			if err == nil {
+				_, _ = gateway.WriteToUDP(data, to)
+			}
+		}
+	}()
+
+	d := testDiscoverer(t)
+	d.discoveryWindow = 500 * time.Millisecond
+	t.Cleanup(func() { require.NoError(t, d.Close()) })
+	found := map[string]string{}
+	d.scanAddress(t.Context(), group.LocalAddr().(*net.UDPAddr), net.IPv4(127, 0, 0, 1), func(item apiModel.PlcDiscoveryItem) {
+		found[item.GetName()] = item.GetTransportUrl().Host
+	})
+
+	select {
+	case endpoint := <-requestEndpoint:
+		// The request names the socket it was sent from, so the gateway answers there.
+		parts := strings.Split(endpoint, " from ")
+		require.Len(t, parts, 2, endpoint)
+		assert.Equal(t, parts[1], parts[0])
+	default:
+		t.Fatal("no SEARCH_REQUEST arrived")
+	}
+	assert.Equal(t, map[string]string{
+		"Gateway A": "127.0.0.1:3671",
+		"Gateway B": gateway.LocalAddr().String(),
+	}, found)
 }
