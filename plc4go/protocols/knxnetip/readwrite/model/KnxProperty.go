@@ -242,10 +242,10 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
@@ -255,7 +255,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _groupAddressErr != nil {
 			return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field")
 		}
-		groupAddress := []api.PlcValue{values.NewPlcRawByteArray(groupAddressRaw)}
+		groupAddress := values.NewPlcRawByteArray(groupAddressRaw)
 		_ = groupAddress // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (disable)
@@ -286,10 +286,10 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
@@ -454,200 +454,200 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((2)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((3)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((4)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((5)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((6)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((7)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((8)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((9)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((10)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((11)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((12)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((13)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((14)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((15)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((16)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((17)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((18)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((19)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
 		// Array Field (value)
 		valueRaw, _valueErr := readBuffer.ReadByteArray("value", int((20)))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
@@ -836,10 +836,10 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
-		value := []api.PlcValue{values.NewPlcRawByteArray(valueRaw)}
+		value := values.NewPlcRawByteArray(valueRaw)
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return value, nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")

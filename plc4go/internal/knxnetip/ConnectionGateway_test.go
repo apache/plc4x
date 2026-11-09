@@ -32,6 +32,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // Tests of the connection against fakeKnxGateway, over the real codec and udp transport.
@@ -292,4 +293,24 @@ func Test_Connection_readerAndBrowserUseTheConnectionLogger(t *testing.T) {
 	require.NoError(t, browseResult.GetErr())
 
 	assert.Empty(t, global.String())
+}
+
+// A property of a generic type (PID_PROGRAM_VERSION is PDT_GENERIC_05) came back as a list
+// holding one raw byte array, while the serializer and every reader expect a list of its bytes,
+// so reading its elements as bytes panicked.
+func Test_Connection_DeviceReadProperty_genericPropertyIsAListOfBytes(t *testing.T) {
+	gateway := newFakeKnxGateway(t, newFakeSystemBDevice(driverModel.NewKnxAddress(1, 1, 5), nil))
+	connection := connectToFakeGateway(t, t.Context(), gateway)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+	result := <-connection.DeviceReadProperty(ctx, driverModel.NewKnxAddress(1, 1, 5), 3, 13, 1, 1)
+	require.NoError(t, result.err)
+	require.True(t, result.value.IsList())
+	var programVersion []byte
+	for _, element := range result.value.GetList() {
+		programVersion = append(programVersion, element.GetUint8())
+	}
+	assert.Equal(t, []byte{0, 131, 10, 1, 0x12}, programVersion)
+	assert.Equal(t, []byte{0, 131, 10, 1, 0x12}, utils.PlcValueUint8ListToByteArray(result.value))
 }

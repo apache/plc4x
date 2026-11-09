@@ -111,6 +111,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		</#if>: // ${case.name}
 		</@compress>
 		<#assign valueDefined=false>
+		<#assign valueIsRawByteArray=false>
 		<#if case.name == "Struct">
 
 			// Struct
@@ -133,7 +134,11 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			if _${helper.getGoSafeName(arrayField.name)}Err != nil {
 				return nil, errors.Wrap(_${helper.getGoSafeName(arrayField.name)}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/apache/plc4x/plc4go/spi/errors" />
 			}
-			${helper.getGoSafeName(arrayField.name)} := []api.PlcValue{values.NewPlcRawByteArray(${helper.getGoSafeName(arrayField.name)}Raw)}
+			<#-- The bytes are one value, as in Java: a raw byte array (which is a list of its bytes). -->
+			${helper.getGoSafeName(arrayField.name)} := values.NewPlcRawByteArray(${helper.getGoSafeName(arrayField.name)}Raw)
+							<#if arrayField.name == "value">
+								<#assign valueIsRawByteArray=true>
+							</#if>
                         <#else>
 			var ${helper.getGoSafeName(arrayField.name)} []api.PlcValue
 					<#assign loopExpr = helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)>
@@ -306,7 +311,11 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#break>
 			<#case "List">
 			readBuffer.CloseContext("${type.name}")
+				<#if valueIsRawByteArray>
+			return value, nil
+				<#else>
 			return values.NewPlcList(value), nil
+				</#if>
 				<#break>
 			<#default>
 			readBuffer.CloseContext("${type.name}")
