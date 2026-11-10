@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\spi\spi.csproj" />
+    <ProjectReference Include="..\..\transports\tcp\tcp.csproj" />
     <InternalsVisibleTo Include="plc4net-driver-slmp-test" />
   </ItemGroup>
 
