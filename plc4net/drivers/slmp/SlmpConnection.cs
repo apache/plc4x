@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -39,8 +40,8 @@ using org.apache.plc4net.types;
 
 namespace org.apache.plc4net.drivers.slmp
 {
-    /// <summary>Executes read-only SLMP 3E binary batch reads.</summary>
-    public sealed class SlmpConnection : ConnectionBase, PlcReader
+    /// <summary>Executes SLMP 3E binary batch reads and writes.</summary>
+    public sealed class SlmpConnection : ConnectionBase, PlcReader, PlcWriter
     {
         private const int PollIntervalMs = 2;
         private const int DefaultRequestTimeoutMs = 5000;
@@ -49,7 +50,7 @@ namespace org.apache.plc4net.drivers.slmp
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
         {
             CanRead = true,
-            CanWrite = false,
+            CanWrite = true,
             CanSubscribe = false
         };
 
@@ -87,7 +88,7 @@ namespace org.apache.plc4net.drivers.slmp
         public override IPlcConnectionMetadata PlcConnectionMetadata => Metadata;
         public override IPlcTag Parse(string tagQuery) => SlmpTag.Parse(tagQuery);
         public override IPlcReadRequestBuilder? ReadRequestBuilder => new DefaultPlcReadRequestBuilder(this, Parse);
-        public override IPlcWriteRequestBuilder? WriteRequestBuilder => null;
+        public override IPlcWriteRequestBuilder? WriteRequestBuilder => new SlmpWriteRequestBuilder(this, Parse);
         public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
         public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
 
@@ -144,6 +145,170 @@ namespace org.apache.plc4net.drivers.slmp
             }
             return new DefaultPlcReadResponse(request, results);
         }
+
+        public async Task<IPlcWriteResponse> Write(
+            DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
+        {
+            var results = new Dictionary<string, PlcResponseCode>();
+            foreach (var name in request.TagNames)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (request.GetTagByName(name) is not SlmpTag tag)
+                {
+                    results[name] = PlcResponseCode.InvalidAddress;
+                    continue;
+                }
+
+                try
+                {
+                    var data = Encode(tag, request.GetValue(name));
+                    if (data == null)
+                    {
+                        results[name] = PlcResponseCode.InvalidData;
+                        continue;
+                    }
+
+                    var write = new SlmpWriteRequest(
+                        (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints), data);
+                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x1401, 0, write);
+                    var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
+                    if (response.EndCode != 0)
+                    {
+                        Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for write tag {TagName}",
+                            response.EndCode, name);
+                        results[name] = PlcResponseCode.RemoteError;
+                    }
+                    else
+                    {
+                        // A successful 3E Batch Write response contains only the end code.
+                        results[name] = response.ResponseData.Length == 0
+                            ? PlcResponseCode.Ok
+                            : PlcResponseCode.RemoteError;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (TimeoutException ex)
+                {
+                    Logger.LogWarning(ex, "SLMP write of tag '{TagName}' timed out", name);
+                    results[name] = PlcResponseCode.RequestTimeout;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning(ex, "SLMP write of tag '{TagName}' failed", name);
+                    results[name] = PlcResponseCode.InternalError;
+                }
+            }
+            return new DefaultPlcWriteResponse(request, results);
+        }
+
+        private static byte[]? Encode(SlmpTag tag, object? value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            var values = new List<object>(tag.Quantity);
+            if (tag.ExplicitRange)
+            {
+                if (value is object[] array)
+                {
+                    if (array.Length != tag.Quantity || array.Any(item => item == null))
+                    {
+                        return null;
+                    }
+                    values.AddRange(array);
+                }
+                else if (value is IPlcValue list && list.IsList() && list.GetLength() == tag.Quantity)
+                {
+                    for (var i = 0; i < tag.Quantity; i++)
+                    {
+                        values.Add(list.GetIndex(i));
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (value is object[] || value is IPlcValue plcValue && plcValue.IsList())
+                {
+                    return null;
+                }
+                values.Add(value);
+            }
+
+            var buffer = new WriteBuffer();
+            buffer.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+            try
+            {
+                foreach (var item in values)
+                {
+                    WriteOne(buffer, tag.DataType, item);
+                }
+                var data = buffer.GetBytes();
+                return data.Length == tag.NumberOfPoints * 2 ? data : null;
+            }
+            catch (Exception ex) when (ex is FormatException || ex is InvalidCastException ||
+                                       ex is OverflowException || ex is ArgumentException ||
+                                       ex is PlcIncompatibleDatatypeException)
+            {
+                return null;
+            }
+            finally
+            {
+                buffer.PopByteOrder();
+            }
+        }
+
+        private static void WriteOne(WriteBuffer buffer, SlmpDataType type, object value)
+        {
+            var plcValue = value as IPlcValue;
+            if (plcValue != null && !IsNumeric(plcValue))
+            {
+                throw new PlcIncompatibleDatatypeException("SLMP values must be numeric.");
+            }
+            switch (type)
+            {
+                case SlmpDataType.WORD:
+                case SlmpDataType.UINT:
+                    buffer.WriteUshort("value", 16, plcValue != null
+                        ? checked((ushort)plcValue.GetInt())
+                        : Convert.ToUInt16(value, CultureInfo.InvariantCulture));
+                    break;
+                case SlmpDataType.INT:
+                    buffer.WriteShort("value", 16, plcValue != null
+                        ? plcValue.GetShort()
+                        : Convert.ToInt16(value, CultureInfo.InvariantCulture));
+                    break;
+                case SlmpDataType.DINT:
+                    buffer.WriteInt("value", 32, plcValue != null
+                        ? plcValue.GetInt()
+                        : Convert.ToInt32(value, CultureInfo.InvariantCulture));
+                    break;
+                case SlmpDataType.UDINT:
+                    buffer.WriteUint("value", 32, plcValue != null
+                        ? checked((uint)plcValue.GetLong())
+                        : Convert.ToUInt32(value, CultureInfo.InvariantCulture));
+                    break;
+                case SlmpDataType.REAL:
+                    buffer.WriteFloat("value", 32, plcValue != null
+                        ? plcValue.GetFloat()
+                        : Convert.ToSingle(value, CultureInfo.InvariantCulture));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, "Unsupported SLMP data type.");
+            }
+        }
+
+        private static bool IsNumeric(IPlcValue value)
+            => value.IsByte() || value.IsUshort() || value.IsUint() || value.IsUlong() ||
+               value.IsSbyte() || value.IsShort() || value.IsInt() || value.IsLong() ||
+               value.IsFloat() || value.IsDouble();
 
         private async Task<SlmpResponseFrame3E> ExchangeAsync(
             SlmpRequestFrame3E request, CancellationToken cancellationToken)
