@@ -167,6 +167,177 @@ namespace org.apache.plc4net.test.slmp
             Assert.Equal(PlcResponseCode.InternalError, response.GetResponseCode("next"));
         }
 
+        [Fact]
+        public async Task Write_sends_a_little_endian_batch_write()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Array.Empty<byte>()));
+
+            var response = await Write(connection, "value", "D100:WORD", (ushort)0x1234);
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("value"));
+            Assert.Equal(Convert.FromHexString("500000FFFF03000E00100001140000640000A801003412"),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Write_capability_is_exposed_through_connection_metadata()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+
+            Assert.True(connection.PlcConnectionMetadata.CanWrite);
+        }
+
+        [Theory]
+        [InlineData("D100:WORD", (ushort)0x1234, "3412")]
+        [InlineData("D100:INT", (short)-2, "FEFF")]
+        [InlineData("D100:UINT", (ushort)0xFEDC, "DCFE")]
+        [InlineData("D100:DINT", 0x12345678, "78563412")]
+        [InlineData("D100:UDINT", 0xFEDCBA98u, "98BADCFE")]
+        [InlineData("D100:REAL", 1.5f, "0000C03F")]
+        public async Task Write_encodes_each_supported_scalar_type(string address, object value, string dataHex)
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Array.Empty<byte>()));
+
+            var response = await Write(connection, "value", address, value);
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("value"));
+            Assert.EndsWith(dataHex, Convert.ToHexString(transport.GetAllWrittenData()));
+        }
+
+        [Fact]
+        public async Task Write_encodes_an_explicit_range_from_a_plc_list()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Array.Empty<byte>()));
+            var values = new PlcList(new System.Collections.Generic.List<org.apache.plc4net.api.value.IPlcValue>
+            {
+                new PlcWORD(0x1234), new PlcWORD(0x5678)
+            });
+
+            var response = await Write(connection, "values", "D100[4..5]:WORD", values);
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("values"));
+            Assert.EndsWith("34127856", Convert.ToHexString(transport.GetAllWrittenData()));
+        }
+
+        [Fact]
+        public async Task Write_builder_accepts_multiple_typed_values_for_a_range()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Array.Empty<byte>()));
+            var request = Assert.IsType<DefaultPlcWriteRequest>(connection.WriteRequestBuilder!
+                .AddTag("values", "D100[4..5]:WORD", (short)0x1234, (short)0x5678)
+                .Build());
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await connection.Write(request));
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("values"));
+            Assert.EndsWith("34127856", Convert.ToHexString(transport.GetAllWrittenData()));
+        }
+
+        [Fact]
+        public async Task Write_builder_preserves_a_single_value_explicit_range()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Array.Empty<byte>()));
+            var request = Assert.IsType<DefaultPlcWriteRequest>(connection.WriteRequestBuilder!
+                .AddTag("values", "D100[4..4]:WORD", (ushort)0x1234)
+                .Build());
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await connection.Write(request));
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("values"));
+            Assert.EndsWith("3412", Convert.ToHexString(transport.GetAllWrittenData()));
+        }
+
+        [Fact]
+        public async Task Write_rejects_multiple_values_for_a_scalar_tag_without_sending()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var request = Assert.IsType<DefaultPlcWriteRequest>(connection.WriteRequestBuilder!
+                .AddTag("values", "D100:WORD", (short)1, (short)2)
+                .Build());
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await connection.Write(request));
+
+            Assert.Equal(PlcResponseCode.InvalidData, response.GetResponseCode("values"));
+            Assert.Empty(transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Write_rejects_a_range_with_the_wrong_value_count_without_sending()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var values = new PlcList(new System.Collections.Generic.List<org.apache.plc4net.api.value.IPlcValue>
+            {
+                new PlcWORD(0x1234)
+            });
+
+            var response = await Write(connection, "values", "D100[4..5]:WORD", values);
+
+            Assert.Equal(PlcResponseCode.InvalidData, response.GetResponseCode("values"));
+            Assert.Empty(transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Write_rejects_a_value_with_an_incompatible_plc_datatype_without_sending()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+
+            var response = await Write(connection, "value", "D100:WORD", new PlcSTRING("not a number"));
+
+            Assert.Equal(PlcResponseCode.InvalidData, response.GetResponseCode("value"));
+            Assert.Empty(transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Write_maps_a_device_end_code_to_remote_error()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0xC05B, Array.Empty<byte>()));
+
+            var response = await Write(connection, "value", "D100:WORD", (ushort)1);
+
+            Assert.Equal(PlcResponseCode.RemoteError, response.GetResponseCode("value"));
+        }
+
+        [Fact]
+        public async Task Write_maps_timeout_and_does_not_reuse_an_uncorrelatable_connection()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport, "request-timeout-ms=10");
+
+            var response = await Write(connection, "value", "D100:WORD", (ushort)1);
+
+            Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("value"));
+            var nextResponse = await Read(connection, "next", "D101:WORD");
+            Assert.Equal(PlcResponseCode.InternalError, nextResponse.GetResponseCode("next"));
+        }
+
+        [Fact]
+        public async Task Write_rejects_a_success_response_with_unexpected_data()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            transport.InjectTestData(Response(0, Convert.FromHexString("3412")));
+
+            var response = await Write(connection, "value", "D100:WORD", (ushort)1);
+
+            Assert.Equal(PlcResponseCode.RemoteError, response.GetResponseCode("value"));
+        }
+
         private static TestTransportInstance NewTransport()
             => new TestTransportInstance(new TestTransportConfiguration());
 
@@ -182,6 +353,15 @@ namespace org.apache.plc4net.test.slmp
             SlmpConnection connection, string name, string address)
             => Assert.IsType<DefaultPlcReadResponse>(
                 await connection.Read(Request(connection, name, address)));
+
+        private static async Task<DefaultPlcWriteResponse> Write(
+            SlmpConnection connection, string name, string address, object value)
+        {
+            var builder = connection.WriteRequestBuilder!;
+            builder.AddTag<object>(name, address, value);
+            return Assert.IsType<DefaultPlcWriteResponse>(await connection.Write(
+                Assert.IsType<DefaultPlcWriteRequest>(builder.Build())));
+        }
 
         private static byte[] Response(ushort endCode, byte[] data)
         {
