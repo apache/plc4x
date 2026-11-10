@@ -26,11 +26,11 @@ toolchain go1.27.0
 require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/fatih/color v1.19.0
-	github.com/gopacket/gopacket v1.7.4
+	github.com/gopacket/gopacket v1.7.7
 	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/net v0.62.0
-	golang.org/x/sys v0.49.0
+	golang.org/x/sys v0.50.0
 	golang.org/x/text v0.43.0
 	golang.org/x/tools v0.52.0
 )
