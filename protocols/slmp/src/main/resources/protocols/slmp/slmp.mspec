@@ -143,7 +143,7 @@
             [array  SlmpDeviceBlock wordDeviceBlocks count 'numberOfWordDeviceBlocks']
             [array  SlmpDeviceBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
         ]
-        ['0x1401' SlmpWriteRequest(uint 16 subCommand)
+        ['0x1401' SlmpWriteRequest
             // Batch Write (SH-080008 section 8.2): device addressing followed by raw write
             // data. Word-unit writes carry two bytes per point; bit-unit writes carry two
             // 4-bit point values per byte, with the low nibble zero when point count is odd.
