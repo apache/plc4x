@@ -66,7 +66,7 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             var monitoringTimer = readBuffer.ReadUshort("monitoringTimer", 16);
             var command = readBuffer.ReadUshort("command", 16);
             var subCommand = readBuffer.ReadUshort("subCommand", 16);
-            var requestData = SlmpRequestData.StaticParse(readBuffer, (ushort) (command));
+            var requestData = SlmpRequestData.StaticParse(readBuffer, (ushort) (command), (ushort) (subCommand));
             return new SlmpRequestFrame3E(monitoringTimer, command, subCommand, requestData);
         }
 

@@ -30,23 +30,23 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
     {
         public abstract ushort Command { get; }
 
-        public static SlmpRequestData StaticParse(ReadBuffer readBuffer, ushort command)
+        public static SlmpRequestData StaticParse(ReadBuffer readBuffer, ushort command, ushort subCommand)
         {
             if (Equals(command, (ushort) (0x0401)))
             {
-                return SlmpReadRequest.StaticParse(readBuffer, command);
+                return SlmpReadRequest.StaticParse(readBuffer, command, subCommand);
             }
             if (Equals(command, (ushort) (0x0403)))
             {
-                return SlmpRandomReadRequest.StaticParse(readBuffer, command);
+                return SlmpRandomReadRequest.StaticParse(readBuffer, command, subCommand);
             }
             if (Equals(command, (ushort) (0x0406)))
             {
-                return SlmpMultiBlockReadRequest.StaticParse(readBuffer, command);
+                return SlmpMultiBlockReadRequest.StaticParse(readBuffer, command, subCommand);
             }
             if (Equals(command, (ushort) (0x1401)))
             {
-                return SlmpWriteRequest.StaticParse(readBuffer, command);
+                return SlmpWriteRequest.StaticParse(readBuffer, command, subCommand);
             }
             throw new ParseException("No matching subtype found for SlmpRequestData");
         }

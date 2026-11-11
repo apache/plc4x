@@ -43,7 +43,7 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             DoubleWordAccessDevices = doubleWordAccessDevices;
         }
 
-        public static new SlmpRandomReadRequest StaticParse(ReadBuffer readBuffer, ushort command)
+        public static new SlmpRandomReadRequest StaticParse(ReadBuffer readBuffer, ushort command, ushort subCommand)
         {
             var numberOfWordAccessPoints = readBuffer.ReadByte("numberOfWordAccessPoints", 8);
             var numberOfDoubleWordAccessPoints = readBuffer.ReadByte("numberOfDoubleWordAccessPoints", 8);
