@@ -27,18 +27,16 @@
 //     - Request/response data length ... section 5.3 (2-byte, little-endian)
 //     - Command list ................... chapter 7 (section 7.1)
 //     - Device data to be specified .... section 8.1 (devices, device code list, points)
-//     - Batch Read/Write data layout ... section 8.2 (binary, word units; Read 0x0401 / Write 0x1401)
+//     - Batch Read/Write data layout ... section 8.2 (binary, word/bit units; Read 0x0401 / Write 0x1401)
 //     - Random Read data layout ........ section 8.3 (binary, word units)
 //     - Multi-block Read data layout ... section 8.4 (binary, word units)
 //
-// Scope of this initial version: 3E binary frame, Batch Read
-// (command 0x0401), Random Read (command 0x0403) and Batch Read Multiple Blocks
-// (command 0x0406) in word units (subcommand 0x0000), plus Batch Write
-// (command 0x1401) in word units (subcommand 0x0000). This is the wire layer
-// only; typed value encoding/decoding (INT/WORD/DINT/REAL) and the
-// device-addressing tag layer are owned by the driver layer and intentionally
-// not modelled in the wire spec.
-// Validated hardware-free via the ParserSerializer test suite.
+// Scope: 3E binary frame, Batch Read/Write (commands 0x0401/0x1401) in word
+// units (subcommand 0x0000) and bit units (subcommand 0x0001). Random Read
+// (0x0403) and Batch Read Multiple Blocks (0x0406) are modelled in word units
+// but are not yet exposed by the driver runtime. Typed value conversion and
+// device-addressing tags are owned by the driver layer.
+// The wire model is hardware-independent; typed values are handled in the driver layer.
 //
 // All multi-byte numeric fields are little-endian (transmitted least-significant byte first).
 // The 2-byte subheader (0x50/0xD0 then 0x00) is modelled as two single bytes so
@@ -89,8 +87,8 @@
             [implicit uint 16 requestDataLength        '6 + requestData.lengthInBytes']
             [simple   uint 16 monitoringTimer]                 // 0x0000 = wait infinitely
             [simple   uint 16 command]                         // 0x0401 = Batch Read
-            [simple   uint 16 subCommand]                      // 0x0000 = word units
-            [simple   SlmpRequestData('command') requestData]
+            [simple   uint 16 subCommand]                      // 0x0000 = word units, 0x0001 = bit units
+            [simple   SlmpRequestData('command', 'subCommand') requestData]
         ]
         ['0xD0' SlmpResponseFrame3E
             [const    uint 8  network                  0x00]
@@ -110,9 +108,9 @@
 ]
 
 // Request data, dispatched by command: Batch Read (0x0401), Random Read (0x0403),
-// Batch Read Multiple Blocks (0x0406) and Batch Write (0x1401) are modelled here,
-// all in word units (subcommand 0x0000).
-[discriminatedType SlmpRequestData(uint 16 command)
+// Batch Read Multiple Blocks (0x0406) and Batch Write (0x1401) are modelled here.
+// Batch Read/Write use subcommand 0x0000 for word units or 0x0001 for bit units.
+[discriminatedType SlmpRequestData(uint 16 command, uint 16 subCommand)
     [typeSwitch command
         ['0x0401' SlmpReadRequest
             // Binary, MELSEC-Q/L series: device number (3 bytes, little-endian)
@@ -145,17 +143,14 @@
             [array  SlmpDeviceBlock wordDeviceBlocks count 'numberOfWordDeviceBlocks']
             [array  SlmpDeviceBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
         ]
-        ['0x1401' SlmpWriteRequest
-            // Batch Write in word units (SH-080008 section 8.2 "Batch Read and Write"): the same
-            // device addressing as SlmpReadRequest (0x0401), followed by the data to write.
-            // numberOfPoints is the number of 16-bit words; writeData is exactly that many
-            // little-endian words carried as raw bytes (2 * numberOfPoints). Typed encoding
-            // (INT/WORD/DINT/REAL) is owned by the driver layer, symmetric with how the read
-            // response leaves responseData as raw bytes for the driver to decode.
+        ['0x1401' SlmpWriteRequest(uint 16 subCommand)
+            // Batch Write (SH-080008 section 8.2): device addressing followed by raw write
+            // data. Word-unit writes carry two bytes per point; bit-unit writes carry two
+            // 4-bit point values per byte, with the low nibble zero when point count is odd.
             [simple uint 24        headDeviceNumber]
             [simple SlmpDeviceCode deviceCode]
             [simple uint 16        numberOfPoints]
-            [array  byte           writeData count 'numberOfPoints * 2']
+            [array  byte           writeData count 'subCommand == 1 ? (numberOfPoints + 1) / 2 : numberOfPoints * 2']
         ]
     ]
 ]

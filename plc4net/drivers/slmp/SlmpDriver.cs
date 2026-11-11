@@ -23,7 +23,7 @@ using org.apache.plc4net.transports.tcp;
 
 namespace org.apache.plc4net.drivers.slmp
 {
-    /// <summary>The read-only SLMP 3E binary driver.</summary>
+    /// <summary>The SLMP 3E binary driver for word and bit device access.</summary>
     public sealed class SlmpDriver : DriverBase
     {
         public const int DefaultPort = 5007;

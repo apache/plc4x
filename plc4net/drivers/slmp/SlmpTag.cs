@@ -26,37 +26,42 @@ using org.apache.plc4net.model;
 
 namespace org.apache.plc4net.drivers.slmp
 {
-    public enum SlmpDataType { WORD, INT, UINT, DINT, UDINT, REAL }
+    public enum SlmpDataType { WORD, INT, UINT, DINT, UDINT, REAL, BOOL }
 
     public static class SlmpDataTypeExtensions
     {
-        public static int GetWordsPerElement(this SlmpDataType type) => type switch
+        public static int GetPointsPerElement(this SlmpDataType type) => type switch
         {
-            SlmpDataType.WORD or SlmpDataType.INT or SlmpDataType.UINT => 1,
+            SlmpDataType.WORD or SlmpDataType.INT or SlmpDataType.UINT or SlmpDataType.BOOL => 1,
             SlmpDataType.DINT or SlmpDataType.UDINT or SlmpDataType.REAL => 2,
             _ => throw new PlcInvalidFieldException($"Unsupported SLMP data type {type}.")
         };
     }
 
-    /// <summary>A word-device address with an optional zero-based index or inclusive range.</summary>
+    /// <summary>An SLMP device address with an optional zero-based index or inclusive range.</summary>
     public sealed class SlmpTag : IPlcTag
     {
-        // Same conservative single-frame policy as the current Java SLMP tag.
+        // Limits for one 3E binary batch request, from SH-080008.
         public const int MaxPoints = 960;
+        public const int MaxBitPoints = 7168;
         public const int MaxDeviceNumber = 0xFFFFFF;
         private static readonly Regex Pattern = new Regex(
-            @"\A(?<device>[DWR])(?<address>(?:0[xX])?[0-9A-Fa-f]+)(?:\[(?<lower>[0-9]+)(?:\.\.(?<upper>[0-9]+))?\])?(?::(?<type>[A-Za-z]+))?\z",
+            @"\A(?<device>[DWRMXYB])(?<address>(?:0[xX])?[0-9A-Fa-f]+)(?:\[(?<lower>[0-9]+)(?:\.\.(?<upper>[0-9]+))?\])?(?::(?<type>[A-Za-z]+))?\z",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         public SlmpTag(SlmpDeviceCode deviceCode, int deviceNumber, SlmpDataType dataType,
             int quantity = 1, bool? explicitRange = null)
         {
-            if (deviceCode != SlmpDeviceCode.D && deviceCode != SlmpDeviceCode.W && deviceCode != SlmpDeviceCode.R)
-                throw new PlcInvalidFieldException("Only SLMP word devices D, W and R are supported.");
-            var words = dataType.GetWordsPerElement();
-            if (quantity < 1 || quantity > MaxPoints / words)
-                throw new PlcInvalidFieldException($"SLMP selections must contain between 1 and {MaxPoints} words.");
-            var points = quantity * words;
+            var bitDevice = IsBitDeviceCode(deviceCode);
+            if (!bitDevice && deviceCode != SlmpDeviceCode.D && deviceCode != SlmpDeviceCode.W && deviceCode != SlmpDeviceCode.R)
+                throw new PlcInvalidFieldException("Only SLMP word devices D, W and R and bit devices M, X, Y and B are supported.");
+            if (bitDevice != (dataType == SlmpDataType.BOOL))
+                throw new PlcInvalidFieldException("SLMP bit devices M, X, Y and B require BOOL; word devices D, W and R require a numeric type.");
+            var pointsPerElement = dataType.GetPointsPerElement();
+            var maxPoints = bitDevice ? MaxBitPoints : MaxPoints;
+            if (quantity < 1 || quantity > maxPoints / pointsPerElement)
+                throw new PlcInvalidFieldException($"SLMP selections must contain between 1 and {maxPoints} {(bitDevice ? "bits" : "words")}.");
+            var points = quantity * pointsPerElement;
             if (deviceNumber < 0 || (long)deviceNumber + points - 1 > MaxDeviceNumber)
                 throw new PlcInvalidFieldException("SLMP selection exceeds the 24-bit device-address range.");
             if (quantity > 1 && explicitRange == false)
@@ -73,7 +78,8 @@ namespace org.apache.plc4net.drivers.slmp
         public SlmpDataType DataType { get; }
         public int Quantity { get; }
         public bool ExplicitRange { get; }
-        public int NumberOfPoints => Quantity * DataType.GetWordsPerElement();
+        public bool IsBitDevice => IsBitDeviceCode(DeviceCode);
+        public int NumberOfPoints => Quantity * DataType.GetPointsPerElement();
 
         public static SlmpTag Parse(string tagAddress)
         {
@@ -81,21 +87,25 @@ namespace org.apache.plc4net.drivers.slmp
                 throw new PlcInvalidFieldException("The SLMP tag address is empty or too long.");
             var match = Pattern.Match(tagAddress.Trim());
             if (!match.Success)
-                throw new PlcInvalidFieldException("Expected {D|W|R}{address}[index or lower..upper]:{TYPE}.");
+                throw new PlcInvalidFieldException("Expected {D|W|R|M|X|Y|B}{address}[index or lower..upper]:{TYPE}.");
             var device = match.Groups["device"].Value.ToUpperInvariant() switch
             {
                 "D" => SlmpDeviceCode.D,
                 "W" => SlmpDeviceCode.W,
-                _ => SlmpDeviceCode.R
+                "R" => SlmpDeviceCode.R,
+                "M" => SlmpDeviceCode.M,
+                "X" => SlmpDeviceCode.X,
+                "Y" => SlmpDeviceCode.Y,
+                _ => SlmpDeviceCode.B
             };
             var address = match.Groups["address"].Value;
             if (address.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
-                if (device != SlmpDeviceCode.W)
-                    throw new PlcInvalidFieldException("The 0x prefix is valid only for W devices.");
+                if (!IsHexAddressedDevice(device))
+                    throw new PlcInvalidFieldException("The 0x prefix is valid only for W, X, Y and B devices.");
                 address = address.Substring(2);
             }
-            var style = device == SlmpDeviceCode.W ? NumberStyles.AllowHexSpecifier : NumberStyles.None;
+            var style = IsHexAddressedDevice(device) ? NumberStyles.AllowHexSpecifier : NumberStyles.None;
             if (!uint.TryParse(address, style, CultureInfo.InvariantCulture, out var number) || number > MaxDeviceNumber)
                 throw new PlcInvalidFieldException("Invalid SLMP device number.");
             var typeName = match.Groups["type"].Success ? match.Groups["type"].Value.ToUpperInvariant() : "WORD";
@@ -110,19 +120,28 @@ namespace org.apache.plc4net.drivers.slmp
             if (range && (!uint.TryParse(match.Groups["upper"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out upper) || upper < lower))
                 throw new PlcInvalidFieldException("Invalid SLMP selection range.");
             var quantity = range ? (long)upper - lower + 1 : 1;
-            var resolved = (long)number + (long)lower * type.GetWordsPerElement();
-            if (quantity > MaxPoints || resolved > MaxDeviceNumber)
-                throw new PlcInvalidFieldException("SLMP selection exceeds the supported address or word count.");
+            var resolved = (long)number + (long)lower * type.GetPointsPerElement();
+            var maxPoints = IsBitDeviceCode(device) ? MaxBitPoints : MaxPoints;
+            if (quantity > maxPoints || resolved > MaxDeviceNumber)
+                throw new PlcInvalidFieldException("SLMP selection exceeds the supported address or point count.");
             return new SlmpTag(device, (int)resolved, type, (int)quantity, range);
         }
 
         public override string ToString()
         {
-            var address = DeviceCode == SlmpDeviceCode.W
+            var address = IsHexAddressedDevice(DeviceCode)
                 ? "0x" + DeviceNumber.ToString("X", CultureInfo.InvariantCulture)
                 : DeviceNumber.ToString(CultureInfo.InvariantCulture);
             var selection = ExplicitRange ? "[0.." + (Quantity - 1).ToString(CultureInfo.InvariantCulture) + "]" : "";
             return $"{DeviceCode}{address}{selection}:{DataType}";
         }
+
+        public static bool IsBitDeviceCode(SlmpDeviceCode deviceCode)
+            => deviceCode == SlmpDeviceCode.M || deviceCode == SlmpDeviceCode.X ||
+               deviceCode == SlmpDeviceCode.Y || deviceCode == SlmpDeviceCode.B;
+
+        private static bool IsHexAddressedDevice(SlmpDeviceCode deviceCode)
+            => deviceCode == SlmpDeviceCode.W || deviceCode == SlmpDeviceCode.X ||
+               deviceCode == SlmpDeviceCode.Y || deviceCode == SlmpDeviceCode.B;
     }
 }

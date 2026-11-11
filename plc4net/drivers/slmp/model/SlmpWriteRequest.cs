@@ -43,12 +43,12 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             WriteData = writeData;
         }
 
-        public static new SlmpWriteRequest StaticParse(ReadBuffer readBuffer, ushort command)
+        public static new SlmpWriteRequest StaticParse(ReadBuffer readBuffer, ushort command, ushort subCommand)
         {
             var headDeviceNumber = readBuffer.ReadUint("headDeviceNumber", 24);
             var deviceCode = (SlmpDeviceCode) readBuffer.ReadByte("deviceCode", 8);
             var numberOfPoints = readBuffer.ReadUshort("numberOfPoints", 16);
-            var writeData = readBuffer.ReadByteArray("writeData", (int) ((numberOfPoints * 2)) * 8);
+            var writeData = readBuffer.ReadByteArray("writeData", (int) (((subCommand == 1) ? ((numberOfPoints + 1) / 2) : (numberOfPoints * 2))) * 8);
             return new SlmpWriteRequest(headDeviceNumber, deviceCode, numberOfPoints, writeData);
         }
 

@@ -41,7 +41,7 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             NumberOfPoints = numberOfPoints;
         }
 
-        public static new SlmpReadRequest StaticParse(ReadBuffer readBuffer, ushort command)
+        public static new SlmpReadRequest StaticParse(ReadBuffer readBuffer, ushort command, ushort subCommand)
         {
             var headDeviceNumber = readBuffer.ReadUint("headDeviceNumber", 24);
             var deviceCode = (SlmpDeviceCode) readBuffer.ReadByte("deviceCode", 8);

@@ -109,7 +109,8 @@ namespace org.apache.plc4net.drivers.slmp
                 {
                     var data = new SlmpReadRequest(
                         (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints));
-                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0401, 0, data);
+                    var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
+                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0401, subCommand, data);
                     var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
                     if (response.EndCode != 0)
                     {
@@ -119,8 +120,15 @@ namespace org.apache.plc4net.drivers.slmp
                         continue;
                     }
 
-                    var expectedBytes = checked(tag.NumberOfPoints * 2);
+                    var expectedBytes = tag.IsBitDevice
+                        ? (tag.NumberOfPoints + 1) / 2
+                        : checked(tag.NumberOfPoints * 2);
                     if (response.ResponseData.Length != expectedBytes)
+                    {
+                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidData);
+                        continue;
+                    }
+                    if (tag.IsBitDevice && !IsValidBitPayload(tag.NumberOfPoints, response.ResponseData))
                     {
                         results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidData);
                         continue;
@@ -170,7 +178,8 @@ namespace org.apache.plc4net.drivers.slmp
 
                     var write = new SlmpWriteRequest(
                         (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints), data);
-                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x1401, 0, write);
+                    var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
+                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x1401, subCommand, write);
                     var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
                     if (response.EndCode != 0)
                     {
@@ -213,7 +222,15 @@ namespace org.apache.plc4net.drivers.slmp
             var values = new List<object>(tag.Quantity);
             if (tag.ExplicitRange)
             {
-                if (value is object[] array)
+                if (value is bool[] boolArray && tag.IsBitDevice)
+                {
+                    if (boolArray.Length != tag.Quantity)
+                    {
+                        return null;
+                    }
+                    values.AddRange(boolArray.Cast<object>());
+                }
+                else if (value is object[] array)
                 {
                     if (array.Length != tag.Quantity || array.Any(item => item == null))
                     {
@@ -235,11 +252,39 @@ namespace org.apache.plc4net.drivers.slmp
             }
             else
             {
-                if (value is object[] || value is IPlcValue plcValue && plcValue.IsList())
+                if (value is Array || value is IPlcValue plcValue && plcValue.IsList())
                 {
                     return null;
                 }
                 values.Add(value);
+            }
+
+            if (tag.IsBitDevice)
+            {
+                var packed = new byte[(values.Count + 1) / 2];
+                for (var i = 0; i < values.Count; i++)
+                {
+                    var item = values[i];
+                    bool bit;
+                    if (item is IPlcValue plcValue && plcValue.IsBool())
+                    {
+                        bit = plcValue.GetBool();
+                    }
+                    else if (item is bool boolean)
+                    {
+                        bit = boolean;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    if (bit)
+                    {
+                        // The first addressed point occupies the high nibble.
+                        packed[i / 2] |= (byte)(1 << (i % 2 == 0 ? 4 : 0));
+                    }
+                }
+                return packed;
             }
 
             var buffer = new WriteBuffer();
@@ -384,6 +429,21 @@ namespace org.apache.plc4net.drivers.slmp
 
         private static IPlcValue Decode(SlmpTag tag, byte[] data)
         {
+            if (tag.IsBitDevice)
+            {
+                if (!tag.ExplicitRange)
+                {
+                    return new PlcBOOL(ReadBitPoint(data, 0));
+                }
+
+                var bitValues = new List<IPlcValue>(tag.Quantity);
+                for (var i = 0; i < tag.Quantity; i++)
+                {
+                    bitValues.Add(new PlcBOOL(ReadBitPoint(data, i)));
+                }
+                return new PlcList(bitValues);
+            }
+
             var buffer = new ReadBuffer(data);
             buffer.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
             try
@@ -405,6 +465,24 @@ namespace org.apache.plc4net.drivers.slmp
                 buffer.PopByteOrder();
             }
         }
+
+        private static bool IsValidBitPayload(int numberOfPoints, byte[] data)
+        {
+            for (var i = 0; i < numberOfPoints; i++)
+            {
+                if (ReadBitNibble(data, i) > 1)
+                {
+                    return false;
+                }
+            }
+            return numberOfPoints % 2 == 0 || (data[^1] & 0x0F) == 0;
+        }
+
+        private static bool ReadBitPoint(byte[] data, int point)
+            => ReadBitNibble(data, point) == 1;
+
+        private static int ReadBitNibble(byte[] data, int point)
+            => (data[point / 2] >> (point % 2 == 0 ? 4 : 0)) & 0x0F;
 
         private static IPlcValue DecodeOne(ReadBuffer buffer, SlmpDataType type) => type switch
         {

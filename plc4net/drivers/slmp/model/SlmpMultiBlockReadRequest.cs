@@ -43,7 +43,7 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             BitDeviceBlocks = bitDeviceBlocks;
         }
 
-        public static new SlmpMultiBlockReadRequest StaticParse(ReadBuffer readBuffer, ushort command)
+        public static new SlmpMultiBlockReadRequest StaticParse(ReadBuffer readBuffer, ushort command, ushort subCommand)
         {
             var numberOfWordDeviceBlocks = readBuffer.ReadByte("numberOfWordDeviceBlocks", 8);
             var numberOfBitDeviceBlocks = readBuffer.ReadByte("numberOfBitDeviceBlocks", 8);
