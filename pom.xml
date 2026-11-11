@@ -153,8 +153,8 @@
          property of the matching jackson-bom - it does not track the patch line, so several
          "jackson.version" releases in a row can map to the same value (both 2.21.4 and
          2.22.2 pair with jackson-annotations 2.22). -->
-    <jackson-api.version>2.22</jackson-api.version>
-    <jackson.version>2.22.4</jackson.version>
+    <jackson-api.version>2.23</jackson-api.version>
+    <jackson.version>2.23.0</jackson.version>
     <woodstox-core.version>7.2.2</woodstox-core.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
