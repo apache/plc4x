@@ -194,8 +194,8 @@ try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionFacto
 ----
 <1> Cheap, and worth checking before you build a message you may not need.
 <2> Your entry appears in the trace with the same `[timestamp] [type] [source]` prefix.
-<3> The three-argument form serialises the object to JSON with Jackson, falling back to
-`toString()` if it cannot.
+<3> The three-argument form serialises the object to JSON (records by their components, other
+objects by their public getters), falling back to `toString()` if it cannot.
 
 This is the useful trick for correlating a trace with your own application: mark the beginning of
 a batch, a recipe change, a shift, and you can find that point again in a 10 MB trace of hex.

@@ -34,7 +34,7 @@ This separation allows code to depend only on the API module at compile time whi
 - **Conditional Activation**: Audit logging is only active when the implementation module is on the classpath AND a log file path is configured
 - **No-Op Fallback**: When disabled or unconfigured, uses a zero-overhead no-op implementation
 - **Rolling File Appender**: Automatically rolls and compresses log files based on size (10MB) and time (daily)
-- **JSON Serialization**: Supports logging objects as JSON using Jackson
+- **JSON Serialization**: Supports logging objects as JSON (records, beans, maps, collections), using the JSON writer in `plc4j-spi-utils`
 - **Source Identification**: Each log instance can be associated with a source identifier (e.g., connection ID)
 
 ## Usage
@@ -137,7 +137,7 @@ When enabled, the implementation uses a size-and-time-based rolling policy:
 ### Implementation Module
 - `plc4j-utils-audit-log-api` - The API module
 - `logback-classic` / `logback-core` - File appender implementation
-- `jackson-core` / `jackson-databind` - JSON serialization
+- `plc4j-spi-utils` - JSON serialization
 
 ## Enabling Audit Logging
 

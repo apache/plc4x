@@ -27,9 +27,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.plc4x.java.spi.utils.json.Json;
+import org.apache.plc4x.java.spi.utils.json.JsonException;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 import org.apache.plc4x.java.utils.auditlog.api.AuditLogEventType;
 import org.apache.plc4x.java.utils.auditlog.api.config.AuditLogConfiguration;
@@ -55,8 +54,6 @@ public class AuditLogImpl extends AuditLog {
     private final Logger logger;
     private final RollingFileAppender<ILoggingEvent> fileAppender;
     private final LoggerContext loggerContext;
-    private final ObjectMapper objectMapper;
-
     /**
      * Creates a new AuditLogImpl instance with the given configuration.
      *
@@ -65,11 +62,6 @@ public class AuditLogImpl extends AuditLog {
      */
     public AuditLogImpl(AuditLogConfiguration config, String source) {
         super(config, source);
-
-        // Initialize JSON object mapper
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false); // Compact JSON for logs
 
         // Create a unique logger for this audit log instance
         String loggerName = "AuditLog-" + System.identityHashCode(this);
@@ -141,8 +133,8 @@ public class AuditLogImpl extends AuditLog {
         // Serialize the data object to JSON
         String jsonData;
         try {
-            jsonData = objectMapper.writeValueAsString(data);
-        } catch (JsonProcessingException e) {
+            jsonData = Json.toJson(data);
+        } catch (JsonException e) {
             // Fallback to toString() if JSON serialization fails
             jsonData = (data != null) ? data.toString() : "null";
             slf4jLogger.warn("Failed to serialize object to JSON, using toString(): {}", e.getMessage());
