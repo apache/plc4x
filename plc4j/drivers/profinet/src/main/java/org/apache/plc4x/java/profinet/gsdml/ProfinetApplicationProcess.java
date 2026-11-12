@@ -19,29 +19,21 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ApplicationProcess")
 public class ProfinetApplicationProcess {
 
-    @JacksonXmlProperty(localName="DeviceAccessPointList")
     private List<ProfinetDeviceAccessPointItem> deviceAccessPointList;
 
-    @JacksonXmlProperty(localName="ModuleList")
     private List<ProfinetModuleItem> moduleList;
 
-    @JacksonXmlProperty(localName="LogBookEntryList")
     private List<ProfinetLogBookEntryItem> logBookEntryList;
 
-    @JacksonXmlProperty(localName="GraphicsList")
     private List<ProfinetGraphicItem> graphicsList;
 
-    @JacksonXmlProperty(localName="ExternalTextList")
     private ProfinetExternalTextList externalTextList;
 
     public List<ProfinetDeviceAccessPointItem> getDeviceAccessPointList() {
@@ -62,5 +54,22 @@ public class ProfinetApplicationProcess {
 
     public ProfinetExternalTextList getExternalTextList() {
         return externalTextList;
+    }
+
+    static ProfinetApplicationProcess fromXml(Element element) throws IOException {
+        ProfinetApplicationProcess result = new ProfinetApplicationProcess();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "DeviceAccessPointList" -> result.deviceAccessPointList = property.wrappedList(ProfinetDeviceAccessPointItem::fromXml);
+                case "ModuleList" -> result.moduleList = property.wrappedList(ProfinetModuleItem::fromXml);
+                case "LogBookEntryList" -> result.logBookEntryList = property.wrappedList(ProfinetLogBookEntryItem::fromXml);
+                case "GraphicsList" -> result.graphicsList = property.wrappedList(ProfinetGraphicItem::fromXml);
+                case "ExternalTextList" -> result.externalTextList = property.object(ProfinetExternalTextList::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

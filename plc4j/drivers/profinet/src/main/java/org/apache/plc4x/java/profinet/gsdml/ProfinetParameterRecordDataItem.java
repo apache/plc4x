@@ -19,24 +19,18 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ParameterRecordDataItem")
+import java.io.IOException;
+
 public class ProfinetParameterRecordDataItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="Index")
     private int index;
 
-    @JacksonXmlProperty(isAttribute=true, localName="Length")
     private int length;
 
-    @JacksonXmlProperty(localName="Name")
     private ProfinetTextId name;
 
-    @JacksonXmlProperty(localName="Ref")
     private ProfinetRef ref;
 
     public int getIndex() {
@@ -53,5 +47,21 @@ public class ProfinetParameterRecordDataItem {
 
     public ProfinetRef getRef() {
         return ref;
+    }
+
+    static ProfinetParameterRecordDataItem fromXml(Element element) throws IOException {
+        ProfinetParameterRecordDataItem result = new ProfinetParameterRecordDataItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "Index" -> result.index = property.intValue();
+                case "Length" -> result.length = property.intValue();
+                case "Name" -> result.name = property.object(ProfinetTextId::fromXml);
+                case "Ref" -> result.ref = property.object(ProfinetRef::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

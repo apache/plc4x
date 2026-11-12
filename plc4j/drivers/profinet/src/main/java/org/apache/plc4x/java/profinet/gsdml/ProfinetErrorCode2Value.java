@@ -19,21 +19,30 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ErrorCode2Value")
 public class ProfinetErrorCode2Value {
 
-    @JacksonXmlProperty(isAttribute=true, localName="Name")
     private ProfinetTextId name;
 
     public ProfinetTextId getName() {
         return name;
+    }
+
+    static ProfinetErrorCode2Value fromXml(Element element) throws IOException {
+        ProfinetErrorCode2Value result = new ProfinetErrorCode2Value();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "Name" -> result.name = property.object(ProfinetTextId::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
 

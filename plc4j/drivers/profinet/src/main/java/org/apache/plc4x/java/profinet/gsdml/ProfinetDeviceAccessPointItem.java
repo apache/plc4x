@@ -19,77 +19,53 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("DeviceAccessPointItem")
 public class ProfinetDeviceAccessPointItem implements ProfinetDeviceItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="PNIO_Version")
     private String pnioVersion;
 
-    @JacksonXmlProperty(isAttribute=true, localName="PhysicalSlots")
     private String physicalSlots;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ModuleIdentNumber")
     private String moduleIdentNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MinDeviceInterval")
     private int minDeviceInterval;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DNS_CompatibleName")
     private String dnsCompatibleName;
 
-    @JacksonXmlProperty(isAttribute=true, localName="FixedInSlots")
     private int fixedInSlots;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ObjectUUID_LocalIndex")
     private int objectUUIDLocalIndex;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DeviceAccessSupported")
     private boolean deviceAccessSupported;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MultipleWriteSupported")
     private boolean multipleWriteSupported;
 
-    @JacksonXmlProperty(isAttribute=true, localName="CheckDeviceID_Allowed")
     private boolean checkDeviceIDAllowed;
 
-    @JacksonXmlProperty(isAttribute=true, localName="NameOfStationNotTransferable")
     private boolean nameOfStationNotTransferable;
 
-    @JacksonXmlProperty(isAttribute=true, localName="LLDP_NoD_Supported")
     private boolean lldpNodSupported;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ResetToFactoryModes")
     private String resetToFactoryModes;
 
-    @JacksonXmlProperty(localName="ModuleInfo")
     private ProfinetModuleInfo moduleInfo;
 
-    @JacksonXmlProperty(localName="CertificationInfo")
     private ProfinetCertificationInfo certificationInfo;
 
-    @JacksonXmlProperty(localName="IOConfigData")
     private ProfinetIOConfigData ioConfigData;
 
-    @JacksonXmlProperty(localName="UseableModules")
     private List<ProfinetModuleItemRef> useableModules;
 
-    @JacksonXmlProperty(localName="VirtualSubmoduleList")
     private List<ProfinetVirtualSubmoduleItem> virtualSubmoduleList;
 
-    @JacksonXmlProperty(localName="SystemDefinedSubmoduleList")
     private ProfinetSystemDefinedSubmoduleList systemDefinedSubmoduleList;
 
-    @JacksonXmlProperty(localName="Graphics")
     private ProfinetGraphics graphics;
 
     public String getId() {
@@ -184,5 +160,38 @@ public class ProfinetDeviceAccessPointItem implements ProfinetDeviceItem {
 
     public ProfinetGraphics getGraphics() {
         return graphics;
+    }
+
+    static ProfinetDeviceAccessPointItem fromXml(Element element) throws IOException {
+        ProfinetDeviceAccessPointItem result = new ProfinetDeviceAccessPointItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "PNIO_Version" -> result.pnioVersion = property.string();
+                case "PhysicalSlots" -> result.physicalSlots = property.string();
+                case "ModuleIdentNumber" -> result.moduleIdentNumber = property.string();
+                case "MinDeviceInterval" -> result.minDeviceInterval = property.intValue();
+                case "DNS_CompatibleName" -> result.dnsCompatibleName = property.string();
+                case "FixedInSlots" -> result.fixedInSlots = property.intValue();
+                case "ObjectUUID_LocalIndex" -> result.objectUUIDLocalIndex = property.intValue();
+                case "DeviceAccessSupported" -> result.deviceAccessSupported = property.booleanValue();
+                case "MultipleWriteSupported" -> result.multipleWriteSupported = property.booleanValue();
+                case "CheckDeviceID_Allowed" -> result.checkDeviceIDAllowed = property.booleanValue();
+                case "NameOfStationNotTransferable" -> result.nameOfStationNotTransferable = property.booleanValue();
+                case "LLDP_NoD_Supported" -> result.lldpNodSupported = property.booleanValue();
+                case "ResetToFactoryModes" -> result.resetToFactoryModes = property.string();
+                case "ModuleInfo" -> result.moduleInfo = property.object(ProfinetModuleInfo::fromXml);
+                case "CertificationInfo" -> result.certificationInfo = property.object(ProfinetCertificationInfo::fromXml);
+                case "IOConfigData" -> result.ioConfigData = property.object(ProfinetIOConfigData::fromXml);
+                case "UseableModules" -> result.useableModules = property.wrappedList(ProfinetModuleItemRef::fromXml);
+                case "VirtualSubmoduleList" -> result.virtualSubmoduleList = property.wrappedList(ProfinetVirtualSubmoduleItem::fromXml);
+                case "SystemDefinedSubmoduleList" -> result.systemDefinedSubmoduleList = property.object(ProfinetSystemDefinedSubmoduleList::fromXml);
+                case "Graphics" -> result.graphics = property.object(ProfinetGraphics::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

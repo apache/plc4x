@@ -19,18 +19,28 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("Graphics")
+import java.io.IOException;
+
 public class ProfinetGraphics {
 
-    @JacksonXmlProperty(localName="GraphicItemRef")
     private ProfinetGraphicsItemRef GraphicItemRef;
 
     public ProfinetGraphicsItemRef getGraphicItemRef() {
         return GraphicItemRef;
+    }
+
+    static ProfinetGraphics fromXml(Element element) throws IOException {
+        ProfinetGraphics result = new ProfinetGraphics();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "GraphicItemRef" -> result.GraphicItemRef = property.object(ProfinetGraphicsItemRef::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

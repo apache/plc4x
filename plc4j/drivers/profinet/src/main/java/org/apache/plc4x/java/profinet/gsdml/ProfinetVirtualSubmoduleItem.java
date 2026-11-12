@@ -19,38 +19,27 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("VirtualSubmoduleItem")
 public class ProfinetVirtualSubmoduleItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubmoduleIdentNumber")
     private String submoduleIdentNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubslotNumber")
     private final int subslotNumber = 1;
 
-    @JacksonXmlProperty(isAttribute=true, localName="Writeable_IM_Records")
     private String writeableImRecords;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MayIssueProcessAlarm")
     private boolean mayIssueProcessAlarm;
 
-    @JacksonXmlProperty(localName="IOData")
     private ProfinetIoData ioData;
 
-    @JacksonXmlProperty(localName="ModuleInfo")
     private ProfinetModuleInfo moduleInfo;
 
-    @JacksonXmlProperty(localName="RecordDataList")
     private List<ProfinetParameterRecordDataItem> recordDataList;
 
     public String getId() {
@@ -83,5 +72,26 @@ public class ProfinetVirtualSubmoduleItem {
 
     public int getSubslotNumber() {
         return subslotNumber;
+    }
+
+    static ProfinetVirtualSubmoduleItem fromXml(Element element) throws IOException {
+        ProfinetVirtualSubmoduleItem result = new ProfinetVirtualSubmoduleItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "SubmoduleIdentNumber" -> result.submoduleIdentNumber = property.string();
+                // Validated as an int like any other property, but the getter always reports subslot 1.
+                case "SubslotNumber" -> property.intValue();
+                case "Writeable_IM_Records" -> result.writeableImRecords = property.string();
+                case "MayIssueProcessAlarm" -> result.mayIssueProcessAlarm = property.booleanValue();
+                case "IOData" -> result.ioData = property.object(ProfinetIoData::fromXml);
+                case "ModuleInfo" -> result.moduleInfo = property.object(ProfinetModuleInfo::fromXml);
+                case "RecordDataList" -> result.recordDataList = property.wrappedList(ProfinetParameterRecordDataItem::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("Family")
+import java.io.IOException;
+
 public class ProfinetFamily {
 
-    @JacksonXmlProperty(isAttribute=true, localName="MainFamily")
     private String mainFamily;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ProductFamily")
     private String productFamily;
 
     public String getMainFamily() {
@@ -39,5 +35,19 @@ public class ProfinetFamily {
 
     public String getProductFamily() {
         return productFamily;
+    }
+
+    static ProfinetFamily fromXml(Element element) throws IOException {
+        ProfinetFamily result = new ProfinetFamily();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "MainFamily" -> result.mainFamily = property.string();
+                case "ProductFamily" -> result.productFamily = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

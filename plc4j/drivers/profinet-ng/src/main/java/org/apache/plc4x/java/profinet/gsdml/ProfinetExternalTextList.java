@@ -19,16 +19,28 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import java.io.IOException;
+
 public class ProfinetExternalTextList {
 
-    @JacksonXmlProperty(localName="PrimaryLanguage")
     private ProfinetPrimaryLanguage primaryLanguage;
 
     public ProfinetPrimaryLanguage getPrimaryLanguage() {
         return primaryLanguage;
+    }
+
+    static ProfinetExternalTextList fromXml(Element element) throws IOException {
+        ProfinetExternalTextList result = new ProfinetExternalTextList();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "PrimaryLanguage" -> result.primaryLanguage = property.object(ProfinetPrimaryLanguage::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

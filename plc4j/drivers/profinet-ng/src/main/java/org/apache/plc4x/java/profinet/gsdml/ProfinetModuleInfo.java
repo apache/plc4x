@@ -19,30 +19,22 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("DeviceAccessPointList")
+import java.io.IOException;
+
 public class ProfinetModuleInfo {
 
-    @JacksonXmlProperty(localName="Name")
     private ProfinetTextId name;
 
-    @JacksonXmlProperty(localName="InfoText")
     private ProfinetTextId infoText;
 
-    @JacksonXmlProperty(localName="VendorName")
     private ProfinetValue vendorName;
 
-    @JacksonXmlProperty(localName="OrderNumber")
     private ProfinetValue orderNumber;
 
-    @JacksonXmlProperty(localName="HardwareRelease")
     private ProfinetValue hardwareRelease;
 
-    @JacksonXmlProperty(localName="SoftwareRelease")
     private ProfinetValue softwareRelease;
 
     public ProfinetTextId getName() {
@@ -67,5 +59,23 @@ public class ProfinetModuleInfo {
 
     public ProfinetValue getSoftwareRelease() {
         return softwareRelease;
+    }
+
+    static ProfinetModuleInfo fromXml(Element element) throws IOException {
+        ProfinetModuleInfo result = new ProfinetModuleInfo();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "Name" -> result.name = property.object(ProfinetTextId::fromXml);
+                case "InfoText" -> result.infoText = property.object(ProfinetTextId::fromXml);
+                case "VendorName" -> result.vendorName = property.object(ProfinetValue::fromXml);
+                case "OrderNumber" -> result.orderNumber = property.object(ProfinetValue::fromXml);
+                case "HardwareRelease" -> result.hardwareRelease = property.object(ProfinetValue::fromXml);
+                case "SoftwareRelease" -> result.softwareRelease = property.object(ProfinetValue::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

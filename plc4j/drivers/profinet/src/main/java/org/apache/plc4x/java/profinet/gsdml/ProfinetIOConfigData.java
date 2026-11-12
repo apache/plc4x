@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("IOConfigData")
+import java.io.IOException;
+
 public class ProfinetIOConfigData {
 
-    @JacksonXmlProperty(isAttribute=true, localName="MaxInputLength")
     private int maxInputLength;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MaxOutputLength")
     private int maxOutputLength;
 
     public int getMaxInputLength() {
@@ -39,5 +35,19 @@ public class ProfinetIOConfigData {
 
     public int getMaxOutputLength() {
         return maxOutputLength;
+    }
+
+    static ProfinetIOConfigData fromXml(Element element) throws IOException {
+        ProfinetIOConfigData result = new ProfinetIOConfigData();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "MaxInputLength" -> result.maxInputLength = property.intValue();
+                case "MaxOutputLength" -> result.maxOutputLength = property.intValue();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

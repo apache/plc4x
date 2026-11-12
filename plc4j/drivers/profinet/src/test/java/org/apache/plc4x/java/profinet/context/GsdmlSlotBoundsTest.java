@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.profinet.context;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -56,7 +56,7 @@ class GsdmlSlotBoundsTest {
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setDeviceAccess("PLC4X_1");
         context.setSubModules("");
-        context.setGsdFile(new XmlMapper().readValue(gsdml, ProfinetISO15745Profile.class));
+        context.setGsdFile(ProfinetISO15745Profile.parse(new ByteArrayInputStream(gsdml.getBytes(StandardCharsets.ISO_8859_1))));
         return context;
     }
 

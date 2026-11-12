@@ -19,19 +19,15 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ProfinetSystemDefinedSubmoduleList {
 
-    @JacksonXmlProperty(localName="InterfaceSubmoduleItem")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetInterfaceSubmoduleItem> interfaceSubmodules;
 
-    @JacksonXmlProperty(localName="PortSubmoduleItem")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetPortSubmoduleItem> portSubmodules;
 
     public List<ProfinetInterfaceSubmoduleItem> getInterfaceSubmodules() {
@@ -40,5 +36,18 @@ public class ProfinetSystemDefinedSubmoduleList {
 
     public List<ProfinetPortSubmoduleItem> getPortSubmodules() {
         return portSubmodules;
+    }
+
+    static ProfinetSystemDefinedSubmoduleList fromXml(Element element) throws IOException {
+        ProfinetSystemDefinedSubmoduleList result = new ProfinetSystemDefinedSubmoduleList();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, true)) {
+            switch (property.name()) {
+                case "InterfaceSubmoduleItem" -> result.interfaceSubmodules = property.unwrappedList(ProfinetInterfaceSubmoduleItem::fromXml);
+                case "PortSubmoduleItem" -> result.portSubmodules = property.unwrappedList(ProfinetPortSubmoduleItem::fromXml);
+                // Strict, as under the former jackson mapping: anything unknown here rejects the whole file.
+                default -> throw property.unknownIn(ProfinetSystemDefinedSubmoduleList.class);
+            }
+        }
+        return result;
     }
 }

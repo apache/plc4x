@@ -19,33 +19,24 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("Ref")
+import java.io.IOException;
+
 public class ProfinetRef {
 
-    @JacksonXmlProperty(isAttribute=true, localName="DataType")
     private String dataType;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ByteOffset")
     private int byteOffset;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DefaultValue")
     private String defaultValue;
 
-    @JacksonXmlProperty(isAttribute=true, localName="AllowedValues")
     private String allowedValues;
 
-    @JacksonXmlProperty(isAttribute=true, localName="Changeable")
     private boolean changeable;
 
-    @JacksonXmlProperty(isAttribute=true, localName="Visible")
     private boolean visible;
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
     public String getDataType() {
@@ -74,5 +65,24 @@ public class ProfinetRef {
 
     public String getTextId() {
         return textId;
+    }
+
+    static ProfinetRef fromXml(Element element) throws IOException {
+        ProfinetRef result = new ProfinetRef();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "DataType" -> result.dataType = property.string();
+                case "ByteOffset" -> result.byteOffset = property.intValue();
+                case "DefaultValue" -> result.defaultValue = property.string();
+                case "AllowedValues" -> result.allowedValues = property.string();
+                case "Changeable" -> result.changeable = property.booleanValue();
+                case "Visible" -> result.visible = property.booleanValue();
+                case "TextId" -> result.textId = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

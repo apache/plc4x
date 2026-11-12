@@ -19,25 +19,19 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("DeviceIdentity")
+import java.io.IOException;
+
 public class ProfinetDeviceIdentity {
 
 
-    @JacksonXmlProperty(isAttribute = true, localName = "VendorID")
     private String vendorId;
 
-    @JacksonXmlProperty(isAttribute = true, localName = "DeviceID")
     private String deviceID;
 
-    @JacksonXmlProperty(localName = "InfoText")
     private ProfinetTextId infoText;
 
-    @JacksonXmlProperty(localName = "VendorName")
     private ProfinetValue vendorName;
 
     public String getVendorId() {
@@ -54,5 +48,21 @@ public class ProfinetDeviceIdentity {
 
     public ProfinetValue getVendorName() {
         return vendorName;
+    }
+
+    static ProfinetDeviceIdentity fromXml(Element element) throws IOException {
+        ProfinetDeviceIdentity result = new ProfinetDeviceIdentity();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "VendorID" -> result.vendorId = property.string();
+                case "DeviceID" -> result.deviceID = property.string();
+                case "InfoText" -> result.infoText = property.object(ProfinetTextId::fromXml);
+                case "VendorName" -> result.vendorName = property.object(ProfinetValue::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

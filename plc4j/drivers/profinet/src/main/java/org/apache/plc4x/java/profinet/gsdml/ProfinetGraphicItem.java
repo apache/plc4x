@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("GraphicsItem")
+import java.io.IOException;
+
 public class ProfinetGraphicItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="GraphicFile")
     private String graphicFile;
 
     public String getId() {
@@ -39,5 +35,19 @@ public class ProfinetGraphicItem {
 
     public String getGraphicFile() {
         return graphicFile;
+    }
+
+    static ProfinetGraphicItem fromXml(Element element) throws IOException {
+        ProfinetGraphicItem result = new ProfinetGraphicItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "GraphicFile" -> result.graphicFile = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

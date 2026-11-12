@@ -19,19 +19,16 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.w3c.dom.Element;
 
-@JsonRootName("ProfileBody")
+import java.io.IOException;
+
 public class ProfinetProfileBody {
 
-    @JsonProperty("DeviceIdentity")
     private ProfinetDeviceIdentity deviceIdentity;
 
-    @JsonProperty("DeviceFunction")
     private ProfinetDeviceFunction deviceFunction;
 
-    @JsonProperty("ApplicationProcess")
     private ProfinetApplicationProcess applicationProcess;
 
     public ProfinetDeviceIdentity getDeviceIdentity() {
@@ -44,5 +41,19 @@ public class ProfinetProfileBody {
 
     public ProfinetApplicationProcess getApplicationProcess() {
         return applicationProcess;
+    }
+
+    static ProfinetProfileBody fromXml(Element element) throws IOException {
+        ProfinetProfileBody result = new ProfinetProfileBody();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, true)) {
+            switch (property.name()) {
+                case "DeviceIdentity" -> result.deviceIdentity = property.object(ProfinetDeviceIdentity::fromXml);
+                case "DeviceFunction" -> result.deviceFunction = property.object(ProfinetDeviceFunction::fromXml);
+                case "ApplicationProcess" -> result.applicationProcess = property.object(ProfinetApplicationProcess::fromXml);
+                // Strict, as under the former jackson mapping: anything unknown here rejects the whole file.
+                default -> throw property.unknownIn(ProfinetProfileBody.class);
+            }
+        }
+        return result;
     }
 }

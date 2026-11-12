@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("TimingProperties")
+import java.io.IOException;
+
 public class ProfinetTimingProperties {
 
-    @JacksonXmlProperty(isAttribute=true, localName="SendClock")
     private String sendClock;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ReductionRatio")
     private String reductionRatio;
 
     public String getSendClock() {
@@ -39,5 +35,19 @@ public class ProfinetTimingProperties {
 
     public String getReductionRatio() {
         return reductionRatio;
+    }
+
+    static ProfinetTimingProperties fromXml(Element element) throws IOException {
+        ProfinetTimingProperties result = new ProfinetTimingProperties();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "SendClock" -> result.sendClock = property.string();
+                case "ReductionRatio" -> result.reductionRatio = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

@@ -19,20 +19,15 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonTypeName("Input")
 public class ProfinetIoDataInput  {
 
-    @JacksonXmlProperty(isAttribute=true, localName="Consistency")
     private String consistency;
 
-    @JacksonXmlProperty(localName="DataItem")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetDataItem> dataItemList;
 
     public String getConsistency() {
@@ -41,5 +36,18 @@ public class ProfinetIoDataInput  {
 
     public List<ProfinetDataItem> getDataItemList() {
         return dataItemList;
+    }
+
+    static ProfinetIoDataInput fromXml(Element element) throws IOException {
+        ProfinetIoDataInput result = new ProfinetIoDataInput();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, true)) {
+            switch (property.name()) {
+                case "Consistency" -> result.consistency = property.string();
+                case "DataItem" -> result.dataItemList = property.unwrappedList(ProfinetDataItem::fromXml);
+                // Strict, as under the former jackson mapping: anything unknown here rejects the whole file.
+                default -> throw property.unknownIn(ProfinetIoDataInput.class);
+            }
+        }
+        return result;
     }
 }

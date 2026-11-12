@@ -19,21 +19,16 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ISO15745Reference")
+import java.io.IOException;
+
 public class ProfinetISO15745Reference {
 
-    @JsonProperty("ISO15745Part")
     private int iso15745Part;
 
-    @JsonProperty("ISO15745Edition")
     private int iso15745Edition;
 
-    @JsonProperty("ProfileTechnology")
     private String profileTechnology;
 
     public int getIso15745Part() {
@@ -46,5 +41,20 @@ public class ProfinetISO15745Reference {
 
     public String getProfileTechnology() {
         return profileTechnology;
+    }
+
+    static ProfinetISO15745Reference fromXml(Element element) throws IOException {
+        ProfinetISO15745Reference result = new ProfinetISO15745Reference();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ISO15745Part" -> result.iso15745Part = property.intValue();
+                case "ISO15745Edition" -> result.iso15745Edition = property.intValue();
+                case "ProfileTechnology" -> result.profileTechnology = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

@@ -19,30 +19,22 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ProfileHeader")
+import java.io.IOException;
+
 public class ProfinetProfileHeader {
 
-    @JsonProperty("ProfileIdentification")
     private String profileIdentification;
 
-    @JsonProperty("ProfileRevision")
     private String profileRevision;
 
-    @JsonProperty("ProfileName")
     private String profileName;
 
-    @JsonProperty("ProfileSource")
     private String profileSource;
 
-    @JsonProperty("ProfileClassID")
     private String profileClassID;
 
-    @JsonProperty("ISO15745Reference")
     private ProfinetISO15745Reference iso15745Reference;
 
     public String getProfileIdentification() {
@@ -67,5 +59,23 @@ public class ProfinetProfileHeader {
 
     public ProfinetISO15745Reference getIso15745Reference() {
         return iso15745Reference;
+    }
+
+    static ProfinetProfileHeader fromXml(Element element) throws IOException {
+        ProfinetProfileHeader result = new ProfinetProfileHeader();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ProfileIdentification" -> result.profileIdentification = property.string();
+                case "ProfileRevision" -> result.profileRevision = property.string();
+                case "ProfileName" -> result.profileName = property.string();
+                case "ProfileSource" -> result.profileSource = property.string();
+                case "ProfileClassID" -> result.profileClassID = property.string();
+                case "ISO15745Reference" -> result.iso15745Reference = property.object(ProfinetISO15745Reference::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

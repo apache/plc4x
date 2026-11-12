@@ -19,21 +19,16 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("CertificationInfo")
+import java.io.IOException;
+
 public class ProfinetCertificationInfo {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ConformanceClass")
     private String conformanceClass;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ApplicationClass")
     private String applicationClass;
 
-    @JacksonXmlProperty(isAttribute=true, localName="NetloadClass")
     private String netloadClass;
 
     public String getConformanceClass() {
@@ -46,5 +41,20 @@ public class ProfinetCertificationInfo {
 
     public String getNetloadClass() {
         return netloadClass;
+    }
+
+    static ProfinetCertificationInfo fromXml(Element element) throws IOException {
+        ProfinetCertificationInfo result = new ProfinetCertificationInfo();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ConformanceClass" -> result.conformanceClass = property.string();
+                case "ApplicationClass" -> result.applicationClass = property.string();
+                case "NetloadClass" -> result.netloadClass = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

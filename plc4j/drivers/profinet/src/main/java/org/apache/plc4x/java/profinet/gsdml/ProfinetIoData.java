@@ -19,29 +19,19 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("IOData")
 public class ProfinetIoData {
 
-    @JacksonXmlProperty(isAttribute=true, localName="IOPS_Length")
     private int iopsLength;
 
-    @JacksonXmlProperty(isAttribute=true, localName="IOCS_Length")
     private int iocsLength;
 
-    @JacksonXmlProperty(localName="Input")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetIoDataInput> input;
 
-    @JacksonXmlProperty(localName="Output")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetIoDataOutput> output;
 
     public int getIopsLength() {
@@ -58,5 +48,21 @@ public class ProfinetIoData {
 
     public List<ProfinetIoDataOutput> getOutput() {
         return output;
+    }
+
+    static ProfinetIoData fromXml(Element element) throws IOException {
+        ProfinetIoData result = new ProfinetIoData();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "IOPS_Length" -> result.iopsLength = property.intValue();
+                case "IOCS_Length" -> result.iocsLength = property.intValue();
+                case "Input" -> result.input = property.unwrappedList(ProfinetIoDataInput::fromXml);
+                case "Output" -> result.output = property.unwrappedList(ProfinetIoDataOutput::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

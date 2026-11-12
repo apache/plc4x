@@ -19,20 +19,15 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("LogBookEntryItem")
 public class ProfinetLogBookEntryItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="Status")
     private String status;
 
-    @JacksonXmlProperty(localName="ErrorCode2Value")
     private ProfinetErrorCode2Value errorCode2Value;
 
     public String getStatus() {
@@ -41,6 +36,20 @@ public class ProfinetLogBookEntryItem {
 
     public ProfinetErrorCode2Value getErrorCode2Value() {
         return errorCode2Value;
+    }
+
+    static ProfinetLogBookEntryItem fromXml(Element element) throws IOException {
+        ProfinetLogBookEntryItem result = new ProfinetLogBookEntryItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "Status" -> result.status = property.string();
+                case "ErrorCode2Value" -> result.errorCode2Value = property.object(ProfinetErrorCode2Value::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
 

@@ -19,31 +19,21 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = false)
-@JsonRootName("DataItem")
 public class ProfinetDataItem {
 
-    @JacksonXmlProperty(localName="BitDataItem")
-    @JacksonXmlElementWrapper(useWrapping = false)
     private List<ProfinetBitDataItem> bitDataItem;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DataType")
     private String dataType;
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
-    @JacksonXmlProperty(isAttribute=true, localName="Length")
     private int length;
 
-    @JacksonXmlProperty(isAttribute=true, localName="UseAsBits")
     private boolean useAsBits;
 
     public String getDataType() {
@@ -68,6 +58,22 @@ public class ProfinetDataItem {
 
     public List<ProfinetBitDataItem> getBitDataItem() {
         return bitDataItem;
+    }
+
+    static ProfinetDataItem fromXml(Element element) throws IOException {
+        ProfinetDataItem result = new ProfinetDataItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, true)) {
+            switch (property.name()) {
+                case "BitDataItem" -> result.bitDataItem = property.unwrappedList(ProfinetBitDataItem::fromXml);
+                case "DataType" -> result.dataType = property.string();
+                case "TextId" -> result.textId = property.string();
+                case "Length" -> result.length = property.intValue();
+                case "UseAsBits" -> result.useAsBits = property.booleanValue();
+                // Strict, as under the former jackson mapping: anything unknown here rejects the whole file.
+                default -> throw property.unknownIn(ProfinetDataItem.class);
+            }
+        }
+        return result;
     }
 }
 

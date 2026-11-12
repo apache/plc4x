@@ -19,19 +19,43 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ISO15745Profile")
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Root of a GSDML device description (the {@code ISO15745Profile} element).
+ */
 public class ProfinetISO15745Profile {
 
-    @JsonProperty("ProfileHeader")
     private ProfinetProfileHeader profileHeader;
 
-    @JsonProperty("ProfileBody")
     private ProfinetProfileBody profileBody;
+
+    /**
+     * Parses a GSDML file.
+     *
+     * @throws IOException if the file cannot be read, is not well-formed XML (or declares a DTD), or
+     *                     holds a value that does not fit the GSDML model
+     */
+    public static ProfinetISO15745Profile parse(Path file) throws IOException {
+        try (InputStream in = Files.newInputStream(file)) {
+            return parse(in);
+        }
+    }
+
+    /**
+     * Parses a GSDML document.
+     *
+     * @throws IOException if the stream cannot be read, is not well-formed XML (or declares a DTD), or
+     *                     holds a value that does not fit the GSDML model
+     */
+    public static ProfinetISO15745Profile parse(InputStream in) throws IOException {
+        return fromXml(GsdmlXml.parse(in));
+    }
 
     public ProfinetProfileHeader getProfileHeader() {
         return profileHeader;
@@ -39,5 +63,19 @@ public class ProfinetISO15745Profile {
 
     public ProfinetProfileBody getProfileBody() {
         return profileBody;
+    }
+
+    static ProfinetISO15745Profile fromXml(Element element) throws IOException {
+        ProfinetISO15745Profile result = new ProfinetISO15745Profile();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ProfileHeader" -> result.profileHeader = property.object(ProfinetProfileHeader::fromXml);
+                case "ProfileBody" -> result.profileBody = property.object(ProfinetProfileBody::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

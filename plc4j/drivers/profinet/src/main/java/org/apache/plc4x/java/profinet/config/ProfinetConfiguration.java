@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
@@ -149,10 +148,9 @@ public class ProfinetConfiguration implements Configuration {
             DirectoryStream<Path> stream = null;
             try {
                 stream = Files.newDirectoryStream(Paths.get(value));
-                XmlMapper xmlMapper = new XmlMapper();
                 for (Path file : stream) {
                     try {
-                        ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
+                        ProfinetISO15745Profile gsdFile = ProfinetISO15745Profile.parse(file);
                         if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
                             String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
                             gsdFiles.put(id, gsdFile);

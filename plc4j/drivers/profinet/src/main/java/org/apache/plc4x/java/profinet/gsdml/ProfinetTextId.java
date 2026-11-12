@@ -19,18 +19,28 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("InfoText")
+import java.io.IOException;
+
 public class ProfinetTextId {
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
     public String getTextId() {
         return textId;
+    }
+
+    static ProfinetTextId fromXml(Element element) throws IOException {
+        ProfinetTextId result = new ProfinetTextId();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "TextId" -> result.textId = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

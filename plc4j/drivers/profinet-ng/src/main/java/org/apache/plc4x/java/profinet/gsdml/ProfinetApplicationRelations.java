@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ApplicationRelations")
+import java.io.IOException;
+
 public class ProfinetApplicationRelations {
 
-    @JacksonXmlProperty(isAttribute=true, localName="StartupMode")
     private String startupMode;
 
-    @JacksonXmlProperty(localName="TimingProperties")
     private ProfinetTimingProperties TimingProperties;
 
     public String getStartupMode() {
@@ -39,5 +35,19 @@ public class ProfinetApplicationRelations {
 
     public ProfinetTimingProperties getTimingProperties() {
         return TimingProperties;
+    }
+
+    static ProfinetApplicationRelations fromXml(Element element) throws IOException {
+        ProfinetApplicationRelations result = new ProfinetApplicationRelations();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "StartupMode" -> result.startupMode = property.string();
+                case "TimingProperties" -> result.TimingProperties = property.object(ProfinetTimingProperties::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

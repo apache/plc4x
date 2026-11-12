@@ -19,35 +19,25 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("PortSubmoduleItem")
 public class ProfinetPortSubmoduleItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubmoduleIdentNumber")
     private String submoduleIdentNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubslotNumber")
     private int subslotNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MaxPortRxDelay")
     private int maxPortRxDelay;
 
-    @JacksonXmlProperty(isAttribute=true, localName="MaxPortTxDelay")
     private int maxPortTxDelay;
 
-    @JacksonXmlProperty(localName="MAUTypeList")
     private List<ProfinetValue> mauTypeItem;
 
     public String getId() {
@@ -76,6 +66,25 @@ public class ProfinetPortSubmoduleItem {
 
     public List<ProfinetValue> getMauTypeItem() {
         return mauTypeItem;
+    }
+
+    static ProfinetPortSubmoduleItem fromXml(Element element) throws IOException {
+        ProfinetPortSubmoduleItem result = new ProfinetPortSubmoduleItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "SubmoduleIdentNumber" -> result.submoduleIdentNumber = property.string();
+                case "SubslotNumber" -> result.subslotNumber = property.intValue();
+                case "TextId" -> result.textId = property.string();
+                case "MaxPortRxDelay" -> result.maxPortRxDelay = property.intValue();
+                case "MaxPortTxDelay" -> result.maxPortTxDelay = property.intValue();
+                case "MAUTypeList" -> result.mauTypeItem = property.wrappedList(ProfinetValue::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
 

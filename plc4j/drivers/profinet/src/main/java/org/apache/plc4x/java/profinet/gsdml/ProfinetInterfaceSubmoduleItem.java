@@ -19,42 +19,30 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("InterfaceSubmoduleItem")
+import java.io.IOException;
+
 public class ProfinetInterfaceSubmoduleItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubmoduleIdentNumber")
     private String submoduleIdentNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SubslotNumber")
     private int subslotNumber;
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SupportedRT_Classes")
     private String supportedRtClasses;
 
-    @JacksonXmlProperty(isAttribute=true, localName="SupportedProtocols")
     private String supportedProtocols;
 
-    @JacksonXmlProperty(isAttribute=true, localName="NetworkComponentDiagnosisSupported")
     private boolean networkComponentDiagnosisSupported;
 
-    @JacksonXmlProperty(isAttribute=true, localName="PTP_BoundarySupported")
     private boolean ptpBoundarySupported;
 
-    @JacksonXmlProperty(isAttribute=true, localName="DCP_BoundarySupported")
     private boolean dcpBoundarySupported;
 
-    @JacksonXmlProperty(localName="ApplicationRelations")
     private ProfinetApplicationRelations applicationRelations;
 
     public String getId() {
@@ -95,6 +83,28 @@ public class ProfinetInterfaceSubmoduleItem {
 
     public ProfinetApplicationRelations getApplicationRelations() {
         return applicationRelations;
+    }
+
+    static ProfinetInterfaceSubmoduleItem fromXml(Element element) throws IOException {
+        ProfinetInterfaceSubmoduleItem result = new ProfinetInterfaceSubmoduleItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "SubmoduleIdentNumber" -> result.submoduleIdentNumber = property.string();
+                case "SubslotNumber" -> result.subslotNumber = property.intValue();
+                case "TextId" -> result.textId = property.string();
+                case "SupportedRT_Classes" -> result.supportedRtClasses = property.string();
+                case "SupportedProtocols" -> result.supportedProtocols = property.string();
+                case "NetworkComponentDiagnosisSupported" -> result.networkComponentDiagnosisSupported = property.booleanValue();
+                case "PTP_BoundarySupported" -> result.ptpBoundarySupported = property.booleanValue();
+                case "DCP_BoundarySupported" -> result.dcpBoundarySupported = property.booleanValue();
+                case "ApplicationRelations" -> result.applicationRelations = property.object(ProfinetApplicationRelations::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
 

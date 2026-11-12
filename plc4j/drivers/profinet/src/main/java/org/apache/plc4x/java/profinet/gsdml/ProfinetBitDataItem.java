@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("BitDataItem")
+import java.io.IOException;
+
 public class ProfinetBitDataItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="BitOffset")
     private int bitOffset;
 
-    @JacksonXmlProperty(isAttribute=true, localName="TextId")
     private String textId;
 
     public int getBitOffset() {
@@ -39,6 +35,20 @@ public class ProfinetBitDataItem {
 
     public String getTextId() {
         return textId;
+    }
+
+    static ProfinetBitDataItem fromXml(Element element) throws IOException {
+        ProfinetBitDataItem result = new ProfinetBitDataItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "BitOffset" -> result.bitOffset = property.intValue();
+                case "TextId" -> result.textId = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
 

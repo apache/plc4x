@@ -19,18 +19,14 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.w3c.dom.Element;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ModuleItemRef")
+import java.io.IOException;
+
 public class ProfinetModuleItemRef {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ModuleItemTarget")
     private String moduleItemTarget;
 
-    @JacksonXmlProperty(isAttribute=true, localName="AllowedInSlots")
     private String allowedInSlots;
 
     public String getModuleItemTarget() {
@@ -39,5 +35,19 @@ public class ProfinetModuleItemRef {
 
     public String getAllowedInSlots() {
         return allowedInSlots;
+    }
+
+    static ProfinetModuleItemRef fromXml(Element element) throws IOException {
+        ProfinetModuleItemRef result = new ProfinetModuleItemRef();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ModuleItemTarget" -> result.moduleItemTarget = property.string();
+                case "AllowedInSlots" -> result.allowedInSlots = property.string();
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }

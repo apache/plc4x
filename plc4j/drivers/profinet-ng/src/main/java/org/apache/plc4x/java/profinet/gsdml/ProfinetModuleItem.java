@@ -19,27 +19,20 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.apache.plc4x.java.profinet.readwrite.ProfinetDataType;
+import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("ModuleItem")
 public class ProfinetModuleItem implements ProfinetDeviceItem {
 
-    @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
 
-    @JacksonXmlProperty(isAttribute=true, localName="ModuleIdentNumber")
     private String moduleIdentNumber;
 
-    @JacksonXmlProperty(localName="ModuleInfo")
     private ProfinetModuleInfo moduleInfo;
 
-    @JacksonXmlProperty(localName="VirtualSubmoduleList")
     private List<ProfinetVirtualSubmoduleItem> virtualSubmoduleList;
 
     public String getId() {
@@ -97,5 +90,21 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
             }
         }
         return length;
+    }
+
+    static ProfinetModuleItem fromXml(Element element) throws IOException {
+        ProfinetModuleItem result = new ProfinetModuleItem();
+        for (GsdmlXml.Property property : GsdmlXml.properties(element, false)) {
+            switch (property.name()) {
+                case "ID" -> result.id = property.string();
+                case "ModuleIdentNumber" -> result.moduleIdentNumber = property.string();
+                case "ModuleInfo" -> result.moduleInfo = property.object(ProfinetModuleInfo::fromXml);
+                case "VirtualSubmoduleList" -> result.virtualSubmoduleList = property.wrappedList(ProfinetVirtualSubmoduleItem::fromXml);
+                default -> {
+                    // Not used by the driver.
+                }
+            }
+        }
+        return result;
     }
 }
