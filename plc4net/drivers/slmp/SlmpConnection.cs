@@ -33,6 +33,7 @@ using org.apache.plc4net.spi.drivers;
 using org.apache.plc4net.spi.drivers.functions;
 using org.apache.plc4net.spi.drivers.messages;
 using org.apache.plc4net.spi.drivers.messages.items;
+using org.apache.plc4net.spi.drivers.subscriptions;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
 using org.apache.plc4net.spi.transports;
@@ -51,11 +52,12 @@ namespace org.apache.plc4net.drivers.slmp
         {
             CanRead = true,
             CanWrite = true,
-            CanSubscribe = false
+            CanSubscribe = true
         };
 
         private readonly SemaphoreSlim _exchangeGate = new SemaphoreSlim(1, 1);
         private readonly SlmpMessageCodec _codec;
+        private readonly PollingSubscriptionManager _subscriptions;
         private readonly int _requestTimeoutMs;
         private readonly ushort _monitoringTimer;
         private SlmpResponseFrame3E? _response;
@@ -77,6 +79,12 @@ namespace org.apache.plc4net.drivers.slmp
             }
             _monitoringTimer = (ushort)monitoringTimer;
             _codec = new SlmpMessageCodec(transport, OnMessage);
+            var subscriptionInterval = IntParameter(connectionString, 1000, "subscription-polling-interval-ms");
+            if (subscriptionInterval < 1)
+                throw new PlcConnectionException("subscription-polling-interval-ms must be positive.");
+            _subscriptions = new PollingSubscriptionManager(this, Parse,
+                TimeSpan.FromMilliseconds(subscriptionInterval),
+                ex => Logger.LogWarning(ex, "SLMP subscription observer or read failed"));
 
             if (transport is IAsyncTransportInstance asyncTransport)
             {
@@ -89,8 +97,14 @@ namespace org.apache.plc4net.drivers.slmp
         public override IPlcTag Parse(string tagQuery) => SlmpTag.Parse(tagQuery);
         public override IPlcReadRequestBuilder? ReadRequestBuilder => new DefaultPlcReadRequestBuilder(this, Parse);
         public override IPlcWriteRequestBuilder? WriteRequestBuilder => new SlmpWriteRequestBuilder(this, Parse);
-        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
-        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
+        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => _subscriptions.SubscriptionRequestBuilder;
+        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => _subscriptions.UnsubscriptionRequestBuilder;
+
+        public override void Close()
+        {
+            _subscriptions.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            base.Close();
+        }
 
         public async Task<IPlcReadResponse> Read(
             DefaultPlcReadRequest request, CancellationToken cancellationToken = default)
@@ -514,6 +528,7 @@ namespace org.apache.plc4net.drivers.slmp
         {
             if (disposing)
             {
+                Close();
                 _exchangeGate.Dispose();
             }
             base.Dispose(disposing);
