@@ -35,7 +35,7 @@ Doing this manually would require a lot of manual object construction and valida
 
 As XML, no matter what you think about it, allows simple and easy readable descriptions these tests are provided as `XML files`.
 
-All generated model classes allow parsing and serializing to XML via `Jackson`.
+All generated model classes can be parsed from and serialized to XML via the XML-based read and write buffers (`ReadBufferXmlBased` and `WriteBufferXmlBased` in Java).
 
 == Structure of a test
 

@@ -8,6 +8,16 @@ New Features
 Incompatible changes
 --------------------
 
+- plc4j no longer depends on Jackson (or Woodstox). The audit
+  log, the event pump and the PROFINET drivers use JDK-only
+  JSON and XML code (JSON in plc4j-spi-utils), the event pump
+  reads YAML with snakeyaml-engine. Event pump configuration
+  files written before keep loading; files written now leave
+  out empty values, and an empty XML element is read as "not
+  set" rather than as an empty text.
+- The ctrlX driver's copied OpenAPI client (and with it Apache
+  HttpClient 4) was replaced by a small client for the calls
+  the driver makes, on the JDK's HTTP client.
 - Removed OsgiTransportManager from plc4j-transports-api. The
   declarative-services component never had any transports to
   bind; drivers in OSGi now resolve transports through the
