@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.IOException;
 
 /**
  * Configuration for a single tag.
@@ -43,14 +43,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TagConfiguration {
 
-    @JsonProperty("address")
     private String address;
 
-    @JsonProperty("transform")
     private String transform;
 
     /**
-     * Default constructor for Jackson.
+     * Creates an empty tag configuration.
      */
     public TagConfiguration() {
     }
@@ -146,4 +144,32 @@ public class TagConfiguration {
         result = 31 * result + (transform != null ? transform.hashCode() : 0);
         return result;
     }
+
+    /**
+     * A tag in either format: just the address, or an object with address and transform.
+     */
+    static TagConfiguration fromTree(Object node, String path) throws IOException {
+        if (ConfigNode.isScalar(node)) {
+            return new TagConfiguration(ConfigNode.scalarToString(node, path));
+        }
+        if (node == null) {
+            throw new IOException(path + ": expected an address or an object with an address, got nothing");
+        }
+        ConfigNode object = ConfigNode.object(node, path, "address", "transform");
+        return new TagConfiguration(object.string("address"), object.string("transform"));
+    }
+
+    /**
+     * The simple format when there's nothing but the address, the extended one otherwise.
+     */
+    Object toTree() {
+        if (transform == null) {
+            return address;
+        }
+        return new ConfigNode.Writer()
+            .put("address", address)
+            .put("transform", transform)
+            .tree();
+    }
+
 }

@@ -156,6 +156,7 @@
     <jackson-api.version>2.22</jackson-api.version>
     <jackson.version>2.22.4</jackson.version>
     <woodstox-core.version>7.2.2</woodstox-core.version>
+    <snakeyaml-engine.version>3.2</snakeyaml-engine.version>
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
     <java-websocket.version>1.6.0</java-websocket.version>
     <javapoet.version>0.22.0</javapoet.version>
@@ -647,6 +648,12 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.snakeyaml</groupId>
+        <artifactId>snakeyaml-engine</artifactId>
+        <version>${snakeyaml-engine.version}</version>
       </dependency>
 
       <!-- Pulled in by jackson-dataformat-xml -->

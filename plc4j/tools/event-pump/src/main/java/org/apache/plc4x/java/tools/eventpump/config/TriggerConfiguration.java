@@ -19,7 +19,8 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Configuration for a trigger.
@@ -30,33 +31,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TriggerConfiguration {
 
-    @JsonProperty("type")
     private String type;
 
     // Timer trigger properties
-    @JsonProperty("intervalSeconds")
     private Long intervalSeconds;
 
     // Sub-second polling is common, so the interval can alternatively be given in
     // milliseconds. Setting both units on the same trigger is rejected when the trigger is
     // built, rather than silently picking one of them.
-    @JsonProperty("intervalMillis")
     private Long intervalMillis;
 
-    @JsonProperty("initialDelaySeconds")
     private Long initialDelaySeconds;
 
-    @JsonProperty("initialDelayMillis")
     private Long initialDelayMillis;
 
     // Subscription trigger properties
-    @JsonProperty("tagName")
     private String tagName;
 
-    @JsonProperty("tagAddress")
     private String tagAddress;
 
-    @JsonProperty("condition")
     private String condition; // Optional: Expression for filtering events
 
     /**
@@ -209,4 +202,33 @@ public class TriggerConfiguration {
     public void setCondition(String condition) {
         this.condition = condition;
     }
+
+    static TriggerConfiguration fromTree(Object node, String path) throws IOException {
+        ConfigNode object = ConfigNode.object(node, path, "type", "intervalSeconds", "intervalMillis",
+            "initialDelaySeconds", "initialDelayMillis", "tagName", "tagAddress", "condition");
+        TriggerConfiguration trigger = new TriggerConfiguration();
+        trigger.setType(object.string("type"));
+        trigger.setIntervalSeconds(object.longValue("intervalSeconds"));
+        trigger.setIntervalMillis(object.longValue("intervalMillis"));
+        trigger.setInitialDelaySeconds(object.longValue("initialDelaySeconds"));
+        trigger.setInitialDelayMillis(object.longValue("initialDelayMillis"));
+        trigger.setTagName(object.string("tagName"));
+        trigger.setTagAddress(object.string("tagAddress"));
+        trigger.setCondition(object.string("condition"));
+        return trigger;
+    }
+
+    Map<String, Object> toTree() {
+        return new ConfigNode.Writer()
+            .put("type", type)
+            .put("intervalSeconds", intervalSeconds)
+            .put("intervalMillis", intervalMillis)
+            .put("initialDelaySeconds", initialDelaySeconds)
+            .put("initialDelayMillis", initialDelayMillis)
+            .put("tagName", tagName)
+            .put("tagAddress", tagAddress)
+            .put("condition", condition)
+            .tree();
+    }
+
 }

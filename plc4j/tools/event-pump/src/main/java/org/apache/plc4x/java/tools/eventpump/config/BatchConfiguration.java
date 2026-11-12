@@ -19,9 +19,7 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -55,17 +53,12 @@ import java.util.Map;
  */
 public class BatchConfiguration {
 
-    @JsonProperty("id")
     private String id;
 
-    @JsonProperty("connectionId")
     private String connectionId;
 
-    @JsonProperty("tags")
-    @JsonDeserialize(using = TagMapDeserializer.class)
     private Map<String, TagConfiguration> tags = new LinkedHashMap<>();
 
-    @JsonProperty("trigger")
     private TriggerConfiguration trigger;
 
     /**
@@ -73,7 +66,6 @@ public class BatchConfiguration {
      * default". This is not the request timeout — set that on the connection URL, e.g.
      * {@code "opcua:tcp://host:4840?request-timeout-ms=10000"}.
      */
-    @JsonProperty("fetchTimeoutMs")
     private Long fetchTimeoutMs;
 
     /**
@@ -190,4 +182,47 @@ public class BatchConfiguration {
     public void setFetchTimeoutMs(Long fetchTimeoutMs) {
         this.fetchTimeoutMs = fetchTimeoutMs;
     }
+
+    static BatchConfiguration fromTree(Object node, String path) throws IOException {
+        // "simpleTagMap" is what Jackson wrote for getSimpleTagMap(); it repeats the tags and is
+        // ignored, as Jackson did. "simpleTags" is setSimpleTags().
+        ConfigNode object = ConfigNode.object(node, path, "id", "connectionId", "tags", "trigger",
+            "fetchTimeoutMs", "simpleTagMap", "simpleTags");
+        BatchConfiguration batch = new BatchConfiguration();
+        batch.setId(object.string("id"));
+        batch.setConnectionId(object.string("connectionId"));
+        Map<String, TagConfiguration> tags = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> tag : object.members("tags").entrySet()) {
+            tags.put(tag.getKey(), TagConfiguration.fromTree(tag.getValue(), object.path("tags") + "." + tag.getKey()));
+        }
+        batch.setTags(tags);
+        if (object.get("simpleTags") != null) {
+            Map<String, String> simpleTags = new LinkedHashMap<>();
+            for (Map.Entry<String, Object> tag : object.members("simpleTags").entrySet()) {
+                simpleTags.put(tag.getKey(),
+                    ConfigNode.scalarToString(tag.getValue(), object.path("simpleTags") + "." + tag.getKey()));
+            }
+            batch.setSimpleTags(simpleTags);
+        }
+        if (object.get("trigger") != null) {
+            batch.setTrigger(TriggerConfiguration.fromTree(object.get("trigger"), object.path("trigger")));
+        }
+        batch.setFetchTimeoutMs(object.longValue("fetchTimeoutMs"));
+        return batch;
+    }
+
+    Map<String, Object> toTree() {
+        Map<String, Object> tagTree = new LinkedHashMap<>();
+        for (Map.Entry<String, TagConfiguration> tag : tags.entrySet()) {
+            tagTree.put(tag.getKey(), tag.getValue().toTree());
+        }
+        return new ConfigNode.Writer()
+            .put("id", id)
+            .put("connectionId", connectionId)
+            .put("tags", tagTree)
+            .put("trigger", trigger != null ? trigger.toTree() : null)
+            .put("fetchTimeoutMs", fetchTimeoutMs)
+            .tree();
+    }
+
 }

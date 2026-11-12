@@ -19,23 +19,20 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Configuration for a PLC connection.
  */
 public class ConnectionConfiguration {
 
-    @JsonProperty("id")
     private String id;
 
-    @JsonProperty("url")
     private String url;
 
-    @JsonProperty("username")
     private String username;
 
-    @JsonProperty("password")
     private String password;
 
     /**
@@ -109,4 +106,24 @@ public class ConnectionConfiguration {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    static ConnectionConfiguration fromTree(Object node, String path) throws IOException {
+        ConfigNode object = ConfigNode.object(node, path, "id", "url", "username", "password");
+        ConnectionConfiguration connection = new ConnectionConfiguration();
+        connection.setId(object.string("id"));
+        connection.setUrl(object.string("url"));
+        connection.setUsername(object.string("username"));
+        connection.setPassword(object.string("password"));
+        return connection;
+    }
+
+    Map<String, Object> toTree() {
+        return new ConfigNode.Writer()
+            .put("id", id)
+            .put("url", url)
+            .put("username", username)
+            .put("password", password)
+            .tree();
+    }
+
 }

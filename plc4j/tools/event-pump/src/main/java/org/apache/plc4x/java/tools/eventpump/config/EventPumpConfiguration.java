@@ -19,16 +19,15 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Configuration model for EventPump.
@@ -63,10 +62,8 @@ import java.util.List;
  */
 public class EventPumpConfiguration {
 
-    @JsonProperty("connections")
     private List<ConnectionConfiguration> connections = new ArrayList<>();
 
-    @JsonProperty("batches")
     private List<BatchConfiguration> batches = new ArrayList<>();
 
     /**
@@ -113,8 +110,9 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromJson(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(file, EventPumpConfiguration.class);
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return fromJson(inputStream);
+        }
     }
 
     /**
@@ -125,8 +123,7 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromJson(InputStream inputStream) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(inputStream, EventPumpConfiguration.class);
+        return fromTree(ConfigFiles.readJson(inputStream));
     }
 
     /**
@@ -137,8 +134,9 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromYaml(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        return mapper.readValue(file, EventPumpConfiguration.class);
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return fromYaml(inputStream);
+        }
     }
 
     /**
@@ -149,8 +147,7 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromYaml(InputStream inputStream) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        return mapper.readValue(inputStream, EventPumpConfiguration.class);
+        return fromTree(ConfigFiles.readYaml(inputStream));
     }
 
     /**
@@ -161,8 +158,9 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromXml(File file) throws IOException {
-        XmlMapper mapper = new XmlMapper();
-        return mapper.readValue(file, EventPumpConfiguration.class);
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return fromXml(inputStream);
+        }
     }
 
     /**
@@ -173,8 +171,7 @@ public class EventPumpConfiguration {
      * @throws IOException if loading fails
      */
     public static EventPumpConfiguration fromXml(InputStream inputStream) throws IOException {
-        XmlMapper mapper = new XmlMapper();
-        return mapper.readValue(inputStream, EventPumpConfiguration.class);
+        return fromTree(ConfigFiles.readXml(inputStream));
     }
 
     /**
@@ -184,8 +181,7 @@ public class EventPumpConfiguration {
      * @throws IOException if saving fails
      */
     public void toJson(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writerWithDefaultPrettyPrinter().writeValue(file, this);
+        Files.writeString(file.toPath(), ConfigFiles.writeJson(toTree()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -195,8 +191,7 @@ public class EventPumpConfiguration {
      * @throws IOException if saving fails
      */
     public void toYaml(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.writeValue(file, this);
+        Files.writeString(file.toPath(), ConfigFiles.writeYaml(toTree()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -206,7 +201,41 @@ public class EventPumpConfiguration {
      * @throws IOException if saving fails
      */
     public void toXml(File file) throws IOException {
-        XmlMapper mapper = new XmlMapper();
-        mapper.writerWithDefaultPrettyPrinter().writeValue(file, this);
+        Files.writeString(file.toPath(), ConfigFiles.writeXml(toTree()), StandardCharsets.UTF_8);
     }
+
+    static EventPumpConfiguration fromTree(Object tree) throws IOException {
+        if (tree == null) {
+            // An empty document: nothing configured.
+            return new EventPumpConfiguration();
+        }
+        ConfigNode object = ConfigNode.object(tree, "", "connections", "batches");
+        EventPumpConfiguration configuration = new EventPumpConfiguration();
+        List<Object> connections = object.list("connections");
+        for (int i = 0; i < connections.size(); i++) {
+            configuration.connections.add(
+                ConnectionConfiguration.fromTree(connections.get(i), "connections[" + i + "]"));
+        }
+        List<Object> batches = object.list("batches");
+        for (int i = 0; i < batches.size(); i++) {
+            configuration.batches.add(BatchConfiguration.fromTree(batches.get(i), "batches[" + i + "]"));
+        }
+        return configuration;
+    }
+
+    Map<String, Object> toTree() {
+        List<Object> connectionTrees = new ArrayList<>();
+        for (ConnectionConfiguration connection : connections) {
+            connectionTrees.add(connection.toTree());
+        }
+        List<Object> batchTrees = new ArrayList<>();
+        for (BatchConfiguration batch : batches) {
+            batchTrees.add(batch.toTree());
+        }
+        return new ConfigNode.Writer()
+            .put("connections", connectionTrees)
+            .put("batches", batchTrees)
+            .tree();
+    }
+
 }
