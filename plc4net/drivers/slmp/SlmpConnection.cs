@@ -46,6 +46,7 @@ namespace org.apache.plc4net.drivers.slmp
     {
         private const int PollIntervalMs = 2;
         private const int DefaultRequestTimeoutMs = 5000;
+        private const int MaxRandomReadPoints = 192;
         private const ushort DefaultMonitoringTimer = 16;
 
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
@@ -109,64 +110,161 @@ namespace org.apache.plc4net.drivers.slmp
         public async Task<IPlcReadResponse> Read(
             DefaultPlcReadRequest request, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var results = new Dictionary<string, PlcResponseItem<IPlcValue>>();
-            foreach (var name in request.TagNames)
+            var names = request.TagNames.ToArray();
+            var randomItems = new List<RandomReadItem>();
+            var batchItems = new List<RandomReadItem>();
+            foreach (var name in names)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 if (request.GetTagByName(name) is not SlmpTag tag)
                 {
                     results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidAddress);
                     continue;
                 }
+                var item = new RandomReadItem(name, tag);
+                if (!tag.IsBitDevice && !tag.ExplicitRange && tag.Quantity == 1)
+                    randomItems.Add(item);
+                else
+                    batchItems.Add(item);
+            }
 
-                try
-                {
-                    var data = new SlmpReadRequest(
-                        (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints));
-                    var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
-                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0401, subCommand, data);
-                    var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
-                    if (response.EndCode != 0)
-                    {
-                        Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for tag {TagName}",
-                            response.EndCode, name);
-                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.RemoteError);
-                        continue;
-                    }
+            // Random Read saves a round-trip only when at least two points can share a frame.
+            // SLMP subcommand 0000 permits at most 192 word and double-word points combined.
+            while (randomItems.Count >= 2)
+            {
+                var words = randomItems.Where(item => item.Tag.NumberOfPoints == 1)
+                    .Take(MaxRandomReadPoints).ToArray();
+                var doubleWords = randomItems.Where(item => item.Tag.NumberOfPoints == 2)
+                    .Take(MaxRandomReadPoints - words.Length).ToArray();
+                var group = words.Concat(doubleWords).ToArray();
+                if (group.Length < 2)
+                    break;
+                await ReadRandomGroup(group, words.Length, doubleWords.Length, results, cancellationToken)
+                    .ConfigureAwait(false);
+                var selected = group.ToHashSet();
+                randomItems.RemoveAll(selected.Contains);
+            }
+            var remainingBatchItems = batchItems.Concat(randomItems)
+                .ToDictionary(item => item.Name);
 
-                    var expectedBytes = tag.IsBitDevice
-                        ? (tag.NumberOfPoints + 1) / 2
-                        : checked(tag.NumberOfPoints * 2);
-                    if (response.ResponseData.Length != expectedBytes)
-                    {
-                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidData);
-                        continue;
-                    }
-                    if (tag.IsBitDevice && !IsValidBitPayload(tag.NumberOfPoints, response.ResponseData))
-                    {
-                        results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidData);
-                        continue;
-                    }
-                    results[name] = new DefaultPlcResponseItem<IPlcValue>(
-                        PlcResponseCode.Ok, Decode(tag, response.ResponseData));
-                }
-                catch (OperationCanceledException)
+            foreach (var name in names)
+            {
+                if (!remainingBatchItems.TryGetValue(name, out var item))
+                    continue;
+                cancellationToken.ThrowIfCancellationRequested();
+                await ReadBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+            }
+
+            // Preserve request order even though Random Read returns all words before dwords.
+            var ordered = names.Where(results.ContainsKey)
+                .ToDictionary(name => name, name => results[name]);
+            return new DefaultPlcReadResponse(request, ordered);
+        }
+
+        private async Task ReadRandomGroup(
+            RandomReadItem[] items, int wordCount, int doubleWordCount,
+            Dictionary<string, PlcResponseItem<IPlcValue>> results,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var words = items.Take(wordCount)
+                    .Select(item => new SlmpDeviceSpec((uint)item.Tag.DeviceNumber, item.Tag.DeviceCode)).ToList();
+                var doubleWords = items.Skip(wordCount).Take(doubleWordCount)
+                    .Select(item => new SlmpDeviceSpec((uint)item.Tag.DeviceNumber, item.Tag.DeviceCode)).ToList();
+                var data = new SlmpRandomReadRequest(
+                    checked((byte)wordCount), checked((byte)doubleWordCount), words, doubleWords);
+                var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0403, 0, data);
+                var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
+                if (response.EndCode != 0)
                 {
-                    throw;
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for Random Read", response.EndCode);
+                    SetReadErrors(items, results, PlcResponseCode.RemoteError);
+                    return;
                 }
-                catch (TimeoutException ex)
+                var expectedBytes = checked(wordCount * 2 + doubleWordCount * 4);
+                if (response.ResponseData.Length != expectedBytes)
                 {
-                    Logger.LogWarning(ex, "SLMP read of tag '{TagName}' timed out", name);
-                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.RequestTimeout);
+                    SetReadErrors(items, results, PlcResponseCode.InvalidData);
+                    return;
                 }
-                catch (Exception ex)
+                var offset = 0;
+                foreach (var item in items)
                 {
-                    Logger.LogWarning(ex, "SLMP read of tag '{TagName}' failed", name);
-                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
+                    var length = item.Tag.NumberOfPoints * 2;
+                    results[item.Name] = new DefaultPlcResponseItem<IPlcValue>(PlcResponseCode.Ok,
+                        Decode(item.Tag, response.ResponseData.AsSpan(offset, length).ToArray()));
+                    offset += length;
                 }
             }
-            return new DefaultPlcReadResponse(request, results);
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP Random Read timed out");
+                SetReadErrors(items, results, PlcResponseCode.RequestTimeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP Random Read failed");
+                SetReadErrors(items, results, PlcResponseCode.InternalError);
+            }
         }
+
+        private async Task ReadBatchItem(
+            RandomReadItem item, Dictionary<string, PlcResponseItem<IPlcValue>> results,
+            CancellationToken cancellationToken)
+        {
+            var name = item.Name;
+            var tag = item.Tag;
+            try
+            {
+                var data = new SlmpReadRequest(
+                    (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints));
+                var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
+                var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0401, subCommand, data);
+                var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
+                if (response.EndCode != 0)
+                {
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for tag {TagName}",
+                        response.EndCode, name);
+                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.RemoteError);
+                    return;
+                }
+                var expectedBytes = tag.IsBitDevice ? (tag.NumberOfPoints + 1) / 2 : checked(tag.NumberOfPoints * 2);
+                if (response.ResponseData.Length != expectedBytes ||
+                    tag.IsBitDevice && !IsValidBitPayload(tag.NumberOfPoints, response.ResponseData))
+                {
+                    results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidData);
+                    return;
+                }
+                results[name] = new DefaultPlcResponseItem<IPlcValue>(
+                    PlcResponseCode.Ok, Decode(tag, response.ResponseData));
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP read of tag '{TagName}' timed out", name);
+                results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.RequestTimeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP read of tag '{TagName}' failed", name);
+                results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InternalError);
+            }
+        }
+
+        private static void SetReadErrors(IEnumerable<RandomReadItem> items,
+            Dictionary<string, PlcResponseItem<IPlcValue>> results, PlcResponseCode code)
+        {
+            foreach (var item in items)
+                results[item.Name] = new DefaultPlcTagErrorItem<IPlcValue>(code);
+        }
+
+        private sealed record RandomReadItem(string Name, SlmpTag Tag);
 
         public async Task<IPlcWriteResponse> Write(
             DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
