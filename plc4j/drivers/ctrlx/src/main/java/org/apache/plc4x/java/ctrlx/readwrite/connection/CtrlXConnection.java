@@ -33,12 +33,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiException;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api.DataLayerInformationAndSettingsApi;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api.NodesApi;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.BrowseData;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.ReadNode200Response;
+import org.apache.plc4x.java.ctrlx.readwrite.rest.CtrlXRestClient;
+import org.apache.plc4x.java.ctrlx.readwrite.rest.CtrlXRestException;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXQuery;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
@@ -77,9 +73,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     private final ExecutorService executorService;
     private PlcValueHandler valueHandler;
 
-    private ApiClient apiClient;
-    private NodesApi nodesApi;
-    private DataLayerInformationAndSettingsApi dataLayerApi;
+    private CtrlXRestClient restClient;
 
     private final CtrlXTagHandler controlXTagHandler = new CtrlXTagHandler();
 
@@ -106,24 +100,23 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public void connect() throws PlcConnectionException {
-        if (apiClient != null) {
+        if (restClient != null) {
             throw new PlcConnectionException("Already connected");
         }
-        apiClient = ApiClientFactory.getApiClient(baseUrl, username, password, configuration);
-        nodesApi = new NodesApi(apiClient);
-        dataLayerApi = new DataLayerInformationAndSettingsApi(apiClient);
+        restClient = ApiClientFactory.getApiClient(baseUrl, username, password, configuration);
     }
 
     @Override
     public boolean isConnected() {
-        return apiClient != null;
+        return restClient != null;
     }
 
     @Override
     public void close() throws Exception {
-        apiClient.getHttpClient().close();
-        apiClient = null;
-        dataLayerApi = null;
+        if (restClient != null) {
+            restClient.close();
+            restClient = null;
+        }
         executorService.shutdown();
     }
 
@@ -211,9 +204,9 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         executorService.execute(() -> {
             try {
                 // Just execute some random request, that we can expect to be replied by the controller.
-                nodesApi.readNode("datalayer/server/settings", "browse");
+                restClient.browse("datalayer/server/settings");
                 future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
-            } catch (ApiException e) {
+            } catch (CtrlXRestException e) {
                 future.completeExceptionally(new PlcProtocolException("Error pinging remote", e));
             }
         });
@@ -272,23 +265,17 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
             List<String> roots = new ArrayList<>();
             try {
                 // Initialize the list with all normal node names
-                BrowseData nodeNames = dataLayerApi.getNodeNames();
-                if (nodeNames.getValue() != null) {
-                    roots.addAll(nodeNames.getValue());
-                }
+                roots.addAll(restClient.getNodeNames());
 
                 // Then add all real-time node names.
-                BrowseData realtimeNodeNames = dataLayerApi.getRealtimeNodeNames();
-                if (realtimeNodeNames.getValue() != null) {
-                    roots.addAll(realtimeNodeNames.getValue());
-                }
-            } catch (ApiException e) {
+                roots.addAll(restClient.getRealtimeNodeNames());
+            } catch (CtrlXRestException e) {
                 future.completeExceptionally(new PlcProtocolException("Error listing root nodes", e));
                 return;
             }
             // Now keep on resolving paths till the list is empty.
             walkNodes(roots,
-                curNode -> nodesApi.readNode(curNode, "browse").getValue(),
+                restClient::browse,
                 configuration.getBrowseMaxTotalNodes(),
                 configuration.getBrowseMaxDepth(),
                 curNode -> {
@@ -318,7 +305,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
      */
     @FunctionalInterface
     interface NodeBrowser {
-        List<String> childrenOf(String node) throws ApiException;
+        List<String> childrenOf(String node) throws CtrlXRestException;
     }
 
     /** A node still to be read, and how far below a root it sits. */
@@ -358,7 +345,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
             List<String> children;
             try {
                 children = browser.childrenOf(current.path());
-            } catch (ApiException e) {
+            } catch (CtrlXRestException e) {
                 // Ignore ...
                 continue;
             }

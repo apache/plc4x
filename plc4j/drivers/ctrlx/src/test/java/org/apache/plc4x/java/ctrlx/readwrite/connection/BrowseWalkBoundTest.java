@@ -117,7 +117,7 @@ public class BrowseWalkBoundTest {
         List<String> leaves = new ArrayList<>();
         int read = CtrlXConnection.walkNodes(List.of("good", "bad"), node -> {
             if ("bad".equals(node)) {
-                throw new org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiException("nope");
+                throw new org.apache.plc4x.java.ctrlx.readwrite.rest.CtrlXRestException("nope");
             }
             return Collections.emptyList();
         }, 0, 0, leaves::add);

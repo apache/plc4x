@@ -43,37 +43,6 @@
 
   <build>
     <plugins>
-      <!--
-        In theory, we should be able to generate the API from the openApi specs, however are
-        there multiple bugs preventing this. So I generate it, copy the generated code and then
-        manually fix the broken things.
-      -->
-      <!--plugin>
-        <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
-        <!- - When using a newer version, there's a bug causing one type to fail to generate - ->
-        <version>6.3.0</version>
-        <executions>
-          <execution>
-            <id>generate-client</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <inputSpec>${project.basedir}/src/main/openapi/api.datalayer.json</inputSpec>
-              <generatorName>java</generatorName>
-              <library>apache-httpclient</library>
-              <generateSupportingFiles>true</generateSupportingFiles>
-              <configOptions>
-                <apiPackage>org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api</apiPackage>
-                <modelPackage>org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model</modelPackage>
-                <useJakartaEe>true</useJakartaEe>
-              </configOptions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin-->
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -115,15 +84,12 @@
             </goals>
             <configuration>
               <excludes combine.children="append">
-                <!-- OpenAPI-generated REST client for the ctrlX Data Layer REST API. -->
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
                 <!-- I/O-heavy driver-shell classes. -->
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
-                <!-- REST + OAuth glue; requires live HTTPS service. -->
+                <!-- TLS setup for the REST client; requires a live HTTPS service. -->
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -135,12 +101,10 @@
             </goals>
             <configuration>
               <excludes combine.children="append">
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
                 <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -185,39 +149,12 @@
       <artifactId>plc4j-spi-values</artifactId>
       <version>1.1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
 
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpmime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-    </dependency>
     <dependency>
       <groupId>com.hrakaroo</groupId>
       <artifactId>glob</artifactId>

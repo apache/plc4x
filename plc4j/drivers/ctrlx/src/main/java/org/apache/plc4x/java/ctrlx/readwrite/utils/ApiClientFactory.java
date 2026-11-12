@@ -19,28 +19,21 @@
 
 package org.apache.plc4x.java.ctrlx.readwrite.utils;
 
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
+import org.apache.plc4x.java.ctrlx.readwrite.rest.CtrlXRestClient;
+import org.apache.plc4x.java.ctrlx.readwrite.rest.CtrlXRestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
-import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.http.HttpClient;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -50,12 +43,14 @@ public class ApiClientFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiClientFactory.class);
 
-    public static ApiClient getApiClient(String baseUrl, String username, String password,
-                                         CtrlXConfiguration configuration) throws PlcConnectionException {
-        try {
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            HostnameVerifier hostnameVerifier;
+    private ApiClientFactory() {
+    }
 
+    public static CtrlXRestClient getApiClient(String baseUrl, String username, String password,
+                                               CtrlXConfiguration configuration) throws PlcConnectionException {
+        SSLContext sslContext;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
             if (configuration.isAllowFactoryDefaultCertificate()) {
                 // The certificate this trusts ships in the jar, so it identifies nobody: anything
                 // holding it and its key is trusted, for any host. Kept for a device still on its
@@ -65,42 +60,32 @@ public class ApiClientFactory {
                     + "and the credentials for this connection travel over that channel");
                 Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(
                     ApiClientFactory.class.getClassLoader().getResourceAsStream("certs/webserver_cert.pem"));
-                sslContext.init(null, trustManagersFor(singleCertificateStore(certificate)), null);
-                hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+                sslContext.init(null,
+                    withoutHostnameCheck(trustManagersFor(singleCertificateStore(certificate))), null);
             } else {
-                sslContext.init(null, trustManagersFrom(configuration), null);
-                hostnameVerifier = configuration.isIgnoreCommonName()
-                    ? NoopHostnameVerifier.INSTANCE
-                    : new DefaultHostnameVerifier();
+                TrustManager[] trustManagers = trustManagersFrom(configuration);
                 if (configuration.isIgnoreCommonName()) {
                     LOGGER.warn("ignore-common-name is set: a certificate issued for any other "
                         + "host will be accepted for this one");
+                    trustManagers = withoutHostnameCheck(trustManagers);
                 }
+                sslContext.init(null, trustManagers, null);
             }
-
-            SSLConnectionSocketFactory sslConnectionSocketFactory =
-                new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
-            Registry<ConnectionSocketFactory> socketFactoryRegistry =
-                RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register("https", sslConnectionSocketFactory)
-                    .build();
-
-            // Create a new HTTP client using the ssl context.
-            BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(socketFactoryRegistry);
-            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory).setConnectionManager(connectionManager).build();
-
-            // Log in and get a token, that we'll use in further interactions.
-            String bearerToken = OauthHelper.getAccessToken(httpClient, baseUrl, username, password);
-
-            // Create a new API client.
-            ApiClient apiClient = new ApiClient(httpClient);
-            apiClient.setBasePath(baseUrl + "/automation/api/v2");
-            apiClient.setAccessToken(bearerToken);
-
-            return apiClient;
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new PlcConnectionException("Error setting up the TLS trust for this connection", e);
-        } catch (IOException e) {
+        }
+
+        HttpClient httpClient = HttpClient.newBuilder()
+            .sslContext(sslContext)
+            // What the Apache client this replaced spoke; the device's REST server is only known
+            // to work with that.
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
+        try {
+            // Log in and get a token, that we'll use in further interactions.
+            return CtrlXRestClient.login(httpClient, baseUrl, username, password);
+        } catch (CtrlXRestException e) {
+            httpClient.close();
             throw new PlcConnectionException("Error getting access token", e);
         }
     }
@@ -129,8 +114,21 @@ public class ApiClientFactory {
             }
             return trustManagersFor(trustStore);
         }
-        // null lets the context use the platform trust managers.
-        return null;
+        // A null key store gives the platform's trust managers.
+        return trustManagersFor(null);
+    }
+
+    /**
+     * The same trust, minus the check that the certificate was issued for the host connected to.
+     */
+    static TrustManager[] withoutHostnameCheck(TrustManager[] trustManagers) {
+        TrustManager[] wrapped = new TrustManager[trustManagers.length];
+        for (int i = 0; i < trustManagers.length; i++) {
+            wrapped[i] = trustManagers[i] instanceof X509TrustManager x509
+                ? new NoHostnameCheckTrustManager(x509)
+                : trustManagers[i];
+        }
+        return wrapped;
     }
 
     private static KeyStore singleCertificateStore(Certificate certificate)
