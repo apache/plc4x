@@ -47,6 +47,8 @@ namespace org.apache.plc4net.drivers.slmp
         private const int PollIntervalMs = 2;
         private const int DefaultRequestTimeoutMs = 5000;
         private const int MaxRandomReadPoints = 192;
+        private const int MaxMultiBlockReadBlocks = 120;
+        private const int MaxMultiBlockReadPoints = 960;
         private const ushort DefaultMonitoringTimer = 16;
 
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
@@ -113,8 +115,9 @@ namespace org.apache.plc4net.drivers.slmp
             cancellationToken.ThrowIfCancellationRequested();
             var results = new Dictionary<string, PlcResponseItem<IPlcValue>>();
             var names = request.TagNames.ToArray();
-            var randomItems = new List<RandomReadItem>();
-            var batchItems = new List<RandomReadItem>();
+            var randomItems = new List<ReadItem>();
+            var multiBlockItems = new List<ReadItem>();
+            var batchItems = new List<ReadItem>();
             foreach (var name in names)
             {
                 if (request.GetTagByName(name) is not SlmpTag tag)
@@ -122,11 +125,36 @@ namespace org.apache.plc4net.drivers.slmp
                     results[name] = new DefaultPlcTagErrorItem<IPlcValue>(PlcResponseCode.InvalidAddress);
                     continue;
                 }
-                var item = new RandomReadItem(name, tag);
+                var item = new ReadItem(name, tag);
                 if (!tag.IsBitDevice && !tag.ExplicitRange && tag.Quantity == 1)
                     randomItems.Add(item);
+                else if (tag.ExplicitRange && item.BlockPoints < MaxMultiBlockReadPoints &&
+                         (!tag.IsBitDevice || tag.Quantity % 16 == 0))
+                    multiBlockItems.Add(item);
                 else
                     batchItems.Add(item);
+            }
+
+            while (multiBlockItems.Count >= 2)
+            {
+                var group = new List<ReadItem>();
+                var points = 0;
+                foreach (var item in multiBlockItems.OrderBy(item => item.Tag.IsBitDevice))
+                {
+                    if (group.Count == MaxMultiBlockReadBlocks || points + item.BlockPoints > MaxMultiBlockReadPoints)
+                        continue;
+                    group.Add(item);
+                    points += item.BlockPoints;
+                }
+                if (group.Count < 2)
+                {
+                    batchItems.Add(multiBlockItems[0]);
+                    multiBlockItems.RemoveAt(0);
+                    continue;
+                }
+                await ReadMultiBlockGroup(group.ToArray(), results, cancellationToken).ConfigureAwait(false);
+                var selected = group.ToHashSet();
+                multiBlockItems.RemoveAll(selected.Contains);
             }
 
             // Random Read saves a round-trip only when at least two points can share a frame.
@@ -145,7 +173,7 @@ namespace org.apache.plc4net.drivers.slmp
                 var selected = group.ToHashSet();
                 randomItems.RemoveAll(selected.Contains);
             }
-            var remainingBatchItems = batchItems.Concat(randomItems)
+            var remainingBatchItems = batchItems.Concat(randomItems).Concat(multiBlockItems)
                 .ToDictionary(item => item.Name);
 
             foreach (var name in names)
@@ -162,8 +190,59 @@ namespace org.apache.plc4net.drivers.slmp
             return new DefaultPlcReadResponse(request, ordered);
         }
 
+        private async Task ReadMultiBlockGroup(
+            ReadItem[] items, Dictionary<string, PlcResponseItem<IPlcValue>> results,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var words = items.Where(item => !item.Tag.IsBitDevice).ToArray();
+                var bits = items.Where(item => item.Tag.IsBitDevice).ToArray();
+                var data = new SlmpMultiBlockReadRequest(
+                    checked((byte)words.Length), checked((byte)bits.Length),
+                    words.Select(ToDeviceBlock).ToList(), bits.Select(ToDeviceBlock).ToList());
+                var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x0406, 0, data);
+                var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
+                if (response.EndCode != 0)
+                {
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for Multi-block Read", response.EndCode);
+                    SetReadErrors(items, results, PlcResponseCode.RemoteError);
+                    return;
+                }
+                var expectedBytes = checked(items.Sum(item => item.BlockPoints) * 2);
+                if (response.ResponseData.Length != expectedBytes)
+                {
+                    SetReadErrors(items, results, PlcResponseCode.InvalidData);
+                    return;
+                }
+                var offset = 0;
+                foreach (var item in words.Concat(bits))
+                {
+                    var length = item.BlockPoints * 2;
+                    var payload = response.ResponseData.AsSpan(offset, length).ToArray();
+                    var value = item.Tag.IsBitDevice ? DecodeBitBlock(item.Tag, payload) : Decode(item.Tag, payload);
+                    results[item.Name] = new DefaultPlcResponseItem<IPlcValue>(PlcResponseCode.Ok, value);
+                    offset += length;
+                }
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP Multi-block Read timed out");
+                SetReadErrors(items, results, PlcResponseCode.RequestTimeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP Multi-block Read failed");
+                SetReadErrors(items, results, PlcResponseCode.InternalError);
+            }
+        }
+
+        private static SlmpDeviceBlock ToDeviceBlock(ReadItem item) => new SlmpDeviceBlock(
+            (uint)item.Tag.DeviceNumber, item.Tag.DeviceCode, checked((ushort)item.BlockPoints));
+
         private async Task ReadRandomGroup(
-            RandomReadItem[] items, int wordCount, int doubleWordCount,
+            ReadItem[] items, int wordCount, int doubleWordCount,
             Dictionary<string, PlcResponseItem<IPlcValue>> results,
             CancellationToken cancellationToken)
         {
@@ -215,7 +294,7 @@ namespace org.apache.plc4net.drivers.slmp
         }
 
         private async Task ReadBatchItem(
-            RandomReadItem item, Dictionary<string, PlcResponseItem<IPlcValue>> results,
+            ReadItem item, Dictionary<string, PlcResponseItem<IPlcValue>> results,
             CancellationToken cancellationToken)
         {
             var name = item.Name;
@@ -257,14 +336,17 @@ namespace org.apache.plc4net.drivers.slmp
             }
         }
 
-        private static void SetReadErrors(IEnumerable<RandomReadItem> items,
+        private static void SetReadErrors(IEnumerable<ReadItem> items,
             Dictionary<string, PlcResponseItem<IPlcValue>> results, PlcResponseCode code)
         {
             foreach (var item in items)
                 results[item.Name] = new DefaultPlcTagErrorItem<IPlcValue>(code);
         }
 
-        private sealed record RandomReadItem(string Name, SlmpTag Tag);
+        private sealed record ReadItem(string Name, SlmpTag Tag)
+        {
+            public int BlockPoints => Tag.IsBitDevice ? (Tag.Quantity + 15) / 16 : Tag.NumberOfPoints;
+        }
 
         public async Task<IPlcWriteResponse> Write(
             DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
@@ -576,6 +658,14 @@ namespace org.apache.plc4net.drivers.slmp
             {
                 buffer.PopByteOrder();
             }
+        }
+
+        private static IPlcValue DecodeBitBlock(SlmpTag tag, byte[] data)
+        {
+            var values = new List<IPlcValue>(tag.Quantity);
+            for (var i = 0; i < tag.Quantity; i++)
+                values.Add(new PlcBOOL(((data[i / 8] >> (i % 8)) & 1) != 0));
+            return new PlcList(values);
         }
 
         private static bool IsValidBitPayload(int numberOfPoints, byte[] data)
