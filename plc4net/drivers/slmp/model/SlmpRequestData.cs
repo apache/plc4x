@@ -48,6 +48,10 @@ namespace org.apache.plc4net.drivers.slmp.readwrite.model
             {
                 return SlmpWriteRequest.StaticParse(readBuffer, command, subCommand);
             }
+            if (Equals(command, (ushort) (0x1402)))
+            {
+                return SlmpRandomWriteRequest.StaticParse(readBuffer, command, subCommand);
+            }
             throw new ParseException("No matching subtype found for SlmpRequestData");
         }
 
