@@ -108,8 +108,8 @@
 ]
 
 // Request data, dispatched by command: Batch Read (0x0401), Random Read (0x0403),
-// Batch Read Multiple Blocks (0x0406), Batch Write (0x1401) and Random Write
-// (0x1402) are modelled here.
+// Batch Read Multiple Blocks (0x0406), Batch Write (0x1401), Random Write
+// (0x1402) and Batch Write Multiple Blocks (0x1406) are modelled here.
 // Batch Read/Write use subcommand 0x0000 for word units or 0x0001 for bit units.
 [discriminatedType SlmpRequestData(uint 16 command, uint 16 subCommand)
     [typeSwitch command
@@ -163,6 +163,15 @@
             [array  SlmpWordWriteItem       wordAccessPoints       count 'numberOfWordAccessPoints']
             [array  SlmpDoubleWordWriteItem doubleWordAccessPoints count 'numberOfDoubleWordAccessPoints']
         ]
+        ['0x1406' SlmpMultiBlockWriteRequest
+            // Batch Write multiple blocks in word units: word-device blocks
+            // precede bit-device blocks. A bit-device block uses one 16-bit
+            // word for each point, representing 16 consecutive bit devices.
+            [simple uint 8               numberOfWordDeviceBlocks]
+            [simple uint 8               numberOfBitDeviceBlocks]
+            [array  SlmpDeviceWriteBlock wordDeviceBlocks count 'numberOfWordDeviceBlocks']
+            [array  SlmpDeviceWriteBlock bitDeviceBlocks  count 'numberOfBitDeviceBlocks']
+        ]
     ]
 ]
 
@@ -184,6 +193,15 @@
     [simple uint 24        headDeviceNumber]
     [simple SlmpDeviceCode deviceCode]
     [simple uint 16        numberOfPoints]
+]
+
+// A consecutive device block and its word-unit payload used by Batch Write
+// multiple blocks (0x1406/0x0000). For a bit device, one point is 16 bits.
+[type SlmpDeviceWriteBlock
+    [simple uint 24        headDeviceNumber]
+    [simple SlmpDeviceCode deviceCode]
+    [simple uint 16        numberOfPoints]
+    [array  byte           writeData count 'numberOfPoints * 2']
 ]
 
 // A discontinuous word-access point used by Random Write (0x1402/0x0000).

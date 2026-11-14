@@ -178,6 +178,36 @@ namespace org.apache.plc4net.test.slmp
         }
 
         [Fact]
+        public void Multi_block_writes_match_fixed_wire_bytes()
+        {
+            using var transport = new TestTransportInstance(new TestTransportConfiguration());
+            var codec = new SlmpMessageCodec(transport, _ => { });
+            var data = new SlmpMultiBlockWriteRequest(
+                2,
+                1,
+                new List<SlmpDeviceWriteBlock>
+                {
+                    new SlmpDeviceWriteBlock(0, SlmpDeviceCode.D, 2,
+                        Convert.FromHexString("11112222")),
+                    new SlmpDeviceWriteBlock(0x100, SlmpDeviceCode.W, 1,
+                        Convert.FromHexString("3333"))
+                },
+                new List<SlmpDeviceWriteBlock>
+                {
+                    new SlmpDeviceWriteBlock(0, SlmpDeviceCode.M, 1,
+                        Convert.FromHexString("0300"))
+                });
+
+            codec.Send(new SlmpRequestFrame3E(16, 0x1406, 0, data));
+
+            Assert.Equal(Convert.FromHexString(
+                "500000FFFF030022001000061400000201" +
+                "000000A8020011112222000100B401003333" +
+                "0000009001000300"),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
         public void Sending_serializes_the_generated_message_to_fixed_wire_bytes()
         {
             using var transport = new TestTransportInstance(new TestTransportConfiguration());
