@@ -47,6 +47,7 @@ namespace org.apache.plc4net.drivers.slmp
         private const int PollIntervalMs = 2;
         private const int DefaultRequestTimeoutMs = 5000;
         private const int MaxRandomReadPoints = 192;
+        private const int MaxRandomWritePoints = 160;
         private const int MaxMultiBlockReadBlocks = 120;
         private const int MaxMultiBlockReadPoints = 960;
         private const ushort DefaultMonitoringTimer = 16;
@@ -348,63 +349,178 @@ namespace org.apache.plc4net.drivers.slmp
             public int BlockPoints => Tag.IsBitDevice ? (Tag.Quantity + 15) / 16 : Tag.NumberOfPoints;
         }
 
+        private sealed record WriteItem(string Name, SlmpTag Tag, byte[] Data);
+
         public async Task<IPlcWriteResponse> Write(
             DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var results = new Dictionary<string, PlcResponseCode>();
-            foreach (var name in request.TagNames)
+            var names = request.TagNames.ToArray();
+            var pendingRandomItems = new List<WriteItem>();
+            foreach (var name in names)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (request.GetTagByName(name) is not SlmpTag tag)
                 {
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
                     results[name] = PlcResponseCode.InvalidAddress;
                     continue;
                 }
-
-                try
+                var data = Encode(tag, request.GetValue(name));
+                if (data == null)
                 {
-                    var data = Encode(tag, request.GetValue(name));
-                    if (data == null)
-                    {
-                        results[name] = PlcResponseCode.InvalidData;
-                        continue;
-                    }
-
-                    var write = new SlmpWriteRequest(
-                        (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints), data);
-                    var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
-                    var frame = new SlmpRequestFrame3E(_monitoringTimer, 0x1401, subCommand, write);
-                    var response = await ExchangeAsync(frame, cancellationToken).ConfigureAwait(false);
-                    if (response.EndCode != 0)
-                    {
-                        Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for write tag {TagName}",
-                            response.EndCode, name);
-                        results[name] = PlcResponseCode.RemoteError;
-                    }
-                    else
-                    {
-                        // A successful 3E Batch Write response contains only the end code.
-                        results[name] = response.ResponseData.Length == 0
-                            ? PlcResponseCode.Ok
-                            : PlcResponseCode.RemoteError;
-                    }
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
+                    results[name] = PlcResponseCode.InvalidData;
+                    continue;
                 }
-                catch (OperationCanceledException)
+                var item = new WriteItem(name, tag, data);
+                if (!tag.IsBitDevice && !tag.ExplicitRange && tag.Quantity == 1 &&
+                    (data.Length == 2 || data.Length == 4))
                 {
-                    throw;
+                    pendingRandomItems.Add(item);
                 }
-                catch (TimeoutException ex)
+                else
                 {
-                    Logger.LogWarning(ex, "SLMP write of tag '{TagName}' timed out", name);
-                    results[name] = PlcResponseCode.RequestTimeout;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning(ex, "SLMP write of tag '{TagName}' failed", name);
-                    results[name] = PlcResponseCode.InternalError;
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
+                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
                 }
             }
-            return new DefaultPlcWriteResponse(request, results);
+            await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+
+            var ordered = names.Where(results.ContainsKey)
+                .ToDictionary(name => name, name => results[name]);
+            return new DefaultPlcWriteResponse(request, ordered);
+        }
+
+        private async Task FlushRandomWrites(
+            List<WriteItem> items, Dictionary<string, PlcResponseCode> results,
+            CancellationToken cancellationToken)
+        {
+            if (items.Count < 2 || HasOverlappingAddresses(items))
+            {
+                foreach (var item in items)
+                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            var remaining = new List<WriteItem>(items);
+            while (remaining.Count >= 2)
+            {
+                var words = remaining.Where(item => item.Data.Length == 2)
+                    .Take(MaxRandomWritePoints).ToArray();
+                var doubleWords = remaining.Where(item => item.Data.Length == 4)
+                    .Take(MaxRandomWritePoints - words.Length).ToArray();
+                var group = words.Concat(doubleWords).ToArray();
+                if (group.Length < 2)
+                    break;
+                await WriteRandomGroup(group, words.Length, doubleWords.Length, results, cancellationToken)
+                    .ConfigureAwait(false);
+                var selected = group.ToHashSet();
+                remaining.RemoveAll(selected.Contains);
+            }
+
+            foreach (var item in remaining)
+                await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+        }
+
+        private static bool HasOverlappingAddresses(IReadOnlyList<WriteItem> items)
+        {
+            for (var i = 0; i < items.Count; i++)
+            for (var j = i + 1; j < items.Count; j++)
+            {
+                var left = items[i].Tag;
+                var right = items[j].Tag;
+                if (left.DeviceCode != right.DeviceCode)
+                    continue;
+                var leftEnd = left.DeviceNumber + left.NumberOfPoints;
+                var rightEnd = right.DeviceNumber + right.NumberOfPoints;
+                if (left.DeviceNumber < rightEnd && right.DeviceNumber < leftEnd)
+                    return true;
+            }
+            return false;
+        }
+
+        private async Task WriteRandomGroup(
+            WriteItem[] items, int wordCount, int doubleWordCount,
+            Dictionary<string, PlcResponseCode> results, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var words = items.Take(wordCount).Select(item => new SlmpWordWriteItem(
+                    (uint)item.Tag.DeviceNumber, item.Tag.DeviceCode,
+                    (ushort)(item.Data[0] | item.Data[1] << 8))).ToList();
+                var doubleWords = items.Skip(wordCount).Take(doubleWordCount)
+                    .Select(item => new SlmpDoubleWordWriteItem(
+                        (uint)item.Tag.DeviceNumber, item.Tag.DeviceCode,
+                        (uint)(item.Data[0] | item.Data[1] << 8 | item.Data[2] << 16 | item.Data[3] << 24)))
+                    .ToList();
+                var data = new SlmpRandomWriteRequest(
+                    checked((byte)wordCount), checked((byte)doubleWordCount), words, doubleWords);
+                var response = await ExchangeAsync(
+                    new SlmpRequestFrame3E(_monitoringTimer, 0x1402, 0, data), cancellationToken)
+                    .ConfigureAwait(false);
+                var code = response.EndCode == 0 && response.ResponseData.Length == 0
+                    ? PlcResponseCode.Ok
+                    : PlcResponseCode.RemoteError;
+                if (response.EndCode != 0)
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for Random Write", response.EndCode);
+                SetWriteResults(items, results, code);
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP Random Write timed out");
+                SetWriteResults(items, results, PlcResponseCode.RequestTimeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP Random Write failed");
+                SetWriteResults(items, results, PlcResponseCode.InternalError);
+            }
+        }
+
+        private async Task WriteBatchItem(
+            WriteItem item, Dictionary<string, PlcResponseCode> results,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var tag = item.Tag;
+                var write = new SlmpWriteRequest(
+                    (uint)tag.DeviceNumber, tag.DeviceCode, checked((ushort)tag.NumberOfPoints), item.Data);
+                var subCommand = tag.IsBitDevice ? (ushort)1 : (ushort)0;
+                var response = await ExchangeAsync(
+                    new SlmpRequestFrame3E(_monitoringTimer, 0x1401, subCommand, write), cancellationToken)
+                    .ConfigureAwait(false);
+                if (response.EndCode != 0)
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for write tag {TagName}",
+                        response.EndCode, item.Name);
+                results[item.Name] = response.EndCode == 0 && response.ResponseData.Length == 0
+                    ? PlcResponseCode.Ok
+                    : PlcResponseCode.RemoteError;
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP write of tag '{TagName}' timed out", item.Name);
+                results[item.Name] = PlcResponseCode.RequestTimeout;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP write of tag '{TagName}' failed", item.Name);
+                results[item.Name] = PlcResponseCode.InternalError;
+            }
+        }
+
+        private static void SetWriteResults(IEnumerable<WriteItem> items,
+            Dictionary<string, PlcResponseCode> results, PlcResponseCode code)
+        {
+            foreach (var item in items)
+                results[item.Name] = code;
         }
 
         private static byte[]? Encode(SlmpTag tag, object? value)
