@@ -23,6 +23,7 @@ using System.Linq;
 using org.apache.plc4net.drivers.slmp;
 using org.apache.plc4net.drivers.slmp.readwrite.model;
 using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.transports.test;
 using Xunit;
 
@@ -205,6 +206,20 @@ namespace org.apache.plc4net.test.slmp
                 "000000A8020011112222000100B401003333" +
                 "0000009001000300"),
                 transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Multi_block_writes_parse_the_generated_payload()
+        {
+            var buffer = new ReadBuffer(Convert.FromHexString(
+                "0101000000A8010034120000009001000300"));
+            buffer.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            var request = SlmpMultiBlockWriteRequest.StaticParse(buffer, 0x1406, 0);
+
+            Assert.Equal((ushort)0x1234, request.WordDeviceBlocks[0].WriteData[0] |
+                request.WordDeviceBlocks[0].WriteData[1] << 8);
+            Assert.Equal(new byte[] { 0x03, 0x00 }, request.BitDeviceBlocks[0].WriteData);
         }
 
         [Fact]
