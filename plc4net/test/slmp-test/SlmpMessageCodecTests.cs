@@ -152,6 +152,32 @@ namespace org.apache.plc4net.test.slmp
         }
 
         [Fact]
+        public void Random_word_writes_match_fixed_wire_bytes()
+        {
+            using var transport = new TestTransportInstance(new TestTransportConfiguration());
+            var codec = new SlmpMessageCodec(transport, _ => { });
+            var data = new SlmpRandomWriteRequest(
+                2,
+                1,
+                new List<SlmpWordWriteItem>
+                {
+                    new SlmpWordWriteItem(0, SlmpDeviceCode.D, 0x1234),
+                    new SlmpWordWriteItem(100, SlmpDeviceCode.M, 0xABCD)
+                },
+                new List<SlmpDoubleWordWriteItem>
+                {
+                    new SlmpDoubleWordWriteItem(1500, SlmpDeviceCode.D, 0x12345678)
+                });
+
+            codec.Send(new SlmpRequestFrame3E(16, 0x1402, 0, data));
+
+            Assert.Equal(Convert.FromHexString(
+                "500000FFFF03001C001000021400000201" +
+                "000000A8341264000090CDABDC0500A878563412"),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
         public void Sending_serializes_the_generated_message_to_fixed_wire_bytes()
         {
             using var transport = new TestTransportInstance(new TestTransportConfiguration());

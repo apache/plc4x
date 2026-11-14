@@ -108,7 +108,8 @@
 ]
 
 // Request data, dispatched by command: Batch Read (0x0401), Random Read (0x0403),
-// Batch Read Multiple Blocks (0x0406) and Batch Write (0x1401) are modelled here.
+// Batch Read Multiple Blocks (0x0406), Batch Write (0x1401) and Random Write
+// (0x1402) are modelled here.
 // Batch Read/Write use subcommand 0x0000 for word units or 0x0001 for bit units.
 [discriminatedType SlmpRequestData(uint 16 command, uint 16 subCommand)
     [typeSwitch command
@@ -152,6 +153,16 @@
             [simple uint 16        numberOfPoints]
             [array  byte           writeData count 'subCommand == 1 ? (numberOfPoints + 1) / 2 : numberOfPoints * 2']
         ]
+        ['0x1402' SlmpRandomWriteRequest
+            // Random Write in word units (SH-080008 section 8.3): write
+            // discontinuous devices as a list of word-access points followed by
+            // a list of double-word-access points. Each point carries its device
+            // specification and the corresponding little-endian value.
+            [simple uint 8                  numberOfWordAccessPoints]
+            [simple uint 8                  numberOfDoubleWordAccessPoints]
+            [array  SlmpWordWriteItem       wordAccessPoints       count 'numberOfWordAccessPoints']
+            [array  SlmpDoubleWordWriteItem doubleWordAccessPoints count 'numberOfDoubleWordAccessPoints']
+        ]
     ]
 ]
 
@@ -173,4 +184,19 @@
     [simple uint 24        headDeviceNumber]
     [simple SlmpDeviceCode deviceCode]
     [simple uint 16        numberOfPoints]
+]
+
+// A discontinuous word-access point used by Random Write (0x1402/0x0000).
+[type SlmpWordWriteItem
+    [simple uint 24        deviceNumber]
+    [simple SlmpDeviceCode deviceCode]
+    [simple uint 16        value]
+]
+
+// A discontinuous double-word-access point used by Random Write
+// (0x1402/0x0000).
+[type SlmpDoubleWordWriteItem
+    [simple uint 24        deviceNumber]
+    [simple SlmpDeviceCode deviceCode]
+    [simple uint 32        value]
 ]
