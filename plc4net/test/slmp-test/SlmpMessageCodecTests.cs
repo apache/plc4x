@@ -23,6 +23,7 @@ using System.Linq;
 using org.apache.plc4net.drivers.slmp;
 using org.apache.plc4net.drivers.slmp.readwrite.model;
 using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.transports.test;
 using Xunit;
 
@@ -175,6 +176,50 @@ namespace org.apache.plc4net.test.slmp
                 "500000FFFF03001C001000021400000201" +
                 "000000A8341264000090CDABDC0500A878563412"),
                 transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Multi_block_writes_match_fixed_wire_bytes()
+        {
+            using var transport = new TestTransportInstance(new TestTransportConfiguration());
+            var codec = new SlmpMessageCodec(transport, _ => { });
+            var data = new SlmpMultiBlockWriteRequest(
+                2,
+                1,
+                new List<SlmpDeviceWriteBlock>
+                {
+                    new SlmpDeviceWriteBlock(0, SlmpDeviceCode.D, 2,
+                        Convert.FromHexString("11112222")),
+                    new SlmpDeviceWriteBlock(0x100, SlmpDeviceCode.W, 1,
+                        Convert.FromHexString("3333"))
+                },
+                new List<SlmpDeviceWriteBlock>
+                {
+                    new SlmpDeviceWriteBlock(0, SlmpDeviceCode.M, 1,
+                        Convert.FromHexString("0300"))
+                });
+
+            codec.Send(new SlmpRequestFrame3E(16, 0x1406, 0, data));
+
+            Assert.Equal(Convert.FromHexString(
+                "500000FFFF030022001000061400000201" +
+                "000000A8020011112222000100B401003333" +
+                "0000009001000300"),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Multi_block_writes_parse_the_generated_payload()
+        {
+            var buffer = new ReadBuffer(Convert.FromHexString(
+                "0101000000A8010034120000009001000300"));
+            buffer.PushByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+            var request = SlmpMultiBlockWriteRequest.StaticParse(buffer, 0x1406, 0);
+
+            Assert.Equal((ushort)0x1234, request.WordDeviceBlocks[0].WriteData[0] |
+                request.WordDeviceBlocks[0].WriteData[1] << 8);
+            Assert.Equal(new byte[] { 0x03, 0x00 }, request.BitDeviceBlocks[0].WriteData);
         }
 
         [Fact]
