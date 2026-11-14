@@ -366,7 +366,7 @@ void plc4c_driver_s7_destroy_receive_packet(
     free(s7_message);
   }
 
-  // Destroy copt message inc paramters list
+  // Destroy copt message inc parameters list
   plc4c_utils_list_delete_elements(cotp_packet->parameters,
         delete_copt_parameter_list_element);
   free(cotp_packet->parameters);
