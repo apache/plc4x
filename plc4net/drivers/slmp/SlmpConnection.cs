@@ -354,36 +354,65 @@ namespace org.apache.plc4net.drivers.slmp
         public async Task<IPlcWriteResponse> Write(
             DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var results = new Dictionary<string, PlcResponseCode>();
             var names = request.TagNames.ToArray();
-            var randomItems = new List<WriteItem>();
-            var batchItems = new List<WriteItem>();
+            var pendingRandomItems = new List<WriteItem>();
             foreach (var name in names)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (request.GetTagByName(name) is not SlmpTag tag)
                 {
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
                     results[name] = PlcResponseCode.InvalidAddress;
                     continue;
                 }
                 var data = Encode(tag, request.GetValue(name));
                 if (data == null)
                 {
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
                     results[name] = PlcResponseCode.InvalidData;
                     continue;
                 }
                 var item = new WriteItem(name, tag, data);
                 if (!tag.IsBitDevice && !tag.ExplicitRange && tag.Quantity == 1 &&
                     (data.Length == 2 || data.Length == 4))
-                    randomItems.Add(item);
+                {
+                    pendingRandomItems.Add(item);
+                }
                 else
-                    batchItems.Add(item);
+                {
+                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+                    pendingRandomItems.Clear();
+                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+
+            var ordered = names.Where(results.ContainsKey)
+                .ToDictionary(name => name, name => results[name]);
+            return new DefaultPlcWriteResponse(request, ordered);
+        }
+
+        private async Task FlushRandomWrites(
+            List<WriteItem> items, Dictionary<string, PlcResponseCode> results,
+            CancellationToken cancellationToken)
+        {
+            if (items.Count < 2 || HasOverlappingAddresses(items))
+            {
+                foreach (var item in items)
+                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+                return;
             }
 
-            while (randomItems.Count >= 2)
+            var remaining = new List<WriteItem>(items);
+            while (remaining.Count >= 2)
             {
-                var words = randomItems.Where(item => item.Data.Length == 2)
+                var words = remaining.Where(item => item.Data.Length == 2)
                     .Take(MaxRandomWritePoints).ToArray();
-                var doubleWords = randomItems.Where(item => item.Data.Length == 4)
+                var doubleWords = remaining.Where(item => item.Data.Length == 4)
                     .Take(MaxRandomWritePoints - words.Length).ToArray();
                 var group = words.Concat(doubleWords).ToArray();
                 if (group.Length < 2)
@@ -391,18 +420,28 @@ namespace org.apache.plc4net.drivers.slmp
                 await WriteRandomGroup(group, words.Length, doubleWords.Length, results, cancellationToken)
                     .ConfigureAwait(false);
                 var selected = group.ToHashSet();
-                randomItems.RemoveAll(selected.Contains);
+                remaining.RemoveAll(selected.Contains);
             }
 
-            var remaining = batchItems.Concat(randomItems).ToDictionary(item => item.Name);
-            foreach (var name in names)
+            foreach (var item in remaining)
+                await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+        }
+
+        private static bool HasOverlappingAddresses(IReadOnlyList<WriteItem> items)
+        {
+            for (var i = 0; i < items.Count; i++)
+            for (var j = i + 1; j < items.Count; j++)
             {
-                if (remaining.TryGetValue(name, out var item))
-                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+                var left = items[i].Tag;
+                var right = items[j].Tag;
+                if (left.DeviceCode != right.DeviceCode)
+                    continue;
+                var leftEnd = left.DeviceNumber + left.NumberOfPoints;
+                var rightEnd = right.DeviceNumber + right.NumberOfPoints;
+                if (left.DeviceNumber < rightEnd && right.DeviceNumber < leftEnd)
+                    return true;
             }
-            var ordered = names.Where(results.ContainsKey)
-                .ToDictionary(name => name, name => results[name]);
-            return new DefaultPlcWriteResponse(request, ordered);
+            return false;
         }
 
         private async Task WriteRandomGroup(
@@ -429,18 +468,18 @@ namespace org.apache.plc4net.drivers.slmp
                     : PlcResponseCode.RemoteError;
                 if (response.EndCode != 0)
                     Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for Random Write", response.EndCode);
-                SetWriteErrors(items, results, code);
+                SetWriteResults(items, results, code);
             }
             catch (OperationCanceledException) { throw; }
             catch (TimeoutException ex)
             {
                 Logger.LogWarning(ex, "SLMP Random Write timed out");
-                SetWriteErrors(items, results, PlcResponseCode.RequestTimeout);
+                SetWriteResults(items, results, PlcResponseCode.RequestTimeout);
             }
             catch (Exception ex)
             {
                 Logger.LogWarning(ex, "SLMP Random Write failed");
-                SetWriteErrors(items, results, PlcResponseCode.InternalError);
+                SetWriteResults(items, results, PlcResponseCode.InternalError);
             }
         }
 
@@ -477,7 +516,7 @@ namespace org.apache.plc4net.drivers.slmp
             }
         }
 
-        private static void SetWriteErrors(IEnumerable<WriteItem> items,
+        private static void SetWriteResults(IEnumerable<WriteItem> items,
             Dictionary<string, PlcResponseCode> results, PlcResponseCode code)
         {
             foreach (var item in items)
