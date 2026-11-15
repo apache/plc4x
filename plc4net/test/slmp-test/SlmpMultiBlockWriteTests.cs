@@ -15,6 +15,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using org.apache.plc4net.drivers.slmp;
 using org.apache.plc4net.messages;
@@ -177,22 +178,109 @@ namespace org.apache.plc4net.test.slmp
         }
 
         [Fact]
-        public async Task Seventeen_bits_span_two_little_endian_words()
+        public async Task Non_word_aligned_bit_ranges_keep_using_batch_write()
         {
             using var transport = NewTransport();
             using var connection = NewConnection(transport);
-            transport.InjectTestData(Response(0));
+            var frames = Task.Run(() => CaptureFrames(transport, 30, 22));
             var bits = new bool[17];
             bits[0] = bits[8] = bits[16] = true;
             var request = connection.WriteRequestBuilder!
                 .AddTag("bits", "M0[0..16]:BOOL", bits.Cast<object>().ToArray())
                 .AddTag("next", "M32[0..0]:BOOL", true).Build();
 
-            await request.ExecuteAsync();
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await request.ExecuteAsync());
 
-            Assert.Equal(Convert.FromHexString(
-                "500000FFFF03001A001000061400000002" +
-                "000000900200010101002000009001000100"), transport.GetAllWrittenData());
+            Assert.All(response.TagNames, name => Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode(name)));
+            var written = await frames;
+            Assert.Equal(new[] { 0x1401, 0x1401 },
+                new[] { CommandAt(written, 0), CommandAt(written, 30) });
+            Assert.Equal(1, written[13] | written[14] << 8);
+            Assert.Equal(17, written[19] | written[20] << 8);
+            Assert.Equal(1, written[30 + 19] | written[30 + 20] << 8);
+        }
+
+        [Theory]
+        [InlineData("M0", 0x90, 15)]
+        [InlineData("X0x0", 0x9C, 17)]
+        [InlineData("Y0x0", 0x9D, 31)]
+        [InlineData("B0x0", 0xA0, 33)]
+        public async Task Partial_bit_ranges_use_exact_batch_write_for_every_supported_device(
+            string address, byte deviceCode, int quantity)
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var frameLength = 21 + (quantity + 1) / 2;
+            var frame = Task.Run(() => CaptureFrames(transport, frameLength));
+            var request = connection.WriteRequestBuilder!
+                .AddTag("bits", $"{address}[0..{quantity - 1}]:BOOL", BoolValues(quantity)).Build();
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await request.ExecuteAsync());
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("bits"));
+            var written = await frame;
+            Assert.Equal(0x1401, CommandAt(written, 0));
+            Assert.Equal(1, written[13] | written[14] << 8);
+            Assert.Equal(deviceCode, written[18]);
+            Assert.Equal(quantity, written[19] | written[20] << 8);
+        }
+
+        [Theory]
+        [InlineData("M0", "M64", 16)]
+        [InlineData("X0x0", "X0x40", 32)]
+        [InlineData("Y0x0", "Y0x40", 16)]
+        [InlineData("B0x0", "B0x40", 32)]
+        public async Task Word_aligned_bit_ranges_share_multi_block_write(
+            string firstAddress, string secondAddress, int quantity)
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var frameLength = 15 + 2 * (6 + quantity / 8);
+            var frame = Task.Run(() => CaptureFrames(transport, frameLength));
+            var request = connection.WriteRequestBuilder!
+                .AddTag("first", $"{firstAddress}[0..{quantity - 1}]:BOOL", BoolValues(quantity))
+                .AddTag("second", $"{secondAddress}[0..{quantity - 1}]:BOOL", BoolValues(quantity)).Build();
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await request.ExecuteAsync());
+
+            Assert.All(response.TagNames, name => Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode(name)));
+            var written = await frame;
+            Assert.Equal(0x1406, CommandAt(written, 0));
+            Assert.Equal(0, written[15]);
+            Assert.Equal(2, written[16]);
+        }
+
+        [Fact]
+        public async Task Adjacent_ranges_can_share_multi_block_write()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var frame = Task.Run(() => CaptureFrames(transport, 37));
+            var request = connection.WriteRequestBuilder!
+                .AddTag("first", "D0[0..1]:WORD", (ushort)1, (ushort)2)
+                .AddTag("adjacent", "D2[0..1]:WORD", (ushort)3, (ushort)4).Build();
+
+            var response = Assert.IsType<DefaultPlcWriteResponse>(await request.ExecuteAsync());
+
+            Assert.All(response.TagNames, name => Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode(name)));
+            Assert.Equal(0x1406, CommandAt(await frame, 0));
+        }
+
+        [Fact]
+        public async Task Pre_cancelled_write_stops_before_sending_a_frame()
+        {
+            using var transport = NewTransport();
+            using var connection = NewConnection(transport);
+            var request = Assert.IsType<DefaultPlcWriteRequest>(connection.WriteRequestBuilder!
+                .AddTag("first", "D0[0..1]:WORD", (ushort)1, (ushort)2)
+                .AddTag("second", "D10[0..1]:WORD", (ushort)3, (ushort)4).Build());
+            using var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+                connection.Write(request, cancellation.Token));
+
+            Assert.Empty(transport.GetAllWrittenData());
         }
 
         [Fact]
@@ -223,6 +311,9 @@ namespace org.apache.plc4net.test.slmp
 
         private static object[] Values(int count)
             => Enumerable.Repeat<object>((ushort)1, count).ToArray();
+
+        private static object[] BoolValues(int count)
+            => Enumerable.Range(0, count).Select(index => (object)(index % 3 == 0)).ToArray();
 
         private static byte[] CaptureFrames(TestTransportInstance transport, params int[] lengths)
         {

@@ -408,7 +408,7 @@ namespace org.apache.plc4net.drivers.slmp
                     pendingBlockItems.Clear();
                     pendingRandomItems.Add(item);
                 }
-                else if (tag.ExplicitRange)
+                else if (tag.ExplicitRange && (!tag.IsBitDevice || tag.Quantity % 16 == 0))
                 {
                     await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
                     pendingRandomItems.Clear();
@@ -443,7 +443,7 @@ namespace org.apache.plc4net.drivers.slmp
             List<WriteItem> items, Dictionary<string, PlcResponseCode> results,
             CancellationToken cancellationToken)
         {
-            if (items.Count < 2 || HasOverlappingAddresses(items))
+            if (items.Count < 2 || HasOverlappingAddresses(items, cancellationToken))
             {
                 foreach (var item in items)
                     await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
@@ -470,19 +470,21 @@ namespace org.apache.plc4net.drivers.slmp
                 await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
         }
 
-        private static bool HasOverlappingAddresses(IReadOnlyList<WriteItem> items)
+        private static bool HasOverlappingAddresses(
+            IReadOnlyList<WriteItem> items, CancellationToken cancellationToken)
         {
-            for (var i = 0; i < items.Count; i++)
-            for (var j = i + 1; j < items.Count; j++)
+            foreach (var deviceItems in items.GroupBy(item => item.Tag.DeviceCode))
             {
-                var left = items[i].Tag;
-                var right = items[j].Tag;
-                if (left.DeviceCode != right.DeviceCode)
-                    continue;
-                var leftEnd = left.DeviceNumber + left.NumberOfPoints;
-                var rightEnd = right.DeviceNumber + right.NumberOfPoints;
-                if (left.DeviceNumber < rightEnd && right.DeviceNumber < leftEnd)
-                    return true;
+                cancellationToken.ThrowIfCancellationRequested();
+                var previousEnd = -1;
+                foreach (var item in deviceItems.OrderBy(item => item.Tag.DeviceNumber))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (item.Tag.DeviceNumber < previousEnd)
+                        return true;
+                    previousEnd = Math.Max(previousEnd,
+                        item.Tag.DeviceNumber + item.Tag.NumberOfPoints);
+                }
             }
             return false;
         }
@@ -491,7 +493,7 @@ namespace org.apache.plc4net.drivers.slmp
             List<WriteItem> items, Dictionary<string, PlcResponseCode> results,
             CancellationToken cancellationToken)
         {
-            if (items.Count < 2 || HasOverlappingAddresses(items))
+            if (items.Count < 2 || HasOverlappingAddresses(items, cancellationToken))
             {
                 foreach (var item in items)
                     await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
