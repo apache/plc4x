@@ -50,6 +50,8 @@ namespace org.apache.plc4net.drivers.slmp
         private const int MaxRandomWritePoints = 160;
         private const int MaxMultiBlockReadBlocks = 120;
         private const int MaxMultiBlockReadPoints = 960;
+        private const int MaxMultiBlockWriteBlocks = 120;
+        private const int MaxMultiBlockWriteCost = 960;
         private const ushort DefaultMonitoringTimer = 16;
 
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
@@ -349,7 +351,27 @@ namespace org.apache.plc4net.drivers.slmp
             public int BlockPoints => Tag.IsBitDevice ? (Tag.Quantity + 15) / 16 : Tag.NumberOfPoints;
         }
 
-        private sealed record WriteItem(string Name, SlmpTag Tag, byte[] Data);
+        private sealed record WriteItem(string Name, SlmpTag Tag, byte[] Data)
+        {
+            public int BlockPoints => Tag.IsBitDevice ? (Tag.Quantity + 15) / 16 : Tag.NumberOfPoints;
+
+            public byte[] BlockData
+            {
+                get
+                {
+                    if (!Tag.IsBitDevice)
+                        return Data;
+                    var words = new byte[BlockPoints * 2];
+                    for (var i = 0; i < Tag.Quantity; i++)
+                    {
+                        var set = i % 2 == 0 ? (Data[i / 2] & 0x10) != 0 : (Data[i / 2] & 0x01) != 0;
+                        if (set)
+                            words[i / 8] |= (byte)(1 << i % 8);
+                    }
+                    return words;
+                }
+            }
+        }
 
         public async Task<IPlcWriteResponse> Write(
             DefaultPlcWriteRequest request, CancellationToken cancellationToken = default)
@@ -358,21 +380,22 @@ namespace org.apache.plc4net.drivers.slmp
             var results = new Dictionary<string, PlcResponseCode>();
             var names = request.TagNames.ToArray();
             var pendingRandomItems = new List<WriteItem>();
+            var pendingBlockItems = new List<WriteItem>();
             foreach (var name in names)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (request.GetTagByName(name) is not SlmpTag tag)
                 {
-                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
-                    pendingRandomItems.Clear();
+                    await FlushPendingWrites(pendingRandomItems, pendingBlockItems, results, cancellationToken)
+                        .ConfigureAwait(false);
                     results[name] = PlcResponseCode.InvalidAddress;
                     continue;
                 }
                 var data = Encode(tag, request.GetValue(name));
                 if (data == null)
                 {
-                    await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
-                    pendingRandomItems.Clear();
+                    await FlushPendingWrites(pendingRandomItems, pendingBlockItems, results, cancellationToken)
+                        .ConfigureAwait(false);
                     results[name] = PlcResponseCode.InvalidData;
                     continue;
                 }
@@ -380,20 +403,40 @@ namespace org.apache.plc4net.drivers.slmp
                 if (!tag.IsBitDevice && !tag.ExplicitRange && tag.Quantity == 1 &&
                     (data.Length == 2 || data.Length == 4))
                 {
+                    await FlushMultiBlockWrites(pendingBlockItems, results, cancellationToken)
+                        .ConfigureAwait(false);
+                    pendingBlockItems.Clear();
                     pendingRandomItems.Add(item);
                 }
-                else
+                else if (tag.ExplicitRange)
                 {
                     await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
                     pendingRandomItems.Clear();
+                    pendingBlockItems.Add(item);
+                }
+                else
+                {
+                    await FlushPendingWrites(pendingRandomItems, pendingBlockItems, results, cancellationToken)
+                        .ConfigureAwait(false);
                     await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
                 }
             }
-            await FlushRandomWrites(pendingRandomItems, results, cancellationToken).ConfigureAwait(false);
+            await FlushPendingWrites(pendingRandomItems, pendingBlockItems, results, cancellationToken)
+                .ConfigureAwait(false);
 
             var ordered = names.Where(results.ContainsKey)
                 .ToDictionary(name => name, name => results[name]);
             return new DefaultPlcWriteResponse(request, ordered);
+        }
+
+        private async Task FlushPendingWrites(
+            List<WriteItem> randomItems, List<WriteItem> blockItems,
+            Dictionary<string, PlcResponseCode> results, CancellationToken cancellationToken)
+        {
+            await FlushRandomWrites(randomItems, results, cancellationToken).ConfigureAwait(false);
+            await FlushMultiBlockWrites(blockItems, results, cancellationToken).ConfigureAwait(false);
+            randomItems.Clear();
+            blockItems.Clear();
         }
 
         private async Task FlushRandomWrites(
@@ -443,6 +486,79 @@ namespace org.apache.plc4net.drivers.slmp
             }
             return false;
         }
+
+        private async Task FlushMultiBlockWrites(
+            List<WriteItem> items, Dictionary<string, PlcResponseCode> results,
+            CancellationToken cancellationToken)
+        {
+            if (items.Count < 2 || HasOverlappingAddresses(items))
+            {
+                foreach (var item in items)
+                    await WriteBatchItem(item, results, cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            var offset = 0;
+            while (offset < items.Count)
+            {
+                var count = 0;
+                var cost = 0;
+                while (offset + count < items.Count && count < MaxMultiBlockWriteBlocks)
+                {
+                    var nextCost = 4 + items[offset + count].BlockPoints;
+                    if (cost + nextCost > MaxMultiBlockWriteCost)
+                        break;
+                    cost += nextCost;
+                    count++;
+                }
+                if (count < 2)
+                {
+                    await WriteBatchItem(items[offset], results, cancellationToken).ConfigureAwait(false);
+                    offset++;
+                    continue;
+                }
+                await WriteMultiBlockGroup(items.Skip(offset).Take(count).ToArray(), results, cancellationToken)
+                    .ConfigureAwait(false);
+                offset += count;
+            }
+        }
+
+        private async Task WriteMultiBlockGroup(
+            WriteItem[] items, Dictionary<string, PlcResponseCode> results,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var words = items.Where(item => !item.Tag.IsBitDevice).Select(ToWriteBlock).ToList();
+                var bits = items.Where(item => item.Tag.IsBitDevice).Select(ToWriteBlock).ToList();
+                var data = new SlmpMultiBlockWriteRequest(
+                    checked((byte)words.Count), checked((byte)bits.Count), words, bits);
+                var response = await ExchangeAsync(
+                    new SlmpRequestFrame3E(_monitoringTimer, 0x1406, 0, data), cancellationToken)
+                    .ConfigureAwait(false);
+                var code = response.EndCode == 0 && response.ResponseData.Length == 0
+                    ? PlcResponseCode.Ok
+                    : PlcResponseCode.RemoteError;
+                if (response.EndCode != 0)
+                    Logger.LogWarning("SLMP returned end code 0x{EndCode:X4} for Multi-block Write", response.EndCode);
+                SetWriteResults(items, results, code);
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (TimeoutException ex)
+            {
+                Logger.LogWarning(ex, "SLMP Multi-block Write timed out");
+                SetWriteResults(items, results, PlcResponseCode.RequestTimeout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "SLMP Multi-block Write failed");
+                SetWriteResults(items, results, PlcResponseCode.InternalError);
+            }
+        }
+
+        private static SlmpDeviceWriteBlock ToWriteBlock(WriteItem item) => new SlmpDeviceWriteBlock(
+            (uint)item.Tag.DeviceNumber, item.Tag.DeviceCode,
+            checked((ushort)item.BlockPoints), item.BlockData);
 
         private async Task WriteRandomGroup(
             WriteItem[] items, int wordCount, int doubleWordCount,
