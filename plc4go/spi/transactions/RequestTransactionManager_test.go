@@ -774,3 +774,36 @@ func Test_requestTransactionManager_Close_leavesACallerSuppliedExecutorAlone(t *
 	}
 	assert.NoError(t, second.Close())
 }
+
+func Test_requestTransactionManager_endRequest_unknownTransactionLeavesTheManagerUsable(t *testing.T) {
+	rtm := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)))
+
+	// A transaction still on the wire when its manager closes - a connection closed or invalidated with a
+	// request in flight - ends afterwards, when its reply, its timeout or the disconnect comes in. Close has
+	// forgotten it by then, so ending it reports an unknown transaction; it must not leave the manager
+	// locked, or the next Close, the connection's own included, never returns.
+	running := make(chan RequestTransaction)
+	transaction := rtm.StartTransaction("in flight while the manager closes")
+	transaction.Submit("in flight while the manager closes", func(_ context.Context, transaction RequestTransaction) {
+		running <- transaction
+	})
+	var inFlight RequestTransaction
+	select {
+	case inFlight = <-running:
+	case <-time.After(5 * time.Second):
+		t.Fatal("the transaction never ran")
+	}
+	require.NoError(t, rtm.Close())
+	assert.Error(t, inFlight.EndRequest(), "the manager closed, so the transaction is unknown to it")
+
+	closed := make(chan error, 1)
+	go func() {
+		closed <- rtm.Close()
+	}()
+	select {
+	case err := <-closed:
+		assert.NoError(t, err)
+	case <-time.After(5 * time.Second):
+		t.Fatal("ending an unknown transaction left the manager locked")
+	}
+}

@@ -242,11 +242,12 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 		}
 		return false
 	})
+	r.runningRequestMutex.Unlock()
 	if !found {
+		// Close forgets the transactions in flight, which still end afterwards.
 		return errors.New("Unknown Transaction or Transaction already finished!")
 	}
 	transaction.log.Debug().Msg("Removing the existing transaction transaction")
-	r.runningRequestMutex.Unlock()
 	// Process the workLog, a slot should be free now
 	transaction.log.Debug().Msg("Processing the workLog")
 	r.processWorklog()
