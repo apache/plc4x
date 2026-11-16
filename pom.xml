@@ -112,14 +112,14 @@
     <antlr.version>4.13.2</antlr.version>
     <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <bouncycastle.version>1.86</bouncycastle.version>
+    <bouncycastle.version>1.87</bouncycastle.version>
     <!-- Bouncy Castle occasionally ships a patch release for "bcprov" alone (1.80.2, 1.81.1,
          1.85.2 ...) while "bcpkix", "bctls" and "bcutil" stay on the base version. Those three
          all resolve down to bcprov, so a single shared property would either hold bcprov back
          or point the other three at a version that was never published. Hence the separate
          property: keep it on the newest patch of the "bouncycastle.version" line, and move both
          together when the base version changes. -->
-    <bouncycastle-prov.version>1.86</bouncycastle-prov.version>
+    <bouncycastle-prov.version>1.87</bouncycastle-prov.version>
     <byte-buddy.version>1.18.17</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-cli.version>1.11.0</commons-cli.version>
@@ -157,7 +157,7 @@
     <!-- Karaf the generated driver features are verified against, and the karaf-maven-plugin version -->
     <karaf.version>4.4.12</karaf.version>
     <logback.version>1.6.6</logback.version>
-    <maven-artifact.version>3.10.0</maven-artifact.version>
+    <maven-artifact.version>3.10.1</maven-artifact.version>
     <mockito.version>5.24.0</mockito.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <!-- Used by the maven-site skin declaration in
