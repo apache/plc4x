@@ -807,3 +807,35 @@ func Test_requestTransactionManager_endRequest_unknownTransactionLeavesTheManage
 		t.Fatal("ending an unknown transaction left the manager locked")
 	}
 }
+
+func Test_requestTransactionManager_Close_failsTheQueuedTransactions(t *testing.T) {
+	rtm := NewRequestTransactionManager(1, options.WithCustomLogger(produceTestingLogger(t)))
+
+	// The first transaction holds the only slot - a request on the wire that is never answered - so the second
+	// one queues behind it. Closing the manager starts neither of them again: the queued one must not wait
+	// out its caller's context for a slot that never comes.
+	inFlight := rtm.StartTransaction("in flight")
+	inFlightRunning := make(chan struct{})
+	inFlight.Submit("in flight", func(context.Context, RequestTransaction) {
+		close(inFlightRunning)
+	})
+	select {
+	case <-inFlightRunning:
+	case <-time.After(5 * time.Second):
+		t.Fatal("the first transaction never ran")
+	}
+	queued := rtm.StartTransaction("queued")
+	queued.Submit("queued", func(context.Context, RequestTransaction) {
+		t.Error("the queued transaction ran after the manager closed")
+	})
+
+	require.NoError(t, rtm.Close())
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	started := time.Now()
+	err := queued.AwaitCompletion(ctx)
+	assert.ErrorContains(t, err, "shutdown")
+	assert.Less(t, time.Since(started), time.Second, "the queued transaction waited for its context instead of failing")
+	assert.True(t, queued.IsCompleted())
+}

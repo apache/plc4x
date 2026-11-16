@@ -281,6 +281,25 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 			}
 		}
 	}
+	queued := r.closeLocked()
+	// Fail the transactions still queued: none of them starts any more, and their callers would otherwise
+	// wait out their own context for a slot. They are marked outside the manager's locks, as a transaction
+	// takes its own lock before the manager's (Submit, FailRequest, EndRequest).
+	for _, transaction := range queued {
+		transaction.stateChangeMutex.Lock()
+		if !transaction.completed {
+			transaction.completed = true
+			transaction.setCompletionFuture(&completedFuture{errors.New("request transaction manager in shutdown")})
+		}
+		transaction.stateChangeMutex.Unlock()
+	}
+	r.log.Debug().Int("failedQueued", len(queued)).Msg("closed")
+	return nil
+}
+
+// closeLocked forgets the running transactions, empties the work log, returning the transactions that were
+// still queued in it, and cancels the manager's context.
+func (r *requestTransactionManager) closeLocked() []*requestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
 	r.workLogMutex.Lock()
@@ -288,6 +307,10 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
+	var queued []*requestTransaction
+	for element := r.workLog.Front(); element != nil; element = r.workLog.Front() {
+		queued = append(queued, r.workLog.Remove(element).(*requestTransaction))
+	}
 	// The executor is never this manager's to close. It is either the process-wide shared one or
 	// one the caller handed over with WithCustomExecutor, and in both cases it outlives this
 	// manager: whoever created it is still using it and still has to stop it. Closing it from here
@@ -295,6 +318,5 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	// each connection its own manager the way modbus does - and a stopped executor never runs the
 	// work queued into it, so those connections simply never send anything again.
 	r.cancelCtx()
-	r.log.Debug().Msg("closed")
-	return nil
+	return queued
 }
