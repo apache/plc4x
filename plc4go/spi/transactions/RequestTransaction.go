@@ -155,8 +155,14 @@ func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 		t.log.Trace().Msg("Errored")
 		return err
 	}
+	// The operation returns once its request is sent; the transaction ends later, with the reply or its timeout.
+	// Poll for that end without spinning: a driver with a transaction manager per connection has one such wait
+	// per connection with a request out.
 	stillActive := true
-	for stillActive {
+	for first := true; stillActive; first = false {
+		if !first {
+			time.Sleep(time.Millisecond)
+		}
 		stillActive = false
 		t.parent.runningRequestMutex.RLock()
 		for _, runningRequest := range t.parent.runningRequests {
