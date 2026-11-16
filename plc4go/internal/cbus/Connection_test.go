@@ -1604,7 +1604,6 @@ func TestNewConnection(t *testing.T) {
 		configuration Configuration
 		driverContext DriverContext
 		tagHandler    spi.PlcTagHandler
-		tm            transactions.RequestTransactionManager
 		options       map[string][]string
 		_options      []options.WithOption
 	}
@@ -1641,11 +1640,11 @@ func TestNewConnection(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options, tt.args._options...)
+			connection := NewConnection(tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.options, tt.args._options...)
 			t.Cleanup(func() {
 				t.Log("Disconnecting connection", connection.Close())
 			})
-			assert.True(t, tt.wantAssert(t, connection), "NewConnection(%v, %v, %v, %v, %v, %v)", tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.tm, tt.args.options)
+			assert.True(t, tt.wantAssert(t, connection), "NewConnection(%v, %v, %v, %v, %v)", tt.args.messageCodec, tt.args.configuration, tt.args.driverContext, tt.args.tagHandler, tt.args.options)
 		})
 	}
 }

@@ -31,15 +31,12 @@ import (
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Driver struct {
 	_default.DefaultDriver
 
-	tm                      transactions.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 
@@ -50,7 +47,6 @@ type Driver struct {
 func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	driver := &Driver{
-		tm:                      transactions.NewRequestTransactionManager(1, _options...),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 		log:                     customLogger,
@@ -111,7 +107,7 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 		codec, configuration,
 		driverContext,
 		d.GetPlcTagHandler(),
-		d.tm, driverOptions,
+		driverOptions,
 		append(d._options, options.WithCustomLogger(connectionLog))...,
 	)
 	connectionLog.Debug().Msg("created connection, connecting now")
@@ -127,14 +123,4 @@ func (d *Driver) SetAwaitSetupComplete(awaitComplete bool) {
 
 func (d *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
 	d.awaitDisconnectComplete = awaitComplete
-}
-
-func (d *Driver) Close() error {
-	defer utils.StopWarn(d.log)()
-	d.log.Trace().Msg("Closing driver")
-	d.log.Trace().Msg("Closing transaction manager")
-	if err := d.tm.Close(); err != nil {
-		return errors.Wrap(err, "error closing transaction manager")
-	}
-	return nil
 }

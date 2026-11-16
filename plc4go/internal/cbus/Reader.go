@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"context"
+	"maps"
 	"runtime/debug"
 	"sync"
 
@@ -115,9 +116,25 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 			))
 			return
 		}
-		m.createMessageTransactionAndWait(ctx, messageToSend, addResponseCode, tagName, addPlcValue)
+		if sent := m.createMessageTransactionAndWait(ctx, messageToSend, addResponseCode, tagName, addPlcValue); !sent {
+			// No request went out, so no reply can come: the connection closed before the read's turn came,
+			// or the read's context ended while it waited for it.
+			responseMu.Lock()
+			if _, ok := responseCodes[tagName]; !ok {
+				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			}
+			responseMu.Unlock()
+		}
 	}
-	readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
+	// A request's handler may still record its outcome after the read gave up on it (the connection's request
+	// slot was shut while it was on its way): the response gets a copy, which nothing writes to any more.
+	responseMu.Lock()
+	responseCodesCopy := maps.Clone(responseCodes)
+	responseMu.Unlock()
+	valueMu.Lock()
+	plcValuesCopy := maps.Clone(plcValues)
+	valueMu.Unlock()
+	readResponse := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodesCopy, plcValuesCopy)
 	utils.DeliverResult(m.log, result, spiModel.NewDefaultPlcReadRequestResult(
 		readRequest,
 		readResponse,
@@ -125,10 +142,32 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	))
 }
 
-func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
+// createMessageTransactionAndWait sends messageToSend once the connection's request slot is free and waits for the
+// transaction to end. It reports whether the request was handed to the codec: a read that gave up before its turn
+// came (its context ended, or the connection closed and failed the queued transactions) never sends it, also when
+// the transaction manager starts the operation later.
+func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) (sent bool) {
+	var (
+		turnMutex sync.Mutex
+		started   bool // the operation runs, or ran
+		abandoned bool // the read gave up before the operation started
+		done      = make(chan struct{})
+	)
 	// Start a new request-transaction (Is ended in the response-handler)
 	transaction := m.tm.StartTransaction("read")
 	transaction.Submit("readOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+		turnMutex.Lock()
+		if abandoned {
+			turnMutex.Unlock()
+			// Nobody waits for this read any more: give the slot back without sending.
+			if err := transaction.FailRequest(errors.New("the read gave up before its turn came")); err != nil {
+				m.log.Debug().Err(err).Msg("Error failing an abandoned read")
+			}
+			return
+		}
+		started = true
+		turnMutex.Unlock()
+		defer close(done)
 		ctx, cancel := context.WithCancel(ctx)
 		context.AfterFunc(transactionContext, cancel)
 		m.log.Trace().Interface("transaction", transaction).Msg("Transaction getting handled")
@@ -137,10 +176,30 @@ func (m *Reader) createMessageTransactionAndWait(ctx context.Context, messageToS
 	if err := transaction.AwaitCompletion(ctx); err != nil {
 		m.log.Warn().Err(err).Msg("Error while awaiting completion")
 	}
+	turnMutex.Lock()
+	sent = started
+	if !started {
+		abandoned = true
+	}
+	turnMutex.Unlock()
+	if sent {
+		// The operation returns once the request is sent (or failed to send), having recorded a failure.
+		<-done
+	}
 	m.log.Trace().Msg("Finished waiting for transaction to end")
+	return sent
 }
 
 func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transactions.RequestTransaction, messageToSend readWriteModel.CBusMessage, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), tagName string, addPlcValue func(name string, plcValue apiValues.PlcValue)) {
+	if !m.messageCodec.IsRunning() {
+		// The connection closed while the read waited for its turn: an expectation registered now would never
+		// be answered nor expire, as the codec's workers are gone.
+		addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
+		if err := transaction.FailRequest(errors.New("the connection is closed")); err != nil {
+			m.log.Debug().Err(err).Msg("Error failing a read on a closed connection")
+		}
+		return
+	}
 	// Send the over the wire
 	m.log.Trace().Msg("send over the wire")
 	if err := m.messageCodec.SendRequest(ctx, "send_generic_read_message", messageToSend, func(cbusMessage spi.Message) bool {

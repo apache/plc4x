@@ -30,7 +30,6 @@ import (
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 )
@@ -38,7 +37,6 @@ import (
 func TestDriver_GetConnection(t *testing.T) {
 	type fields struct {
 		DefaultDriver           _default.DefaultDriver
-		tm                      transactions.RequestTransactionManager
 		awaitSetupComplete      bool
 		awaitDisconnectComplete bool
 	}
@@ -215,7 +213,6 @@ func TestNewDriver(t *testing.T) {
 			name: "create",
 			want: func() *Driver {
 				driver := &Driver{
-					tm:                      transactions.NewRequestTransactionManager(1),
 					awaitSetupComplete:      true,
 					awaitDisconnectComplete: true,
 				}

@@ -65,7 +65,13 @@ type Connection struct {
 	alphaGenerator AlphaGenerator `stringer:"true"`
 	messageCodec   *MessageCodec
 	subscribers    []*Subscriber
-	tm             transactions.RequestTransactionManager
+	// tm keeps one request of this connection on the wire at a time; reads and writes send through it. It
+	// belongs to the connection, not to the driver, the way plc4j's ConnectionBase.getMaxConcurrentRequests()
+	// bounds each connection: two connections are two interfaces, each with its own bus and its own alphas
+	// (alphaGenerator), and have nothing to serialise against each other. A manager shared by the driver
+	// let an interface that loses replies hold back every other interface's requests, whose timeouts,
+	// which start before the wait for the slot, then ran out while they were still queued.
+	tm transactions.RequestTransactionManager
 
 	configuration Configuration `stringer:"true"`
 	driverContext DriverContext `stringer:"true"`
@@ -85,14 +91,14 @@ var (
 	_ spi.TransportInstanceExposer = (*Connection)(nil)
 )
 
-func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
+func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,
 		configuration:  configuration,
 		driverContext:  driverContext,
-		tm:             tm,
+		tm:             transactions.NewRequestTransactionManager(1, _options...),
 
 		log:      customLogger,
 		_options: _options,
@@ -155,12 +161,30 @@ func (c *Connection) Connect(ctx context.Context) error {
 	return c.setupConnection(ctx)
 }
 
+// Close drops the connection and its request transaction manager with it. The codec goes first: disconnecting
+// it fails the expectations still registered, which ends the transactions of the requests in flight.
 func (c *Connection) Close() error {
 	err := c.DefaultConnection.Close()
+	c.closeTransactionManager()
 	c.log.Trace().Msg("Waiting for handlers to stop")
 	c.handlerWaitGroup.Wait()
 	c.log.Trace().Msg("handlers stopped, dispatching result")
 	return err
+}
+
+// Invalidate closes the request transaction manager as well, which the embedded Invalidate does not reach:
+// it calls the embedded Close, not Close above, as embedding is not virtual dispatch. A caller invalidates a
+// connection it found broken (a connection cache's lease, for one), and a request it starts on it afterwards
+// fails at once. As in Close, the codec goes first, so the requests in flight end before the manager closes.
+func (c *Connection) Invalidate() {
+	c.DefaultConnection.Invalidate()
+	c.closeTransactionManager()
+}
+
+func (c *Connection) closeTransactionManager() {
+	if err := c.tm.Close(); err != nil {
+		c.log.Warn().Err(err).Msg("Error closing the request transaction manager")
+	}
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
