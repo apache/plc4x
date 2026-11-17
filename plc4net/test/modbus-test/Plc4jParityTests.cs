@@ -76,5 +76,44 @@ namespace org.apache.plc4net.drivers.modbus.test
             Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
             Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu(requestPdu)), transport.GetAllWrittenData());
         }
+
+        [Theory]
+        [InlineData("BIG_ENDIAN", "11223344")]
+        [InlineData("LITTLE_ENDIAN", "44332211")]
+        [InlineData("BIG_ENDIAN_BYTE_SWAP", "22114433")]
+        [InlineData("LITTLE_ENDIAN_BYTE_SWAP", "33441122")]
+        public async Task A_wide_value_is_read_with_the_same_byte_orders_as_plc4j(
+            string byteOrder, string wireValue)
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("0304" + wireValue)));
+            var connection = NewTcp(transport);
+
+            var response = await ReadAsync(
+                connection, $"holding-register:1:DWORD{{byte-order:'{byteOrder}'}}");
+
+            Assert.Equal(0x11223344U, ValueOf(response).GetUint());
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("0300000002")), transport.GetAllWrittenData());
+        }
+
+        [Theory]
+        [InlineData("BIG_ENDIAN", "11223344")]
+        [InlineData("LITTLE_ENDIAN", "44332211")]
+        [InlineData("BIG_ENDIAN_BYTE_SWAP", "22114433")]
+        [InlineData("LITTLE_ENDIAN_BYTE_SWAP", "33441122")]
+        public async Task A_wide_value_is_written_with_the_same_byte_orders_as_plc4j(
+            string byteOrder, string wireValue)
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("1000000002")));
+            var connection = NewTcp(transport);
+
+            var response = await WriteAsync(
+                connection, $"holding-register:1:DWORD{{byte-order:'{byteOrder}'}}", 0x11223344U);
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(
+                ModbusFrames.Tcp(1, 1, Pdu("100000000204" + wireValue)), transport.GetAllWrittenData());
+        }
     }
 }

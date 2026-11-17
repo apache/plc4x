@@ -37,9 +37,9 @@ namespace org.apache.plc4net.drivers.modbus
     /// <list type="bullet">
     /// <item><c>coil:{address}</c> - a single bit, read and written (functions 0x01, 0x05).</item>
     /// <item><c>discrete-input:{address}</c> - a single bit, read only (0x02).</item>
-    /// <item><c>holding-register:{address}[:INT|UINT|WORD]</c> - a 16-bit register, read and
-    /// written (0x03, 0x06); <c>INT</c> unless stated.</item>
-    /// <item><c>input-register:{address}[:INT|UINT|WORD]</c> - a 16-bit register, read only (0x04).</item>
+    /// <item><c>holding-register:{address}[:{TYPE}]</c> - registers read and written with
+    /// functions 0x03, 0x06 and 0x10; <c>INT</c> unless stated.</item>
+    /// <item><c>input-register:{address}[:{TYPE}]</c> - registers read only with function 0x04.</item>
     /// </list>
     /// <para>
     /// The address is the register number as a Modbus user counts it, from 1: the request
@@ -47,9 +47,9 @@ namespace org.apache.plc4net.drivers.modbus
     /// address 0.
     /// </para>
     /// <para>
-    /// Array selections, string lengths, tag configuration, extended registers, the short
-    /// forms (<c>40001</c>, <c>4x00001</c>) and the wider data types are accepted by plc4j
-    /// but not supported here yet; they are rejected rather than read as something else.
+    /// The optional plc4j-compatible <c>{byte-order:'...'}</c> configuration controls the byte
+    /// layout of a register value. Array selections, strings, extended registers and the short
+    /// forms (<c>40001</c>, <c>4x00001</c>) are not supported here yet.
     /// </para>
     /// </remarks>
     public sealed class ModbusTag : IPlcTag
@@ -69,10 +69,12 @@ namespace org.apache.plc4net.drivers.modbus
         // non-ASCII address would pass the pattern and blow up int.Parse below
         // instead of failing here as a PlcInvalidFieldException.
         private static readonly Regex AddressPattern = new Regex(
-            @"^(?<area>coil|discrete-input|holding-register|input-register):(?<address>[0-9]{1,9})(:(?<datatype>[A-Za-z_]+))?$",
+            @"^(?<area>coil|discrete-input|holding-register|input-register):(?<address>[0-9]{1,9})" +
+            @"(:(?<datatype>[A-Za-z_]+))?(\{\s*byte-order\s*:\s*['""]?(?<byteorder>[A-Za-z_]+)['""]?\s*\})?$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-        public ModbusTag(TagType type, int address, ModbusDataType dataType)
+        public ModbusTag(TagType type, int address, ModbusDataType dataType,
+            ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian)
         {
             if (address < 1 || address > MaxAddress)
             {
@@ -89,6 +91,7 @@ namespace org.apache.plc4net.drivers.modbus
             Type = type;
             Address = address;
             DataType = dataType;
+            ByteOrder = byteOrder;
         }
 
         public TagType Type { get; }
@@ -100,6 +103,11 @@ namespace org.apache.plc4net.drivers.modbus
         public ushort WireAddress => (ushort)(Address - 1);
 
         public ModbusDataType DataType { get; }
+
+        public ModbusByteOrder ByteOrder { get; }
+
+        /// <summary>The number of 16-bit registers occupied by one value.</summary>
+        public ushort RegisterCount => checked((ushort)Math.Max(1, (DataType.GetDataTypeSize() + 1) / 2));
 
         /// <summary>Whether the tag is a single bit (a coil or a discrete input) rather than a register.</summary>
         public bool IsBit => Type == TagType.Coil || Type == TagType.DiscreteInput;
@@ -122,7 +130,7 @@ namespace org.apache.plc4net.drivers.modbus
                     $"'{tagAddress}' is not a supported Modbus tag address. Expected " +
                     "{area}:{address}[:{TYPE}], for example holding-register:1:INT; the areas are coil, " +
                     "discrete-input, holding-register and input-register, and the address counts from 1. " +
-                    "Array selections, string lengths, tag configuration, extended registers and short " +
+                    "Array selections, string lengths, extended registers and short " +
                     "addresses such as 40001 are not supported yet.");
             }
 
@@ -145,10 +153,19 @@ namespace org.apache.plc4net.drivers.modbus
                     : ModbusDataType.INT;
             }
 
-            return new ModbusTag(type, address, dataType);
+            var byteOrder = ModbusByteOrder.BigEndian;
+            var byteOrderGroup = match.Groups["byteorder"];
+            if (byteOrderGroup.Success && !TryParseByteOrder(byteOrderGroup.Value, out byteOrder))
+            {
+                throw new PlcInvalidFieldException($"Unknown Modbus byte order '{byteOrderGroup.Value}'.");
+            }
+
+            return new ModbusTag(type, address, dataType, byteOrder);
         }
 
-        public override string ToString() => $"{AreaName(Type)}:{Address}:{DataType}";
+        public override string ToString() => ByteOrder == ModbusByteOrder.BigEndian
+            ? $"{AreaName(Type)}:{Address}:{DataType}"
+            : $"{AreaName(Type)}:{Address}:{DataType}{{byte-order:'{ByteOrderName(ByteOrder)}'}}";
 
         internal static TagType ParseArea(string area)
         {
@@ -200,18 +217,46 @@ namespace org.apache.plc4net.drivers.modbus
             return false;
         }
 
+        private static bool TryParseByteOrder(string name, out ModbusByteOrder byteOrder)
+        {
+            switch (name.ToUpperInvariant())
+            {
+                case "BIG_ENDIAN": byteOrder = ModbusByteOrder.BigEndian; return true;
+                case "LITTLE_ENDIAN": byteOrder = ModbusByteOrder.LittleEndian; return true;
+                case "BIG_ENDIAN_BYTE_SWAP": byteOrder = ModbusByteOrder.BigEndianByteSwap; return true;
+                case "LITTLE_ENDIAN_BYTE_SWAP": byteOrder = ModbusByteOrder.LittleEndianByteSwap; return true;
+                default: byteOrder = default; return false;
+            }
+        }
+
+        private static string ByteOrderName(ModbusByteOrder byteOrder)
+            => Regex.Replace(byteOrder.ToString(), "([a-z])([A-Z])", "$1_$2").ToUpperInvariant();
+
         private static bool IsSupported(TagType type, ModbusDataType dataType)
         {
             if (type == TagType.Coil || type == TagType.DiscreteInput)
             {
                 return dataType == ModbusDataType.BOOL;
             }
-            return dataType == ModbusDataType.INT
+            return dataType == ModbusDataType.BYTE
+                   || dataType == ModbusDataType.WORD
+                   || dataType == ModbusDataType.DWORD
+                   || dataType == ModbusDataType.LWORD
+                   || dataType == ModbusDataType.SINT
+                   || dataType == ModbusDataType.INT
+                   || dataType == ModbusDataType.DINT
+                   || dataType == ModbusDataType.LINT
+                   || dataType == ModbusDataType.USINT
                    || dataType == ModbusDataType.UINT
-                   || dataType == ModbusDataType.WORD;
+                   || dataType == ModbusDataType.UDINT
+                   || dataType == ModbusDataType.ULINT
+                   || dataType == ModbusDataType.REAL
+                   || dataType == ModbusDataType.LREAL;
         }
 
         private static string SupportedTypes(TagType type)
-            => type == TagType.Coil || type == TagType.DiscreteInput ? "BOOL" : "INT, UINT, WORD";
+            => type == TagType.Coil || type == TagType.DiscreteInput
+                ? "BOOL"
+                : "BYTE, WORD, DWORD, LWORD, SINT, INT, DINT, LINT, USINT, UINT, UDINT, ULINT, REAL, LREAL";
     }
 }

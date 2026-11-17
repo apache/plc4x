@@ -128,7 +128,6 @@ namespace org.apache.plc4net.drivers.modbus.test
         [InlineData("holding-register:1[0..3]:INT")]   // arrays
         [InlineData("holding-register:1:INT[4]")]
         [InlineData("holding-register:1:STRING(20)")]  // string lengths
-        [InlineData("holding-register:1:INT{byte-order:'LITTLE_ENDIAN'}")] // tag configuration
         [InlineData("extended-register:1")]            // extended registers
         [InlineData("40001")]                          // short forms
         [InlineData("4x00001")]
@@ -141,16 +140,27 @@ namespace org.apache.plc4net.drivers.modbus.test
 
         [Theory]
         [InlineData("holding-register:1:BOOL")]
-        [InlineData("holding-register:1:REAL")]
-        [InlineData("holding-register:1:DINT")]
-        [InlineData("holding-register:1:BYTE")]
-        [InlineData("input-register:1:LREAL")]
         [InlineData("coil:1:INT")]
         [InlineData("discrete-input:1:UINT")]
         public void A_data_type_that_does_not_fit_the_area_is_rejected(string address)
         {
             var exception = Assert.Throws<PlcInvalidFieldException>(() => ModbusTag.Parse(address));
             Assert.Contains("not supported", exception.Message);
+        }
+
+        [Theory]
+        [InlineData("holding-register:1:DWORD", ModbusByteOrder.BigEndian, 2)]
+        [InlineData("holding-register:1:LREAL{byte-order:'LITTLE_ENDIAN'}", ModbusByteOrder.LittleEndian, 4)]
+        [InlineData("input-register:1:DINT{byte-order: BIG_ENDIAN_BYTE_SWAP}", ModbusByteOrder.BigEndianByteSwap, 2)]
+        [InlineData("holding-register:1:LWORD{byte-order:'LITTLE_ENDIAN_BYTE_SWAP'}", ModbusByteOrder.LittleEndianByteSwap, 4)]
+        public void Wider_register_types_and_plc4j_byte_orders_are_supported(
+            string address, ModbusByteOrder byteOrder, ushort registers)
+        {
+            var tag = ModbusTag.Parse(address);
+
+            Assert.Equal(byteOrder, tag.ByteOrder);
+            Assert.Equal(registers, tag.RegisterCount);
+            Assert.Equal(tag.ToString(), ModbusTag.Parse(tag.ToString()).ToString());
         }
 
         [Fact]
