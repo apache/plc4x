@@ -78,12 +78,22 @@ namespace org.apache.plc4net.drivers.modbus.test
         }
 
         [Fact]
+        public void The_ASCII_driver_is_modbus_ascii_over_serial()
+        {
+            var driver = new ModbusAsciiDriver(new DefaultTransportManager());
+
+            Assert.Equal("modbus-ascii", driver.ProtocolCode);
+            Assert.Equal("serial", driver.DefaultTransportCode);
+        }
+
+        [Fact]
         public void The_drivers_register_their_transports_with_the_manager()
         {
             var manager = new DefaultTransportManager();
 
             _ = new ModbusTcpDriver(manager);
             _ = new ModbusRtuDriver(manager);
+            _ = new ModbusAsciiDriver(manager);
 
             Assert.Contains("tcp", manager.GetTransportCodes());
             Assert.Contains("serial", manager.GetTransportCodes());
@@ -95,9 +105,10 @@ namespace org.apache.plc4net.drivers.modbus.test
             var count = PlcDriverManager.Instance.ScanAndRegisterDrivers(
                 typeof(ModbusTcpDriver).Assembly, new DefaultTransportManager());
 
-            Assert.Equal(2, count);
+            Assert.Equal(3, count);
             Assert.IsType<ModbusTcpDriver>(PlcDriverManager.Instance.GetDriverByCode("modbus-tcp"));
             Assert.IsType<ModbusRtuDriver>(PlcDriverManager.Instance.GetDriverByCode("modbus-rtu"));
+            Assert.IsType<ModbusAsciiDriver>(PlcDriverManager.Instance.GetDriverByCode("modbus-ascii"));
         }
 
         [Fact]
