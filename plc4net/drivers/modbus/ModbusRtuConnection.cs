@@ -46,6 +46,7 @@ namespace org.apache.plc4net.drivers.modbus
         private readonly int _requestTimeoutMs;
 
         private byte _expectedFunction;
+        private byte _expectedUnitIdentifier;
         private ModbusRtuADU? _response;
 
         public ModbusRtuConnection(ConnectionString connectionString, ITransportInstance transport)
@@ -73,7 +74,7 @@ namespace org.apache.plc4net.drivers.modbus
         public byte UnitIdentifier { get; }
 
         protected override async Task<ModbusPDU> ExchangeAsync(
-            ModbusPDU request, CancellationToken cancellationToken)
+            ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken)
         {
             await _exchangeGate.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -83,8 +84,11 @@ namespace org.apache.plc4net.drivers.modbus
                 DiscardBufferedBytes();
                 _response = null;
                 _expectedFunction = request.FunctionFlag;
+                _expectedUnitIdentifier = unitIdentifier ?? UnitIdentifier;
+                if (_expectedUnitIdentifier < 1 || _expectedUnitIdentifier > 247)
+                    throw new ModbusDriverException($"Modbus RTU unit-id must be between 1 and 247, but was {_expectedUnitIdentifier}.");
 
-                _codec.Send(new ModbusRtuADU(UnitIdentifier, request));
+                _codec.Send(new ModbusRtuADU(_expectedUnitIdentifier, request));
                 var deadline = Environment.TickCount64 + _requestTimeoutMs;
 
                 // The echo of a read request that a half-duplex adapter sends back is skipped
@@ -134,11 +138,11 @@ namespace org.apache.plc4net.drivers.modbus
         {
             // Something else on the bus, or a late answer to an earlier request: not ours,
             // so keep waiting for the one that is.
-            if (adu.Address != UnitIdentifier)
+            if (adu.Address != _expectedUnitIdentifier)
             {
                 Logger.LogDebug(
                     "Modbus RTU: ignored a frame from address {Got}, waiting for {Want}",
-                    adu.Address, UnitIdentifier);
+                    adu.Address, _expectedUnitIdentifier);
                 return;
             }
 

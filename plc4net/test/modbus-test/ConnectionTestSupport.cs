@@ -45,6 +45,10 @@ namespace org.apache.plc4net.drivers.modbus.test
             => new ModbusRtuConnection(
                 ConnectionString.Parse("modbus-rtu:serial://COM1" + parameters), transport);
 
+        public static ModbusAsciiConnection NewAscii(TestTransportInstance transport, string parameters = "")
+            => new ModbusAsciiConnection(
+                ConnectionString.Parse("modbus-ascii:serial://COM1" + parameters), transport);
+
         /// <summary>Reads one tag; the response is keyed "v".</summary>
         public static async Task<DefaultPlcReadResponse> ReadAsync(
             IPlcConnection connection, string address, CancellationToken cancellationToken = default)

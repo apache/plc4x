@@ -45,6 +45,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         private ushort _lastTransactionId;
         private ushort _expectedTransactionId;
+        private byte _expectedUnitIdentifier;
         private ModbusTcpADU? _response;
 
         public ModbusTcpConnection(ConnectionString connectionString, ITransportInstance transport)
@@ -72,7 +73,7 @@ namespace org.apache.plc4net.drivers.modbus
         public byte UnitIdentifier { get; }
 
         protected override async Task<ModbusPDU> ExchangeAsync(
-            ModbusPDU request, CancellationToken cancellationToken)
+            ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken)
         {
             await _exchangeGate.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -80,9 +81,10 @@ namespace org.apache.plc4net.drivers.modbus
                 var transactionId = NextTransactionId(_lastTransactionId);
                 _lastTransactionId = transactionId;
                 _expectedTransactionId = transactionId;
+                _expectedUnitIdentifier = unitIdentifier ?? UnitIdentifier;
                 _response = null;
 
-                _codec.Send(new ModbusTcpADU(transactionId, UnitIdentifier, request));
+                _codec.Send(new ModbusTcpADU(transactionId, _expectedUnitIdentifier, request));
                 var deadline = Environment.TickCount64 + _requestTimeoutMs;
 
                 // A response left over from an earlier request that timed out carries
@@ -147,11 +149,11 @@ namespace org.apache.plc4net.drivers.modbus
             // It is dropped and the request keeps waiting for the right frame until it times
             // out; it is never sent again, since a rejected acknowledgement does not show
             // that the device left the write undone.
-            if (adu.UnitIdentifier != UnitIdentifier)
+            if (adu.UnitIdentifier != _expectedUnitIdentifier)
             {
                 Logger.LogWarning(
                     "Modbus TCP: discarded a response from unit {Got} to transaction {Transaction}, waiting for unit {Want}",
-                    adu.UnitIdentifier, adu.TransactionIdentifier, UnitIdentifier);
+                    adu.UnitIdentifier, adu.TransactionIdentifier, _expectedUnitIdentifier);
                 return;
             }
             _response = adu;
