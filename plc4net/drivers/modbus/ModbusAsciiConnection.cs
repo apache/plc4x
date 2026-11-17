@@ -36,6 +36,7 @@ namespace org.apache.plc4net.drivers.modbus
         private readonly ModbusAsciiMessageCodec _codec;
         private readonly int _requestTimeoutMs;
         private byte _expectedFunction;
+        private byte _expectedUnitIdentifier;
         private ModbusAsciiADU? _response;
 
         public ModbusAsciiConnection(ConnectionString connectionString, ITransportInstance transport)
@@ -60,7 +61,7 @@ namespace org.apache.plc4net.drivers.modbus
         public byte UnitIdentifier { get; }
 
         protected override async Task<ModbusPDU> ExchangeAsync(
-            ModbusPDU request, CancellationToken cancellationToken)
+            ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken)
         {
             await _exchangeGate.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -68,7 +69,10 @@ namespace org.apache.plc4net.drivers.modbus
                 DiscardBufferedBytes();
                 _response = null;
                 _expectedFunction = request.FunctionFlag;
-                _codec.Send(new ModbusAsciiADU(UnitIdentifier, request));
+                _expectedUnitIdentifier = unitIdentifier ?? UnitIdentifier;
+                if (_expectedUnitIdentifier < 1 || _expectedUnitIdentifier > 247)
+                    throw new ModbusDriverException($"Modbus ASCII unit-id must be between 1 and 247, but was {_expectedUnitIdentifier}.");
+                _codec.Send(new ModbusAsciiADU(_expectedUnitIdentifier, request));
                 var deadline = Environment.TickCount64 + _requestTimeoutMs;
                 while (true)
                 {
@@ -105,7 +109,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         private void OnMessage(ModbusAsciiADU adu)
         {
-            if (adu.Address != UnitIdentifier || adu.Pdu.FunctionFlag != _expectedFunction)
+            if (adu.Address != _expectedUnitIdentifier || adu.Pdu.FunctionFlag != _expectedFunction)
             {
                 Logger.LogDebug(
                     "Modbus ASCII ignored address {Address}, function 0x{Function:X2}",

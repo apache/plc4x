@@ -48,8 +48,8 @@ namespace org.apache.plc4net.drivers.modbus
     /// </para>
     /// <para>
     /// The optional plc4j-compatible <c>{byte-order:'...'}</c> configuration controls the byte
-    /// layout of a register value. Array selections, strings, extended registers and the short
-    /// forms (<c>40001</c>, <c>4x00001</c>) are not supported here yet.
+    /// layout of a register value. Array selections, fixed strings, extended registers and short
+    /// forms such as <c>40001</c> and <c>4x00001</c> are supported.
     /// </para>
     /// </remarks>
     public sealed class ModbusTag : IPlcTag
@@ -73,7 +73,7 @@ namespace org.apache.plc4net.drivers.modbus
             @"^(?<area>coil|discrete-input|holding-register|input-register|extended-register):(?<address>[0-9]{1,9})" +
             @"(?<selection>\[(?<start>[0-9]+)(\.\.(?<end>[0-9]+))?\])?" +
             @"(:(?<datatype>[A-Za-z_]+)(\((?<stringlength>[0-9]+)\))?)?" +
-            @"(\{\s*byte-order\s*:\s*['""]?(?<byteorder>[A-Za-z_]+)['""]?\s*\})?$",
+            @"(\{(?<config>[^{}]+)\})?$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         private static readonly Regex ShortAddressPattern = new Regex(
@@ -82,9 +82,10 @@ namespace org.apache.plc4net.drivers.modbus
 
         public ModbusTag(TagType type, int address, ModbusDataType dataType,
             ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian, ushort quantity = 1,
-            ushort stringLength = 0, bool explicitRange = false)
+            ushort stringLength = 0, bool explicitRange = false, byte? unitIdentifier = null)
         {
-            var maximumAddress = type == TagType.ExtendedRegister ? ushort.MaxValue : MaxAddress;
+            const int maximumExtendedAddress = 655359999;
+            var maximumAddress = type == TagType.ExtendedRegister ? maximumExtendedAddress : MaxAddress;
             if (address < 1 || address > maximumAddress)
             {
                 throw new PlcInvalidFieldException(
@@ -114,13 +115,14 @@ namespace org.apache.plc4net.drivers.modbus
             Quantity = quantity;
             StringLength = stringLength;
             ExplicitRange = explicitRange;
+            UnitIdentifier = unitIdentifier;
             if (RegisterCount > (IsBit ? 2000 : 125))
             {
                 throw new PlcInvalidFieldException(
                     $"The Modbus selection occupies {RegisterCount} {(IsBit ? "bits" : "registers")}; " +
                     $"at most {(IsBit ? 2000 : 125)} fit in one request.");
             }
-            if ((long)WireAddress + RegisterCount > 65536)
+            if (type != TagType.ExtendedRegister && (long)WireAddress + RegisterCount > 65536)
             {
                 throw new PlcInvalidFieldException("The Modbus selection runs past the end of the address space.");
             }
@@ -143,6 +145,8 @@ namespace org.apache.plc4net.drivers.modbus
         public ushort StringLength { get; }
 
         public bool ExplicitRange { get; }
+
+        public byte? UnitIdentifier { get; }
 
         /// <summary>The number of 16-bit registers occupied by one value.</summary>
         public ushort RegisterCount
@@ -171,6 +175,9 @@ namespace org.apache.plc4net.drivers.modbus
         /// </summary>
         /// <exception cref="PlcInvalidFieldException">The address is not a supported Modbus tag address.</exception>
         public static ModbusTag Parse(string tagAddress)
+            => Parse(tagAddress, ModbusByteOrder.BigEndian);
+
+        internal static ModbusTag Parse(string tagAddress, ModbusByteOrder defaultByteOrder)
         {
             if (string.IsNullOrWhiteSpace(tagAddress))
             {
@@ -232,22 +239,43 @@ namespace org.apache.plc4net.drivers.modbus
                 address = checked(address + ElementAddressOffset(type, dataType, stringLength, start));
             }
 
-            var byteOrder = ModbusByteOrder.BigEndian;
-            var byteOrderGroup = match.Groups["byteorder"];
-            if (byteOrderGroup.Success && !TryParseByteOrder(byteOrderGroup.Value, out byteOrder))
+            var byteOrder = defaultByteOrder;
+            byte? unitIdentifier = null;
+            if (match.Groups["config"].Success)
             {
-                throw new PlcInvalidFieldException($"Unknown Modbus byte order '{byteOrderGroup.Value}'.");
+                foreach (var entry in match.Groups["config"].Value.Split(','))
+                {
+                    var pair = entry.Split(new[] { ':' }, 2);
+                    if (pair.Length != 2) throw new PlcInvalidFieldException($"Invalid Modbus tag configuration '{entry.Trim()}'.");
+                    var key = pair[0].Trim().ToLowerInvariant();
+                    var value = pair[1].Trim().Trim('\'', '"');
+                    if (key == "byte-order")
+                    {
+                        if (!TryParseByteOrder(value, out byteOrder))
+                            throw new PlcInvalidFieldException($"Unknown Modbus byte order '{value}'.");
+                    }
+                    else if (key == "unit-id")
+                    {
+                        if (!byte.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+                            throw new PlcInvalidFieldException($"The Modbus unit-id must be between 0 and 255, but was '{value}'.");
+                        unitIdentifier = parsed;
+                    }
+                    else throw new PlcInvalidFieldException($"Unknown Modbus tag configuration '{key}'.");
+                }
             }
 
-            return new ModbusTag(type, address, dataType, byteOrder, quantity, stringLength, explicitRange);
+            return new ModbusTag(type, address, dataType, byteOrder, quantity, stringLength, explicitRange, unitIdentifier);
         }
 
         public override string ToString()
         {
             var selection = ExplicitRange ? $"[0..{Quantity - 1}]" : string.Empty;
             var type = IsString(DataType) ? $"{DataType}({StringLength})" : DataType.ToString();
-            var config = ByteOrder == ModbusByteOrder.BigEndian
-                ? string.Empty : $"{{byte-order:'{ByteOrderName(ByteOrder)}'}}";
+            var settings = new System.Collections.Generic.List<string>();
+            if (UnitIdentifier.HasValue) settings.Add($"unit-id:{UnitIdentifier.Value}");
+            if (ByteOrder != ModbusByteOrder.BigEndian)
+                settings.Add($"byte-order:'{ByteOrderName(ByteOrder)}'");
+            var config = settings.Count == 0 ? string.Empty : "{" + string.Join(", ", settings) + "}";
             return $"{AreaName(Type)}:{Address}{selection}:{type}{config}";
         }
 
@@ -305,7 +333,7 @@ namespace org.apache.plc4net.drivers.modbus
             return false;
         }
 
-        private static bool TryParseByteOrder(string name, out ModbusByteOrder byteOrder)
+        internal static bool TryParseByteOrder(string name, out ModbusByteOrder byteOrder)
         {
             switch (name.ToUpperInvariant())
             {

@@ -146,6 +146,107 @@ namespace org.apache.plc4net.drivers.modbus.test
             Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("100000000306000100020003")), transport.GetAllWrittenData());
         }
 
+        [Theory]
+        [InlineData("LITTLE_ENDIAN", "4433221188776655")]
+        [InlineData("LITTLE_ENDIAN_BYTE_SWAP", "3344112277885566")]
+        public async Task Byte_order_is_applied_to_each_array_element(
+            string byteOrder, string wireValue)
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("0308" + wireValue)));
+            var connection = NewTcp(transport);
+
+            var response = await ReadAsync(connection,
+                $"holding-register:1[0..1]:DWORD{{byte-order:'{byteOrder}'}}");
+
+            Assert.Equal(new uint[] { 0x11223344, 0x55667788 },
+                ValueOf(response).GetList().ConvertAll(v => v.GetUint()));
+        }
+
+        [Fact]
+        public async Task Public_builder_params_write_a_register_array()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("1000000003")));
+            var connection = NewTcp(transport);
+            var builder = connection.WriteRequestBuilder!;
+            builder.AddTag("v", "holding-register:1[0..2]:INT", (short)1, (short)2, (short)3);
+
+            var response = (DefaultPlcWriteResponse)await ((PlcWriter)connection)
+                .Write((DefaultPlcWriteRequest)builder.Build());
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("100000000306000100020003")),
+                transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Connection_default_byte_order_and_tag_unit_id_are_used()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 3, Pdu("030444332211")));
+            var connection = NewTcp(transport, "?default-payload-byte-order=LITTLE_ENDIAN");
+
+            var response = await ReadAsync(connection, "holding-register:1:DWORD{unit-id:3}");
+
+            Assert.Equal(0x11223344U, ValueOf(response).GetUint());
+            Assert.Equal(ModbusFrames.Tcp(1, 3, Pdu("0300000002")), transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Extended_register_keeps_a_wide_flat_address()
+        {
+            var tag = ModbusTag.Parse("extended-register:65536:INT");
+
+            Assert.Equal(65536, tag.Address);
+        }
+
+        [Fact]
+        public async Task A_125_register_write_is_split_at_the_123_register_pdu_limit()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("100000007B")));
+            var secondResponse = Task.Run(async () =>
+            {
+                while (transport.GetNumBytesWritten() < 259) await Task.Delay(1);
+                transport.InjectTestData(ModbusFrames.Tcp(2, 1, Pdu("10007B0002")));
+            });
+            var connection = NewTcp(transport);
+            var values = new short[125];
+            var builder = connection.WriteRequestBuilder!;
+            builder.AddTag("v", "holding-register:1[0..124]:INT", values);
+
+            var response = (DefaultPlcWriteResponse)await ((PlcWriter)connection)
+                .Write((DefaultPlcWriteRequest)builder.Build());
+            await secondResponse;
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(276, transport.GetAllWrittenData().Length);
+        }
+
+        [Fact]
+        public async Task A_2000_coil_write_is_split_at_the_1968_coil_pdu_limit()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("0F000007B0")));
+            var secondResponse = Task.Run(async () =>
+            {
+                while (transport.GetNumBytesWritten() < 259) await Task.Delay(1);
+                transport.InjectTestData(ModbusFrames.Tcp(2, 1, Pdu("0F07B00020")));
+            });
+            var connection = NewTcp(transport);
+            var values = new bool[2000];
+            var builder = connection.WriteRequestBuilder!;
+            builder.AddTag("v", "coil:1[0..1999]:BOOL", values);
+
+            var response = (DefaultPlcWriteResponse)await ((PlcWriter)connection)
+                .Write((DefaultPlcWriteRequest)builder.Build());
+            await secondResponse;
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(276, transport.GetAllWrittenData().Length);
+        }
+
         [Fact]
         public async Task A_fixed_length_string_is_read_from_its_registers()
         {

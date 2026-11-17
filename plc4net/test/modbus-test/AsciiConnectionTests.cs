@@ -56,5 +56,19 @@ namespace org.apache.plc4net.drivers.modbus.test
 
             Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("v"));
         }
+
+        [Fact]
+        public async Task An_unterminated_oversized_frame_is_rejected()
+        {
+            var transport = NewTransport();
+            var connection = NewAscii(transport, "?request-timeout-ms=50");
+            var noise = Encoding.ASCII.GetBytes(":" + new string('0', 515));
+            var inject = InjectAfterRequest(transport, noise);
+
+            var response = await ReadAsync(connection, "holding-register:1:UINT");
+            await inject;
+
+            Assert.Equal(PlcResponseCode.RequestTimeout, response.GetResponseCode("v"));
+        }
     }
 }

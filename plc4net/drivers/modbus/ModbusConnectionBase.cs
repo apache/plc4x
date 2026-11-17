@@ -53,6 +53,7 @@ namespace org.apache.plc4net.drivers.modbus
     /// </remarks>
     public abstract class ModbusConnectionBase : ConnectionBase, PlcReader, PlcWriter
     {
+        private readonly ModbusByteOrder _defaultByteOrder;
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
         {
             CanRead = true,
@@ -63,6 +64,15 @@ namespace org.apache.plc4net.drivers.modbus
         protected ModbusConnectionBase(ConnectionString connectionString, ITransportInstance transport)
             : base(connectionString, transport)
         {
+            var rawByteOrder = connectionString.GetParameter("default-payload-byte-order");
+            if (rawByteOrder == null)
+            {
+                _defaultByteOrder = ModbusByteOrder.BigEndian;
+            }
+            else if (!ModbusTag.TryParseByteOrder(rawByteOrder, out _defaultByteOrder))
+            {
+                throw new PlcConnectionException($"Unknown default-payload-byte-order '{rawByteOrder}'.");
+            }
         }
 
         /// <summary>
@@ -103,7 +113,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         public override IPlcConnectionMetadata PlcConnectionMetadata => Metadata;
 
-        public override IPlcTag Parse(string tagQuery) => ModbusTag.Parse(tagQuery);
+        public override IPlcTag Parse(string tagQuery) => ModbusTag.Parse(tagQuery, _defaultByteOrder);
 
         public override IPlcReadRequestBuilder? ReadRequestBuilder
             => new DefaultPlcReadRequestBuilder(this, Parse);
@@ -121,7 +131,7 @@ namespace org.apache.plc4net.drivers.modbus
         /// <see cref="TimeoutException"/> when nothing arrives within the request timeout.
         /// </summary>
         protected abstract Task<ModbusPDU> ExchangeAsync(
-            ModbusPDU request, CancellationToken cancellationToken);
+            ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken);
 
         // ── PlcReader ──────────────────────────────────────────
 
@@ -194,6 +204,7 @@ namespace org.apache.plc4net.drivers.modbus
             {
                 var next = work[start + count].Tag;
                 if (next.Type != first.Type || next.ByteOrder != first.ByteOrder
+                    || next.UnitIdentifier != first.UnitIdentifier
                     || next.WireAddress != nextAddress || registers + next.RegisterCount > 125)
                 {
                     break;
@@ -215,13 +226,13 @@ namespace org.apache.plc4net.drivers.modbus
             {
                 data = (await SendAsync<ModbusPDUReadHoldingRegistersResponse>(
                     new ModbusPDUReadHoldingRegistersRequest(first.WireAddress, registers),
-                    cancellationToken).ConfigureAwait(false)).Value;
+                    first.UnitIdentifier, cancellationToken).ConfigureAwait(false)).Value;
             }
             else
             {
                 data = (await SendAsync<ModbusPDUReadInputRegistersResponse>(
                     new ModbusPDUReadInputRegistersRequest(first.WireAddress, registers),
-                    cancellationToken).ConfigureAwait(false)).Value;
+                    first.UnitIdentifier, cancellationToken).ConfigureAwait(false)).Value;
             }
             var offset = 0;
             for (var i = 0; i < count; i++)
@@ -241,25 +252,25 @@ namespace org.apache.plc4net.drivers.modbus
                 case ModbusTag.TagType.Coil:
                     {
                         var response = await SendAsync<ModbusPDUReadCoilsResponse>(
-                            new ModbusPDUReadCoilsRequest(tag.WireAddress, tag.Quantity), cancellationToken).ConfigureAwait(false);
+                            new ModbusPDUReadCoilsRequest(tag.WireAddress, tag.Quantity), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         return BitValue(response.Value, tag);
                     }
                 case ModbusTag.TagType.DiscreteInput:
                     {
                         var response = await SendAsync<ModbusPDUReadDiscreteInputsResponse>(
-                            new ModbusPDUReadDiscreteInputsRequest(tag.WireAddress, tag.Quantity), cancellationToken).ConfigureAwait(false);
+                            new ModbusPDUReadDiscreteInputsRequest(tag.WireAddress, tag.Quantity), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         return BitValue(response.Value, tag);
                     }
                 case ModbusTag.TagType.HoldingRegister:
                     {
                         var response = await SendAsync<ModbusPDUReadHoldingRegistersResponse>(
-                            new ModbusPDUReadHoldingRegistersRequest(tag.WireAddress, tag.RegisterCount), cancellationToken).ConfigureAwait(false);
+                            new ModbusPDUReadHoldingRegistersRequest(tag.WireAddress, tag.RegisterCount), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         return RegisterValue(response.Value, tag);
                     }
                 case ModbusTag.TagType.InputRegister:
                     {
                         var response = await SendAsync<ModbusPDUReadInputRegistersResponse>(
-                            new ModbusPDUReadInputRegistersRequest(tag.WireAddress, tag.RegisterCount), cancellationToken).ConfigureAwait(false);
+                            new ModbusPDUReadInputRegistersRequest(tag.WireAddress, tag.RegisterCount), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         return RegisterValue(response.Value, tag);
                     }
                 case ModbusTag.TagType.ExtendedRegister:
@@ -304,7 +315,7 @@ namespace org.apache.plc4net.drivers.modbus
                 throw new ModbusDriverException(
                     $"The Modbus response carries {data.Length} byte(s); {tag.DataType} needs {byteCount}.");
             }
-            var canonical = Reorder(data, byteCount, tag.ByteOrder);
+            var canonical = ReorderElements(data, tag);
             var values = new List<IPlcValue>(tag.Quantity);
             var buffer = new ReadBuffer(canonical);
             if (tag.Quantity == 1 && IsEightBit(tag.DataType))
@@ -321,22 +332,30 @@ namespace org.apache.plc4net.drivers.modbus
         private async Task<IPlcValue> ReadExtendedRegisterAsync(
             ModbusTag tag, CancellationToken cancellationToken)
         {
-            var items = FileReadItems(tag.WireAddress, tag.RegisterCount);
-            var response = await SendAsync<ModbusPDUReadFileRecordResponse>(
-                new ModbusPDUReadFileRecordRequest(items), cancellationToken).ConfigureAwait(false);
-            if (response.Items.Count != items.Count)
-            {
-                throw new ModbusDriverException("The Modbus file-record response has the wrong item count.");
-            }
             var bytes = new List<byte>();
-            foreach (var item in response.Items) bytes.AddRange(item.Data);
+            var current = tag.Address;
+            var remaining = (int)tag.RegisterCount;
+            while (remaining > 0)
+            {
+                var record = current % 10000;
+                // 122 words leaves room for all FC 0x14/0x15 per-item metadata in a 253-byte PDU.
+                var take = Math.Min(remaining, Math.Min(122, 10000 - record));
+                var items = FileReadItems(current, checked((ushort)take));
+                var response = await SendAsync<ModbusPDUReadFileRecordResponse>(
+                    new ModbusPDUReadFileRecordRequest(items), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
+                if (response.Items.Count != 1)
+                    throw new ModbusDriverException("The Modbus file-record response has the wrong item count.");
+                bytes.AddRange(response.Items[0].Data);
+                current += take;
+                remaining -= take;
+            }
             return RegisterValue(bytes.ToArray(), tag);
         }
 
-        private static List<ModbusPDUReadFileRecordRequestItem> FileReadItems(ushort address, ushort count)
+        private static List<ModbusPDUReadFileRecordRequestItem> FileReadItems(int address, ushort count)
         {
             var items = new List<ModbusPDUReadFileRecordRequestItem>();
-            var current = (int)address;
+            var current = address;
             var remaining = (int)count;
             while (remaining > 0)
             {
@@ -373,7 +392,7 @@ namespace org.apache.plc4net.drivers.modbus
             var encoded = buffer.GetBytes();
             var byteCount = tag.RegisterCount * 2;
             Array.Resize(ref encoded, byteCount);
-            return Reorder(encoded, byteCount, tag.ByteOrder);
+            return ReorderElements(encoded, tag);
         }
 
         private static IPlcValue PlcValueOf(object value, ModbusDataType dataType)
@@ -427,21 +446,20 @@ namespace org.apache.plc4net.drivers.modbus
             ModbusTag tag, object value, CancellationToken cancellationToken)
         {
             var bytes = RegisterBytes(value, tag);
-            var items = new List<ModbusPDUWriteFileRecordRequestItem>();
-            var current = (int)tag.WireAddress;
+            var current = tag.Address;
             var byteOffset = 0;
             while (byteOffset < bytes.Length)
             {
                 var record = current % 10000;
-                var words = Math.Min((bytes.Length - byteOffset) / 2, 10000 - record);
-                items.Add(new ModbusPDUWriteFileRecordRequestItem(
+                var words = Math.Min((bytes.Length - byteOffset) / 2, Math.Min(122, 10000 - record));
+                var items = new List<ModbusPDUWriteFileRecordRequestItem> { new ModbusPDUWriteFileRecordRequestItem(
                     0x06, checked((ushort)(current / 10000 + 1)), checked((ushort)record),
-                    Slice(bytes, byteOffset, words * 2)));
+                    Slice(bytes, byteOffset, words * 2)) };
+                await SendAsync<ModbusPDUWriteFileRecordResponse>(
+                    new ModbusPDUWriteFileRecordRequest(items), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                 current += words;
                 byteOffset += words * 2;
             }
-            await SendAsync<ModbusPDUWriteFileRecordResponse>(
-                new ModbusPDUWriteFileRecordRequest(items), cancellationToken).ConfigureAwait(false);
             return PlcResponseCode.Ok;
         }
 
@@ -472,6 +490,25 @@ namespace org.apache.plc4net.drivers.modbus
                     result[left] = result[right]; result[left + 1] = result[right + 1];
                     result[right] = first; result[right + 1] = second;
                 }
+            }
+            return result;
+        }
+
+        private static byte[] ReorderElements(byte[] source, ModbusTag tag)
+        {
+            var result = Slice(source, 0, tag.RegisterCount * 2);
+            var elementBytes = tag.DataType == ModbusDataType.STRING
+                ? tag.StringLength
+                : tag.DataType == ModbusDataType.WSTRING
+                    ? tag.StringLength * 2
+                    : tag.DataType == ModbusDataType.BYTE || tag.DataType == ModbusDataType.SINT || tag.DataType == ModbusDataType.USINT
+                        ? 1 : tag.DataType.GetDataTypeSize();
+            var offset = tag.Quantity == 1 && elementBytes == 1 ? 1 : 0;
+            for (var i = 0; i < tag.Quantity; i++, offset += elementBytes)
+            {
+                if (elementBytes < 2) continue;
+                var reordered = Reorder(result.AsSpan(offset, elementBytes).ToArray(), elementBytes, tag.ByteOrder);
+                Array.Copy(reordered, 0, result, offset, elementBytes);
             }
             return result;
         }
@@ -592,18 +629,26 @@ namespace org.apache.plc4net.drivers.modbus
                             var on = Convert.ToBoolean(values[0], CultureInfo.InvariantCulture);
                             await SendAsync<ModbusPDUWriteSingleCoilResponse>(
                                 new ModbusPDUWriteSingleCoilRequest(tag.WireAddress, on ? (ushort)0xFF00 : (ushort)0x0000),
-                                cancellationToken).ConfigureAwait(false);
+                                tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         }
                         else
                         {
-                            var packed = new byte[(tag.Quantity + 7) / 8];
-                            for (var i = 0; i < values.Count; i++)
+                            var offset = 0;
+                            while (offset < values.Count)
                             {
-                                if (Convert.ToBoolean(values[i], CultureInfo.InvariantCulture)) packed[i / 8] |= (byte)(1 << (i % 8));
+                                var count = Math.Min(1968, values.Count - offset);
+                                var packed = new byte[(count + 7) / 8];
+                                for (var i = 0; i < count; i++)
+                                {
+                                    if (Convert.ToBoolean(values[offset + i], CultureInfo.InvariantCulture))
+                                        packed[i / 8] |= (byte)(1 << (i % 8));
+                                }
+                                await SendAsync<ModbusPDUWriteMultipleCoilsResponse>(
+                                    new ModbusPDUWriteMultipleCoilsRequest(
+                                        checked((ushort)(tag.WireAddress + offset)), checked((ushort)count), packed),
+                                    tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
+                                offset += count;
                             }
-                            await SendAsync<ModbusPDUWriteMultipleCoilsResponse>(
-                                new ModbusPDUWriteMultipleCoilsRequest(tag.WireAddress, tag.Quantity, packed),
-                                cancellationToken).ConfigureAwait(false);
                         }
                         return PlcResponseCode.Ok;
                     }
@@ -617,13 +662,21 @@ namespace org.apache.plc4net.drivers.modbus
                             var register = (ushort)((bytes[0] << 8) | bytes[1]);
                             await SendAsync<ModbusPDUWriteSingleRegisterResponse>(
                                 new ModbusPDUWriteSingleRegisterRequest(tag.WireAddress, register),
-                                cancellationToken).ConfigureAwait(false);
+                                tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                         }
                         else
                         {
-                            await SendAsync<ModbusPDUWriteMultipleHoldingRegistersResponse>(
-                                new ModbusPDUWriteMultipleHoldingRegistersRequest(
-                                    tag.WireAddress, tag.RegisterCount, bytes), cancellationToken).ConfigureAwait(false);
+                            var registerOffset = 0;
+                            while (registerOffset < tag.RegisterCount)
+                            {
+                                var count = Math.Min(123, tag.RegisterCount - registerOffset);
+                                await SendAsync<ModbusPDUWriteMultipleHoldingRegistersResponse>(
+                                    new ModbusPDUWriteMultipleHoldingRegistersRequest(
+                                        checked((ushort)(tag.WireAddress + registerOffset)), checked((ushort)count),
+                                        Slice(bytes, registerOffset * 2, count * 2)),
+                                    tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
+                                registerOffset += count;
+                            }
                         }
                         return PlcResponseCode.Ok;
                     }
@@ -643,9 +696,9 @@ namespace org.apache.plc4net.drivers.modbus
         /// <see cref="ModbusDriverException"/> carrying its exception code.
         /// </summary>
         private async Task<TResponse> SendAsync<TResponse>(
-            ModbusPDU request, CancellationToken cancellationToken) where TResponse : ModbusPDU
+            ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken) where TResponse : ModbusPDU
         {
-            var response = await ExchangeAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await ExchangeAsync(request, unitIdentifier, cancellationToken).ConfigureAwait(false);
 
             if (response is ModbusPDUError error)
             {

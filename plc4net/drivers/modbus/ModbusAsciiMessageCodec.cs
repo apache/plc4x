@@ -29,6 +29,8 @@ namespace org.apache.plc4net.drivers.modbus
     /// <summary>Frames binary Modbus ADUs as ':' + uppercase hex + CRLF.</summary>
     internal sealed class ModbusAsciiMessageCodec : MessageCodecBase<ModbusAsciiADU>
     {
+        // 256 binary ADU bytes become 512 hexadecimal characters, plus ':' and CRLF.
+        private const int MaximumFrameLength = 515;
         public ModbusAsciiMessageCodec(ITransportInstance transport, Action<ModbusAsciiADU> handler)
             : base("Modbus ASCII", transport, handler)
         {
@@ -43,6 +45,10 @@ namespace org.apache.plc4net.drivers.modbus
                 throw new MessageCodecException("A Modbus ASCII frame must start with ':'.");
             }
             var bytes = TransportInstance.PeekReadableBytes(availableBytes);
+            if (bytes.Length > MaximumFrameLength)
+            {
+                throw new MessageCodecException("Modbus ASCII frame exceeds the 515-byte wire limit.");
+            }
             for (var i = 1; i + 1 < bytes.Length; i++)
             {
                 if (bytes[i] == (byte)'\r' && bytes[i + 1] == (byte)'\n')

@@ -89,8 +89,7 @@ namespace org.apache.plc4net.spi.drivers.messages
         }
 
         /// <summary>
-        /// Returns the one value to write. At least one value is required, as in
-        /// SPI3; several values for one tag are not supported yet.
+        /// Returns a scalar for one value and preserves an array for a multi-value tag.
         /// </summary>
         private static object? Unwrap<T>(string name, T[] values)
         {
@@ -99,13 +98,7 @@ namespace org.apache.plc4net.spi.drivers.messages
                 throw new ArgumentException(
                     $"Tag '{name}' needs at least one value to write.", nameof(values));
             }
-            if (values.Length > 1)
-            {
-                throw new NotSupportedException(
-                    $"Multi-value writes (passed {values.Length} values of type {typeof(T).Name}) " +
-                    "are not yet supported. Write each tag individually.");
-            }
-            return values[0];
+            return values.Length == 1 ? values[0] : values;
         }
     }
 }
