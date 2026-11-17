@@ -84,10 +84,11 @@ namespace org.apache.plc4net.drivers.modbus
             ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian, ushort quantity = 1,
             ushort stringLength = 0, bool explicitRange = false)
         {
-            if (address < 1 || address > MaxAddress)
+            var maximumAddress = type == TagType.ExtendedRegister ? ushort.MaxValue : MaxAddress;
+            if (address < 1 || address > maximumAddress)
             {
                 throw new PlcInvalidFieldException(
-                    $"The Modbus address must be between 1 and {MaxAddress}, but was {address}.");
+                    $"The Modbus address must be between 1 and {maximumAddress}, but was {address}.");
             }
             if (!IsSupported(type, dataType))
             {
@@ -150,9 +151,15 @@ namespace org.apache.plc4net.drivers.modbus
             {
                 if (IsBit) return Quantity;
                 var bytesPerValue = IsString(DataType)
-                    ? StringLength * (DataType == ModbusDataType.WSTRING ? 2 : 1)
+                    ? (long)StringLength * (DataType == ModbusDataType.WSTRING ? 2 : 1)
                     : NaturalSize(DataType);
-                return checked((ushort)Math.Max(1, (bytesPerValue * Quantity + 1) / 2));
+                var registers = Math.Max(1, (bytesPerValue * Quantity + 1) / 2);
+                if (registers > ushort.MaxValue)
+                {
+                    throw new PlcInvalidFieldException(
+                        $"The Modbus selection needs {registers} registers, which does not fit a request.");
+                }
+                return (ushort)registers;
             }
         }
 
