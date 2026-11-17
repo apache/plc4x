@@ -59,7 +59,8 @@ namespace org.apache.plc4net.drivers.modbus
             Coil,
             HoldingRegister,
             DiscreteInput,
-            InputRegister
+            InputRegister,
+            ExtendedRegister
         }
 
         /// <summary>The highest register number: wire address 65535.</summary>
@@ -69,12 +70,19 @@ namespace org.apache.plc4net.drivers.modbus
         // non-ASCII address would pass the pattern and blow up int.Parse below
         // instead of failing here as a PlcInvalidFieldException.
         private static readonly Regex AddressPattern = new Regex(
-            @"^(?<area>coil|discrete-input|holding-register|input-register):(?<address>[0-9]{1,9})" +
-            @"(:(?<datatype>[A-Za-z_]+))?(\{\s*byte-order\s*:\s*['""]?(?<byteorder>[A-Za-z_]+)['""]?\s*\})?$",
+            @"^(?<area>coil|discrete-input|holding-register|input-register|extended-register):(?<address>[0-9]{1,9})" +
+            @"(?<selection>\[(?<start>[0-9]+)(\.\.(?<end>[0-9]+))?\])?" +
+            @"(:(?<datatype>[A-Za-z_]+)(\((?<stringlength>[0-9]+)\))?)?" +
+            @"(\{\s*byte-order\s*:\s*['""]?(?<byteorder>[A-Za-z_]+)['""]?\s*\})?$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
+        private static readonly Regex ShortAddressPattern = new Regex(
+            @"^(?<prefix>[01346])[xX]?(?<address>[0-9]{4,5})(?<tail>.*)$",
+            RegexOptions.CultureInvariant);
+
         public ModbusTag(TagType type, int address, ModbusDataType dataType,
-            ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian)
+            ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian, ushort quantity = 1,
+            ushort stringLength = 0, bool explicitRange = false)
         {
             if (address < 1 || address > MaxAddress)
             {
@@ -87,11 +95,34 @@ namespace org.apache.plc4net.drivers.modbus
                     $"The data type {dataType} is not supported for {AreaName(type)} tags yet; " +
                     $"supported: {SupportedTypes(type)}.");
             }
+            if (quantity == 0)
+            {
+                throw new PlcInvalidFieldException("The Modbus quantity must be greater than zero.");
+            }
+            if (IsString(dataType) != (stringLength > 0))
+            {
+                throw new PlcInvalidFieldException(IsString(dataType)
+                    ? $"{dataType} requires a positive string length, for example {dataType}(20)."
+                    : $"A string length is not valid for {dataType}.");
+            }
 
             Type = type;
             Address = address;
             DataType = dataType;
             ByteOrder = byteOrder;
+            Quantity = quantity;
+            StringLength = stringLength;
+            ExplicitRange = explicitRange;
+            if (RegisterCount > (IsBit ? 2000 : 125))
+            {
+                throw new PlcInvalidFieldException(
+                    $"The Modbus selection occupies {RegisterCount} {(IsBit ? "bits" : "registers")}; " +
+                    $"at most {(IsBit ? 2000 : 125)} fit in one request.");
+            }
+            if ((long)WireAddress + RegisterCount > 65536)
+            {
+                throw new PlcInvalidFieldException("The Modbus selection runs past the end of the address space.");
+            }
         }
 
         public TagType Type { get; }
@@ -100,14 +131,30 @@ namespace org.apache.plc4net.drivers.modbus
         public int Address { get; }
 
         /// <summary>The address the request carries: <see cref="Address"/> - 1.</summary>
-        public ushort WireAddress => (ushort)(Address - 1);
+        public ushort WireAddress => checked((ushort)(Type == TagType.ExtendedRegister ? Address : Address - 1));
 
         public ModbusDataType DataType { get; }
 
         public ModbusByteOrder ByteOrder { get; }
 
+        public ushort Quantity { get; }
+
+        public ushort StringLength { get; }
+
+        public bool ExplicitRange { get; }
+
         /// <summary>The number of 16-bit registers occupied by one value.</summary>
-        public ushort RegisterCount => checked((ushort)Math.Max(1, (DataType.GetDataTypeSize() + 1) / 2));
+        public ushort RegisterCount
+        {
+            get
+            {
+                if (IsBit) return Quantity;
+                var bytesPerValue = IsString(DataType)
+                    ? StringLength * (DataType == ModbusDataType.WSTRING ? 2 : 1)
+                    : NaturalSize(DataType);
+                return checked((ushort)Math.Max(1, (bytesPerValue * Quantity + 1) / 2));
+            }
+        }
 
         /// <summary>Whether the tag is a single bit (a coil or a discrete input) rather than a register.</summary>
         public bool IsBit => Type == TagType.Coil || Type == TagType.DiscreteInput;
@@ -123,15 +170,13 @@ namespace org.apache.plc4net.drivers.modbus
                 throw new PlcInvalidFieldException("The Modbus tag address must not be empty.");
             }
 
-            var match = AddressPattern.Match(tagAddress.Trim());
+            var addressText = NormalizeShortAddress(tagAddress.Trim());
+            var match = AddressPattern.Match(addressText);
             if (!match.Success)
             {
                 throw new PlcInvalidFieldException(
                     $"'{tagAddress}' is not a supported Modbus tag address. Expected " +
-                    "{area}:{address}[:{TYPE}], for example holding-register:1:INT; the areas are coil, " +
-                    "discrete-input, holding-register and input-register, and the address counts from 1. " +
-                    "Array selections, string lengths, extended registers and short " +
-                    "addresses such as 40001 are not supported yet.");
+                    "{area}:{address}[selection]:{TYPE}, for example holding-register:1[0..3]:INT.");
             }
 
             var type = ParseArea(match.Groups["area"].Value);
@@ -153,6 +198,33 @@ namespace org.apache.plc4net.drivers.modbus
                     : ModbusDataType.INT;
             }
 
+            var stringLength = (ushort)0;
+            if (match.Groups["stringlength"].Success)
+            {
+                if (!ushort.TryParse(match.Groups["stringlength"].Value, NumberStyles.None,
+                    CultureInfo.InvariantCulture, out stringLength) || stringLength == 0)
+                {
+                    throw new PlcInvalidFieldException("The Modbus string length must be between 1 and 65535.");
+                }
+            }
+
+            var quantity = (ushort)1;
+            var explicitRange = false;
+            if (match.Groups["selection"].Success)
+            {
+                var start = int.Parse(match.Groups["start"].Value, CultureInfo.InvariantCulture);
+                var end = match.Groups["end"].Success
+                    ? int.Parse(match.Groups["end"].Value, CultureInfo.InvariantCulture)
+                    : start;
+                if (end < start || end - start + 1 > ushort.MaxValue)
+                {
+                    throw new PlcInvalidFieldException("The Modbus selection must be an ascending 16-bit range.");
+                }
+                explicitRange = match.Groups["end"].Success;
+                quantity = checked((ushort)(end - start + 1));
+                address = checked(address + ElementAddressOffset(type, dataType, stringLength, start));
+            }
+
             var byteOrder = ModbusByteOrder.BigEndian;
             var byteOrderGroup = match.Groups["byteorder"];
             if (byteOrderGroup.Success && !TryParseByteOrder(byteOrderGroup.Value, out byteOrder))
@@ -160,12 +232,17 @@ namespace org.apache.plc4net.drivers.modbus
                 throw new PlcInvalidFieldException($"Unknown Modbus byte order '{byteOrderGroup.Value}'.");
             }
 
-            return new ModbusTag(type, address, dataType, byteOrder);
+            return new ModbusTag(type, address, dataType, byteOrder, quantity, stringLength, explicitRange);
         }
 
-        public override string ToString() => ByteOrder == ModbusByteOrder.BigEndian
-            ? $"{AreaName(Type)}:{Address}:{DataType}"
-            : $"{AreaName(Type)}:{Address}:{DataType}{{byte-order:'{ByteOrderName(ByteOrder)}'}}";
+        public override string ToString()
+        {
+            var selection = ExplicitRange ? $"[0..{Quantity - 1}]" : string.Empty;
+            var type = IsString(DataType) ? $"{DataType}({StringLength})" : DataType.ToString();
+            var config = ByteOrder == ModbusByteOrder.BigEndian
+                ? string.Empty : $"{{byte-order:'{ByteOrderName(ByteOrder)}'}}";
+            return $"{AreaName(Type)}:{Address}{selection}:{type}{config}";
+        }
 
         internal static TagType ParseArea(string area)
         {
@@ -179,6 +256,8 @@ namespace org.apache.plc4net.drivers.modbus
                     return TagType.HoldingRegister;
                 case "input-register":
                     return TagType.InputRegister;
+                case "extended-register":
+                    return TagType.ExtendedRegister;
                 default:
                     // The pattern lets only the four names through. A name that gets past it
                     // later must fail here: reading it as an input register would address
@@ -197,8 +276,10 @@ namespace org.apache.plc4net.drivers.modbus
                     return "discrete-input";
                 case TagType.HoldingRegister:
                     return "holding-register";
-                default:
+                case TagType.InputRegister:
                     return "input-register";
+                default:
+                    return "extended-register";
             }
         }
 
@@ -251,12 +332,53 @@ namespace org.apache.plc4net.drivers.modbus
                    || dataType == ModbusDataType.UDINT
                    || dataType == ModbusDataType.ULINT
                    || dataType == ModbusDataType.REAL
-                   || dataType == ModbusDataType.LREAL;
+                   || dataType == ModbusDataType.LREAL
+                   || dataType == ModbusDataType.STRING
+                   || dataType == ModbusDataType.WSTRING;
         }
 
         private static string SupportedTypes(TagType type)
             => type == TagType.Coil || type == TagType.DiscreteInput
                 ? "BOOL"
-                : "BYTE, WORD, DWORD, LWORD, SINT, INT, DINT, LINT, USINT, UINT, UDINT, ULINT, REAL, LREAL";
+                : "BYTE, WORD, DWORD, LWORD, SINT, INT, DINT, LINT, USINT, UINT, UDINT, ULINT, REAL, LREAL, STRING, WSTRING";
+
+        private static bool IsString(ModbusDataType dataType)
+            => dataType == ModbusDataType.STRING || dataType == ModbusDataType.WSTRING;
+
+        private static int NaturalSize(ModbusDataType dataType)
+            => dataType == ModbusDataType.BYTE || dataType == ModbusDataType.SINT || dataType == ModbusDataType.USINT
+                ? 1 : dataType.GetDataTypeSize();
+
+        private static int ElementAddressOffset(
+            TagType type, ModbusDataType dataType, ushort stringLength, int elementOffset)
+        {
+            if (type == TagType.Coil || type == TagType.DiscreteInput) return elementOffset;
+            var bytes = IsString(dataType)
+                ? stringLength * (dataType == ModbusDataType.WSTRING ? 2 : 1)
+                : NaturalSize(dataType);
+            var bitOffset = checked(elementOffset * bytes * 8);
+            if (bitOffset % 16 != 0)
+            {
+                throw new PlcInvalidFieldException(
+                    $"The selection starts {bitOffset} bits into the value and not on a register boundary.");
+            }
+            return bitOffset / 16;
+        }
+
+        private static string NormalizeShortAddress(string address)
+        {
+            var match = ShortAddressPattern.Match(address);
+            if (!match.Success) return address;
+            var area = match.Groups["prefix"].Value switch
+            {
+                "0" => "coil",
+                "1" => "discrete-input",
+                "3" => "input-register",
+                "4" => "holding-register",
+                _ => "extended-register"
+            };
+            var number = int.Parse(match.Groups["address"].Value, CultureInfo.InvariantCulture);
+            return $"{area}:{number}{match.Groups["tail"].Value}";
+        }
     }
 }

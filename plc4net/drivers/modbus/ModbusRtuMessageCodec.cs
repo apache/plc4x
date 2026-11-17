@@ -174,6 +174,8 @@ namespace org.apache.plc4net.drivers.modbus
                 case 0x02: // Read Discrete Inputs
                 case 0x03: // Read Holding Registers
                 case 0x04: // Read Input Registers
+                case 0x14: // Read File Record
+                case 0x15: // Write File Record
                     // Address, function, byte count, data, CRC.
                     length = 3 + third + 2;
                     return third <= MaxByteCount;

@@ -125,17 +125,11 @@ namespace org.apache.plc4net.drivers.modbus.test
         }
 
         [Theory]
-        [InlineData("holding-register:1[0..3]:INT")]   // arrays
         [InlineData("holding-register:1:INT[4]")]
-        [InlineData("holding-register:1:STRING(20)")]  // string lengths
-        [InlineData("extended-register:1")]            // extended registers
-        [InlineData("40001")]                          // short forms
-        [InlineData("4x00001")]
-        [InlineData("00001")]
         public void The_parts_of_the_syntax_that_are_not_supported_yet_are_refused_with_an_explanation(string address)
         {
             var exception = Assert.Throws<PlcInvalidFieldException>(() => ModbusTag.Parse(address));
-            Assert.Contains("not supported yet", exception.Message);
+            Assert.Contains("not a supported Modbus tag", exception.Message);
         }
 
         [Theory]
@@ -161,6 +155,23 @@ namespace org.apache.plc4net.drivers.modbus.test
             Assert.Equal(byteOrder, tag.ByteOrder);
             Assert.Equal(registers, tag.RegisterCount);
             Assert.Equal(tag.ToString(), ModbusTag.Parse(tag.ToString()).ToString());
+        }
+
+        [Theory]
+        [InlineData("holding-register:1[0..3]:INT", ModbusTag.TagType.HoldingRegister, 1, 4, 4)]
+        [InlineData("4x00001[2..3]:DINT", ModbusTag.TagType.HoldingRegister, 5, 2, 4)]
+        [InlineData("00001[0..7]", ModbusTag.TagType.Coil, 1, 8, 8)]
+        [InlineData("input-register:1:STRING(20)", ModbusTag.TagType.InputRegister, 1, 1, 10)]
+        [InlineData("6x00001:INT", ModbusTag.TagType.ExtendedRegister, 1, 1, 1)]
+        public void Plc4j_ranges_strings_short_addresses_and_extended_registers_are_supported(
+            string address, ModbusTag.TagType type, int logicalAddress, ushort quantity, ushort wireQuantity)
+        {
+            var tag = ModbusTag.Parse(address);
+
+            Assert.Equal(type, tag.Type);
+            Assert.Equal(logicalAddress, tag.Address);
+            Assert.Equal(quantity, tag.Quantity);
+            Assert.Equal(wireQuantity, tag.RegisterCount);
         }
 
         [Fact]
