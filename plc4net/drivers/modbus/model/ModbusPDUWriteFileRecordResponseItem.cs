@@ -47,7 +47,7 @@ namespace org.apache.plc4net.drivers.modbus.readwrite.model
             var fileNumber = readBuffer.ReadUshort("fileNumber", 16);
             var recordNumber = readBuffer.ReadUshort("recordNumber", 16);
             var recordLength = readBuffer.ReadUshort("recordLength", 16);
-            var recordData = readBuffer.ReadByteArray("recordData", (int) (recordLength) * 8);
+            var recordData = readBuffer.ReadByteArray("recordData", (int) ((recordLength * 2)) * 8);
             return new ModbusPDUWriteFileRecordResponseItem(referenceType, fileNumber, recordNumber, recordData);
         }
 

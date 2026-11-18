@@ -94,7 +94,7 @@ public class ModbusPDUWriteFileRecordResponseItem implements Message {
     int recordLength = FieldReaderFactory.readImplicitField(DataReaderFactory.readUnsignedInt(readBuffer, 16), WithOption.WithName("recordLength"));
 
     // Array Field: recordData
-    byte[] recordData = readBuffer.readBits(Math.toIntExact((recordLength) * 8), WithOption.WithName("recordData"));
+    byte[] recordData = readBuffer.readBits(Math.toIntExact(((recordLength) * (2)) * 8), WithOption.WithName("recordData"));
 
     readBuffer.popContext();
     return new ModbusPDUWriteFileRecordResponseItem(referenceType, fileNumber, recordNumber, recordData);
