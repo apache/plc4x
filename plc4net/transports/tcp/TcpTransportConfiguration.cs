@@ -31,6 +31,11 @@ namespace org.apache.plc4net.transports.tcp
     {
         /// <summary>Port used when the connection string does not name one.</summary>
         public int DefaultPort { get; set; } = -1;
+        /// <summary>Enable TLS with normal platform certificate and hostname validation.</summary>
+        public bool Tls { get; set; }
+        public string? TlsTargetHost { get; set; }
+        /// <summary>Optional explicit private CA trust policy; null uses platform trust.</summary>
+        public System.Security.Cryptography.X509Certificates.X509ChainPolicy? TlsChainPolicy { get; set; }
 
         /// <summary>
         /// Time in milliseconds allowed for resolving the host name and, separately, for
