@@ -53,6 +53,7 @@ namespace org.apache.plc4net.transports.tcp
     public class TcpTransportInstance : BaseTransportInstance, IAsyncTransportInstance
     {
         private readonly Socket _socket;
+        private readonly System.Net.Security.SslStream? _tls;
         private readonly RingBuffer _ringBuffer;
         private readonly object _readLock = new object();
         private readonly object _writeLock = new object();
@@ -77,7 +78,7 @@ namespace org.apache.plc4net.transports.tcp
         private volatile Action? _dataListener;
         private volatile Action<Exception?>? _disconnectListener;
 
-        public TcpTransportInstance(IPEndPoint remoteAddress, TcpTransportConfiguration configuration)
+        public TcpTransportInstance(IPEndPoint remoteAddress, TcpTransportConfiguration configuration, CancellationToken cancellationToken = default, string? tlsTargetHost = null)
             : base(configuration)
         {
             if (remoteAddress == null)
@@ -86,7 +87,32 @@ namespace org.apache.plc4net.transports.tcp
             }
 
             _ringBuffer = new RingBuffer(configuration.ReceiveBufferSize);
-            _socket = Connect(remoteAddress, configuration);
+            _socket = Connect(remoteAddress, configuration, cancellationToken);
+            if (configuration.Tls)
+            {
+                try
+                {
+                    _tls = new System.Net.Security.SslStream(new NetworkStream(_socket, ownsSocket: false));
+                    using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    timeout.CancelAfter(configuration.ConnectTimeoutMillis);
+                    var options = new System.Net.Security.SslClientAuthenticationOptions
+                    {
+                        TargetHost = tlsTargetHost ?? configuration.TlsTargetHost ?? remoteAddress.Address.ToString(),
+                        CertificateChainPolicy = configuration.TlsChainPolicy,
+                        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
+                        CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.Online
+                    };
+                    _tls.AuthenticateAsClientAsync(options, timeout.Token).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    _tls?.Dispose();
+                    _socket.Dispose();
+                    _shutdown.Dispose();
+                    cancellationToken.ThrowIfCancellationRequested();
+                    throw new TransportException("TLS authentication failed.", ex);
+                }
+            }
             RemoteAddress = remoteAddress;
             LocalAddress = _socket.LocalEndPoint as IPEndPoint;
 
@@ -102,15 +128,20 @@ namespace org.apache.plc4net.transports.tcp
         /// Opens the connection and waits for it, but no longer than the configured
         /// connect timeout.
         /// </summary>
-        private static Socket Connect(IPEndPoint remoteAddress, TcpTransportConfiguration configuration)
+        private static Socket Connect(IPEndPoint remoteAddress, TcpTransportConfiguration configuration, CancellationToken cancellationToken)
         {
             CancellationTokenSource? deadline = null;
             try
             {
-                deadline = new CancellationTokenSource(configuration.ConnectTimeoutMillis);
+                deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                deadline.CancelAfter(configuration.ConnectTimeoutMillis);
                 var token = deadline.Token;
                 return Task.Run(() => ConnectAsync(remoteAddress, configuration, token), token)
                     .GetAwaiter().GetResult();
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
             }
             catch (OperationCanceledException) when (deadline?.IsCancellationRequested == true)
             {
@@ -245,6 +276,12 @@ namespace org.apache.plc4net.transports.tcp
                 EnsureOpen();
                 try
                 {
+                    if (_tls != null)
+                    {
+                        _tls.Write(bytes);
+                        WriteHex("TLS SEND", bytes);
+                        return;
+                    }
                     var offset = 0;
                     while (offset < bytes.Length)
                     {
@@ -280,6 +317,14 @@ namespace org.apache.plc4net.transports.tcp
                     // reset without any local close still surfaces below.
                 }
                 catch (SocketException e)
+                {
+                    throw new TransportException("Failed to write data", e);
+                }
+                catch (IOException) when (Volatile.Read(ref _closing) == 1)
+                {
+                    // Closing the underlying socket also interrupts a TLS write.
+                }
+                catch (IOException e)
                 {
                     throw new TransportException("Failed to write data", e);
                 }
@@ -332,6 +377,7 @@ namespace org.apache.plc4net.transports.tcp
             }
             finally
             {
+                _tls?.Dispose();
                 _socket.Dispose();
                 // The read loop may still be reading the token. It treats the resulting
                 // ObjectDisposedException as the normal end of a shutdown.
@@ -402,7 +448,9 @@ namespace org.apache.plc4net.transports.tcp
                     }
 
                     var toRead = Math.Min(buffer.Length, free);
-                    var bytesRead = await _socket
+                    var bytesRead = _tls != null
+                        ? await _tls.ReadAsync(buffer.AsMemory(0, toRead), _shutdown.Token).ConfigureAwait(false)
+                        : await _socket
                         .ReceiveAsync(buffer.AsMemory(0, toRead), SocketFlags.None, _shutdown.Token)
                         .ConfigureAwait(false);
 

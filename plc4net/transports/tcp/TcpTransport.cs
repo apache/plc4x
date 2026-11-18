@@ -32,7 +32,7 @@ namespace org.apache.plc4net.transports.tcp
     /// <summary>
     /// The "tcp" transport.
     /// </summary>
-    public class TcpTransport : ITransport
+    public class TcpTransport : ICancellableTransport
     {
         private readonly int _defaultPort;
         private readonly Func<string, CancellationToken, Task<IPAddress[]>> _lookup;
@@ -59,13 +59,13 @@ namespace org.apache.plc4net.transports.tcp
             _lookup = lookup;
         }
 
-        public string TransportCode => "tcp";
+        public virtual string TransportCode => "tcp";
 
         public string TransportName => "TCP/IP Socket Transport";
 
         public ITransportConfiguration CreateConfiguration(IReadOnlyDictionary<string, string> parameters)
         {
-            var configuration = new TcpTransportConfiguration { DefaultPort = _defaultPort };
+            var configuration = new TcpTransportConfiguration { DefaultPort = _defaultPort, Tls = TransportCode == "tls" };
             if (parameters == null)
             {
                 return configuration;
@@ -116,9 +116,24 @@ namespace org.apache.plc4net.transports.tcp
             }
 
             var (host, port, driverConfig) = ParseAddress(transportConfig, tcpConfiguration.DefaultPort);
+
             var endPoint = new IPEndPoint(ResolveHost(host, tcpConfiguration), port);
 
-            var instance = new TcpTransportInstance(endPoint, tcpConfiguration);
+            var instance = new TcpTransportInstance(endPoint, tcpConfiguration, tlsTargetHost: host);
+            instance.SetDriverConfig(driverConfig);
+            return instance;
+        }
+
+        public async Task<ITransportInstance> CreateTransportInstanceAsync(
+            string address, ITransportConfiguration configuration, CancellationToken cancellationToken)
+        {
+            var config = (TcpTransportConfiguration)configuration;
+            var (host, port, driverConfig) = ParseAddress(address, config.DefaultPort);
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            deadline.CancelAfter(config.ConnectTimeoutMillis);
+            var endpoint = new IPEndPoint(await ResolveHostAsync(host, deadline.Token).ConfigureAwait(false), port);
+            var instance = await Task.Run(() => new TcpTransportInstance(endpoint, config, cancellationToken, host), cancellationToken)
+                .ConfigureAwait(false);
             instance.SetDriverConfig(driverConfig);
             return instance;
         }
@@ -278,16 +293,16 @@ namespace org.apache.plc4net.transports.tcp
                    ?? resolved[0];
         }
 
-        private static string? GetString(IReadOnlyDictionary<string, string> p, string key, string? fallback)
+        private string? GetString(IReadOnlyDictionary<string, string> p, string key, string? fallback)
         {
-            if (p.TryGetValue("tcp." + key, out var prefixed))
+            if (p.TryGetValue(TransportCode + "." + key, out var prefixed))
             {
                 return prefixed;
             }
             return p.TryGetValue(key, out var plain) ? plain : fallback;
         }
 
-        private static int GetInt(IReadOnlyDictionary<string, string> p, string key, int fallback)
+        private int GetInt(IReadOnlyDictionary<string, string> p, string key, int fallback)
         {
             var raw = GetString(p, key, null);
             return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
@@ -295,7 +310,7 @@ namespace org.apache.plc4net.transports.tcp
                 : fallback;
         }
 
-        private static bool GetBool(IReadOnlyDictionary<string, string> p, string key, bool fallback)
+        private bool GetBool(IReadOnlyDictionary<string, string> p, string key, bool fallback)
         {
             var raw = GetString(p, key, null);
             if (raw == null)

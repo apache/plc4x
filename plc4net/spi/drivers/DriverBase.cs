@@ -203,7 +203,8 @@ namespace org.apache.plc4net.spi.drivers
         /// </summary>
         public async System.Threading.Tasks.Task<IPlcConnection> ConnectAsync(
             string connectionString,
-            IPlcAuthentication? authentication = null)
+            IPlcAuthentication? authentication = null,
+            System.Threading.CancellationToken cancellationToken = default)
         {
             var parsed = ConnectionString.Parse(connectionString);
 
@@ -223,10 +224,13 @@ namespace org.apache.plc4net.spi.drivers
                     $"Registered transports: {string.Join(", ", _transportManager.GetTransportCodes())}");
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             var transportConfig = transport.CreateConfiguration(parsed.Parameters);
             // Opening a socket can block, so keep this step off the caller's thread too.
-            var transportInstance = await System.Threading.Tasks.Task.Run(() =>
-                transport.CreateTransportInstance(parsed.TransportConfig, transportConfig))
+            var transportInstance = transport is ICancellableTransport cancellable
+                ? await cancellable.CreateTransportInstanceAsync(parsed.TransportConfig, transportConfig, cancellationToken).ConfigureAwait(false)
+                : await System.Threading.Tasks.Task.Run(() =>
+                transport.CreateTransportInstance(parsed.TransportConfig, transportConfig), cancellationToken)
                 .ConfigureAwait(false);
 
             ConnectionBase connection;
@@ -243,7 +247,14 @@ namespace org.apache.plc4net.spi.drivers
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await connection.ConnectAsync().ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                try { connection.Close(); }
+                catch { }
+                throw;
             }
             catch (PlcConnectionException)
             {

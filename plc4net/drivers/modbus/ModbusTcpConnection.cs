@@ -72,6 +72,33 @@ namespace org.apache.plc4net.drivers.modbus
         /// <summary>The unit identifier that every request carries.</summary>
         public byte UnitIdentifier { get; }
 
+        /// <summary>Reads basic device identification, following paginated FC 43/14 responses.</summary>
+        public async Task<System.Collections.Generic.IReadOnlyDictionary<byte, byte[]>> IdentifyAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var objects = new System.Collections.Generic.Dictionary<byte, byte[]>();
+            byte next = 0;
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var response = await ExchangeAsync(new ModbusPDUReadDeviceIdentificationRequest(
+                    ModbusDeviceInformationLevel.BASIC, next), null, cancellationToken).ConfigureAwait(false);
+                if (response is not ModbusPDUReadDeviceIdentificationResponse identification
+                    || identification.Level != ModbusDeviceInformationLevel.BASIC)
+                    throw new ModbusDriverException("Device identification returned an exception or unexpected response.");
+                foreach (var item in identification.Objects)
+                {
+                    if (item.ObjectId < next || !objects.TryAdd(item.ObjectId, item.Data))
+                        throw new ModbusDriverException("Device identification returned duplicate or stale objects.");
+                }
+                if (identification.MoreFollows == ModbusDeviceInformationMoreFollows.NO_MORE_OBJECTS_AVAILABLE)
+                    return objects;
+                if (identification.NextObjectId <= next)
+                    throw new ModbusDriverException("Device identification pagination did not advance.");
+                next = identification.NextObjectId;
+            }
+        }
+
         protected override async Task<ModbusPDU> ExchangeAsync(
             ModbusPDU request, byte? unitIdentifier, CancellationToken cancellationToken)
         {
@@ -178,6 +205,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         protected override void Dispose(bool disposing)
         {
+            if (disposing) Close();
             if (disposing)
             {
                 _exchangeGate.Dispose();

@@ -39,6 +39,363 @@ namespace org.apache.plc4net.drivers.modbus.test
     {
         private static byte[] Pdu(string hex) => Convert.FromHexString(hex);
 
+        [Fact]
+        public async Task Discovery_cancels_a_stalled_tls_handshake()
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var cancellation = new System.Threading.CancellationTokenSource();
+            var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
+            var pending = driver.DiscoverAsync($"modbus-tcp:tls://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}?connect-timeout=0", cancellation.Token);
+            using var peer = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
+            var bytes = new byte[4096];
+            while (await peer.GetStream().ReadAsync(bytes.AsMemory()).AsTask().WaitAsync(TimeSpan.FromSeconds(5)) != 0) { }
+        }
+
+        [Fact]
+        public async Task Factory_does_not_mutate_shared_tls_hostname()
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            var config = new org.apache.plc4net.transports.tcp.TcpTransportConfiguration
+            { Tls = true, TlsTargetHost = "original", ConnectTimeout = 0 };
+            var transport = new org.apache.plc4net.transports.tcp.TlsTransport();
+            using var cancellation = new System.Threading.CancellationTokenSource();
+            var pending = transport.CreateTransportInstanceAsync($"localhost:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}", config, cancellation.Token);
+            using var peer = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal("original", config.TlsTargetHost);
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
+        }
+
+        [Fact]
+        public void Tls_transport_uses_its_own_configuration_prefix()
+        {
+            var transport = new org.apache.plc4net.transports.tcp.TlsTransport();
+            var configuration = (org.apache.plc4net.transports.tcp.TcpTransportConfiguration)
+                transport.CreateConfiguration(new Dictionary<string, string>
+                {
+                    ["tls.connect-timeout"] = "321",
+                    ["tcp.connect-timeout"] = "999"
+                });
+            Assert.True(configuration.Tls);
+            Assert.Equal(802, configuration.DefaultPort);
+            Assert.Equal(321, configuration.ConnectTimeout);
+        }
+
+        [Fact]
+        public async Task Subscription_can_unsubscribe_in_callback_and_close_prevents_new_subscriptions()
+        {
+            using var transport = NewTransport();
+            using var connection = NewTcp(transport);
+            var subscribed = (org.apache.plc4net.messages.IPlcSubscriptionResponse)await connection.SubscriptionRequestBuilder!
+                .AddCyclicField("v", "holding-register:1:UINT", TimeSpan.FromMilliseconds(100)).Build().ExecuteAsync();
+            var result = new TaskCompletionSource<org.apache.plc4net.spi.drivers.subscriptions.SubscriptionValueEventArgs>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var handle = subscribed.GetSubscriptionHandle("v");
+            handle.PlcSubscriptionEvent += (_, e) =>
+            {
+                connection.UnsubscriptionRequestBuilder!.AddHandles(handle).Build().ExecuteAsync().GetAwaiter().GetResult();
+                result.TrySetResult((org.apache.plc4net.spi.drivers.subscriptions.SubscriptionValueEventArgs)e);
+            };
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("03021234")));
+            var value = await result.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(PlcResponseCode.Ok, value.ResponseCode);
+            Assert.Equal((ushort)0x1234, value.Value!.GetUshort());
+            transport.InjectTestData(ModbusFrames.Tcp(2, 1, Pdu("03025678")));
+            Assert.Equal((ushort)0x5678, ValueOf(await ReadAsync(connection, "holding-register:1:UINT")).GetUshort());
+            connection.Close();
+            await Assert.ThrowsAsync<ObjectDisposedException>(() => connection.SubscriptionRequestBuilder!
+                .AddCyclicField("closed", "holding-register:1:UINT", TimeSpan.FromSeconds(1)).Build().ExecuteAsync());
+        }
+
+        [Theory]
+        [InlineData(true, "localhost", true)]
+        [InlineData(true, "wrong-host", false)]
+        [InlineData(false, "localhost", false)]
+        public async Task Tls_validates_trust_and_hostname(bool trusted, string hostname, bool succeeds)
+        {
+            using var key = System.Security.Cryptography.RSA.Create(2048);
+            var request = new System.Security.Cryptography.X509Certificates.CertificateRequest("CN=localhost", key,
+                System.Security.Cryptography.HashAlgorithmName.SHA256, System.Security.Cryptography.RSASignaturePadding.Pkcs1);
+            request.CertificateExtensions.Add(new System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension(true, false, 0, true));
+            var names = new System.Security.Cryptography.X509Certificates.SubjectAlternativeNameBuilder();
+            names.AddDnsName("localhost");
+            request.CertificateExtensions.Add(names.Build());
+            using var original = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(1));
+            using var certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(
+                original.Export(System.Security.Cryptography.X509Certificates.X509ContentType.Pfx));
+            var policy = new System.Security.Cryptography.X509Certificates.X509ChainPolicy
+            {
+                TrustMode = System.Security.Cryptography.X509Certificates.X509ChainTrustMode.CustomRootTrust,
+                RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck
+            };
+            if (trusted) policy.CustomTrustStore.Add(certificate);
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var server = Task.Run(async () =>
+            {
+                using var client = await listener.AcceptTcpClientAsync(deadline.Token);
+                using var stream = new System.Net.Security.SslStream(client.GetStream());
+                try
+                {
+                    await stream.AuthenticateAsServerAsync(new System.Net.Security.SslServerAuthenticationOptions { ServerCertificate = certificate }, deadline.Token);
+                    if (succeeds)
+                    {
+                        var bytes = new byte[12];
+                        await stream.ReadExactlyAsync(bytes, deadline.Token);
+                        Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("0300000001")), bytes);
+                        await stream.WriteAsync(ModbusFrames.Tcp(1, 1, Pdu("03021234")), deadline.Token);
+                    }
+                }
+                catch (System.Security.Authentication.AuthenticationException) when (!succeeds) { }
+                catch (System.IO.IOException) when (!succeeds) { }
+            });
+            var config = new org.apache.plc4net.transports.tcp.TcpTransportConfiguration
+            { Tls = true, TlsTargetHost = hostname, TlsChainPolicy = policy };
+            if (succeeds)
+            {
+                using var transport = new org.apache.plc4net.transports.tcp.TcpTransportInstance((System.Net.IPEndPoint)listener.LocalEndpoint, config);
+                using var connection = new ModbusTcpConnection(org.apache.plc4net.spi.drivers.ConnectionString.Parse("modbus-tcp://localhost"), transport);
+                Assert.Equal((ushort)0x1234, ValueOf(await ReadAsync(connection, "holding-register:1:UINT", deadline.Token)).GetUshort());
+            }
+            else
+            {
+                var error = Assert.Throws<org.apache.plc4net.spi.transports.TransportException>(() =>
+                    new org.apache.plc4net.transports.tcp.TcpTransportInstance((System.Net.IPEndPoint)listener.LocalEndpoint, config));
+                Assert.IsType<System.Security.Authentication.AuthenticationException>(error.InnerException);
+            }
+            await server;
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task File_records_cross_a_file_boundary_over_tcp(bool write)
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var server = Task.Run(async () =>
+            {
+                using var client = await listener.AcceptTcpClientAsync(deadline.Token);
+                var stream = client.GetStream();
+                for (ushort transaction = 1; transaction <= 2; transaction++)
+                {
+                    var item = transaction == 1 ? "060001270F0001" : "06000200000001";
+                    var value = transaction == 1 ? "0001" : "0002";
+                    var request = ModbusFrames.Tcp(transaction, 1, Pdu(write ? "1509" + item + value : "1407" + item));
+                    var actual = new byte[request.Length];
+                    await stream.ReadExactlyAsync(actual, deadline.Token);
+                    Assert.Equal(request, actual);
+                    await stream.WriteAsync(write ? request : ModbusFrames.Tcp(transaction, 1, Pdu("14040306" + value)), deadline.Token);
+                }
+            });
+            var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
+            using var connection = driver.Connect($"modbus-tcp://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}");
+            if (write)
+                Assert.Equal(PlcResponseCode.Ok, (await WriteAsync(connection, "extended-register:9999[0..1]:INT", new List<short> { 1, 2 }, deadline.Token)).GetResponseCode("v"));
+            else
+                Assert.Equal(new short[] { 1, 2 }, ValueOf(await ReadAsync(connection, "extended-register:9999[0..1]:INT", deadline.Token)).GetList().ConvertAll(v => v.GetShort()));
+            await server;
+        }
+
+        [Fact]
+        public async Task Discovery_keeps_success_and_failure_for_multiple_endpoints()
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var server = Task.Run(async () =>
+            {
+                using var client = await listener.AcceptTcpClientAsync(deadline.Token);
+                var bytes = new byte[11];
+                await client.GetStream().ReadExactlyAsync(bytes, deadline.Token);
+                Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("2B0E0100")), bytes);
+                await client.GetStream().WriteAsync(ModbusFrames.Tcp(1, 1, Pdu("2B0E01010000010003414243")), deadline.Token);
+            });
+            var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
+            var results = await driver.DiscoverAsync(new[] { "invalid", $"modbus-tcp://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}" }, deadline.Token);
+            Assert.NotNull(results[0].Error);
+            Assert.Null(results[1].Error);
+            Assert.Equal(Pdu("414243"), results[1].Objects![0]);
+            await server;
+        }
+
+        [Fact]
+        public async Task Tls_rejects_an_untrusted_server_certificate()
+        {
+            using var key = System.Security.Cryptography.RSA.Create(2048);
+            var request = new System.Security.Cryptography.X509Certificates.CertificateRequest("CN=localhost", key,
+                System.Security.Cryptography.HashAlgorithmName.SHA256, System.Security.Cryptography.RSASignaturePadding.Pkcs1);
+            using var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(1));
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var server = Task.Run(async () =>
+            {
+                using var client = await listener.AcceptTcpClientAsync(deadline.Token);
+                using var stream = new System.Net.Security.SslStream(client.GetStream());
+                try { await stream.AuthenticateAsServerAsync(new System.Net.Security.SslServerAuthenticationOptions { ServerCertificate = certificate }, deadline.Token); }
+                catch (System.Security.Authentication.AuthenticationException) { }
+                catch (System.IO.IOException) { }
+            });
+            var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
+            Assert.Throws<org.apache.plc4net.spi.transports.TransportException>(() =>
+                driver.Connect($"modbus-tcp:tls://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}"));
+            await server;
+        }
+
+        [Theory]
+        [InlineData("modbus-tcp", "0300000001", "03021234")]
+        [InlineData("modbus-rtu", "0300000001", "03021234")]
+        [InlineData("modbus-ascii", "", "")]
+        public async Task Drivers_read_over_real_tcp(string protocol, string request, string response)
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var expected = protocol == "modbus-tcp" ? ModbusFrames.Tcp(1, 1, Pdu(request))
+                : protocol == "modbus-rtu" ? ModbusFrames.Rtu(1, Pdu(request))
+                : System.Text.Encoding.ASCII.GetBytes(":010300000001FB\r\n");
+            var reply = protocol == "modbus-tcp" ? ModbusFrames.Tcp(1, 1, Pdu(response))
+                : protocol == "modbus-rtu" ? ModbusFrames.Rtu(1, Pdu(response))
+                : System.Text.Encoding.ASCII.GetBytes(":0103021234B4\r\n");
+            var server = Task.Run(async () =>
+            {
+                using var client = await listener.AcceptTcpClientAsync(deadline.Token);
+                var stream = client.GetStream();
+                var bytes = new byte[expected.Length];
+                await stream.ReadExactlyAsync(bytes, deadline.Token);
+                Assert.Equal(expected, bytes);
+                await stream.WriteAsync(reply, deadline.Token);
+            });
+            var manager = new org.apache.plc4net.spi.transports.DefaultTransportManager();
+            org.apache.plc4net.spi.drivers.DriverBase driver = protocol == "modbus-tcp"
+                ? new ModbusTcpDriver(manager) : protocol == "modbus-rtu"
+                    ? new ModbusRtuDriver(manager) : new ModbusAsciiDriver(manager);
+            using var connection = driver.Connect($"{protocol}:tcp://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}");
+            Assert.Equal((ushort)0x1234, ValueOf(await ReadAsync(connection, "holding-register:1:UINT", deadline.Token)).GetUshort());
+            await server;
+        }
+
+        [Theory]
+        [InlineData("modbus-tcp")]
+        [InlineData("modbus-rtu")]
+        [InlineData("modbus-ascii")]
+        public async Task Drivers_read_over_real_udp(string protocol)
+        {
+            using var server = new System.Net.Sockets.UdpClient(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 0));
+            using var deadline = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var expected = protocol == "modbus-tcp" ? ModbusFrames.Tcp(1, 1, Pdu("0300000001"))
+                : protocol == "modbus-rtu" ? ModbusFrames.Rtu(1, Pdu("0300000001"))
+                : System.Text.Encoding.ASCII.GetBytes(":010300000001FB\r\n");
+            var response = protocol == "modbus-tcp" ? ModbusFrames.Tcp(1, 1, Pdu("03021234"))
+                : protocol == "modbus-rtu" ? ModbusFrames.Rtu(1, Pdu("03021234"))
+                : System.Text.Encoding.ASCII.GetBytes(":0103021234B4\r\n");
+            var reply = Task.Run(async () =>
+            {
+                var request = await server.ReceiveAsync(deadline.Token);
+                Assert.Equal(expected, request.Buffer);
+                await server.SendAsync(response, request.RemoteEndPoint, deadline.Token);
+            });
+            var manager = new org.apache.plc4net.spi.transports.DefaultTransportManager();
+            org.apache.plc4net.spi.drivers.DriverBase driver = protocol == "modbus-tcp"
+                ? new ModbusTcpDriver(manager) : protocol == "modbus-rtu"
+                    ? new ModbusRtuDriver(manager) : new ModbusAsciiDriver(manager);
+            using var connection = driver.Connect($"{protocol}:udp://127.0.0.1:{((System.Net.IPEndPoint)server.Client.LocalEndPoint!).Port}");
+            Assert.Equal((ushort)0x1234, ValueOf(await ReadAsync(connection, "holding-register:1:UINT", deadline.Token)).GetUshort());
+            await reply;
+        }
+
+        [Fact]
+        public async Task Bit_blocks_split_at_unaligned_offsets()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("01025501")));
+            using var connection = NewTcp(transport);
+            var builder = connection.ReadRequestBuilder!;
+            builder.AddTagAddress("last", "coil:8[0..1]");
+            builder.AddTagAddress("first", "coil:1[0..7]");
+            var response = (DefaultPlcReadResponse)await ((PlcReader)connection).Read((DefaultPlcReadRequest)builder.Build());
+            Assert.Equal(new[] { false, true }, response.GetValue("last")!.GetList().ConvertAll(v => v.GetBool()));
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("0100000009")), transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Identification_reads_basic_objects()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("2B0E01010000010003414243")));
+            using var connection = NewTcp(transport);
+            var objects = await connection.IdentifyAsync();
+            Assert.Equal(Pdu("414243"), objects[0]);
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("2B0E0100")), transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Identification_rejects_non_advancing_pagination()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("2B0E0101FF0000")));
+            using var connection = NewTcp(transport);
+            await Assert.ThrowsAsync<ModbusDriverException>(() => connection.IdentifyAsync());
+        }
+
+        [Fact]
+        public async Task Overlapping_tags_are_split_by_address_after_sorting()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("030400010002")));
+            using var connection = NewTcp(transport);
+            var builder = connection.ReadRequestBuilder!;
+            builder.AddTagAddress("last", "holding-register:2:INT");
+            builder.AddTagAddress("both", "holding-register:1[0..1]:INT");
+            var response = (DefaultPlcReadResponse)await ((PlcReader)connection)
+                .Read((DefaultPlcReadRequest)builder.Build());
+            Assert.Equal((short)2, response.GetValue("last")!.GetShort());
+            Assert.Equal(new short[] { 1, 2 }, response.GetValue("both")!.GetList().ConvertAll(v => v.GetShort()));
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("0300000002")), transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public void Extended_selection_cannot_cross_the_final_file()
+        {
+            Assert.Equal(655349999, ModbusTag.Parse("extended-register:655349999:INT").Address);
+            Assert.Throws<org.apache.plc4net.exceptions.PlcInvalidFieldException>(
+                () => ModbusTag.Parse("extended-register:655349999:DINT"));
+        }
+
+        [Fact]
+        public async Task Ping_reads_the_configured_address_and_unit()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 3, Pdu("03020001")));
+            using var connection = NewTcp(transport,
+                "?ping-address=holding-register:2:INT{unit-id:3}");
+            await connection.PingAsync();
+            Assert.Equal(ModbusFrames.Tcp(1, 3, Pdu("0300010001")), transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Ping_times_out_when_the_device_does_not_answer()
+        {
+            using var connection = NewTcp(NewTransport(), "?request-timeout-ms=50");
+            await Assert.ThrowsAsync<TimeoutException>(() => connection.PingAsync());
+        }
+
+        [Fact]
+        public async Task Ping_propagates_device_errors()
+        {
+            var transport = NewTransport();
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("8302")));
+            using var connection = NewTcp(transport);
+            await Assert.ThrowsAsync<ModbusDriverException>(() => connection.PingAsync());
+        }
+
         [Theory]
         // Read holding-register:3:WORD   (request 000500000006 01 0300020001, answer 000500000005 01 0302A5B8)
         [InlineData("holding-register:3:WORD", "0300020001", "0302A5B8", 42424)]

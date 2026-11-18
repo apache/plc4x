@@ -115,7 +115,7 @@ class ModbusPDUWriteFileRecordResponseItem:
         record_data: List[Any] = read_buffer.read_array_field(
             logical_name="recordData",
             read_function=read_buffer.read_byte,
-            count=record_length,
+            count=record_length * 2,
         )
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")

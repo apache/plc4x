@@ -125,7 +125,7 @@ namespace org.apache.plc4net.drivers.modbus.test
             Assert.True(connection.IsConnected);
             Assert.True(connection.PlcConnectionMetadata.CanRead);
             Assert.True(connection.PlcConnectionMetadata.CanWrite);
-            Assert.False(connection.PlcConnectionMetadata.CanSubscribe);
+            Assert.True(connection.PlcConnectionMetadata.CanSubscribe);
         }
 
         [Fact]
@@ -149,8 +149,8 @@ namespace org.apache.plc4net.drivers.modbus.test
 
             using var connection = driver.Connect("modbus-tcp:test://device?allow-unsupported-transport=true");
 
-            Assert.Null(connection.SubscriptionRequestBuilder);
-            Assert.Null(connection.UnsubscriptionRequestBuilder);
+            Assert.NotNull(connection.SubscriptionRequestBuilder);
+            Assert.NotNull(connection.UnsubscriptionRequestBuilder);
             Assert.NotNull(connection.ReadRequestBuilder);
             Assert.NotNull(connection.WriteRequestBuilder);
         }

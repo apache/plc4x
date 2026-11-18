@@ -47,6 +47,12 @@ namespace org.apache.plc4net.spi.transports
         ITransportInstance CreateTransportInstance(string transportConfig, ITransportConfiguration configuration);
     }
 
+    public interface ICancellableTransport : ITransport
+    {
+        System.Threading.Tasks.Task<ITransportInstance> CreateTransportInstanceAsync(
+            string address, ITransportConfiguration configuration, System.Threading.CancellationToken cancellationToken);
+    }
+
     /// <summary>Registry of the transports available to drivers.</summary>
     public interface ITransportManager
     {

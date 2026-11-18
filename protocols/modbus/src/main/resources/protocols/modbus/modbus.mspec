@@ -301,7 +301,7 @@
     [simple     uint 16    fileNumber]
     [simple     uint 16    recordNumber]
     [implicit   uint 16    recordLength   'COUNT(recordData) / 2']
-    [array      byte       recordData     count    'recordLength']
+    [array      byte       recordData     count    'recordLength * 2']
 ]
 
 [type ModbusDeviceInformationObject

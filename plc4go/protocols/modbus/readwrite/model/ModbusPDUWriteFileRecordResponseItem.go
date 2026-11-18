@@ -285,7 +285,7 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) parse(ctx context.Context, readB
 	}
 	_ = recordLength
 
-	recordData, err := readBuffer.ReadByteArray("recordData", int(recordLength))
+	recordData, err := readBuffer.ReadByteArray("recordData", int(int32(recordLength)*int32(int32(2))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordData' field"))
 	}

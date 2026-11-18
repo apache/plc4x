@@ -290,4 +290,48 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <name>Write File Record Response With Two Items</name>
+    <raw>000a00000015011512060001270f00011234060002000000015678</raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">21</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">21</functionFlag>
+              <ModbusPDUWriteFileRecordResponse>
+                <byteCount dataType="uint" bitLength="8">18</byteCount>
+                <items isList="true">
+                  <ModbusPDUWriteFileRecordResponseItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">1</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">1</recordLength>
+                    <recordData dataType="byte" bitLength="16">0x1234</recordData>
+                  </ModbusPDUWriteFileRecordResponseItem>
+                  <ModbusPDUWriteFileRecordResponseItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">2</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">1</recordLength>
+                    <recordData dataType="byte" bitLength="16">0x5678</recordData>
+                  </ModbusPDUWriteFileRecordResponseItem>
+                </items>
+              </ModbusPDUWriteFileRecordResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
 </test:testsuite>

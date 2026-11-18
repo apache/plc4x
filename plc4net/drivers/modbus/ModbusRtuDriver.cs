@@ -38,6 +38,9 @@ namespace org.apache.plc4net.drivers.modbus
             : base(transportManager)
         {
             RegisterTransport(new SerialTransport());
+            RegisterTransport(new org.apache.plc4net.transports.udp.UdpTransport(502));
+            RegisterTransport(new org.apache.plc4net.transports.tcp.TlsTransport());
+            RegisterTransport(new org.apache.plc4net.transports.tcp.TcpTransport(502));
         }
 
         public override string ProtocolCode => "modbus-rtu";
@@ -46,7 +49,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         public override string DefaultTransportCode => "serial";
 
-        protected override string[] SupportedTransportCodes => new[] { "serial" };
+        protected override string[] SupportedTransportCodes => new[] { "serial", "tcp", "udp", "tls" };
 
         protected override ConnectionBase CreateConnection(
             ConnectionString connectionString,
