@@ -78,7 +78,7 @@ namespace org.apache.plc4net.transports.tcp
         private volatile Action? _dataListener;
         private volatile Action<Exception?>? _disconnectListener;
 
-        public TcpTransportInstance(IPEndPoint remoteAddress, TcpTransportConfiguration configuration)
+        public TcpTransportInstance(IPEndPoint remoteAddress, TcpTransportConfiguration configuration, CancellationToken cancellationToken = default, string? tlsTargetHost = null)
             : base(configuration)
         {
             if (remoteAddress == null)
@@ -87,16 +87,17 @@ namespace org.apache.plc4net.transports.tcp
             }
 
             _ringBuffer = new RingBuffer(configuration.ReceiveBufferSize);
-            _socket = Connect(remoteAddress, configuration);
+            _socket = Connect(remoteAddress, configuration, cancellationToken);
             if (configuration.Tls)
             {
                 try
                 {
                     _tls = new System.Net.Security.SslStream(new NetworkStream(_socket, ownsSocket: false));
-                    using var timeout = new CancellationTokenSource(configuration.ConnectTimeoutMillis);
+                    using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    timeout.CancelAfter(configuration.ConnectTimeoutMillis);
                     var options = new System.Net.Security.SslClientAuthenticationOptions
                     {
-                        TargetHost = configuration.TlsTargetHost ?? remoteAddress.Address.ToString(),
+                        TargetHost = tlsTargetHost ?? configuration.TlsTargetHost ?? remoteAddress.Address.ToString(),
                         CertificateChainPolicy = configuration.TlsChainPolicy,
                         EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
                         CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.Online
@@ -108,6 +109,7 @@ namespace org.apache.plc4net.transports.tcp
                     _tls?.Dispose();
                     _socket.Dispose();
                     _shutdown.Dispose();
+                    cancellationToken.ThrowIfCancellationRequested();
                     throw new TransportException("TLS authentication failed.", ex);
                 }
             }
@@ -126,15 +128,20 @@ namespace org.apache.plc4net.transports.tcp
         /// Opens the connection and waits for it, but no longer than the configured
         /// connect timeout.
         /// </summary>
-        private static Socket Connect(IPEndPoint remoteAddress, TcpTransportConfiguration configuration)
+        private static Socket Connect(IPEndPoint remoteAddress, TcpTransportConfiguration configuration, CancellationToken cancellationToken)
         {
             CancellationTokenSource? deadline = null;
             try
             {
-                deadline = new CancellationTokenSource(configuration.ConnectTimeoutMillis);
+                deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                deadline.CancelAfter(configuration.ConnectTimeoutMillis);
                 var token = deadline.Token;
                 return Task.Run(() => ConnectAsync(remoteAddress, configuration, token), token)
                     .GetAwaiter().GetResult();
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
             }
             catch (OperationCanceledException) when (deadline?.IsCancellationRequested == true)
             {

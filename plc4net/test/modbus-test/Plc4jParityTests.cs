@@ -40,6 +40,37 @@ namespace org.apache.plc4net.drivers.modbus.test
         private static byte[] Pdu(string hex) => Convert.FromHexString(hex);
 
         [Fact]
+        public async Task Discovery_cancels_a_stalled_tls_handshake()
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            using var cancellation = new System.Threading.CancellationTokenSource();
+            var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
+            var pending = driver.DiscoverAsync($"modbus-tcp:tls://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}?connect-timeout=0", cancellation.Token);
+            using var peer = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
+            var bytes = new byte[4096];
+            while (await peer.GetStream().ReadAsync(bytes.AsMemory()).AsTask().WaitAsync(TimeSpan.FromSeconds(5)) != 0) { }
+        }
+
+        [Fact]
+        public async Task Factory_does_not_mutate_shared_tls_hostname()
+        {
+            using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            var config = new org.apache.plc4net.transports.tcp.TcpTransportConfiguration
+            { Tls = true, TlsTargetHost = "original", ConnectTimeout = 0 };
+            var transport = new org.apache.plc4net.transports.tcp.TlsTransport();
+            using var cancellation = new System.Threading.CancellationTokenSource();
+            var pending = transport.CreateTransportInstanceAsync($"localhost:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}", config, cancellation.Token);
+            using var peer = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal("original", config.TlsTargetHost);
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
+        }
+
+        [Fact]
         public void Tls_transport_uses_its_own_configuration_prefix()
         {
             var transport = new org.apache.plc4net.transports.tcp.TlsTransport();

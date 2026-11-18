@@ -32,7 +32,7 @@ namespace org.apache.plc4net.transports.tcp
     /// <summary>
     /// The "tcp" transport.
     /// </summary>
-    public class TcpTransport : ITransport
+    public class TcpTransport : ICancellableTransport
     {
         private readonly int _defaultPort;
         private readonly Func<string, CancellationToken, Task<IPAddress[]>> _lookup;
@@ -116,10 +116,24 @@ namespace org.apache.plc4net.transports.tcp
             }
 
             var (host, port, driverConfig) = ParseAddress(transportConfig, tcpConfiguration.DefaultPort);
-            if (tcpConfiguration.Tls) tcpConfiguration.TlsTargetHost = host;
+
             var endPoint = new IPEndPoint(ResolveHost(host, tcpConfiguration), port);
 
-            var instance = new TcpTransportInstance(endPoint, tcpConfiguration);
+            var instance = new TcpTransportInstance(endPoint, tcpConfiguration, tlsTargetHost: host);
+            instance.SetDriverConfig(driverConfig);
+            return instance;
+        }
+
+        public async Task<ITransportInstance> CreateTransportInstanceAsync(
+            string address, ITransportConfiguration configuration, CancellationToken cancellationToken)
+        {
+            var config = (TcpTransportConfiguration)configuration;
+            var (host, port, driverConfig) = ParseAddress(address, config.DefaultPort);
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            deadline.CancelAfter(config.ConnectTimeoutMillis);
+            var endpoint = new IPEndPoint(await ResolveHostAsync(host, deadline.Token).ConfigureAwait(false), port);
+            var instance = await Task.Run(() => new TcpTransportInstance(endpoint, config, cancellationToken, host), cancellationToken)
+                .ConfigureAwait(false);
             instance.SetDriverConfig(driverConfig);
             return instance;
         }

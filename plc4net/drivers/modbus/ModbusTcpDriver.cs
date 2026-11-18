@@ -55,7 +55,7 @@ namespace org.apache.plc4net.drivers.modbus
             string connectionString, System.Threading.CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using var connection = (ModbusTcpConnection)Connect(connectionString);
+            using var connection = (ModbusTcpConnection)await ConnectAsync(connectionString, cancellationToken: cancellationToken).ConfigureAwait(false);
             return await connection.IdentifyAsync(cancellationToken).ConfigureAwait(false);
         }
 
@@ -73,7 +73,7 @@ namespace org.apache.plc4net.drivers.modbus
                 cancellationToken.ThrowIfCancellationRequested();
                 try { results.Add((endpoint, await DiscoverAsync(endpoint, cancellationToken).ConfigureAwait(false), null)); }
                 catch (System.OperationCanceledException) { throw; }
-                catch (System.Exception ex) { results.Add((endpoint, null, ex)); }
+                catch (System.Exception ex) { cancellationToken.ThrowIfCancellationRequested(); results.Add((endpoint, null, ex)); }
             }
             return results;
         }

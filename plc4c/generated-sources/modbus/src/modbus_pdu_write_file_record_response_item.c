@@ -86,7 +86,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) recordLength;
+    uint16_t itemCount = (uint16_t) (recordLength * 2);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       char* _value = malloc(sizeof(char));
       _res = plc4c_spi_read_char(readBuffer, (char*) _value);
