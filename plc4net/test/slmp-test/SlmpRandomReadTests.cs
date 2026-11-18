@@ -140,7 +140,9 @@ namespace org.apache.plc4net.test.slmp
             transport.InjectTestData(Response(0, new byte[191 * 2 + 4]));
             var firstFrame = Task.Run(() =>
             {
-                var written = transport.WaitForWrittenData(785, 5000);
+                // Wait for the batch request too, so its response cannot be
+                // consumed while the preceding random request is still active.
+                var written = transport.WaitForWrittenData(785 + 21, 5000);
                 transport.InjectTestData(Response(0, new byte[4]));
                 return written;
             });
