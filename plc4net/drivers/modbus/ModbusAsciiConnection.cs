@@ -134,6 +134,7 @@ namespace org.apache.plc4net.drivers.modbus
 
         protected override void Dispose(bool disposing)
         {
+            if (disposing) Close();
             if (disposing) _exchangeGate.Dispose();
             base.Dispose(disposing);
         }

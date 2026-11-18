@@ -84,7 +84,8 @@ namespace org.apache.plc4net.drivers.modbus
             ModbusByteOrder byteOrder = ModbusByteOrder.BigEndian, ushort quantity = 1,
             ushort stringLength = 0, bool explicitRange = false, byte? unitIdentifier = null)
         {
-            const int maximumExtendedAddress = 655359999;
+            // File numbers are 1..65535 and each file contains 10000 logical records.
+            const int maximumExtendedAddress = 655349999;
             var maximumAddress = type == TagType.ExtendedRegister ? maximumExtendedAddress : MaxAddress;
             if (address < 1 || address > maximumAddress)
             {
@@ -126,6 +127,8 @@ namespace org.apache.plc4net.drivers.modbus
             {
                 throw new PlcInvalidFieldException("The Modbus selection runs past the end of the address space.");
             }
+            if (type == TagType.ExtendedRegister && (long)Address + RegisterCount - 1 > maximumExtendedAddress)
+                throw new PlcInvalidFieldException("The Modbus selection runs past the final file record.");
         }
 
         public TagType Type { get; }

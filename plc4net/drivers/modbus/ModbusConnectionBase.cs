@@ -37,6 +37,7 @@ using org.apache.plc4net.spi.drivers.messages.items;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
 using org.apache.plc4net.spi.transports;
+using org.apache.plc4net.spi.drivers.subscriptions;
 using org.apache.plc4net.types;
 
 namespace org.apache.plc4net.drivers.modbus
@@ -54,11 +55,13 @@ namespace org.apache.plc4net.drivers.modbus
     public abstract class ModbusConnectionBase : ConnectionBase, PlcReader, PlcWriter
     {
         private readonly ModbusByteOrder _defaultByteOrder;
+        private readonly ModbusTag _pingTag;
+        private readonly PollingSubscriptionManager _subscriptions;
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
         {
             CanRead = true,
             CanWrite = true,
-            CanSubscribe = false
+            CanSubscribe = true
         };
 
         protected ModbusConnectionBase(ConnectionString connectionString, ITransportInstance transport)
@@ -73,6 +76,22 @@ namespace org.apache.plc4net.drivers.modbus
             {
                 throw new PlcConnectionException($"Unknown default-payload-byte-order '{rawByteOrder}'.");
             }
+            _pingTag = ModbusTag.Parse(connectionString.GetParameter("ping-address")
+                ?? "holding-register:1:INT", _defaultByteOrder);
+            var interval = IntParameter(connectionString, 1000, "subscription-polling-interval-ms");
+            if (interval < 1) throw new PlcConnectionException("subscription-polling-interval-ms must be positive.");
+            _subscriptions = new PollingSubscriptionManager(this, Parse, TimeSpan.FromMilliseconds(interval),
+                ex => Logger.LogWarning(ex, "Modbus subscription failed"));
+        }
+
+        /// <summary>
+        /// Confirms device responsiveness by reading ping-address (the first holding register by default).
+        /// A timeout or device exception is propagated to the caller.
+        /// </summary>
+        public async Task PingAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await ReadTagAsync(_pingTag, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -121,9 +140,15 @@ namespace org.apache.plc4net.drivers.modbus
         public override IPlcWriteRequestBuilder? WriteRequestBuilder
             => new DefaultPlcWriteRequestBuilder(this, Parse);
 
-        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
+        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => _subscriptions.SubscriptionRequestBuilder;
 
-        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
+        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => _subscriptions.UnsubscriptionRequestBuilder;
+
+        public override void Close()
+        {
+            _subscriptions.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            base.Close();
+        }
 
         /// <summary>
         /// Sends one request PDU and returns the response PDU that answers it.
@@ -152,6 +177,15 @@ namespace org.apache.plc4net.drivers.modbus
                 }
             }
 
+            work.Sort((a, b) =>
+            {
+                var comparison = a.Tag.Type.CompareTo(b.Tag.Type);
+                if (comparison != 0) return comparison;
+                comparison = Nullable.Compare(a.Tag.UnitIdentifier, b.Tag.UnitIdentifier);
+                if (comparison != 0) return comparison;
+                comparison = a.Tag.ByteOrder.CompareTo(b.Tag.ByteOrder);
+                return comparison != 0 ? comparison : a.Tag.Address.CompareTo(b.Tag.Address);
+            });
             for (var index = 0; index < work.Count;)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -193,7 +227,7 @@ namespace org.apache.plc4net.drivers.modbus
             List<(string Name, ModbusTag Tag)> work, int start)
         {
             var first = work[start].Tag;
-            if (first.IsBit || first.Type == ModbusTag.TagType.ExtendedRegister)
+            if (first.Type == ModbusTag.TagType.ExtendedRegister)
             {
                 return (1, first.RegisterCount);
             }
@@ -205,12 +239,13 @@ namespace org.apache.plc4net.drivers.modbus
                 var next = work[start + count].Tag;
                 if (next.Type != first.Type || next.ByteOrder != first.ByteOrder
                     || next.UnitIdentifier != first.UnitIdentifier
-                    || next.WireAddress != nextAddress || registers + next.RegisterCount > 125)
+                    || next.WireAddress > nextAddress
+                    || Math.Max(nextAddress, next.WireAddress + next.RegisterCount) - first.WireAddress > (first.IsBit ? 2000 : 125))
                 {
                     break;
                 }
-                registers += next.RegisterCount;
-                nextAddress += next.RegisterCount;
+                nextAddress = Math.Max(nextAddress, next.WireAddress + next.RegisterCount);
+                registers = checked((ushort)(nextAddress - first.WireAddress));
                 count++;
             }
             return (count, checked((ushort)registers));
@@ -222,6 +257,26 @@ namespace org.apache.plc4net.drivers.modbus
         {
             var first = work[start].Tag;
             byte[] data;
+            if (first.IsBit)
+            {
+                data = first.Type == ModbusTag.TagType.Coil
+                    ? (await SendAsync<ModbusPDUReadCoilsResponse>(new ModbusPDUReadCoilsRequest(first.WireAddress, registers),
+                        first.UnitIdentifier, cancellationToken).ConfigureAwait(false)).Value
+                    : (await SendAsync<ModbusPDUReadDiscreteInputsResponse>(new ModbusPDUReadDiscreteInputsRequest(first.WireAddress, registers),
+                        first.UnitIdentifier, cancellationToken).ConfigureAwait(false)).Value;
+                if (data.Length * 8 < registers) throw new ModbusDriverException("The bit block response is too short.");
+                for (var i = 0; i < count; i++)
+                {
+                    var item = work[start + i];
+                    var packed = new byte[(item.Tag.Quantity + 7) / 8];
+                    var bitOffset = item.Tag.WireAddress - first.WireAddress;
+                    for (var bit = 0; bit < item.Tag.Quantity; bit++)
+                        if ((data[(bitOffset + bit) / 8] & (1 << ((bitOffset + bit) % 8))) != 0)
+                            packed[bit / 8] |= (byte)(1 << (bit % 8));
+                    results[item.Name] = new DefaultPlcResponseItem<IPlcValue>(PlcResponseCode.Ok, BitValue(packed, item.Tag));
+                }
+                return;
+            }
             if (first.Type == ModbusTag.TagType.HoldingRegister)
             {
                 data = (await SendAsync<ModbusPDUReadHoldingRegistersResponse>(
@@ -234,14 +289,13 @@ namespace org.apache.plc4net.drivers.modbus
                     new ModbusPDUReadInputRegistersRequest(first.WireAddress, registers),
                     first.UnitIdentifier, cancellationToken).ConfigureAwait(false)).Value;
             }
-            var offset = 0;
             for (var i = 0; i < count; i++)
             {
                 var item = work[start + i];
+                var offset = (item.Tag.WireAddress - first.WireAddress) * 2;
                 var bytes = item.Tag.RegisterCount * 2;
                 results[item.Name] = new DefaultPlcResponseItem<IPlcValue>(
                     PlcResponseCode.Ok, RegisterValue(Slice(data, offset, bytes), item.Tag));
-                offset += bytes;
             }
         }
 
@@ -345,6 +399,8 @@ namespace org.apache.plc4net.drivers.modbus
                     new ModbusPDUReadFileRecordRequest(items), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
                 if (response.Items.Count != 1)
                     throw new ModbusDriverException("The Modbus file-record response has the wrong item count.");
+                if (response.Items[0].Data.Length != take * 2)
+                    throw new ModbusDriverException("The Modbus file-record response has the wrong data length.");
                 bytes.AddRange(response.Items[0].Data);
                 current += take;
                 remaining -= take;

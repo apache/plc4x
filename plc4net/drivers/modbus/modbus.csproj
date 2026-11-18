@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\api\api.csproj" />
     <ProjectReference Include="..\..\spi\spi.csproj" />
     <ProjectReference Include="..\..\transports\tcp\tcp.csproj" />
+    <ProjectReference Include="..\..\transports\udp\udp.csproj" />
     <ProjectReference Include="..\..\transports\serial\serial.csproj" />
   </ItemGroup>
 

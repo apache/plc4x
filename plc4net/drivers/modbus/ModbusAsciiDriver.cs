@@ -29,12 +29,15 @@ namespace org.apache.plc4net.drivers.modbus
         public ModbusAsciiDriver(ITransportManager transportManager) : base(transportManager)
         {
             RegisterTransport(new SerialTransport());
+            RegisterTransport(new org.apache.plc4net.transports.udp.UdpTransport(502));
+            RegisterTransport(new org.apache.plc4net.transports.tcp.TlsTransport());
+            RegisterTransport(new org.apache.plc4net.transports.tcp.TcpTransport(502));
         }
 
         public override string ProtocolCode => "modbus-ascii";
         public override string ProtocolName => "Modbus ASCII (Serial)";
         public override string DefaultTransportCode => "serial";
-        protected override string[] SupportedTransportCodes => new[] { "serial" };
+        protected override string[] SupportedTransportCodes => new[] { "serial", "tcp", "udp", "tls" };
 
         protected override ConnectionBase CreateConnection(
             ConnectionString connectionString, ITransportInstance transportInstance,
