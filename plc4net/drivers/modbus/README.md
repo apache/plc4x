@@ -34,10 +34,16 @@ explicit private trust policy. There is no URL option to disable validation.
 
 ## Reads and file records
 
-Reads combine adjacent and overlapping tags with the same area, unit identifier
-and byte order. Blocks are limited to 125 registers or 2,000 bits. Address gaps
-are not filled speculatively. Bit results are unpacked at each tag's actual bit
-offset. Extended-register reads are handled separately.
+Reads combine tags within an address window with the same area, unit identifier
+and byte order, including gaps between tags, matching the Java and Go optimizers.
+The window starts at the first tag and defaults to 125 registers or 2,000 bits.
+Use `max-registers-per-request` and `max-coils-per-request` to lower the merge
+window for a device. Zero uses the default; values above the protocol ceiling
+are clamped. These options control merging and do not split an individual tag.
+Gap addresses must be readable by the device. Lower the window to avoid merging
+across unsupported addresses. Bit results use each tag's actual bit offset.
+Extended-register windows are additionally limited to 123 registers and split
+at file boundaries.
 
 Extended-register flat addresses map to file `address / 10000 + 1` and record
 `address % 10000`. Selections crossing a file boundary are split into separate

@@ -39,6 +39,91 @@ namespace org.apache.plc4net.drivers.modbus.test
     {
         private static byte[] Pdu(string hex) => Convert.FromHexString(hex);
 
+        [Theory]
+        [InlineData("max-registers-per-request=2", "holding-register:1:UINT", "holding-register:3:UINT", "03020001", "03020003", "0300000001", "0300020001")]
+        [InlineData("max-coils-per-request=8", "coil:1", "coil:9", "010101", "010101", "0100000001", "0100080001")]
+        public async Task Configured_window_keeps_distant_tags_in_separate_requests(
+            string options, string first, string last, string firstReply, string lastReply,
+            string firstRequest, string lastRequest)
+        {
+            using var transport = NewTransport();
+            using var connection = NewTcp(transport, "?" + options);
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu(firstReply)));
+            var server = Task.Run(() =>
+            {
+                var requests = transport.WaitForWrittenData(24, 5000);
+                transport.InjectTestData(ModbusFrames.Tcp(2, 1, Pdu(lastReply)));
+                return requests;
+            });
+            var response = (DefaultPlcReadResponse)await connection.ReadRequestBuilder!
+                .AddTagAddress("first", first).AddTagAddress("last", last).Build().ExecuteAsync();
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("first"));
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("last"));
+            var expected = new List<byte>(ModbusFrames.Tcp(1, 1, Pdu(firstRequest)));
+            expected.AddRange(ModbusFrames.Tcp(2, 1, Pdu(lastRequest)));
+            Assert.Equal(expected.ToArray(), await server);
+        }
+
+        [Theory]
+        [InlineData("holding-register:1:UINT", "holding-register:3:UINT", "0306000100000003", "0300000003")]
+        [InlineData("input-register:1:UINT", "input-register:3:UINT", "0406000100000003", "0400000003")]
+        [InlineData("extended-register:65536:UINT", "extended-register:65538:UINT", "14080706000100000003", "140706000715A00003")]
+        public async Task Read_window_includes_gaps_and_splits_values_by_address(
+            string first, string last, string reply, string request)
+        {
+            using var transport = NewTransport();
+            using var connection = NewTcp(transport);
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu(reply)));
+            var response = (DefaultPlcReadResponse)await connection.ReadRequestBuilder!
+                .AddTagAddress("last", last).AddTagAddress("first", first).Build().ExecuteAsync();
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("first"));
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("last"));
+            Assert.Equal((ushort)1, response.GetValue("first")!.GetUshort());
+            Assert.Equal((ushort)3, response.GetValue("last")!.GetUshort());
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu(request)), transport.GetAllWrittenData());
+        }
+
+        [Theory]
+        [InlineData("coil:1", "coil:9", "01020101", "0100000009")]
+        [InlineData("discrete-input:1", "discrete-input:9", "02020101", "0200000009")]
+        public async Task Bit_read_window_includes_gaps(string first, string last, string reply, string request)
+        {
+            using var transport = NewTransport();
+            using var connection = NewTcp(transport);
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu(reply)));
+            var response = (DefaultPlcReadResponse)await connection.ReadRequestBuilder!
+                .AddTagAddress("first", first).AddTagAddress("last", last).Build().ExecuteAsync();
+            Assert.True(response.GetValue("first")!.GetBool());
+            Assert.True(response.GetValue("last")!.GetBool());
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu(request)), transport.GetAllWrittenData());
+        }
+
+        [Theory]
+        [InlineData("-1")]
+        [InlineData("65536")]
+        [InlineData("invalid")]
+        public void Invalid_optimizer_limit_is_rejected(string value)
+        {
+            using var transport = NewTransport();
+            Assert.Throws<org.apache.plc4net.exceptions.PlcConnectionException>(() =>
+                NewTcp(transport, "?max-registers-per-request=" + value));
+        }
+
+        [Theory]
+        [InlineData("0")]
+        [InlineData("65535")]
+        public async Task Optimizer_limit_uses_protocol_ceiling_for_zero_or_excess(string value)
+        {
+            using var transport = NewTransport();
+            using var connection = NewTcp(transport, "?max-registers-per-request=" + value);
+            transport.InjectTestData(ModbusFrames.Tcp(1, 1, Pdu("0306000100000003")));
+            var response = (DefaultPlcReadResponse)await connection.ReadRequestBuilder!
+                .AddTagAddress("a", "holding-register:1:UINT")
+                .AddTagAddress("b", "holding-register:3:UINT").Build().ExecuteAsync();
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("b"));
+            Assert.Equal(ModbusFrames.Tcp(1, 1, Pdu("0300000003")), transport.GetAllWrittenData());
+        }
+
         [Fact]
         public async Task Discovery_cancels_a_stalled_tls_handshake()
         {

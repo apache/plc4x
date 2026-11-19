@@ -57,6 +57,8 @@ namespace org.apache.plc4net.drivers.modbus
         private readonly ModbusByteOrder _defaultByteOrder;
         private readonly ModbusTag _pingTag;
         private readonly PollingSubscriptionManager _subscriptions;
+        private readonly int _maxCoilsPerRequest;
+        private readonly int _maxRegistersPerRequest;
         private static readonly DefaultPlcConnectionMetadata Metadata = new DefaultPlcConnectionMetadata
         {
             CanRead = true,
@@ -67,6 +69,8 @@ namespace org.apache.plc4net.drivers.modbus
         protected ModbusConnectionBase(ConnectionString connectionString, ITransportInstance transport)
             : base(connectionString, transport)
         {
+            _maxCoilsPerRequest = ReadLimit(connectionString, "max-coils-per-request", 2000);
+            _maxRegistersPerRequest = ReadLimit(connectionString, "max-registers-per-request", 125);
             var rawByteOrder = connectionString.GetParameter("default-payload-byte-order");
             if (rawByteOrder == null)
             {
@@ -223,29 +227,35 @@ namespace org.apache.plc4net.drivers.modbus
             return new DefaultPlcReadResponse(request, results);
         }
 
-        private static (int Count, ushort Registers) PlanReadBlock(
+        private static int ReadLimit(ConnectionString connectionString, string name, int ceiling)
+        {
+            var raw = connectionString.GetParameter(name);
+            if (raw == null) return ceiling;
+            if (!ushort.TryParse(raw, out var value))
+                throw new PlcConnectionException($"{name} must be an unsigned 16-bit integer.");
+            return value == 0 ? ceiling : Math.Min(value, ceiling);
+        }
+
+        private (int Count, ushort Registers) PlanReadBlock(
             List<(string Name, ModbusTag Tag)> work, int start)
         {
             var first = work[start].Tag;
-            if (first.Type == ModbusTag.TagType.ExtendedRegister)
-            {
-                return (1, first.RegisterCount);
-            }
             var count = 1;
             var registers = first.RegisterCount;
-            var nextAddress = first.WireAddress + registers;
+            var nextAddress = first.Address + registers;
+            var limit = first.IsBit ? _maxCoilsPerRequest : _maxRegistersPerRequest;
+            if (first.Type == ModbusTag.TagType.ExtendedRegister) limit = Math.Min(limit, 123);
             while (start + count < work.Count)
             {
                 var next = work[start + count].Tag;
                 if (next.Type != first.Type || next.ByteOrder != first.ByteOrder
                     || next.UnitIdentifier != first.UnitIdentifier
-                    || next.WireAddress > nextAddress
-                    || Math.Max(nextAddress, next.WireAddress + next.RegisterCount) - first.WireAddress > (first.IsBit ? 2000 : 125))
+                    || Math.Max(nextAddress, next.Address + next.RegisterCount) - first.Address > limit)
                 {
                     break;
                 }
-                nextAddress = Math.Max(nextAddress, next.WireAddress + next.RegisterCount);
-                registers = checked((ushort)(nextAddress - first.WireAddress));
+                nextAddress = Math.Max(nextAddress, next.Address + next.RegisterCount);
+                registers = checked((ushort)(nextAddress - first.Address));
                 count++;
             }
             return (count, checked((ushort)registers));
@@ -277,7 +287,12 @@ namespace org.apache.plc4net.drivers.modbus
                 }
                 return;
             }
-            if (first.Type == ModbusTag.TagType.HoldingRegister)
+            if (first.Type == ModbusTag.TagType.ExtendedRegister)
+            {
+                data = await ReadExtendedBytesAsync(first.Address, registers, first.UnitIdentifier, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else if (first.Type == ModbusTag.TagType.HoldingRegister)
             {
                 data = (await SendAsync<ModbusPDUReadHoldingRegistersResponse>(
                     new ModbusPDUReadHoldingRegistersRequest(first.WireAddress, registers),
@@ -292,7 +307,7 @@ namespace org.apache.plc4net.drivers.modbus
             for (var i = 0; i < count; i++)
             {
                 var item = work[start + i];
-                var offset = (item.Tag.WireAddress - first.WireAddress) * 2;
+                var offset = (item.Tag.Address - first.Address) * 2;
                 var bytes = item.Tag.RegisterCount * 2;
                 results[item.Name] = new DefaultPlcResponseItem<IPlcValue>(
                     PlcResponseCode.Ok, RegisterValue(Slice(data, offset, bytes), item.Tag));
@@ -385,18 +400,23 @@ namespace org.apache.plc4net.drivers.modbus
 
         private async Task<IPlcValue> ReadExtendedRegisterAsync(
             ModbusTag tag, CancellationToken cancellationToken)
+            => RegisterValue(await ReadExtendedBytesAsync(tag.Address, tag.RegisterCount, tag.UnitIdentifier,
+                cancellationToken).ConfigureAwait(false), tag);
+
+        private async Task<byte[]> ReadExtendedBytesAsync(
+            int address, int count, byte? unitIdentifier, CancellationToken cancellationToken)
         {
             var bytes = new List<byte>();
-            var current = tag.Address;
-            var remaining = (int)tag.RegisterCount;
+            var current = address;
+            var remaining = count;
             while (remaining > 0)
             {
                 var record = current % 10000;
-                // 122 words leaves room for all FC 0x14/0x15 per-item metadata in a 253-byte PDU.
-                var take = Math.Min(remaining, Math.Min(122, 10000 - record));
+                // FC 0x14 response: function + byte count + item length/reference + 2 bytes per word.
+                var take = Math.Min(remaining, Math.Min(123, 10000 - record));
                 var items = FileReadItems(current, checked((ushort)take));
                 var response = await SendAsync<ModbusPDUReadFileRecordResponse>(
-                    new ModbusPDUReadFileRecordRequest(items), tag.UnitIdentifier, cancellationToken).ConfigureAwait(false);
+                    new ModbusPDUReadFileRecordRequest(items), unitIdentifier, cancellationToken).ConfigureAwait(false);
                 if (response.Items.Count != 1)
                     throw new ModbusDriverException("The Modbus file-record response has the wrong item count.");
                 if (response.Items[0].Data.Length != take * 2)
@@ -405,7 +425,7 @@ namespace org.apache.plc4net.drivers.modbus
                 current += take;
                 remaining -= take;
             }
-            return RegisterValue(bytes.ToArray(), tag);
+            return bytes.ToArray();
         }
 
         private static List<ModbusPDUReadFileRecordRequestItem> FileReadItems(int address, ushort count)
