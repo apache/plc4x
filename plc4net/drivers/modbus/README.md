@@ -53,6 +53,10 @@ certificates are released by the transport. A trust file cannot be combined
 with `TlsChainPolicy`; a client key store cannot be combined with
 `TlsClientCertificates`. Missing files, unusable passwords, empty trust files
 and client certificates without private keys fail the connection.
+The client PFX or programmatic collection must contain exactly one identity
+with a private key and may include public intermediate CA certificates. The
+transport supplies those intermediates explicitly during the TLS handshake;
+it does not rely on a machine-wide intermediate cache or network downloads.
 
 These options provide certificate-based mutual TLS. Java JKS stores and TLS-PSK
 are not supported by this transport.

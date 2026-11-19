@@ -101,7 +101,7 @@ namespace org.apache.plc4net.transports.tcp
                     {
                         TargetHost = tlsTargetHost ?? configuration.TlsTargetHost ?? remoteAddress.Address.ToString(),
                         CertificateChainPolicy = _tlsCertificates.ChainPolicy,
-                        ClientCertificates = _tlsCertificates.ClientCertificates,
+                        ClientCertificateContext = _tlsCertificates.ClientCertificateContext,
                         EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
                         CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.Online
                     };

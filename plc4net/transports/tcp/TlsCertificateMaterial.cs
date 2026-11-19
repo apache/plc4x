@@ -14,6 +14,7 @@
 // under the License.
 
 using System;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using org.apache.plc4net.spi.transports;
 
@@ -24,6 +25,7 @@ namespace org.apache.plc4net.transports.tcp
         private readonly X509Certificate2Collection _owned = new X509Certificate2Collection();
         public X509ChainPolicy? ChainPolicy { get; private set; }
         public X509CertificateCollection ClientCertificates { get; } = new X509CertificateCollection();
+        public SslStreamCertificateContext? ClientCertificateContext { get; private set; }
 
         public TlsCertificateMaterial(TcpTransportConfiguration configuration)
         {
@@ -51,15 +53,52 @@ namespace org.apache.plc4net.transports.tcp
                 {
                     if (ClientCertificates.Count != 0)
                         throw new TransportException("Specify either a TLS client keystore or client certificates.");
-                    var client = new X509Certificate2(configuration.TlsKeyStore,
-                        configuration.TlsKeyStorePasswordProvider?.Invoke(),
-                        OperatingSystem.IsWindows() ? X509KeyStorageFlags.DefaultKeySet : X509KeyStorageFlags.EphemeralKeySet);
-                    _owned.Add(client);
-                    ClientCertificates.Add(client);
+                    var imported = new X509Certificate2Collection();
+                    var password = configuration.TlsKeyStorePasswordProvider?.Invoke();
+                    try
+                    {
+                        imported.Import(configuration.TlsKeyStore,
+                            password,
+                            OperatingSystem.IsWindows() ? X509KeyStorageFlags.UserKeySet : X509KeyStorageFlags.EphemeralKeySet);
+                    }
+                    finally { _owned.AddRange(imported); }
+                    var identities = 0;
+                    foreach (var certificate in imported)
+                        if (certificate.HasPrivateKey) identities++;
+                    if (identities != 1)
+                        throw new TransportException("Specify exactly one TLS client identity with a private key.");
+                    if (OperatingSystem.IsWindows())
+                    {
+                        foreach (var certificate in imported)
+                            if (!certificate.HasPrivateKey) ClientCertificates.Add(certificate);
+                        // Preserve the single-certificate loader's Schannel-compatible key handle.
+                        var selected = new X509Certificate2(configuration.TlsKeyStore, password);
+                        _owned.Add(selected);
+                        ClientCertificates.Add(selected);
+                    }
+                    else ClientCertificates.AddRange(imported);
                 }
+                X509Certificate2? identity = null;
+                var additional = new X509Certificate2Collection();
                 foreach (X509Certificate certificate in ClientCertificates)
-                    if (certificate is not X509Certificate2 client || !client.HasPrivateKey)
+                {
+                    if (certificate is not X509Certificate2 client)
+                        throw new TransportException("TLS client certificates must be X509Certificate2 instances.");
+                    if (client.HasPrivateKey)
+                    {
+                        if (identity != null)
+                            throw new TransportException("Specify exactly one TLS client identity with a private key.");
+                        identity = client;
+                    }
+                    else additional.Add(client);
+                }
+                if (ClientCertificates.Count != 0)
+                {
+                    if (identity == null)
                         throw new TransportException("TLS client certificates must include a private key.");
+                    // Supply the chain explicitly; importing only the identity loses PFX intermediates.
+                    ClientCertificateContext = SslStreamCertificateContext.Create(identity, additional, offline: true);
+                }
             }
             catch
             {

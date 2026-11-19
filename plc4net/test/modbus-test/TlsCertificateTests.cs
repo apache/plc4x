@@ -154,6 +154,105 @@ namespace org.apache.plc4net.drivers.modbus.test
             }
         }
 
+        private static X509Certificate2 SignedCertificate(string name, X509Certificate2 issuer, bool ca)
+        {
+            using var key = RSA.Create(2048);
+            var request = new CertificateRequest("CN=" + name, key, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            request.CertificateExtensions.Add(new X509BasicConstraintsExtension(ca, false, 0, true));
+            request.CertificateExtensions.Add(new X509KeyUsageExtension(ca ? X509KeyUsageFlags.KeyCertSign : X509KeyUsageFlags.DigitalSignature, true));
+            request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection { new Oid("1.3.6.1.5.5.7.3.2") }, true));
+            using var signed = request.Create(issuer, DateTimeOffset.UtcNow.AddMinutes(-30),
+                new DateTimeOffset(issuer.NotAfter.ToUniversalTime()).AddMinutes(-1), RandomNumberGenerator.GetBytes(16));
+            using var withKey = signed.CopyWithPrivateKey(key);
+            return new X509Certificate2(withKey.Export(X509ContentType.Pfx), (string?)null, X509KeyStorageFlags.Exportable);
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        [InlineData(false, false)]
+        public async Task Mutual_tls_sends_intermediate_chain_to_a_server_trusting_only_root(bool includeIntermediate, bool programmatic)
+        {
+            using var root = Certificate("root-" + Guid.NewGuid().ToString("N"), "1.3.6.1.5.5.7.3.2");
+            using var intermediate = SignedCertificate("intermediate", root, true);
+            using var identity = SignedCertificate("client", intermediate, false);
+            using var rootPublic = new X509Certificate2(root.Export(X509ContentType.Cert));
+            using var intermediatePublic = new X509Certificate2(intermediate.Export(X509ContentType.Cert));
+            using var serverCertificate = Certificate("localhost", "1.3.6.1.5.5.7.3.1");
+            var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".pfx");
+            var password = Convert.ToBase64String(RandomNumberGenerator.GetBytes(24));
+            var bundle = new X509Certificate2Collection { identity, rootPublic };
+            if (includeIntermediate) bundle.Add(intermediatePublic);
+            try
+            {
+                File.WriteAllBytes(path, bundle.Export(X509ContentType.Pfx, password)!);
+                var serverPolicy = new X509ChainPolicy
+                {
+                    TrustMode = X509ChainTrustMode.CustomRootTrust,
+                    RevocationMode = X509RevocationMode.NoCheck,
+                    DisableCertificateDownloads = true
+                };
+                serverPolicy.CustomTrustStore.Add(rootPublic);
+                using var listener = new TcpListener(IPAddress.Loopback, 0);
+                listener.Start();
+                using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                var server = Task.Run(async () =>
+                {
+                    using var peer = await listener.AcceptTcpClientAsync(deadline.Token);
+                    var receivedChain = false;
+                    using var stream = new SslStream(peer.GetStream(), false, (_, _, chain, errors) =>
+                    {
+                        receivedChain = chain != null && chain.ChainElements.Count == 3
+                            && chain.ChainElements[1].Certificate.Thumbprint == intermediatePublic.Thumbprint;
+                        return errors == SslPolicyErrors.None && receivedChain;
+                    });
+                    try
+                    {
+                        await stream.AuthenticateAsServerAsync(new SslServerAuthenticationOptions
+                        {
+                            ServerCertificate = serverCertificate,
+                            ClientCertificateRequired = true,
+                            CertificateChainPolicy = serverPolicy,
+                            EnabledSslProtocols = SslProtocols.Tls12
+                        }, deadline.Token);
+                        Assert.True(receivedChain);
+                        Assert.True(includeIntermediate);
+                        var request = new byte[12];
+                        await stream.ReadExactlyAsync(request, deadline.Token);
+                        await stream.WriteAsync(ModbusFrames.Tcp(1, 1, Convert.FromHexString("03021234")), deadline.Token);
+                    }
+                    catch (AuthenticationException) when (!includeIntermediate) { }
+                    catch (IOException) when (!includeIntermediate) { }
+                });
+                var clientPolicy = new X509ChainPolicy
+                { TrustMode = X509ChainTrustMode.CustomRootTrust, RevocationMode = X509RevocationMode.NoCheck };
+                clientPolicy.CustomTrustStore.Add(serverCertificate);
+                var config = new TcpTransportConfiguration
+                {
+                    Tls = true,
+                    TlsTargetHost = "localhost",
+                    TlsChainPolicy = clientPolicy,
+                    TlsKeyStore = programmatic ? null : path,
+                    TlsKeyStorePasswordProvider = () => password,
+                    TlsClientCertificates = programmatic ? new X509CertificateCollection(bundle) : null
+                };
+                try
+                {
+                    using var transport = new TcpTransportInstance((IPEndPoint)listener.LocalEndpoint, config);
+                    using var connection = new ModbusTcpConnection(
+                        org.apache.plc4net.spi.drivers.ConnectionString.Parse("modbus-tcp://localhost"), transport);
+                    var response = await ReadAsync(connection, "holding-register:1:UINT", deadline.Token);
+                    if (includeIntermediate) Assert.Equal((ushort)0x1234, ValueOf(response).GetUshort());
+                    else Assert.NotEqual(org.apache.plc4net.types.PlcResponseCode.Ok, response.GetResponseCode("v"));
+                }
+                catch (TransportException) when (!includeIntermediate) { }
+                await server;
+                Assert.True(identity.HasPrivateKey);
+                _ = intermediatePublic.GetCertHashString();
+            }
+            finally { File.Delete(path); }
+        }
+
         [Theory]
         [InlineData("tls.keystore-type", "JKS")]
         [InlineData("tls.trust-store-type", "JKS")]
