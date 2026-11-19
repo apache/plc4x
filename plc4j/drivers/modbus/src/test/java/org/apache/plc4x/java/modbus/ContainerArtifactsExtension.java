@@ -61,7 +61,7 @@ public class ContainerArtifactsExtension implements BeforeEachCallback, AfterEac
     }
 
     private void dumpLogs(GenericContainer<?> c) throws IOException {
-        String prettyName = c.getDockerImageName().replace("/", "_");
+        String prettyName = c.getDockerImageName().replaceAll("[^a-zA-Z0-9._-]", "_");
         String idShort = c.getContainerId() != null ? c.getContainerId().substring(0, 12) : "unknown";
         Path all = runDir.resolve(prettyName + "_" + idShort + ".log");
         Path out = runDir.resolve(prettyName + "_" + idShort + "_stdout.log");
