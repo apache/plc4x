@@ -54,6 +54,7 @@ namespace org.apache.plc4net.transports.tcp
     {
         private readonly Socket _socket;
         private readonly System.Net.Security.SslStream? _tls;
+        private readonly TlsCertificateMaterial? _tlsCertificates;
         private readonly RingBuffer _ringBuffer;
         private readonly object _readLock = new object();
         private readonly object _writeLock = new object();
@@ -92,13 +93,15 @@ namespace org.apache.plc4net.transports.tcp
             {
                 try
                 {
+                    _tlsCertificates = new TlsCertificateMaterial(configuration);
                     _tls = new System.Net.Security.SslStream(new NetworkStream(_socket, ownsSocket: false));
                     using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                     timeout.CancelAfter(configuration.ConnectTimeoutMillis);
                     var options = new System.Net.Security.SslClientAuthenticationOptions
                     {
                         TargetHost = tlsTargetHost ?? configuration.TlsTargetHost ?? remoteAddress.Address.ToString(),
-                        CertificateChainPolicy = configuration.TlsChainPolicy,
+                        CertificateChainPolicy = _tlsCertificates.ChainPolicy,
+                        ClientCertificates = _tlsCertificates.ClientCertificates,
                         EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
                         CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.Online
                     };
@@ -107,6 +110,7 @@ namespace org.apache.plc4net.transports.tcp
                 catch (Exception ex)
                 {
                     _tls?.Dispose();
+                    _tlsCertificates?.Dispose();
                     _socket.Dispose();
                     _shutdown.Dispose();
                     cancellationToken.ThrowIfCancellationRequested();
@@ -378,6 +382,7 @@ namespace org.apache.plc4net.transports.tcp
             finally
             {
                 _tls?.Dispose();
+                _tlsCertificates?.Dispose();
                 _socket.Dispose();
                 // The read loop may still be reading the token. It treats the resulting
                 // ObjectDisposedException as the normal end of a shutdown.

@@ -32,6 +32,31 @@ hostname using platform trust by default. Applications constructing a
 `TcpTransportConfiguration` directly can supply `TlsChainPolicy` for an
 explicit private trust policy. There is no URL option to disable validation.
 
+### Client certificates and private trust
+
+Use `tls.trust-store` for a PEM bundle containing the trusted CA certificates.
+It replaces platform trust roots for this connection; certificate chain and
+hostname checks remain enabled. The supported `tls.trust-store-type` is `PEM`.
+
+Use `tls.keystore` for a PKCS#12/PFX client certificate with its private key.
+The supported `tls.keystore-type` is `PKCS12`. For an encrypted file,
+`tls.keystore-password-env` names an environment variable containing its password.
+Passwords in URL parameters are rejected. Percent-encode file paths when placing
+them in a connection string. Files are loaded for each connection, allowing a
+new connection to use rotated certificates.
+
+Applications constructing `TcpTransportConfiguration` directly may instead
+provide `TlsClientCertificates` and `TlsKeyStorePasswordProvider` to integrate
+with a secret store. Caller-supplied certificates and chain policies remain
+caller-owned and must stay alive until the connection closes. File-loaded
+certificates are released by the transport. A trust file cannot be combined
+with `TlsChainPolicy`; a client key store cannot be combined with
+`TlsClientCertificates`. Missing files, unusable passwords, empty trust files
+and client certificates without private keys fail the connection.
+
+These options provide certificate-based mutual TLS. Java JKS stores and TLS-PSK
+are not supported by this transport.
+
 ## Reads and file records
 
 Reads combine tags within an address window with the same area, unit identifier

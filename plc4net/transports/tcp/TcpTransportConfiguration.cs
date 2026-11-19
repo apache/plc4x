@@ -36,6 +36,14 @@ namespace org.apache.plc4net.transports.tcp
         public string? TlsTargetHost { get; set; }
         /// <summary>Optional explicit private CA trust policy; null uses platform trust.</summary>
         public System.Security.Cryptography.X509Certificates.X509ChainPolicy? TlsChainPolicy { get; set; }
+        /// <summary>Caller-owned client certificates; keep alive until the connection closes.</summary>
+        public System.Security.Cryptography.X509Certificates.X509CertificateCollection? TlsClientCertificates { get; set; }
+        /// <summary>PEM bundle of explicitly trusted CA certificates, replacing platform roots.</summary>
+        public string? TlsTrustStore { get; set; }
+        /// <summary>PKCS#12/PFX client certificate and private key file.</summary>
+        public string? TlsKeyStore { get; set; }
+        /// <summary>Obtains the client key-store password without embedding it in the URL.</summary>
+        public System.Func<string?>? TlsKeyStorePasswordProvider { get; set; }
 
         /// <summary>
         /// Time in milliseconds allowed for resolving the host name and, separately, for

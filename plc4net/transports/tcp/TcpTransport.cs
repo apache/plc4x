@@ -87,6 +87,27 @@ namespace org.apache.plc4net.transports.tcp
             configuration.LocalAddress = GetString(parameters, "local-address", configuration.LocalAddress);
             configuration.LocalPort = GetInt(parameters, "local-port", configuration.LocalPort);
             configuration.DefaultPort = GetInt(parameters, "default-port", configuration.DefaultPort);
+            if (configuration.Tls)
+            {
+                configuration.TlsTrustStore = GetString(parameters, "trust-store", null);
+                configuration.TlsKeyStore = GetString(parameters, "keystore", null);
+                var trustType = GetString(parameters, "trust-store-type", "PEM");
+                var keyType = GetString(parameters, "keystore-type", "PKCS12");
+                if (!string.Equals(trustType, "PEM", StringComparison.OrdinalIgnoreCase)
+                    || !string.Equals(keyType, "PKCS12", StringComparison.OrdinalIgnoreCase))
+                    throw new TransportException("TLS supports PEM trust stores and PKCS12 client key stores.");
+                if (GetString(parameters, "keystore-password", null) != null
+                    || GetString(parameters, "trust-store-password", null) != null)
+                    throw new TransportException("Use keystore-password-env or a password provider instead of URL passwords.");
+                var passwordEnvironment = GetString(parameters, "keystore-password-env", null);
+                if (passwordEnvironment != null)
+                {
+                    if (string.IsNullOrWhiteSpace(configuration.TlsKeyStore))
+                        throw new TransportException("keystore-password-env requires a client keystore.");
+                    configuration.TlsKeyStorePasswordProvider = () => Environment.GetEnvironmentVariable(passwordEnvironment)
+                        ?? throw new TransportException("The client keystore password environment variable is not set.");
+                }
+            }
 
             if (configuration.DefaultPort != -1
                 && (configuration.DefaultPort < 1 || configuration.DefaultPort > 65535))
