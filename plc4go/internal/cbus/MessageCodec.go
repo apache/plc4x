@@ -102,6 +102,14 @@ func (m *MessageCodec) Connect(ctx context.Context) error {
 }
 
 func (m *MessageCodec) Disconnect() error {
+	// Lock-free fast path, as in DefaultCodec.Disconnect. A fatal transport error's handler runs on the
+	// default codec's wait group and calls back here (connection.Invalidate -> Close) while another
+	// Disconnect holds stateChange and waits in DefaultCodec.Disconnect for that wait group. The error
+	// path stores running=false before it starts the handler, so the re-entrant call returns here
+	// instead of blocking on stateChange forever.
+	if !m.IsRunning() {
+		return errors.New("already disconnected")
+	}
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if !m.IsRunning() {
