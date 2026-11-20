@@ -136,7 +136,15 @@ namespace org.apache.plc4net.drivers.modbus.test
             cancellation.Cancel();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
             var bytes = new byte[4096];
-            while (await peer.GetStream().ReadAsync(bytes.AsMemory()).AsTask().WaitAsync(TimeSpan.FromSeconds(5)) != 0) { }
+            try
+            {
+                while (await peer.GetStream().ReadAsync(bytes.AsMemory()).AsTask().WaitAsync(TimeSpan.FromSeconds(5)) != 0) { }
+            }
+            catch (System.IO.IOException ex) when (ex.InnerException is System.Net.Sockets.SocketException
+            { SocketErrorCode: System.Net.Sockets.SocketError.ConnectionReset })
+            {
+                // Linux may reset a socket closed with unread handshake bytes instead of returning EOF.
+            }
         }
 
         [Fact]

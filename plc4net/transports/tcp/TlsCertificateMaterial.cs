@@ -59,7 +59,8 @@ namespace org.apache.plc4net.transports.tcp
                     {
                         imported.Import(configuration.TlsKeyStore,
                             password,
-                            OperatingSystem.IsWindows() ? X509KeyStorageFlags.UserKeySet : X509KeyStorageFlags.EphemeralKeySet);
+                            // macOS does not support ephemeral key imports; use its temporary keychain import.
+                            OperatingSystem.IsLinux() ? X509KeyStorageFlags.EphemeralKeySet : X509KeyStorageFlags.DefaultKeySet);
                     }
                     finally { _owned.AddRange(imported); }
                     var identities = 0;
