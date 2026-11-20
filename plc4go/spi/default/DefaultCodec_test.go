@@ -1645,7 +1645,12 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, m)
 			}
-			t.Cleanup(m.wg.Wait)
+			// After a recovered panic ReceiveWork starts a new receive worker on activeWorker, which outlives this
+			// call. Wait for it before the codec's goroutines (it starts some) and before the mocks' cleanups.
+			t.Cleanup(func() {
+				m.activeWorker.Wait()
+				m.wg.Wait()
+			})
 			m.wg.Go(func() {
 				// Stop after 200ms
 				timer := time.NewTimer(200 * time.Millisecond)
@@ -1656,6 +1661,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				m.running.Store(false)
 			})
 			m.ReceiveWork(m.ctx)
+			m.activeWorker.Done() // the worker the manipulator counted
 		})
 	}
 }
