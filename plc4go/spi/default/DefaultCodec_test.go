@@ -1655,7 +1655,7 @@ func Test_defaultCodec_ReceiveWork(t *testing.T) {
 				}
 				m.running.Store(false)
 			})
-			m.ReceiveWork()
+			m.ReceiveWork(m.ctx)
 		})
 	}
 }

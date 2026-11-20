@@ -363,21 +363,35 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 
 func (m *defaultCodec) startWorkers() {
 	m.log.Trace().Msg("starting workers")
-	m.startExpire()
-	m.startReceive()
+	// The workers get the context of this run instead of reading m.ctx, which the next Connect replaces: a
+	// worker of a run that a fatal transport error stopped may still be winding down when that Connect starts
+	// the next run, and must neither carry on in it nor start a worker for it.
+	ctx := m.ctx
+	m.startExpire(ctx)
+	m.startReceive(ctx)
 }
 
-func (m *defaultCodec) startExpire() {
+func (m *defaultCodec) startExpire(ctx context.Context) {
 	m.log.Trace().Msg("starting expire worker")
-	m.activeWorker.Go(m.ExpireWork)
+	m.activeWorker.Go(func() { m.ExpireWork(ctx) })
 }
 
-func (m *defaultCodec) startReceive() {
+func (m *defaultCodec) startReceive(ctx context.Context) {
 	m.log.Trace().Msg("starting receive worker")
-	m.activeWorker.Go(m.ReceiveWork)
+	m.activeWorker.Go(func() { m.ReceiveWork(ctx) })
 }
 
-func (m *defaultCodec) ExpireWork() {
+// isRunActive reports whether the run that ctx belongs to is still active: the codec is running and nobody
+// stopped this run. Disconnect and a fatal transport error cancel the run's context before they store
+// running=false, and Connect replaces a cancelled context before it sets running again, so no run shares its
+// context with a stopped one: a worker of a stopped run sees its context cancelled even when a following Connect
+// has already set running again.
+func (m *defaultCodec) isRunActive(ctx context.Context) bool {
+	return m.running.Load() && ctx.Err() == nil
+}
+
+// ExpireWork runs the expire worker of the run that ctx belongs to.
+func (m *defaultCodec) ExpireWork(ctx context.Context) {
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
@@ -393,17 +407,26 @@ func (m *defaultCodec) ExpireWork() {
 				Interface("err", err).
 				Msg("panic-ed")
 		}
-		if m.running.Load() {
+		// Replace this worker only while its run is active (after a recovered panic, say). A worker of a stopped
+		// run must not start one: a Connect may have started the next run's workers already.
+		if m.isRunActive(ctx) {
 			workerLog.Warn().Msg("Keep running")
-			m.startExpire()
+			m.startExpire(ctx)
 		} else {
 			workerLog.Info().Msg("expire worker terminated")
+			// This worker may have taken a notification meant for the next run's expire worker on its way out
+			// (its select found both that and its cancelled context ready). Hand one on, so a new expectation
+			// still wakes that worker. At worst it wakes it once for nothing.
+			select {
+			case m.notifyExpireWorker <- struct{}{}:
+			default:
+			}
 		}
 	}()
 
 	// Start an endless loop
 mainLoop:
-	for m.running.Load() {
+	for m.isRunActive(ctx) {
 		workerLog.Trace().Msg("expire mainloop cycle")
 		now := time.Now()
 
@@ -417,7 +440,7 @@ mainLoop:
 			select {
 			case <-m.notifyExpireWorker:
 				workerLog.Trace().Msg("waking up because of notification")
-			case <-m.ctx.Done():
+			case <-ctx.Done():
 				workerLog.Trace().Msg("context done, exiting expire work")
 				return
 			case <-timer.C:
@@ -434,7 +457,7 @@ mainLoop:
 		select {
 		case <-m.notifyExpireWorker:
 			workerLog.Trace().Msg("waking up because of notification")
-		case <-m.ctx.Done():
+		case <-ctx.Done():
 			workerLog.Trace().Msg("context done, exiting expire work")
 			return
 		case <-timer.C:
@@ -443,7 +466,8 @@ mainLoop:
 	}
 }
 
-func (m *defaultCodec) ReceiveWork() {
+// ReceiveWork runs the receive worker of the run that ctx belongs to.
+func (m *defaultCodec) ReceiveWork(ctx context.Context) {
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
@@ -459,9 +483,12 @@ func (m *defaultCodec) ReceiveWork() {
 				Interface("err", err).
 				Msg("panic-ed")
 		}
-		if m.running.Load() {
+		// Replace this worker only while its run is active (after a recovered panic, say). A worker of a stopped
+		// run must not start one: a Connect right after a fatal transport error may have started the next run's
+		// receive worker already, and two receive workers would read the transport side by side.
+		if m.isRunActive(ctx) {
 			workerLog.Warn().Msg("Keep running")
-			m.startReceive()
+			m.startReceive(ctx)
 		} else {
 			workerLog.Info().Msg("receive worker terminated")
 		}
@@ -470,7 +497,7 @@ func (m *defaultCodec) ReceiveWork() {
 	lastLoopTime := time.Now()
 	// Start an endless loop
 mainLoop:
-	for m.running.Load() {
+	for m.isRunActive(ctx) {
 		const cycleTime = 10 * time.Millisecond
 		if processingTime := time.Since(lastLoopTime); processingTime < cycleTime {
 			// Ensure that we leave at least 10ms between loops to not burn cycles
@@ -493,7 +520,7 @@ mainLoop:
 			select {
 			case <-m.notifyReceiveWorker:
 				workerLog.Trace().Msg("waking up because of notification")
-			case <-m.ctx.Done():
+			case <-ctx.Done():
 				workerLog.Trace().Msg("context done, exiting receive work")
 				return
 			case <-timer.C:
@@ -526,13 +553,13 @@ mainLoop:
 					err = errors.New("not running")
 					return
 				}
-				message, err = m.Receive(m.ctx)
+				message, err = m.Receive(ctx)
 			})
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:
 			// nothing
-			case <-m.ctx.Done():
+			case <-ctx.Done():
 				workerLog.Trace().Msg("context done, exiting receive work")
 				return
 			case <-timeoutTimer.C:
@@ -557,7 +584,7 @@ mainLoop:
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
-			handled := m.customMessageHandling(m.ctx, m.DefaultCodecRequirements, message)
+			handled := m.customMessageHandling(ctx, m.DefaultCodecRequirements, message)
 			workerLog.Trace().TimeDiff("elapsedTime", time.Now(), start).Bool("handled", handled).Msg("custom handling took elapsedTime")
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
