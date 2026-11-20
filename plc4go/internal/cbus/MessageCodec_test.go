@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sync"
 	"testing"
 	"testing/synctest"
 	"time"
@@ -877,6 +878,88 @@ func Test_extractMMIAndSAL(t *testing.T) {
 				tt.setup(t, &tt.args)
 			}
 			assert.Equalf(t, tt.handled, extractMMIAndSAL(testutils.ProduceTestingLogger(t))(t.Context(), tt.args.codec, tt.args.message), "extractMMIAndSAL(%v, %v) to be handled", tt.args.codec, tt.args.message)
+		})
+	}
+}
+
+// failingReadTransportInstance is a test transport whose Read fails, which the test transport classifies as a
+// fatal transport error.
+type failingReadTransportInstance struct {
+	*test.TransportInstance
+}
+
+func (f *failingReadTransportInstance) Read(context.Context, uint32) ([]byte, error) {
+	return nil, fmt.Errorf("read failed on purpose")
+}
+
+// A fatal transport error stops the codec on its own: running is false before anybody calls Disconnect. The
+// connection's SAL and MMI handlers range over the monitor channels and Connection.Close waits for them, so a
+// later Disconnect has to close the channels, exactly once, also when the fatal error's handler already
+// re-entered Disconnect (connection.Invalidate -> Close). Before, both Disconnect paths returned "already
+// disconnected" without closing them, and a range over them never ended (synctest reports it as a deadlock).
+//
+// The re-entrant Disconnect must never block on stateChange: another Disconnect may hold it while it waits for
+// the handler's wait group. The last case holds stateChange during the fatal error; a blocking re-entrant
+// Disconnect makes it hang (a goroutine blocked on a mutex is not durably blocked for synctest).
+func TestMessageCodec_Disconnect_closesMonitorChannelsAfterFatalTransportError(t *testing.T) {
+	tests := []struct {
+		name                      string
+		handlerReentersDisconnect bool
+		holdStateChange           bool
+	}{
+		{name: "handler does not re-enter Disconnect"},
+		{name: "handler re-enters Disconnect", handlerReentersDisconnect: true},
+		{name: "handler re-enters Disconnect while stateChange is held", handlerReentersDisconnect: true, holdStateChange: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				ti, err := test.NewTransport(_options...).CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
+				require.NoError(t, err)
+				transportInstance := &failingReadTransportInstance{TransportInstance: ti.(*test.TransportInstance)}
+				require.NoError(t, transportInstance.Connect(t.Context()))
+				codec := NewMessageCodec(transportInstance, _options...)
+
+				fatal := make(chan struct{})
+				signalFatal := sync.OnceFunc(func() { close(fatal) })
+				codec.SetTransportErrorHandler(func(kind transports.TransportErrorKind, _ error) {
+					if kind != transports.TransportErrorFatal {
+						return
+					}
+					if tt.handlerReentersDisconnect {
+						assert.EqualError(t, codec.Disconnect(), "already disconnected")
+					}
+					signalFatal()
+				})
+				require.NoError(t, codec.Connect(t.Context()))
+				monitoredSALs, monitoredMMIs := codec.monitoredSALs, codec.monitoredMMIs
+
+				if tt.holdStateChange {
+					codec.stateChange.Lock()
+				}
+				// An LF without a CR is garbage: the codec reads it away, the read fails, and the error is fatal.
+				transportInstance.FillReadBuffer([]byte("\n"))
+				<-fatal
+				require.False(t, codec.IsRunning())
+				if tt.holdStateChange {
+					// The re-entrant Disconnect returned without the lock and left the channels to its holder.
+					select {
+					case _, ok := <-monitoredSALs:
+						assert.True(t, ok, "monitoredSALs closed without stateChange")
+					default:
+					}
+					codec.stateChange.Unlock()
+				}
+
+				assert.EqualError(t, codec.Disconnect(), "already disconnected")
+				for range monitoredSALs {
+				}
+				for range monitoredMMIs {
+				}
+				// Closed exactly once: another Disconnect must not panic on a closed channel.
+				assert.EqualError(t, codec.Disconnect(), "already disconnected")
+			})
 		})
 	}
 }

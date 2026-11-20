@@ -53,6 +53,9 @@ type MessageCodec struct {
 	currentlyReportedServerErrors atomic.Uint64
 
 	stateChange sync.Mutex
+	// monitorChannelsOpen is true from Connect until monitoredMMIs and monitoredSALs are closed; guarded by
+	// stateChange, so the channels are closed exactly once per Connect.
+	monitorChannelsOpen bool `ignore:"true"`
 
 	passLogToModel bool `ignore:"true"`
 	log            zerolog.Logger
@@ -95,31 +98,55 @@ func (m *MessageCodec) Connect(ctx context.Context) error {
 	if m.IsRunning() {
 		return errors.New("already running")
 	}
+	// Channels of an earlier run that stopped on a fatal transport error, or whose Connect failed, are still
+	// open: end their readers.
+	m.closeMonitorChannels()
 	m.log.Trace().Msg("building channels")
 	m.monitoredMMIs = make(chan readWriteModel.CALReply, 100)
 	m.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 100)
+	m.monitorChannelsOpen = true
 	return m.DefaultCodec.Connect(ctx)
 }
 
 func (m *MessageCodec) Disconnect() error {
-	// Lock-free fast path, as in DefaultCodec.Disconnect. A fatal transport error's handler runs on the
-	// default codec's wait group and calls back here (connection.Invalidate -> Close) while another
-	// Disconnect holds stateChange and waits in DefaultCodec.Disconnect for that wait group. The error
-	// path stores running=false before it starts the handler, so the re-entrant call returns here
-	// instead of blocking on stateChange forever.
 	if !m.IsRunning() {
+		// The codec stopped already: a fatal transport error stopped it on its own, another Disconnect is under
+		// way, or it never ran. Never block on stateChange here: a fatal transport error's handler runs on the
+		// default codec's wait group and calls back here (connection.Invalidate -> Close) while another
+		// Disconnect may hold stateChange and wait in DefaultCodec.Disconnect for that wait group. If the lock
+		// is free, close the monitor channels here, as nobody else may: the connection's SAL and MMI handlers
+		// range over them and Connection.Close waits for those handlers. If it is taken, a Disconnect holding
+		// it closes them; a Connect holding it leaves its new channels to the next Disconnect.
+		if m.stateChange.TryLock() {
+			m.closeMonitorChannels()
+			m.stateChange.Unlock()
+		}
 		return errors.New("already disconnected")
 	}
 	m.stateChange.Lock()
 	defer m.stateChange.Unlock()
 	if !m.IsRunning() {
+		// A fatal transport error stopped the codec between the check above and the lock.
+		m.closeMonitorChannels()
 		return errors.New("already disconnected")
 	}
 	err := m.DefaultCodec.Disconnect()
+	m.closeMonitorChannels()
+	return err
+}
+
+// closeMonitorChannels closes monitoredMMIs and monitoredSALs if they are open. The caller holds stateChange
+// and the codec has stopped (running is false). The receive worker sends to the channels from the custom
+// message handler and has stopped sending by now: either it stopped itself on a fatal transport error, or
+// DefaultCodec.Disconnect waited for it to end.
+func (m *MessageCodec) closeMonitorChannels() {
+	if !m.monitorChannelsOpen {
+		return
+	}
 	m.log.Trace().Msg("closing channels")
 	close(m.monitoredMMIs)
 	close(m.monitoredSALs)
-	return err
+	m.monitorChannelsOpen = false
 }
 
 func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message spi.Message) error {
