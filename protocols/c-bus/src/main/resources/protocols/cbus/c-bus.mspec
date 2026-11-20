@@ -1139,10 +1139,12 @@
         ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
             [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
         ]
+        // Serial Interface User Guide 7.2: 2 ASCII bytes of whole volts, the decimal point ($2E), 1 ASCII
+        // byte of the first decimal place and 'V' ($56), e.g. "29.8V".
         ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
            [simple string 16    volts                   ]
-           [const  byte         dot     0x2C            ]
-           [simple string 16    voltsDecimalPlace       ]
+           [const  byte         dot     0x2E            ]
+           [simple string 8     voltsDecimalPlace       ]
            [const  byte         v       0x56            ]
         ]
         ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent

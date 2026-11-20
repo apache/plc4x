@@ -605,6 +605,32 @@ public class ReferenceTest {
                 assertMessageMatches(bytes, msg);
             }
 
+            // A C-Bus Ethernet interface's captured reply to an identify of NetworkVoltage (request "2107"),
+            // "29.8V": 2 ASCII bytes of whole volts, the decimal point ($2E), 1 ASCII byte of the decimal place
+            // and 'V'. The capture holds the short form "860732392E38564C" (BASIC mode), whose header $86 is also
+            // the long form marker the parser assumes; this test wraps the captured CAL data in the long form
+            // (SMART mode with IDMON), from unit $04 through serial interface $99 as in the guide's example 9.2.
+            @Test
+            void calReplyIdentifyNetworkVoltage() throws Exception {
+                byte[] bytes = "86049900860732392E385629\r\n".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                requestContext = new RequestContext(true);
+                cBusOptions = new CBusOptions(false, true, true, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+
+                ReplyOrConfirmationReply replyOrConfirmation = (ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply();
+                EncodedReplyCALReply encodedReply = (EncodedReplyCALReply) ((ReplyEncodedReply) replyOrConfirmation.getReply()).getEncodedReply();
+                CALDataIdentifyReply identifyReply = (CALDataIdentifyReply) encodedReply.getCalReply().getCalData();
+                assertThat(identifyReply.getAttribute()).isEqualTo(Attribute.NetworkVoltage);
+                IdentifyReplyCommandNetworkVoltage networkVoltage = (IdentifyReplyCommandNetworkVoltage) identifyReply.getIdentifyReplyCommand();
+                assertThat(networkVoltage.getVolts()).isEqualTo("29");
+                assertThat(networkVoltage.getVoltsDecimalPlace()).isEqualTo("8");
+
+                assertMessageMatches(bytes, msg);
+            }
+
             @Test
             void calReplySmart() throws Exception {
                 // TODO: seems like the checksum is wrong here???

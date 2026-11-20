@@ -56,8 +56,26 @@ func TestIdentifyReplySummaryCapture(t *testing.T) {
 	assert.Equal(t, raw, string(serialized))
 }
 
+// TestIdentifyReplyNetworkVoltageCapture parses the same interface's reply to an identify of
+// NetworkVoltage (request "2107"): per the Serial Interface User Guide (7.2) 2 ASCII bytes of whole
+// volts, the decimal point ($2E), 1 ASCII byte of the first decimal place and 'V' ($56), here "29.8V".
+// The capture holds the short form "860732392E38564C", taken in BASIC mode; its header $86 (a REPLY of 6
+// bytes) is also the marker of a long form CAL reply, which the parser assumes. This test wraps the
+// captured CAL data in the long form a unit sends in SMART mode with IDMON (plc4go's default), from unit
+// $04 through serial interface $99 (the addressing of the guide's example in 9.2).
+func TestIdentifyReplyNetworkVoltageCapture(t *testing.T) {
+	const raw = "86049900860732392E385629\r\n"
+	identifyReply := parseCapturedIdentifyReplyCALData(t, raw)
+	assert.Equal(t, Attribute_NetworkVoltage, identifyReply.GetAttribute())
+	networkVoltage, ok := identifyReply.GetIdentifyReplyCommand().(IdentifyReplyCommandNetworkVoltage)
+	require.True(t, ok, "%T", identifyReply.GetIdentifyReplyCommand())
+	assert.Equal(t, "29", networkVoltage.GetVolts())
+	assert.Equal(t, "8", networkVoltage.GetVoltsDecimalPlace())
+}
+
 // TestIdentifyReplyCaptureRoundTrip parses the same interface's replies to the identify of
-// Manufacturer, Type, FirmwareVersion, Summary and ExtendedDiagnosticSummary and serializes them back.
+// Manufacturer, Type, FirmwareVersion, Summary, ExtendedDiagnosticSummary and NetworkVoltage and
+// serializes them back.
 func TestIdentifyReplyCaptureRoundTrip(t *testing.T) {
 	for _, raw := range []string{
 		"8900434C495053414C204F\r\n",         // Manufacturer "CLIPSAL "
@@ -65,6 +83,7 @@ func TestIdentifyReplyCaptureRoundTrip(t *testing.T) {
 		"8902352E342E3030202010\r\n",         // FirmwareVersion "5.4.00  "
 		"8A03B64DB4B68CDEF1540057\r\n",       // Summary
 		"8D04FFFFFF00001897C095BE0005AB\r\n", // ExtendedDiagnosticSummary
+		"86049900860732392E385629\r\n",       // NetworkVoltage "29.8V", long form (see TestIdentifyReplyNetworkVoltageCapture)
 	} {
 		t.Run(raw[:4], func(t *testing.T) {
 			toClient := parseCapturedIdentifyReply(t, raw)
@@ -73,6 +92,21 @@ func TestIdentifyReplyCaptureRoundTrip(t *testing.T) {
 			assert.Equal(t, raw, string(serialized))
 		})
 	}
+}
+
+// parseCapturedIdentifyReplyCALData parses a captured reply to an identify request down to its CAL data.
+func parseCapturedIdentifyReplyCALData(t *testing.T, raw string) CALDataIdentifyReply {
+	t.Helper()
+	toClient := parseCapturedIdentifyReply(t, raw)
+	replyOrConfirmation, ok := toClient.GetReply().(ReplyOrConfirmationReply)
+	require.True(t, ok, "%T", toClient.GetReply())
+	encodedReply, ok := replyOrConfirmation.GetReply().(ReplyEncodedReply)
+	require.True(t, ok, "%T", replyOrConfirmation.GetReply())
+	calReply, ok := encodedReply.GetEncodedReply().(EncodedReplyCALReply)
+	require.True(t, ok, "%T", encodedReply.GetEncodedReply())
+	identifyReply, ok := calReply.GetCalReply().GetCalData().(CALDataIdentifyReply)
+	require.True(t, ok, "%T", calReply.GetCalReply().GetCalData())
+	return identifyReply
 }
 
 // parseCapturedIdentifyReply parses a reply to an identify request as the interface sent it (checksum on).

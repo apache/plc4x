@@ -2772,12 +2772,13 @@ func TestMapEncodedReply(t *testing.T) {
 			name: "CALDataIdentifyReplyExactly (network voltage)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
-					command := readWriteModel.NewIdentifyReplyCommandNetworkVoltage("13.3", "3")
+					// "29.8V", as a C-Bus Ethernet interface answered
+					command := readWriteModel.NewIdentifyReplyCommandNetworkVoltage("29", "8")
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
 						readWriteModel.NewRequestContext(false),
 						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 						nil,
-						readWriteModel.Attribute_DSIStatus,
+						readWriteModel.Attribute_NetworkVoltage,
 						command,
 					)
 					calReplyLong := readWriteModel.NewCALReplyLong(
@@ -2807,7 +2808,7 @@ func TestMapEncodedReply(t *testing.T) {
 				},
 				addPlcValue: func(t *testing.T) func(string, apiValues.PlcValue) {
 					values := map[string]apiValues.PlcValue{
-						"someTag": spiValues.NewPlcLREAL(13.600000000000001),
+						"someTag": spiValues.NewPlcLREAL(29.8),
 					}
 					return func(name string, plcValue apiValues.PlcValue) {
 						if value, ok := values[name]; ok {
