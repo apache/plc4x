@@ -274,6 +274,10 @@ func (m *_IdentifyReplyCommandDSIStatus) GetAttribute() Attribute {
 	return Attribute_DSIStatus
 }
 
+func (m *_IdentifyReplyCommandDSIStatus) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

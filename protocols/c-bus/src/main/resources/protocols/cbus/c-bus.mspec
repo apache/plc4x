@@ -608,6 +608,8 @@
                               parameterValue                                                ]
         ]
         ['REPLY', 'true'    *IdentifyReply(CALCommandTypeContainer commandTypeContainer)        // Reply
+            // golang reads an unknown enum value as 0 (Manufacturer), so the static call checks that the attribute is known
+            [validation 'STATIC_CALL("knowsAttribute", readBuffer)' "unknown identify attribute" shouldFail=false]
             [simple Attribute   attribute                                                   ]
             [simple IdentifyReplyCommand('attribute', 'commandTypeContainer.numBytes - 1')
                                 identifyReplyCommand                                        ]
@@ -1088,8 +1090,45 @@
     ['0x11' DSIStatus                 ['10']]
 ]
 
+// numBytes is the reply's data length after the attribute. A unit answers an attribute it has nothing for
+// with no data (a REPLY of 1 byte, the attribute alone). The cases match in order: first the attributes
+// whose layout is a plain array (no data is an empty array, as a captured C-Bus Ethernet interface answered
+// the GAV attributes), then IdentifyReplyCommandEmpty for no data, then the layouts that need data.
+// numBytes and attribute are discriminators only: the generated subtypes' numBytes getters return 0, not
+// the reply's length, and IdentifyReplyCommandEmpty's attribute getter is not its attribute (0 in Go,
+// null in Java); the attribute is the enclosing CALDataIdentifyReply's.
 [type IdentifyReplyCommand(Attribute attribute, uint 5 numBytes) byteOrder='"BIG_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
-    [typeSwitch attribute
+    [typeSwitch attribute, numBytes
+        ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
+            [array  byte        networkTerminalLevels  count 'numBytes'       ] // TODO: check datatype
+        ]
+        ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
+            [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
+        ]
+        ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
+        ]
+        ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
+        ]
+        ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
+            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
+        ]
+        ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
+            [array  LogicAssignment   logicAssigment        count 'numBytes'       ]
+        ]
+        ['MinimumLevels'                IdentifyReplyCommandMinimumLevels
+            [array  byte        minimumLevels       count 'numBytes'       ]
+        ]
+        ['MaximumLevels'                IdentifyReplyCommandMaximumLevels
+            [array  byte        maximumLevels       count 'numBytes'       ]
+        ]
+        ['CurrentSenseLevels'           IdentifyReplyCommandCurrentSenseLevels
+            [array  byte        currentSenseLevels  count 'numBytes'       ]
+        ]
+        // No data for an attribute whose layout needs data. The attribute is the enclosing CALDataIdentifyReply's.
+        [*, '0'                         IdentifyReplyCommandEmpty
+        ]
         ['Manufacturer'                 IdentifyReplyCommandManufacturer
             [simple string 64  manufacturerName ]
         ]
@@ -1133,12 +1172,6 @@
             [simple   bit                     internalStackOverflow  ]
             [simple   bit                     microPowerReset        ]
         ]
-        ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
-            [array  byte        networkTerminalLevels  count 'numBytes'       ] // TODO: check datatype
-        ]
-        ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
-            [array  byte        terminalLevels        count 'numBytes'       ] // TODO: check datatype
-        ]
         // Serial Interface User Guide 7.2: 2 ASCII bytes of whole volts, the decimal point ($2E), 1 ASCII
         // byte of the first decimal place and 'V' ($56), e.g. "29.8V".
         ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
@@ -1147,30 +1180,9 @@
            [simple string 8     voltsDecimalPlace       ]
            [const  byte         v       0x56            ]
         ]
-        ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
-            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
-        ]
-        ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
-            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
-        ]
-        ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
-            [array  byte        values  count   'numBytes'    ] // TODO: check datatype
-        ]
-        ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
-            [array  LogicAssignment   logicAssigment        count 'numBytes'       ]
-        ]
         ['Delays'                       IdentifyReplyCommandDelays
             [array  byte        terminalLevels        count 'numBytes-1'       ]
             [simple byte        reStrikeDelay                   ]
-        ]
-        ['MinimumLevels'                IdentifyReplyCommandMinimumLevels
-            [array  byte        minimumLevels       count 'numBytes'       ]
-        ]
-        ['MaximumLevels'                IdentifyReplyCommandMaximumLevels
-            [array  byte        maximumLevels       count 'numBytes'       ]
-        ]
-        ['CurrentSenseLevels'           IdentifyReplyCommandCurrentSenseLevels
-            [array  byte        currentSenseLevels  count 'numBytes'       ]
         ]
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
             [simple   IdentifyReplyCommandUnitSummary

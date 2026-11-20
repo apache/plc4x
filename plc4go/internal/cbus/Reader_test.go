@@ -342,6 +342,172 @@ func TestReader_readSync(t *testing.T) {
 			},
 		},
 		{
+			name: "read identify delays without data",
+			fields: fields{
+				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
+			},
+			args: args{
+				readRequest: spiModel.NewDefaultPlcReadRequest(
+					map[string]apiModel.PlcTag{
+						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Delays, 1),
+					},
+					[]string{
+						"blub",
+					},
+					nil,
+					nil,
+				),
+				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				transactionManager := transactions.NewRequestTransactionManager(
+					10,
+					_options...,
+				)
+				t.Cleanup(func() {
+					assert.NoError(t, transactionManager.Close())
+				})
+				fields.tm = transactionManager
+
+				transport := test.NewTransport(_options...)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g.810C73\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect(t.Context()))
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
+				t.Cleanup(cancelFunc)
+			},
+			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
+				timer := time.NewTimer(2 * time.Second)
+				select {
+				case <-timer.C:
+					t.Fail()
+				case result := <-results:
+					// the unit answered with the attribute alone: it has no data for it
+					assert.Nil(t, result.GetErr())
+					response := result.GetResponse()
+					require.NotNil(t, response)
+					assert.Equal(t, apiModel.PlcResponseCode_NOT_FOUND, response.GetResponseCode("blub"))
+					assert.Nil(t, response.GetValue("blub"))
+				}
+				return true
+			},
+		},
+		{
+			name: "read identify type without data",
+			fields: fields{
+				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
+			},
+			args: args{
+				readRequest: spiModel.NewDefaultPlcReadRequest(
+					map[string]apiModel.PlcTag{
+						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
+					},
+					[]string{
+						"blub",
+					},
+					nil,
+					nil,
+				),
+				result: make(chan apiModel.PlcReadRequestResult, 1),
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				transactionManager := transactions.NewRequestTransactionManager(
+					10,
+					_options...,
+				)
+				t.Cleanup(func() {
+					assert.NoError(t, transactionManager.Close())
+				})
+				fields.tm = transactionManager
+
+				transport := test.NewTransport(_options...)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					t.Logf("reacting to\n%s", hex.Dump(data))
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("g.81017E\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect(t.Context()))
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
+
+				args.ctx = testutils.TestContext(t)
+				var cancelFunc context.CancelFunc
+				args.ctx, cancelFunc = context.WithTimeout(args.ctx, 20*time.Second)
+				t.Cleanup(cancelFunc)
+			},
+			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
+				timer := time.NewTimer(2 * time.Second)
+				select {
+				case <-timer.C:
+					t.Fail()
+				case result := <-results:
+					// the unit answered with the attribute alone: it has no data for it
+					assert.Nil(t, result.GetErr())
+					response := result.GetResponse()
+					require.NotNil(t, response)
+					assert.Equal(t, apiModel.PlcResponseCode_NOT_FOUND, response.GetResponseCode("blub"))
+					assert.Nil(t, response.GetValue("blub"))
+				}
+				return true
+			},
+		},
+		{
 			name: "read identify type aborted",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},

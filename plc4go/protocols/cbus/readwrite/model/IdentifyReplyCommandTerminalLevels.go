@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetAttribute() Attribute {
 	return Attribute_TerminalLevel
 }
 
+func (m *_IdentifyReplyCommandTerminalLevels) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

@@ -50,6 +50,14 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field terminalLevels
    */
   public byte[] getTerminalLevels() {

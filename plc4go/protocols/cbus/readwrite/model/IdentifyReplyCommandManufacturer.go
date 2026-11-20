@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandManufacturer) GetAttribute() Attribute {
 	return Attribute_Manufacturer
 }
 
+func (m *_IdentifyReplyCommandManufacturer) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

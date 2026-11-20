@@ -141,6 +141,25 @@ func TestKnowsCALCommandTypeContainer(t *testing.T) {
 	}
 }
 
+func TestKnowsAttribute(t *testing.T) {
+	tests := []struct {
+		name  string
+		bytes []byte
+		want  bool
+	}{
+		{name: "DSIStatus", bytes: []byte{0x11}, want: true},
+		{name: "unknown", bytes: []byte{0x12}},
+		{name: "empty"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			readBuffer := utils.NewReadBufferByteBased(tt.bytes)
+			assert.Equal(t, tt.want, KnowsAttribute(testutils.TestContext(t), readBuffer))
+			assert.Zero(t, readBuffer.GetPos())
+		})
+	}
+}
+
 func TestKnowsClockAndTimekeepingCommandTypeContainer(t *testing.T) {
 	type args struct {
 		readBuffer utils.ReadBuffer

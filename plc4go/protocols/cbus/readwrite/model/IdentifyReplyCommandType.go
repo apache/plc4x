@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandType) GetAttribute() Attribute {
 	return Attribute_Type
 }
 
+func (m *_IdentifyReplyCommandType) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

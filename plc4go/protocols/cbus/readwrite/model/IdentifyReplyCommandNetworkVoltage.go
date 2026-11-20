@@ -192,6 +192,10 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetAttribute() Attribute {
 	return Attribute_NetworkVoltage
 }
 
+func (m *_IdentifyReplyCommandNetworkVoltage) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

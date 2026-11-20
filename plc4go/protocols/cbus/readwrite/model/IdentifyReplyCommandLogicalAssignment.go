@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetAttribute() Attribute {
 	return Attribute_LogicalAssignment
 }
 
+func (m *_IdentifyReplyCommandLogicalAssignment) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

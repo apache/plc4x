@@ -186,6 +186,10 @@ func (m *_IdentifyReplyCommandDelays) GetAttribute() Attribute {
 	return Attribute_Delays
 }
 
+func (m *_IdentifyReplyCommandDelays) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

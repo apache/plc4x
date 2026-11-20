@@ -54,6 +54,14 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field volts
    */
   public String getVolts() {

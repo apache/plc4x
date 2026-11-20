@@ -25,6 +25,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // TestIdentifyReplySummaryCapture parses a real C-Bus Ethernet interface's (Type "PC_CNIED") reply
@@ -74,8 +76,8 @@ func TestIdentifyReplyNetworkVoltageCapture(t *testing.T) {
 }
 
 // TestIdentifyReplyCaptureRoundTrip parses the same interface's replies to the identify of
-// Manufacturer, Type, FirmwareVersion, Summary, ExtendedDiagnosticSummary and NetworkVoltage and
-// serializes them back.
+// Manufacturer, Type, FirmwareVersion, Summary, ExtendedDiagnosticSummary, NetworkVoltage and
+// OutputUnitSummary and serializes them back.
 func TestIdentifyReplyCaptureRoundTrip(t *testing.T) {
 	for _, raw := range []string{
 		"8900434C495053414C204F\r\n",         // Manufacturer "CLIPSAL "
@@ -84,12 +86,105 @@ func TestIdentifyReplyCaptureRoundTrip(t *testing.T) {
 		"8A03B64DB4B68CDEF1540057\r\n",       // Summary
 		"8D04FFFFFF00001897C095BE0005AB\r\n", // ExtendedDiagnosticSummary
 		"86049900860732392E385629\r\n",       // NetworkVoltage "29.8V", long form (see TestIdentifyReplyNetworkVoltageCapture)
+		"8510020000FF6A\r\n",                 // OutputUnitSummary
 	} {
 		t.Run(raw[:4], func(t *testing.T) {
 			toClient := parseCapturedIdentifyReply(t, raw)
 			serialized, err := toClient.Serialize()
 			require.NoError(t, err)
 			assert.Equal(t, raw, string(serialized))
+		})
+	}
+}
+
+// TestIdentifyReplyEmptyCapture parses replies without data, as units send them for an attribute they
+// have nothing for (a REPLY of 1 byte, the attribute alone), and serializes them back. Delays ("810C73")
+// and DSIStatus ("81116E") are the same interface's captured replies; the others are constructed the same
+// way for the remaining attributes whose layout needs data, and one in the long form.
+func TestIdentifyReplyEmptyCapture(t *testing.T) {
+	for _, tt := range []struct {
+		raw       string
+		attribute Attribute
+	}{
+		{"81007F\r\n", Attribute_Manufacturer},
+		{"81017E\r\n", Attribute_Type},
+		{"81027D\r\n", Attribute_FirmwareVersion},
+		{"81037C\r\n", Attribute_Summary},
+		{"81047B\r\n", Attribute_ExtendedDiagnosticSummary},
+		{"810778\r\n", Attribute_NetworkVoltage},
+		{"810C73\r\n", Attribute_Delays}, // captured
+		{"81106F\r\n", Attribute_OutputUnitSummary},
+		{"81116E\r\n", Attribute_DSIStatus}, // captured
+		// the long form a unit sends in SMART mode with IDMON: from unit $04 through serial interface $99
+		{"86049900810C50\r\n", Attribute_Delays},
+	} {
+		t.Run(tt.attribute.String(), func(t *testing.T) {
+			identifyReply := parseCapturedIdentifyReplyCALData(t, tt.raw)
+			assert.Equal(t, tt.attribute, identifyReply.GetAttribute())
+			assert.IsType(t, NewIdentifyReplyCommandEmpty(), identifyReply.GetIdentifyReplyCommand())
+			serialized, err := parseCapturedIdentifyReply(t, tt.raw).Serialize()
+			require.NoError(t, err)
+			assert.Equal(t, tt.raw, string(serialized))
+		})
+	}
+}
+
+// TestIdentifyReplyDelaysRestrikeOnly parses a Delays reply with one data byte (constructed): no terminal
+// delays and the re-strike delay. One byte is the least a Delays reply with data carries, so it must
+// not parse as IdentifyReplyCommandEmpty.
+func TestIdentifyReplyDelaysRestrikeOnly(t *testing.T) {
+	const raw = "820C056D\r\n"
+	identifyReply := parseCapturedIdentifyReplyCALData(t, raw)
+	delays, ok := identifyReply.GetIdentifyReplyCommand().(IdentifyReplyCommandDelays)
+	require.True(t, ok, "%T", identifyReply.GetIdentifyReplyCommand())
+	assert.Empty(t, delays.GetTerminalLevels())
+	assert.Equal(t, byte(0x05), delays.GetReStrikeDelay())
+	serialized, err := parseCapturedIdentifyReply(t, raw).Serialize()
+	require.NoError(t, err)
+	assert.Equal(t, raw, string(serialized))
+}
+
+// TestIdentifyReplyUnknownAttribute does not parse the same interface's reply without data to an identify
+// of an attribute the Attribute enum does not know (0x12, captured "81126D") as an identify reply: Go would
+// read the unknown attribute as 0 (Manufacturer) and serialize it as such.
+func TestIdentifyReplyUnknownAttribute(t *testing.T) {
+	_, err := CBusMessageParse[CBusMessage](
+		context.Background(),
+		[]byte("81126D\r\n"),
+		true,
+		NewRequestContext(true),
+		NewCBusOptions(false, false, false, false, false, false, false, false, true),
+	)
+	assert.ErrorContains(t, err, "unknown identify attribute")
+	// recoverable: inside a confirmation the optional reply then counts as absent
+	assert.ErrorIs(t, err, utils.ParseAssertError{})
+}
+
+// TestIdentifyReplyEmptyArrayCapture parses the same interface's replies without data to the identify of
+// attributes whose reply length is set by the number of the unit's variables (Serial Interface User Guide
+// 7.2, "dynamic"): they stay their own type with an empty array, and serialize back.
+func TestIdentifyReplyEmptyArrayCapture(t *testing.T) {
+	for _, tt := range []struct {
+		raw     string
+		command IdentifyReplyCommand
+	}{
+		{"81057A\r\n", NewIdentifyReplyCommandNetworkTerminalLevels(nil)},
+		{"810679\r\n", NewIdentifyReplyCommandTerminalLevels(nil)},
+		{"810877\r\n", NewIdentifyReplyCommandGAVValuesCurrent(nil)},
+		{"810976\r\n", NewIdentifyReplyCommandGAVValuesStored(nil)},
+		{"810A75\r\n", NewIdentifyReplyCommandGAVPhysicalAddresses(nil)},
+		{"810B74\r\n", NewIdentifyReplyCommandLogicalAssignment(nil)},
+		{"810D72\r\n", NewIdentifyReplyCommandMinimumLevels(nil)},
+		{"810E71\r\n", NewIdentifyReplyCommandMaximumLevels(nil)},
+		{"810F70\r\n", NewIdentifyReplyCommandCurrentSenseLevels(nil)},
+	} {
+		t.Run(tt.raw[:4], func(t *testing.T) {
+			identifyReply := parseCapturedIdentifyReplyCALData(t, tt.raw)
+			assert.IsType(t, tt.command, identifyReply.GetIdentifyReplyCommand())
+			assert.Zero(t, identifyReply.GetIdentifyReplyCommand().GetLengthInBytes(context.Background()))
+			serialized, err := parseCapturedIdentifyReply(t, tt.raw).Serialize()
+			require.NoError(t, err)
+			assert.Equal(t, tt.raw, string(serialized))
 		})
 	}
 }

@@ -379,6 +379,10 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetAttribute() Attribut
 	return Attribute_ExtendedDiagnosticSummary
 }
 
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

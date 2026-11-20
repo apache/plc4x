@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetAttribute() Attribute {
 	return Attribute_CurrentSenseLevels
 }
 
+func (m *_IdentifyReplyCommandCurrentSenseLevels) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

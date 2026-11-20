@@ -45,6 +45,14 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field currentSenseLevels
    */
   public byte[] getCurrentSenseLevels() {

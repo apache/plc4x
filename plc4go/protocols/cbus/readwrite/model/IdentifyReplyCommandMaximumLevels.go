@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetAttribute() Attribute {
 	return Attribute_MaximumLevels
 }
 
+func (m *_IdentifyReplyCommandMaximumLevels) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetAttribute() Attribute {
 	return Attribute_FirmwareVersion
 }
 
+func (m *_IdentifyReplyCommandFirmwareVersion) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

@@ -47,6 +47,14 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field logicAssigment
    */
   public List<LogicAssignment> getLogicAssigment() {

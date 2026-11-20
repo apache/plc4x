@@ -226,6 +226,10 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetAttribute() Attribute {
 	return Attribute_OutputUnitSummary
 }
 
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

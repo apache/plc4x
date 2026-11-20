@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetAttribute() Attribute {
 	return Attribute_MinimumLevels
 }
 
+func (m *_IdentifyReplyCommandMinimumLevels) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

@@ -2769,6 +2769,63 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
+			name: "CALDataIdentifyReply (empty)",
+			args: args{
+				encodedReply: func() readWriteModel.EncodedReplyCALReply {
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.NewRequestContext(false),
+						readWriteModel.CALCommandTypeContainer_CALCommandReply_1Bytes,
+						nil,
+						readWriteModel.Attribute_Delays,
+						readWriteModel.NewIdentifyReplyCommandEmpty(),
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(readWriteModel.NewRequestContext(false), 0, calReplyLong)
+				}(),
+				tagName: "someTag",
+				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
+					var lastCode apiModel.PlcResponseCode
+					t.Cleanup(func() {
+						// the code the read ends with
+						assert.Equal(t, apiModel.PlcResponseCode_NOT_FOUND, lastCode)
+					})
+					return func(name string, responseCode apiModel.PlcResponseCode) {
+						assert.Equal(t, "someTag", name)
+						lastCode = responseCode
+					}
+				},
+				addPlcValue: func(t *testing.T) func(string, apiValues.PlcValue) {
+					return func(name string, plcValue apiValues.PlcValue) {
+						t.Errorf("no value expected, got %s for %s", plcValue, name)
+					}
+				},
+			},
+			setup: func(t *testing.T, args *args) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					_options...,
+				)
+				t.Cleanup(func() {
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction(t.Name())
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
+		},
+		{
 			name: "CALDataIdentifyReplyExactly (network voltage)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {

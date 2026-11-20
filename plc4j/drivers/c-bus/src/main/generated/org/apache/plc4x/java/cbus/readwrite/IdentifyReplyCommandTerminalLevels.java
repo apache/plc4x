@@ -45,6 +45,14 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field terminalLevels
    */
   public byte[] getTerminalLevels() {

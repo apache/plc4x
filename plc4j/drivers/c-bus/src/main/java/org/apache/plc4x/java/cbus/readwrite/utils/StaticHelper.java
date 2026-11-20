@@ -185,6 +185,18 @@ public class StaticHelper {
         }
     }
 
+    // Whether the next byte is a known identify Attribute, without consuming it.
+    public static boolean knowsAttribute(ReadBuffer readBuffer) {
+        int oldPos = readBuffer.getPositionInBits();
+        try {
+            return Attribute.isDefined(readBuffer.readUnsignedShort(8));
+        } catch (BufferException ignore) {
+            return false;
+        } finally {
+            readBuffer.setPositionInBits(oldPos);
+        }
+    }
+
     public static boolean knowsLightingCommandTypeContainer(ReadBuffer readBuffer) {
         int oldPos = readBuffer.getPositionInBits();
         try {

@@ -113,6 +113,14 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field lowApplication
    */
   public ApplicationIdContainer getLowApplication() {

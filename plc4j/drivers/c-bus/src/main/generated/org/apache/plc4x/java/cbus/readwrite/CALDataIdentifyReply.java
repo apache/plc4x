@@ -16,6 +16,7 @@
 // under the License.
 package org.apache.plc4x.java.cbus.readwrite;
 
+import org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper;
 import org.apache.plc4x.java.spi.buffers.api.Message;
 import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
 import org.apache.plc4x.java.spi.buffers.api.WithOption;
@@ -24,6 +25,7 @@ import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.fields.data.reader.DataReaderFactory;
 import org.apache.plc4x.java.spi.fields.data.writer.DataWriterFactory;
+import org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException;
 import org.apache.plc4x.java.spi.fields.fields.reader.FieldReaderFactory;
 import org.apache.plc4x.java.spi.fields.fields.writer.FieldWriterFactory;
 import org.apache.plc4x.java.spi.fields.utils.ThreadLocalHelper;
@@ -64,6 +66,11 @@ public class CALDataIdentifyReply extends CALData implements Message {
     readBuffer.pushContext(WithOption.WithName("CALDataIdentifyReply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field
+    if(!(StaticHelper.knowsAttribute(readBuffer))) {
+      throw new ParseAssertException("unknown identify attribute");
+    }
+
     // Simple Field (enum): attribute
     Attribute attribute = FieldReaderFactory.readEnumField(DataReaderFactory.readEnum(Attribute::enumForValue, DataReaderFactory.readUnsignedShort(readBuffer, 8)), WithOption.WithName("attribute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -78,6 +85,8 @@ public class CALDataIdentifyReply extends CALData implements Message {
     writeBuffer.pushContext(WithOption.WithName("CALDataIdentifyReply"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
     int startPos = writeBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field (Nothing needed here)
+
     // Simple Field (enum): attribute
     FieldWriterFactory.writeSimpleEnumField((Attribute) attribute, DataWriterFactory.writeEnum(Attribute::getValue, Attribute::name, DataWriterFactory.writeUnsignedShort(writeBuffer, 8)), WithOption.WithName("attribute"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithByteBasedOption.WithByteOrder("BIG_ENDIAN"), WithOption.WithStringEncoding("UTF8"));
 
@@ -97,6 +106,8 @@ public class CALDataIdentifyReply extends CALData implements Message {
     int lengthInBits = super.getLengthInBits();
     CALDataIdentifyReply _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+    // Validation Field (Nothing needed here)
+
     // Simple Field: attribute
     lengthInBits += 8;
 

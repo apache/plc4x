@@ -44,7 +44,6 @@ type CALDataIdentifyReply interface {
 	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
-	// Reply
 	GetAttribute() Attribute
 	// GetIdentifyReplyCommand returns IdentifyReplyCommand (property field)
 	GetIdentifyReplyCommand() IdentifyReplyCommand
@@ -269,6 +268,11 @@ func (m *_CALDataIdentifyReply) parse(ctx context.Context, readBuffer utils.Read
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	// Validation
+	if !(KnowsAttribute(ctx, readBuffer)) {
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "unknown identify attribute"})
+	}
 
 	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {

@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.apache.plc4x.java.cbus.Util.assertMessageMatches;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReferenceTest {
 
@@ -629,6 +630,54 @@ public class ReferenceTest {
                 assertThat(networkVoltage.getVoltsDecimalPlace()).isEqualTo("8");
 
                 assertMessageMatches(bytes, msg);
+            }
+
+            // A unit answers an identify of an attribute it has nothing for with the attribute alone (a REPLY of
+            // 1 byte). Delays ("810C73") and DSIStatus ("81116E") are a C-Bus Ethernet interface's captured replies,
+            // Summary, NetworkVoltage and OutputUnitSummary are constructed the same way: all parse as
+            // IdentifyReplyCommandEmpty. GAVValuesCurrent ("810877", captured) is a plain array and stays an
+            // empty array.
+            @Test
+            void calReplyIdentifyEmpty() throws Exception {
+                for (String[] reply : new String[][]{
+                    {"810C73", "Delays", "IdentifyReplyCommandEmpty"},
+                    {"81116E", "DSIStatus", "IdentifyReplyCommandEmpty"},
+                    {"81037C", "Summary", "IdentifyReplyCommandEmpty"},
+                    {"810778", "NetworkVoltage", "IdentifyReplyCommandEmpty"},
+                    {"81106F", "OutputUnitSummary", "IdentifyReplyCommandEmpty"},
+                    {"810877", "GAVValuesCurrent", "IdentifyReplyCommandGAVValuesCurrent"},
+                }) {
+                    byte[] bytes = (reply[0] + "\r\n").getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                    requestContext = new RequestContext(true);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    ReplyOrConfirmationReply replyOrConfirmation = (ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply();
+                    EncodedReplyCALReply encodedReply = (EncodedReplyCALReply) ((ReplyEncodedReply) replyOrConfirmation.getReply()).getEncodedReply();
+                    CALDataIdentifyReply identifyReply = (CALDataIdentifyReply) encodedReply.getCalReply().getCalData();
+                    assertThat(identifyReply.getAttribute()).isEqualTo(Attribute.valueOf(reply[1]));
+                    assertThat(identifyReply.getIdentifyReplyCommand().getClass().getSimpleName()).isEqualTo(reply[2]);
+                    assertThat(identifyReply.getIdentifyReplyCommand().getLengthInBytes()).isZero();
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
+            // The same interface's reply without data to an identify of an attribute the Attribute enum does not
+            // know (0x12, captured "81126D") does not parse as an identify reply.
+            @Test
+            void calReplyIdentifyUnknownAttribute() {
+                byte[] bytes = "81126D\r\n".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                RequestContext identifyRequestContext = new RequestContext(true);
+                CBusOptions options = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                // recoverable: inside a confirmation the optional reply then counts as absent
+                assertThatThrownBy(() -> CBusMessage.staticParse(readBufferByteBased, true, identifyRequestContext, options))
+                    .isInstanceOf(org.apache.plc4x.java.spi.fields.exceptions.ParseAssertException.class)
+                    .hasMessageContaining("unknown identify attribute");
             }
 
             @Test

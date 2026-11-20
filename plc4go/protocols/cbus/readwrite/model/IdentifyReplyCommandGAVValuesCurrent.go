@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetAttribute() Attribute {
 	return Attribute_GAVValuesCurrent
 }
 
+func (m *_IdentifyReplyCommandGAVValuesCurrent) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

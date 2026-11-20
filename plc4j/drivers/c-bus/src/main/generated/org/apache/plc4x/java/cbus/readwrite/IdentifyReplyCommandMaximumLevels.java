@@ -45,6 +45,14 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field maximumLevels
    */
   public byte[] getMaximumLevels() {

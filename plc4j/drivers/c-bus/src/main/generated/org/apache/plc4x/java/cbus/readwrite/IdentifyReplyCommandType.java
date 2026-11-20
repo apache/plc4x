@@ -47,6 +47,14 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field unitType
    */
   public String getUnitType() {

@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetAttribute() Attribute {
 	return Attribute_NetworkTerminalLevels
 }
 
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

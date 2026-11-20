@@ -53,6 +53,14 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field partName
    */
   public byte[] getPartName() {

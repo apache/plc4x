@@ -77,6 +77,14 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field channelStatus1
    */
   public ChannelStatus getChannelStatus1() {

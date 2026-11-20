@@ -45,6 +45,14 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field values
    */
   public byte[] getValues() {

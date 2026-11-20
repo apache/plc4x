@@ -142,7 +142,15 @@ unitLoop:
 				continue unitLoop
 			}
 			response := requestResult.GetResponse()
-			if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
+			if code := response.GetResponseCode(readTagName); code == apiModel.PlcResponseCode_NOT_FOUND {
+				// The unit answered without data for this attribute (or confirmed without a reply): go on with
+				// its next attribute.
+				m.log.WithLevel(level).
+					Uint8("unitAddress", unitAddress).
+					Stringer("attribute", attribute).
+					Msg("unit unitAddress: no data for attribute attribute")
+				continue
+			} else if code != apiModel.PlcResponseCode_OK {
 				m.log.WithLevel(level).
 					Uint8("unitAddress", unitAddress).
 					Stringer("attribute", attribute).

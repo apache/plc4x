@@ -47,6 +47,14 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field firmwareVersion
    */
   public String getFirmwareVersion() {

@@ -562,6 +562,10 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()))
 			case readWriteModel.IdentifyReplyCommandType:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
+			case readWriteModel.IdentifyReplyCommandEmpty:
+				// The unit answered with the attribute alone: it has no data for it. (The array attributes
+				// parse such a reply as an empty array instead and map to OK with an empty value.)
+				addResponseCode(tagName, apiModel.PlcResponseCode_NOT_FOUND)
 			default:
 				addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
 				return transaction.FailRequest(errors.Errorf("Unmapped type %T", identifyReplyCommand))

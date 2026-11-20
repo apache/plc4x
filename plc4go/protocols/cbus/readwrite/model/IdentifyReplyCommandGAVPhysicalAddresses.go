@@ -175,6 +175,10 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetAttribute() Attribute {
 	return Attribute_GAVPhysicalAddresses
 }
 
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetNumBytes() uint8 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////

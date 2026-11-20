@@ -58,6 +58,14 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field unitFlags
    */
   public IdentifyReplyCommandUnitSummary getUnitFlags() {

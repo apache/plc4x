@@ -205,6 +205,17 @@ func KnowsCALCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer
 	return CALCommandTypeContainerKnows(readUint8)
 }
 
+// KnowsAttribute reports whether the next byte is a known identify Attribute, without consuming it.
+func KnowsAttribute(_ context.Context, readBuffer utils.ReadBuffer) bool {
+	oldPos := readBuffer.GetPos()
+	defer readBuffer.Reset(oldPos)
+	readUint8, err := readBuffer.ReadUint8("", 8)
+	if err != nil {
+		return false
+	}
+	return AttributeKnows(readUint8)
+}
+
 func KnowsLightingCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)

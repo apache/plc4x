@@ -47,6 +47,14 @@ public class IdentifyReplyCommandManufacturer extends IdentifyReplyCommand imple
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field manufacturerName
    */
   public String getManufacturerName() {

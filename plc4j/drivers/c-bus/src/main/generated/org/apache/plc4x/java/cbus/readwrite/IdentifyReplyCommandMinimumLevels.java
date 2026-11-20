@@ -45,6 +45,14 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   }
 
   /**
+   * Discriminator field numBytes
+   */
+  @Override
+  public byte getNumBytes() {
+    return 0;
+  }
+
+  /**
    * Property field minimumLevels
    */
   public byte[] getMinimumLevels() {
