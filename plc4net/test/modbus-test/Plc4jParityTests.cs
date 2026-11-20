@@ -218,6 +218,8 @@ namespace org.apache.plc4net.drivers.modbus.test
             var request = new System.Security.Cryptography.X509Certificates.CertificateRequest("CN=localhost", key,
                 System.Security.Cryptography.HashAlgorithmName.SHA256, System.Security.Cryptography.RSASignaturePadding.Pkcs1);
             request.CertificateExtensions.Add(new System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension(true, false, 0, true));
+            request.CertificateExtensions.Add(new System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension(
+                new System.Security.Cryptography.OidCollection { new System.Security.Cryptography.Oid("1.3.6.1.5.5.7.3.1") }, true));
             var names = new System.Security.Cryptography.X509Certificates.SubjectAlternativeNameBuilder();
             names.AddDnsName("localhost");
             request.CertificateExtensions.Add(names.Build());
