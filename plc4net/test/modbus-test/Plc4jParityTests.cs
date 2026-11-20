@@ -133,6 +133,10 @@ namespace org.apache.plc4net.drivers.modbus.test
             var driver = new ModbusTcpDriver(new org.apache.plc4net.spi.transports.DefaultTransportManager());
             var pending = driver.DiscoverAsync($"modbus-tcp:tls://127.0.0.1:{((System.Net.IPEndPoint)listener.LocalEndpoint).Port}?connect-timeout=0", cancellation.Token);
             using var peer = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            var clientHelloHeader = new byte[9];
+            await peer.GetStream().ReadExactlyAsync(clientHelloHeader.AsMemory()).AsTask().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(0x16, clientHelloHeader[0]); // TLS handshake record.
+            Assert.Equal(0x01, clientHelloHeader[5]); // ClientHello handshake message.
             cancellation.Cancel();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => pending.WaitAsync(TimeSpan.FromSeconds(5)));
             var bytes = new byte[4096];
