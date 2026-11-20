@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"bufio"
 	"context"
 	"hash/crc32"
 	"reflect"
@@ -211,6 +212,11 @@ func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
 				return true
 			}
 		}); err != nil {
+			if m.isConnectionLost(ti, err) {
+				fillCtxCancel()
+				m.log.Debug().Err(err).Msg("Connection lost while filling buffer")
+				return nil, transports.NewTransportError(transports.TransportErrorFatal, errors.Wrap(err, "error filling buffer"))
+			}
 			m.log.Debug().Err(err).Msg("Error filling buffer")
 		} else {
 			m.log.Trace().Msg("Buffer filled")
@@ -440,6 +446,24 @@ lookingForTheEnd:
 	}
 
 	return cBusMessage, nil
+}
+
+// isConnectionLost reports whether err, which filling the buffer returned, means the connection is gone: the
+// interface closed it (EOF) or it broke. Receive used to log and drop every fill error, so a connection the
+// interface closed went on as a running codec and a connected connection: nothing invalidated it, and a
+// connection cache kept handing it out instead of connecting again. A TCP transport stays "connected" after
+// the peer closed the socket, it only answers every read with EOF.
+//
+// The fill runs under a short timeout and usually ends with it, so timeouts and context errors are no loss, nor
+// is a full read buffer (a stream without a line end, which Receive reads away as garbage); what the transport
+// classifies as fatal is, as the default codec would classify it if Receive returned it. The Modbus codec does
+// not count EOF as fatal; here it is: once the interface closed the socket, every further read ends with EOF too.
+func (m *MessageCodec) isConnectionLost(ti transports.TransportInstance, err error) bool {
+	if transports.ErrorIs(err, context.DeadlineExceeded) || transports.ErrorIs(err, context.Canceled) ||
+		transports.ErrorIs(err, bufio.ErrBufferFull) {
+		return false
+	}
+	return ti.ClassifyError(err) == transports.TransportErrorFatal
 }
 
 func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {

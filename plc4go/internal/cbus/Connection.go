@@ -161,6 +161,17 @@ func (c *Connection) Connect(ctx context.Context) error {
 	return c.setupConnection(ctx)
 }
 
+// IsConnected reports false as soon as the codec stopped, not only once the connection is closed or invalidated:
+// a fatal transport error (the interface closed the connection, say) stops the codec at once, but invalidates the
+// connection only afterwards, from a goroutine. A connection cache that asks in between gets told the connection
+// is gone, and connects again instead of handing it out. The default Ping asks this too.
+func (c *Connection) IsConnected() bool {
+	if !c.DefaultConnection.IsConnected() {
+		return false
+	}
+	return c.messageCodec == nil || c.messageCodec.IsRunning()
+}
+
 // Close drops the connection and its request transaction manager with it. The codec goes first: disconnecting
 // it fails the expectations still registered, which ends the transactions of the requests in flight.
 func (c *Connection) Close() error {
