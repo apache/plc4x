@@ -129,3 +129,52 @@ func Test_defaultCodec_ExpireWork_ofStoppedRun_handsOnNotification(t *testing.T)
 		t.Fatal("the stopped run's expire worker ended without handing on the notification")
 	}
 }
+
+// Disconnect stops a run while its receive worker may be inside Receive: it cancels the run's context and stores
+// running=false. What Receive returns then, the synthetic "not running" error among it, belongs to the stopped run.
+// The worker used to hand that error on whenever its select picked the finished Receive over the cancelled
+// context, and the transport classified it as fatal: the fatal path invalidated a connection that was being closed
+// normally (seen as "transport reported fatal error; invalidating connection" with "not running" on Close).
+//
+// The test stops the run from inside Receive without cancelling its context, so the finished Receive is the only
+// case the worker's select can take; it then has to end without classifying the error.
+func Test_defaultCodec_ReceiveWork_leavesTheResultOfAStoppedRunAlone(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		var codec *defaultCodec
+		requirements := NewMockDefaultCodecRequirements(t)
+		requirements.EXPECT().Receive(mock.Anything).RunAndReturn(func(context.Context) (spi.Message, error) {
+			codec.running.Store(false) // Disconnect stopped the run while Receive ran
+			return nil, errors.New("not running")
+		}).Once()
+		instance := NewMockTransportInstance(t)
+		instance.EXPECT().IsConnected().Return(true)
+		var classified atomic.Bool
+		instance.EXPECT().ClassifyError(mock.Anything).RunAndReturn(func(error) transports.TransportErrorKind {
+			classified.Store(true)
+			return transports.TransportErrorFatal
+		}).Maybe()
+		instance.EXPECT().Close().Return(nil).Maybe()
+		codec = buildDefaultCodec(requirements, instance,
+			options.WithCustomLogger(zerolog.New(io.Discard)),
+			// Receive also without expectations.
+			WithCustomMessageHandler(func(context.Context, DefaultCodecRequirements, spi.Message) bool { return true }),
+		).(*defaultCodec)
+		var fatal atomic.Bool
+		codec.SetTransportErrorHandler(func(kind transports.TransportErrorKind, _ error) {
+			if kind == transports.TransportErrorFatal {
+				fatal.Store(true)
+			}
+		})
+
+		require.NoError(t, codec.Connect(t.Context()))
+		// Fake time in the bubble: lets the receive worker pass its cycle sleep and reach Receive.
+		time.Sleep(time.Second)
+		synctest.Wait()
+		codec.ctxCancel() // the rest of Disconnect's stop, which also ends the expire worker
+		codec.activeWorker.Wait()
+		codec.wg.Wait()
+
+		assert.False(t, classified.Load(), "the stopped run's receive error was classified")
+		assert.False(t, fatal.Load(), "the stopped run's receive error ran the fatal path")
+	})
+}

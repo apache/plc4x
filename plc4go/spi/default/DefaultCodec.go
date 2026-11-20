@@ -558,7 +558,14 @@ mainLoop:
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
 			case <-syncer:
-			// nothing
+				if !m.isRunActive(ctx) {
+					// Disconnect stopped this run while Receive ran: what Receive returned belongs to the stopped
+					// run, the "not running" error above among it. Handing that error on would run the fatal path
+					// (a transport classifies "not running" as fatal) and invalidate a connection that is being
+					// closed normally. Disconnect closes the transport and fails the expectations itself.
+					workerLog.Trace().Msg("run stopped during receive, exiting receive work")
+					return
+				}
 			case <-ctx.Done():
 				workerLog.Trace().Msg("context done, exiting receive work")
 				return
