@@ -140,7 +140,7 @@ func (m *TransportInstance) Close() error {
 		return nil
 	}
 	m.log.Trace().Msg("Close")
-	m.connected.Store(true)
+	m.connected.Store(false)
 	return nil
 }
 

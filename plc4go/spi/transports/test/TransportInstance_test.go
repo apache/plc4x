@@ -26,6 +26,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
@@ -85,6 +86,22 @@ func TestTransportInstance_Close(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Close used to store connected=true, so a closed test transport still reported IsConnected and kept serving
+// reads and writes, and a Connect after Close was a no-op ("already connected").
+func TestTransportInstance_Close_disconnects(t *testing.T) {
+	m := NewTransportInstance(nil)
+	require.NoError(t, m.Connect(t.Context()))
+	require.True(t, m.IsConnected())
+
+	require.NoError(t, m.Close())
+	assert.False(t, m.IsConnected(), "IsConnected after Close")
+	_, err := m.Read(t.Context(), 1)
+	assert.EqualError(t, err, "working on a unconnected connection")
+
+	require.NoError(t, m.Connect(t.Context()))
+	assert.True(t, m.IsConnected(), "IsConnected after a Connect following Close")
 }
 
 func TestTransportInstance_Connect(t *testing.T) {
