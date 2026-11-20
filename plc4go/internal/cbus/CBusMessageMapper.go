@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"strconv"
@@ -477,11 +478,20 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 					"microPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 				}))
 			case readWriteModel.IdentifyReplyCommandSummary:
-				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-					"partName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
+				// The version comes as 2 hex bytes for four characters (1.2.43 = 0x12 0x43), mapped to "1243".
+				// The part name is documented as 6 ASCII bytes, but a C-Bus Ethernet interface (PC_CNIED) answered
+				// non-ASCII bytes there: partName carries it as text only when it is printable ASCII (trailing NUL
+				// padding dropped), partNameRaw always carries the bytes.
+				partNameRaw := identifyReplyCommand.GetPartName()
+				summary := map[string]apiValues.PlcValue{
+					"partNameRaw":     spiValues.NewPlcRawByteArray(partNameRaw),
 					"unitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
-					"version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
-				}))
+					"version":         spiValues.NewPlcSTRING(fmt.Sprintf("%04X", identifyReplyCommand.GetVersion())),
+				}
+				if partName, ok := summaryPartName(partNameRaw); ok {
+					summary["partName"] = spiValues.NewPlcSTRING(partName)
+				}
+				addPlcValue(tagName, spiValues.NewPlcStruct(summary))
 			case readWriteModel.IdentifyReplyCommandFirmwareVersion:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
 			case readWriteModel.IdentifyReplyCommandGAVPhysicalAddresses:
@@ -569,4 +579,16 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 		return transaction.FailRequest(errors.Errorf("All types should be mapped here. Not mapped: %T", reply))
 	}
 	return nil
+}
+
+// summaryPartName returns an identify Summary's part name as text, without trailing NUL padding, and
+// false when the remaining bytes are not all printable ASCII (0x20 to 0x7E).
+func summaryPartName(raw []byte) (string, bool) {
+	trimmed := bytes.TrimRight(raw, "\x00")
+	for _, c := range trimmed {
+		if c < 0x20 || c > 0x7E {
+			return "", false
+		}
+	}
+	return string(trimmed), true
 }

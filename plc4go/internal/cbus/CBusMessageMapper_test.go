@@ -2017,12 +2017,12 @@ func TestMapEncodedReply(t *testing.T) {
 			name: "CALDataIdentifyReply (summary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
-					command := readWriteModel.NewIdentifyReplyCommandSummary("pineapple", 1, "13")
+					command := readWriteModel.NewIdentifyReplyCommandSummary([]byte("L5508D"), 1, 0x1243)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
 						readWriteModel.NewRequestContext(false),
 						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
 						nil,
-						readWriteModel.Attribute_DSIStatus,
+						readWriteModel.Attribute_Summary,
 						command,
 					)
 					calReplyLong := readWriteModel.NewCALReplyLong(
@@ -2053,9 +2053,80 @@ func TestMapEncodedReply(t *testing.T) {
 				addPlcValue: func(t *testing.T) func(string, apiValues.PlcValue) {
 					values := map[string]apiValues.PlcValue{
 						"someTag": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-							"partName":        spiValues.NewPlcSTRING("pineapple"),
+							"partName":        spiValues.NewPlcSTRING("L5508D"),
+							"partNameRaw":     spiValues.NewPlcRawByteArray([]byte("L5508D")),
 							"unitServiceType": spiValues.NewPlcUSINT(1),
-							"version":         spiValues.NewPlcSTRING("13"),
+							"version":         spiValues.NewPlcSTRING("1243"),
+						}),
+					}
+					return func(name string, plcValue apiValues.PlcValue) {
+						if value, ok := values[name]; ok {
+							assert.Equal(t, value, plcValue)
+						} else {
+							t.Errorf("value for %s not found", name)
+						}
+					}
+				},
+			},
+			setup: func(t *testing.T, args *args) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				transactionManager := transactions.NewRequestTransactionManager(
+					1,
+					_options...,
+				)
+				t.Cleanup(func() {
+					assert.NoError(t, transactionManager.Close())
+				})
+				transaction := transactionManager.StartTransaction(t.Name())
+				transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
+					// NO-OP
+				})
+				args.transaction = transaction
+			},
+		},
+		{
+			name: "CALDataIdentifyReply (summary, part name not ASCII)",
+			args: args{
+				encodedReply: func() readWriteModel.EncodedReplyCALReply {
+					command := readWriteModel.NewIdentifyReplyCommandSummary([]byte{0xB6, 0x4D, 0xB4, 0xB6, 0x8C, 0xDE}, 0xF1, 0x5400)
+					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(
+						readWriteModel.NewRequestContext(false),
+						readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+						nil,
+						readWriteModel.Attribute_Summary,
+						command,
+					)
+					calReplyLong := readWriteModel.NewCALReplyLong(
+						0,
+						calDataIdentify,
+						0,
+						readWriteModel.NewUnitAddress(1),
+						readWriteModel.NewBridgeAddress(2),
+						readWriteModel.NewSerialInterfaceAddress(3),
+						nil,
+						nil,
+					)
+					return readWriteModel.NewEncodedReplyCALReply(readWriteModel.NewRequestContext(false), 0, calReplyLong)
+				}(),
+				tagName: "someTag",
+				addResponseCode: func(t *testing.T) func(string, apiModel.PlcResponseCode) {
+					codes := map[string]apiModel.PlcResponseCode{
+						"someTag": apiModel.PlcResponseCode_OK,
+					}
+					return func(name string, responseCode apiModel.PlcResponseCode) {
+						if code, ok := codes[name]; ok {
+							assert.Equal(t, code, responseCode)
+						} else {
+							t.Errorf("code for %s not found", name)
+						}
+					}
+				},
+				addPlcValue: func(t *testing.T) func(string, apiValues.PlcValue) {
+					values := map[string]apiValues.PlcValue{
+						"someTag": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+							"partNameRaw":     spiValues.NewPlcRawByteArray([]byte{0xB6, 0x4D, 0xB4, 0xB6, 0x8C, 0xDE}),
+							"unitServiceType": spiValues.NewPlcUSINT(0xF1),
+							"version":         spiValues.NewPlcSTRING("5400"),
 						}),
 					}
 					return func(name string, plcValue apiValues.PlcValue) {
@@ -2987,6 +3058,29 @@ func TestMapEncodedReply(t *testing.T) {
 			if err := MapEncodedReply(testingLogger, tt.args.transaction, tt.args.encodedReply, tt.args.tagName, tt.args.addResponseCode(t), tt.args.addPlcValue(t)); (err != nil) != tt.wantErr {
 				t.Errorf("MapEncodedReply() error = %v, wantErr %v", err, tt.wantErr)
 			}
+		})
+	}
+}
+
+func TestSummaryPartName(t *testing.T) {
+	tests := []struct {
+		name   string
+		raw    []byte
+		want   string
+		wantOk bool
+	}{
+		{name: "ascii", raw: []byte("L5508D"), want: "L5508D", wantOk: true},
+		{name: "space padded", raw: []byte("L5508 "), want: "L5508 ", wantOk: true},
+		{name: "NUL padded", raw: []byte("L55\x00\x00\x00"), want: "L55", wantOk: true},
+		{name: "all NUL", raw: []byte{0, 0, 0, 0, 0, 0}, want: "", wantOk: true},
+		{name: "inner NUL", raw: []byte("L5\x0008D"), wantOk: false},
+		{name: "captured, not ASCII", raw: []byte{0xB6, 0x4D, 0xB4, 0xB6, 0x8C, 0xDE}, wantOk: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := summaryPartName(tt.raw)
+			assert.Equal(t, tt.wantOk, ok)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

@@ -1099,10 +1099,14 @@
         ['FirmwareVersion'              IdentifyReplyCommandFirmwareVersion
             [simple string 64  firmwareVersion  ]
         ]
+        // Serial Interface User Guide 7.2: 9 bytes, the part name as 6 ASCII bytes, a hex code for the
+        // unit service type and the version as 2 hex bytes for four characters (1.2.43 = 0x12 0x43).
+        // The part name stays raw bytes: a captured C-Bus Ethernet interface answered non-ASCII bytes there.
+        // It is always 6 bytes on the wire; the serializer writes the array as given.
         ['Summary'                      IdentifyReplyCommandSummary
-            [simple string 48  partName         ]
+            [array  byte       partName         count '6']
             [simple byte       unitServiceType  ]
-            [simple string 32  version          ]
+            [simple uint 16    version          ]
         ]
         ['ExtendedDiagnosticSummary'    IdentifyReplyCommandExtendedDiagnosticSummary
             [simple   ApplicationIdContainer  lowApplication         ]

@@ -580,6 +580,31 @@ public class ReferenceTest {
                 assertMessageMatches(bytes, msg);
             }
 
+            // A C-Bus Ethernet interface's captured reply to an identify of Summary (request "2103"):
+            // 9 data bytes, the part name (6 bytes, not ASCII on this unit), the unit service type and
+            // the version 0x5400 (its FirmwareVersion reply is "5.4.00").
+            @Test
+            void calReplyIdentifySummary() throws Exception {
+                byte[] bytes = "8A03B64DB4B68CDEF1540057\r\n".getBytes(StandardCharsets.UTF_8);
+                ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                requestContext = new RequestContext(true);
+                cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                assertThat(msg).isNotNull();
+                System.out.println(msg);
+
+                ReplyOrConfirmationReply replyOrConfirmation = (ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply();
+                EncodedReplyCALReply encodedReply = (EncodedReplyCALReply) ((ReplyEncodedReply) replyOrConfirmation.getReply()).getEncodedReply();
+                CALDataIdentifyReply identifyReply = (CALDataIdentifyReply) encodedReply.getCalReply().getCalData();
+                assertThat(identifyReply.getAttribute()).isEqualTo(Attribute.Summary);
+                IdentifyReplyCommandSummary summary = (IdentifyReplyCommandSummary) identifyReply.getIdentifyReplyCommand();
+                assertThat(summary.getPartName()).containsExactly((byte) 0xB6, (byte) 0x4D, (byte) 0xB4, (byte) 0xB6, (byte) 0x8C, (byte) 0xDE);
+                assertThat(summary.getUnitServiceType()).isEqualTo((byte) 0xF1);
+                assertThat(summary.getVersion()).isEqualTo(0x5400);
+
+                assertMessageMatches(bytes, msg);
+            }
+
             @Test
             void calReplySmart() throws Exception {
                 // TODO: seems like the checksum is wrong here???
