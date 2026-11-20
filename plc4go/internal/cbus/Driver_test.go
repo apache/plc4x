@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -177,6 +178,28 @@ func TestDriver_GetConnection(t *testing.T) {
 			assert.Truef(t, tt.wantVerifier(t, connection, err), "GetConnection(%v, %v, %v, %v)", tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)
 		})
 	}
+}
+
+// A connection whose setup fails after its codec connected used to be dropped without Close: the codec's workers,
+// its monitor channels and the transport stayed open, and the caller, which gets no connection, could not close
+// them. A cancelled context lets the codec connect and fails the setup's first request.
+func TestDriver_GetConnection_closesConnectionWhoseSetupFailed(t *testing.T) {
+	_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+	transportUrl := url.URL{Scheme: "test"}
+	transport := test.NewTransport(_options...)
+	transportInstance := test.NewTransportInstance(transport, _options...)
+	require.NoError(t, transport.AddPreregisteredInstances(transportUrl, transportInstance))
+	driver := NewDriver(_options...).(*Driver)
+	t.Cleanup(func() {
+		assert.NoError(t, driver.Close())
+	})
+
+	ctx, cancel := context.WithCancel(testutils.TestContext(t))
+	cancel()
+	connection, err := driver.GetConnection(ctx, transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+	require.ErrorContains(t, err, "Error connecting connection")
+	assert.Nil(t, connection)
+	assert.False(t, transportInstance.IsConnected(), "transport of the failed connection still connected")
 }
 
 func TestDriver_SetAwaitDisconnectComplete(t *testing.T) {

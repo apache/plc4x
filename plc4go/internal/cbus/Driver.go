@@ -112,6 +112,11 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 	)
 	connectionLog.Debug().Msg("created connection, connecting now")
 	if err := connection.Connect(ctx); err != nil {
+		// The caller gets no connection to close, so close it here: the codec may have connected before the
+		// connection setup failed, and its workers, its monitor channels and the transport would stay open.
+		if closeErr := connection.Close(); closeErr != nil {
+			connectionLog.Warn().Err(closeErr).Msg("Error closing the connection that failed to connect")
+		}
 		return nil, errors.Wrap(err, "Error connecting connection")
 	}
 	return connection, nil
