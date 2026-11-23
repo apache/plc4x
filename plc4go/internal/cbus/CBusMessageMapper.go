@@ -522,13 +522,14 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 			case readWriteModel.IdentifyReplyCommandNetworkTerminalLevels:
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
 			case readWriteModel.IdentifyReplyCommandNetworkVoltage:
-				volts := identifyReplyCommand.GetVolts()
+				// 2 ASCII bytes of whole volts (Serial Interface User Guide 7.2): below 10 V padded, as " 9"
+				volts := strings.TrimSpace(identifyReplyCommand.GetVolts())
 				voltsFloat, err := strconv.ParseFloat(volts, 0)
 				if err != nil {
 					addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					return transaction.FailRequest(errors.Wrap(err, "Error parsing volts"))
 				}
-				voltsDecimalPlace := identifyReplyCommand.GetVoltsDecimalPlace()
+				voltsDecimalPlace := strings.TrimSpace(identifyReplyCommand.GetVoltsDecimalPlace())
 				voltsDecimalPlaceFloat, err := strconv.ParseFloat(voltsDecimalPlace, 0)
 				if err != nil {
 					addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)

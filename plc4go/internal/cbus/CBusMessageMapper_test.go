@@ -3142,3 +3142,48 @@ func TestSummaryPartName(t *testing.T) {
 		})
 	}
 }
+
+// TestMapEncodedReplyNetworkVoltagePadded maps NetworkVoltage replies whose whole volts are not two digits.
+// The Serial Interface User Guide (7.2) gives the whole volts as 2 ASCII bytes, so a voltage below 10 V
+// comes padded, as " 9" for "9.8V".
+func TestMapEncodedReplyNetworkVoltagePadded(t *testing.T) {
+	for _, tt := range []struct {
+		volts, voltsDecimalPlace string
+		want                     float64
+	}{
+		{"29", "8", 29.8},
+		{" 9", "8", 9.8},
+		{"09", "8", 9.8},
+		{"9 ", "8", 9.8},
+	} {
+		t.Run(fmt.Sprintf("%q.%q", tt.volts, tt.voltsDecimalPlace), func(t *testing.T) {
+			transactionManager := transactions.NewRequestTransactionManager(1, testutils.EnrichOptionsWithOptionsForTesting(t)...)
+			t.Cleanup(func() {
+				assert.NoError(t, transactionManager.Close())
+			})
+			transaction := transactionManager.StartTransaction(t.Name())
+			transaction.Submit(t.Name(), func(context.Context, transactions.RequestTransaction) {
+				// NO-OP
+			})
+			calReply := readWriteModel.NewCALReplyShort(0, readWriteModel.NewCALDataIdentifyReply(
+				readWriteModel.NewRequestContext(false),
+				readWriteModel.CALCommandTypeContainer_CALCommandReply_6Bytes,
+				nil,
+				readWriteModel.Attribute_NetworkVoltage,
+				readWriteModel.NewIdentifyReplyCommandNetworkVoltage(tt.volts, tt.voltsDecimalPlace),
+			))
+			encodedReply := readWriteModel.NewEncodedReplyCALReply(readWriteModel.NewRequestContext(false), 0, calReply)
+			var codes []apiModel.PlcResponseCode
+			var values []apiValues.PlcValue
+			err := MapEncodedReply(testutils.ProduceTestingLogger(t), transaction, encodedReply, "someTag",
+				func(_ string, code apiModel.PlcResponseCode) { codes = append(codes, code) },
+				func(_ string, value apiValues.PlcValue) { values = append(values, value) },
+			)
+			assert.NoError(t, err)
+			assert.Equal(t, []apiModel.PlcResponseCode{apiModel.PlcResponseCode_OK}, codes)
+			if assert.Len(t, values, 1) {
+				assert.InDelta(t, tt.want, values[0].GetFloat64(), 1e-9)
+			}
+		})
+	}
+}
