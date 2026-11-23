@@ -87,7 +87,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 	// Some addresses only have one segment, so in that case we'll simply use that.
 	symbolName := addressSegments[0]
 	remainingSegments := addressSegments[1:]
-	if len(addressSegments) > 0 {
+	if len(addressSegments) > 1 {
 		symbolName = symbolName + "." + remainingSegments[0]
 		remainingSegments = remainingSegments[1:]
 	}
