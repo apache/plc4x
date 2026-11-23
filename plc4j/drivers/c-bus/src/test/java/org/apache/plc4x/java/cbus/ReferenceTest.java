@@ -699,6 +699,36 @@ public class ReferenceTest {
                 }
             }
 
+            // The Attribute enum's bytesReturned against the same interface's captured replies of the attributes
+            // whose reply length is fixed (guide 7.2, "Bytes Returned": the data after the attribute, which the
+            // REPLY's length counts too). OutputUnitSummary's length is dynamic; the guide and the capture give
+            // its longest. Not the Manufacturer reply ("CLIPSAL "): plc4j computes the checksum from the
+            // re-serialized reply, whose name lost its trailing space, and fails it (0x6F against the sent 0x4F).
+            // Nor the FirmwareVersion reply ("5.4.00  "), which ends in spaces too.
+            @Test
+            void calReplyIdentifyBytesReturned() throws Exception {
+                for (String reply : new String[]{
+                    "890150435F434E49454421",         // Type, guide $08
+                    "8A03B64DB4B68CDEF1540057",       // Summary, guide $09
+                    "8D04FFFFFF00001897C095BE0005AB", // ExtendedDiagnosticSummary, guide $0C
+                    "8510020000FF6A",                 // OutputUnitSummary, guide $04 (dynamic)
+                }) {
+                    byte[] bytes = (reply + "\r\n").getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                    requestContext = new RequestContext(true);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+
+                    ReplyOrConfirmationReply replyOrConfirmation = (ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply();
+                    EncodedReplyCALReply encodedReply = (EncodedReplyCALReply) ((ReplyEncodedReply) replyOrConfirmation.getReply()).getEncodedReply();
+                    CALDataIdentifyReply identifyReply = (CALDataIdentifyReply) encodedReply.getCalReply().getCalData();
+                    assertThat(identifyReply.getAttribute().getBytesReturned())
+                        .as(identifyReply.getAttribute().name())
+                        .isEqualTo((short) (identifyReply.getCommandTypeContainer().getNumBytes() - 1));
+                }
+            }
+
             // The same interface's reply without data to an identify of an attribute the Attribute enum does not
             // know (0x12, captured "81126D") does not parse as an identify reply.
             @Test

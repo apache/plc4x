@@ -258,3 +258,29 @@ func TestIdentifyReplyOutputUnitSummaryLengths(t *testing.T) {
 		})
 	}
 }
+
+// TestIdentifyReplyBytesReturned checks the Attribute enum's bytesReturned against captured replies of the
+// attributes whose reply length is fixed (Serial Interface User Guide 7.2, "Bytes Returned": the data after
+// the attribute). The short form replies are a C-Bus Ethernet interface's in BASIC mode, the long form ones
+// units' through serial interface $02 in SMART mode. OutputUnitSummary's length is dynamic; the guide gives
+// its longest, and so does the capture.
+func TestIdentifyReplyBytesReturned(t *testing.T) {
+	for _, raw := range []string{
+		"8900434C495053414C204F\r\n",                 // Manufacturer, guide $08
+		"890150435F434E49454421\r\n",                 // Type, guide $08
+		"8902352E342E3030202010\r\n",                 // FirmwareVersion, guide $08
+		"8A03B64DB4B68CDEF1540057\r\n",               // Summary, guide $09
+		"8D04FFFFFF00001897C095BE0005AB\r\n",         // ExtendedDiagnosticSummary, guide $0C
+		"860202008D04FFFFFF00001897C095BE000521\r\n", // ExtendedDiagnosticSummary, long form
+		"860102008D0438FFFF7D83188ABE70B8010126\r\n", // ExtendedDiagnosticSummary, long form, unit $01
+		"86049900860732392E385629\r\n",               // NetworkVoltage, guide $05 (see TestIdentifyReplyNetworkVoltageCapture)
+		"8510020000FF6A\r\n",                         // OutputUnitSummary, guide $04 (dynamic)
+	} {
+		t.Run(raw[:len(raw)-2], func(t *testing.T) {
+			identifyReply := parseCapturedIdentifyReplyCALData(t, raw)
+			// the REPLY's length counts the attribute
+			dataBytes := identifyReply.GetCommandTypeContainer().NumBytes() - 1
+			assert.Equal(t, dataBytes, identifyReply.GetAttribute().BytesReturned(), "%s", identifyReply.GetAttribute())
+		})
+	}
+}

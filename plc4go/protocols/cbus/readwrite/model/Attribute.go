@@ -108,7 +108,7 @@ func (e Attribute) BytesReturned() uint8 {
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return 13
+			return 12
 		}
 	case 0x05:
 		{ /* '0x05' */

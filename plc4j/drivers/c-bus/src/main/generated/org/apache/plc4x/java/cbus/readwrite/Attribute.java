@@ -33,7 +33,7 @@ public enum Attribute {
 
   Summary((short) 0x03, (short) 9),
 
-  ExtendedDiagnosticSummary((short) 0x04, (short) 13),
+  ExtendedDiagnosticSummary((short) 0x04, (short) 12),
 
   NetworkTerminalLevels((short) 0x05, (short) 13),
 

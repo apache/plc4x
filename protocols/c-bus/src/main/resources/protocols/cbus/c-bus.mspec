@@ -1069,12 +1069,15 @@
     [simple vstring '8 * numBytes' customString ]
 ]
 
+// bytesReturned: the data bytes after the attribute (Serial Interface User Guide 7.2, "Bytes Returned"), for
+// the attributes the guide marks dynamic their most. NetworkTerminalLevels, TerminalLevel, LogicalAssignment,
+// Delays, MinimumLevels and MaximumLevels are one more than the guide gives; no capture shows their longest reply.
 [enum uint 8 Attribute(uint 8 bytesReturned)
     ['0x00' Manufacturer              [ '8']]
     ['0x01' Type                      [ '8']]
     ['0x02' FirmwareVersion           [ '8']]
     ['0x03' Summary                   [ '9']]
-    ['0x04' ExtendedDiagnosticSummary ['13']]
+    ['0x04' ExtendedDiagnosticSummary ['12']]
     ['0x05' NetworkTerminalLevels     ['13']]
     ['0x06' TerminalLevel             ['13']]
     ['0x07' NetworkVoltage            [ '5']]
