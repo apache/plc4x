@@ -132,7 +132,11 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 
 		for _, childTypeEntry := range dataType.GetChildren() {
 			childName := childTypeEntry.GetMainName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
+			childType, ok := t.driverContext.lookupDataType(childTypeEntry.GetSecondaryName())
+			if !ok {
+				return nil, fmt.Errorf("couldn't find data type named %s for property %s",
+					childTypeEntry.GetSecondaryName(), childName)
+			}
 			childArrayInfo := childType.GetArrayInfo()
 			childValue, ok := childValues[childTypeEntry.GetMainName()]
 			if !ok {
@@ -151,7 +155,11 @@ func (t ValueHandler) AdsParseStructType(dataType readWriteModel.AdsDataTypeTabl
 
 		for _, childTypeEntry := range dataType.GetChildren() {
 			childName := childTypeEntry.GetMainName()
-			childType := t.driverContext.dataTypeTable[childTypeEntry.GetSecondaryName()]
+			childType, ok := t.driverContext.lookupDataType(childTypeEntry.GetSecondaryName())
+			if !ok {
+				return nil, fmt.Errorf("couldn't find data type named %s for property %s",
+					childTypeEntry.GetSecondaryName(), childName)
+			}
 			childArrayInfo := childType.GetArrayInfo()
 			childValue, ok := simpleMap[childTypeEntry.GetMainName()]
 			if !ok {

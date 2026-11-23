@@ -38,12 +38,31 @@ type DriverContext struct {
 	invokeId                uint32
 	adsVersion              string
 	deviceName              string
+	isTwinCat2              bool
 	symbolVersion           uint8
 	onlineVersion           uint32
 	dataTypeTable           map[string]driverModel.AdsDataTypeTableEntry
 	symbolTable             map[string]driverModel.AdsSymbolTableEntry
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
+}
+
+// lookupDataType resolves a type name against the uploaded data-type table.
+//
+// TwinCAT2 uploads only the complex types, so every primitive a symbol, a struct member or a
+// direct address names is absent from the table and has to be synthesized instead. TwinCAT3
+// uploads the primitives, and the device tells us which one it is, so the synthesis is reached
+// only where it is needed rather than wherever a lookup happens to miss.
+func (d *DriverContext) lookupDataType(name string) (driverModel.AdsDataTypeTableEntry, bool) {
+	if entry, ok := d.dataTypeTable[name]; ok {
+		return entry, true
+	}
+	if d.isTwinCat2 {
+		if entry := SynthesizePrimitiveType(name); entry != nil {
+			return entry, true
+		}
+	}
+	return nil, false
 }
 
 func NewDriverContext(configuration model.Configuration) (*DriverContext, error) {
@@ -57,6 +76,7 @@ func (m *DriverContext) clear() {
 	m.invokeId = 0
 	m.adsVersion = ""
 	m.deviceName = ""
+	m.isTwinCat2 = false
 	m.symbolVersion = 0
 	m.onlineVersion = 0
 	m.dataTypeTable = map[string]driverModel.AdsDataTypeTableEntry{}
@@ -84,7 +104,7 @@ func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model.SymbolicPl
 	if !ok {
 		return nil, fmt.Errorf("couldn't find symbol with name %s", symbolName)
 	}
-	dataTypeEntry, ok := m.dataTypeTable[symbolEntry.GetDataTypeName()]
+	dataTypeEntry, ok := m.lookupDataType(symbolEntry.GetDataTypeName())
 	if !ok {
 		return nil, fmt.Errorf("couldn't find data type with name %s for symbol %s", symbolEntry.GetDataTypeName(), symbolName)
 	}
@@ -107,7 +127,7 @@ func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentData
 	remainingSegments = remainingSegments[1:]
 	for _, child := range currentDatatype.GetChildren() {
 		if child.GetMainName() == currentSegment {
-			childDataType, ok := m.dataTypeTable[child.GetSecondaryName()]
+			childDataType, ok := m.lookupDataType(child.GetSecondaryName())
 			if !ok {
 				return nil, fmt.Errorf("couldn't find data type with name %s", child.GetSecondaryName())
 			}

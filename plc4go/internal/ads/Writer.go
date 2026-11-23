@@ -225,7 +225,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 		curPos := uint32(0)
 		for _, child := range dataType.GetChildren() {
 			childName := child.GetMainName()
-			childDataType, ok := m.driverContext.dataTypeTable[child.GetSecondaryName()]
+			childDataType, ok := m.driverContext.lookupDataType(child.GetSecondaryName())
 			if !ok {
 				return fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetSecondaryName(), childName, dataType.GetSecondaryName())
 			}

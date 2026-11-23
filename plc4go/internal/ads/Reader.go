@@ -212,16 +212,24 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 // the element type, which is what the fallback says.
 func (m *Connection) arrayItemTypeFor(dataType driverModel.AdsDataTypeTableEntry) (driverModel.AdsDataTypeTableEntry, error) {
 	name := dataType.GetSecondaryName()
-	separator := strings.Index(name, " OF ")
-	if separator < 0 {
+	// TwinCAT3 writes the whole declaration into the secondary name, so the element type is what
+	// follows " OF ". TwinCAT2 puts the declaration in the main name and leaves the element type
+	// alone in the secondary one, so there is nothing to strip.
+	itemTypeName := name
+	if separator := strings.Index(name, " OF "); separator >= 0 {
+		itemTypeName = name[separator+4:]
+	}
+	// The element of an ARRAY [..] OF STRING(n) is one of the primitives TwinCAT2 leaves out of
+	// the table, so the lookup has to be the one that synthesizes those.
+	if itemType, ok := m.driverContext.lookupDataType(itemTypeName); ok {
+		return itemType, nil
+	}
+	// Nothing named an element type, which is the address-derived shape the doc comment
+	// describes: the type is already the element type.
+	if !strings.Contains(name, " OF ") {
 		return dataType, nil
 	}
-	itemTypeName := name[separator+4:]
-	itemType, ok := m.driverContext.dataTypeTable[itemTypeName]
-	if !ok {
-		return nil, fmt.Errorf("couldn't resolve array item type %s", itemTypeName)
-	}
-	return itemType, nil
+	return nil, fmt.Errorf("couldn't resolve array item type %s", itemTypeName)
 }
 
 func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, rb utils.ReadBufferByteBased) (apiValues.PlcValue, error) {
@@ -253,7 +261,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		curPos := uint32(0)
 		for _, child := range dataType.GetChildren() {
 			childName := child.GetMainName()
-			childDataType, ok := m.driverContext.dataTypeTable[child.GetSecondaryName()]
+			childDataType, ok := m.driverContext.lookupDataType(child.GetSecondaryName())
 			if !ok {
 				return nil, fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetSecondaryName(), childName, dataType.GetSecondaryName())
 			}
