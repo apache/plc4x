@@ -92,7 +92,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 		remainingSegments = remainingSegments[1:]
 	}
 
-	if symbol, ok := m.driverContext.symbolTable[symbolName]; !ok {
+	if symbol, ok := m.driverContext.lookupSymbol(symbolName); !ok {
 		// Couldn't find the base symbol
 		return nil
 	} else if len(remainingSegments) == 0 {

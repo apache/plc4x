@@ -65,6 +65,44 @@ func (d *DriverContext) lookupDataType(name string) (driverModel.AdsDataTypeTabl
 	return nil, false
 }
 
+// lookupSymbol resolves a symbol name against the uploaded symbol table.
+//
+// IEC 61131-3 identifiers are case insensitive, and a TwinCAT 2 device publishes every symbol
+// name in upper case, so an address written the way the variable is declared ("MAIN.myBool")
+// does not match the table verbatim. An exact match always wins, and the fallback is reached
+// only on a device that reported itself as TwinCAT 2, so lookup on TwinCAT 3 is unchanged.
+func (m *DriverContext) lookupSymbol(name string) (driverModel.AdsSymbolTableEntry, bool) {
+	if entry, ok := m.symbolTable[name]; ok {
+		return entry, true
+	}
+	if m.isTwinCat2 {
+		for symbolName, entry := range m.symbolTable {
+			if strings.EqualFold(symbolName, name) {
+				return entry, true
+			}
+		}
+	}
+	return nil, false
+}
+
+// childByName finds a member of a struct by name, case insensitively for the same reason as
+// lookupSymbol and under the same condition. Exact matches are preferred.
+func (m *DriverContext) childByName(dataType driverModel.AdsDataTypeTableEntry, name string) (driverModel.AdsDataTypeTableEntry, bool) {
+	for _, child := range dataType.GetChildren() {
+		if child.GetMainName() == name {
+			return child, true
+		}
+	}
+	if m.isTwinCat2 {
+		for _, child := range dataType.GetChildren() {
+			if strings.EqualFold(child.GetMainName(), name) {
+				return child, true
+			}
+		}
+	}
+	return nil, false
+}
+
 func NewDriverContext(configuration model.Configuration) (*DriverContext, error) {
 	return &DriverContext{
 		invokeId: 0,
@@ -100,7 +138,7 @@ func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model.SymbolicPl
 		return nil, fmt.Errorf("can't resolve empty address")
 	}
 
-	symbolEntry, ok := m.symbolTable[symbolName]
+	symbolEntry, ok := m.lookupSymbol(symbolName)
 	if !ok {
 		return nil, fmt.Errorf("couldn't find symbol with name %s", symbolName)
 	}
@@ -125,14 +163,12 @@ func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentData
 
 	currentSegment := remainingSegments[0]
 	remainingSegments = remainingSegments[1:]
-	for _, child := range currentDatatype.GetChildren() {
-		if child.GetMainName() == currentSegment {
-			childDataType, ok := m.lookupDataType(child.GetSecondaryName())
-			if !ok {
-				return nil, fmt.Errorf("couldn't find data type with name %s", child.GetSecondaryName())
-			}
-			return m.resolveDirectTag(remainingSegments, childDataType, indexGroup, indexOffset+child.GetOffset())
+	if child, ok := m.childByName(currentDatatype, currentSegment); ok {
+		childDataType, ok := m.lookupDataType(child.GetSecondaryName())
+		if !ok {
+			return nil, fmt.Errorf("couldn't find data type with name %s", child.GetSecondaryName())
 		}
+		return m.resolveDirectTag(remainingSegments, childDataType, indexGroup, indexOffset+child.GetOffset())
 	}
 	return nil, fmt.Errorf("couldn't find child with name %s in type %s", currentSegment, currentDatatype.GetSecondaryName())
 }
