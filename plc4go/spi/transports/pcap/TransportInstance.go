@@ -215,6 +215,11 @@ func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKi
 	if err == nil {
 		return transports.TransportErrorUnknown
 	}
+	// An error that already carries a classification keeps it: whoever produced it knew what
+	// it meant there, and the catch-all at the end of this function does not.
+	if transportError, ok := transports.AsTransportError(err); ok {
+		return transportError.Kind()
+	}
 	if transports.ErrorIs(err, io.EOF) {
 		return transports.TransportErrorFatal
 	}

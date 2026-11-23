@@ -30,6 +30,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
@@ -354,4 +356,19 @@ func IsPcapAvailable() (result bool) {
 	}()
 	pcap.Version()
 	return true
+}
+
+// FillBuffer classifies a full read buffer where it happens, because that is the only place that
+// knows the peek simply reached the end of the buffer. Classification here must not overrule it:
+// before this, an error that arrived already classified still fell into the catch-all below and
+// came back fatal.
+func TestTransportInstance_ClassifyError_keepsAnExistingClassification(t *testing.T) {
+	m := &TransportInstance{}
+	alreadyClassified := transports.NewTransportError(transports.TransportErrorTransient,
+		errors.Wrap(bufio.ErrBufferFull, "Error while peeking"))
+
+	kind := m.ClassifyError(alreadyClassified)
+
+	assert.Equal(t, transports.TransportErrorTransient, kind)
+	assert.False(t, kind.IsFatal())
 }

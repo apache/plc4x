@@ -191,6 +191,12 @@ func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint,
 	for ctx.Err() == nil {
 		_bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
+			if transports.IsBufferFull(err) {
+				// See the same case in DefaultBufferedTransportInstance.FillBuffer: a frame
+				// longer than the buffer is a fact about the buffer, not about the connection.
+				return transports.NewTransportError(transports.TransportErrorTransient,
+					errors.Wrap(err, "Error while peeking"))
+			}
 			return errors.Wrap(err, "Error while peeking")
 		}
 		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], m.reader); !keepGoing {
@@ -287,6 +293,11 @@ func (m *TransportInstance) String() string {
 func (m *TransportInstance) ClassifyError(err error) transports.TransportErrorKind {
 	if err == nil {
 		return transports.TransportErrorUnknown
+	}
+	// An error that already carries a classification keeps it: whoever produced it knew what
+	// it meant there, and the catch-all at the end of this function does not.
+	if transportError, ok := transports.AsTransportError(err); ok {
+		return transportError.Kind()
 	}
 	if transports.ErrorIs(err, io.EOF) || transports.ErrorIs(err, net.ErrClosed) || transports.ErrorIs(err, syscall.EPIPE) {
 		return transports.TransportErrorFatal
