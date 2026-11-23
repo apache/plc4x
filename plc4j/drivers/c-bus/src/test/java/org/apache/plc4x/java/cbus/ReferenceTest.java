@@ -666,6 +666,39 @@ public class ReferenceTest {
                 }
             }
 
+            // OutputUnitSummary replies of each length the guide (7.2) allows: the unit flags, the GAV store
+            // enable bytes and the time from the last recovery of mains; the length is dynamic, the guide shows the
+            // longest, 4 bytes. "8510020000FF6A" is the same interface's captured reply, the 3 and 2 byte replies
+            // are that capture with one or both GAV store enable bytes left out.
+            @Test
+            void calReplyIdentifyOutputUnitSummaryLengths() throws Exception {
+                for (Object[] reply : new Object[][]{
+                    {"8510020000FF6A", (byte) 0x00, (byte) 0x00},
+                    {"84100200FF6B", (byte) 0x00, null},
+                    {"831002FF6C", null, null},
+                }) {
+                    byte[] bytes = (reply[0] + "\r\n").getBytes(StandardCharsets.UTF_8);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes, org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.OPTIONS);
+                    requestContext = new RequestContext(true);
+                    cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
+                    CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+                    assertThat(msg).isNotNull();
+                    System.out.println(msg);
+
+                    ReplyOrConfirmationReply replyOrConfirmation = (ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply();
+                    EncodedReplyCALReply encodedReply = (EncodedReplyCALReply) ((ReplyEncodedReply) replyOrConfirmation.getReply()).getEncodedReply();
+                    CALDataIdentifyReply identifyReply = (CALDataIdentifyReply) encodedReply.getCalReply().getCalData();
+                    assertThat(identifyReply.getAttribute()).isEqualTo(Attribute.OutputUnitSummary);
+                    IdentifyReplyCommandOutputUnitSummary summary = (IdentifyReplyCommandOutputUnitSummary) identifyReply.getIdentifyReplyCommand();
+                    assertThat(summary.getUnitFlags().getClockGenerationEnabled()).isTrue();
+                    assertThat(summary.getGavStoreEnabledByte1()).isEqualTo(reply[1]);
+                    assertThat(summary.getGavStoreEnabledByte2()).isEqualTo(reply[2]);
+                    assertThat(summary.getTimeFromLastRecoverOfMainsInSeconds()).isEqualTo((short) 0xFF);
+
+                    assertMessageMatches(bytes, msg);
+                }
+            }
+
             // The same interface's reply without data to an identify of an attribute the Attribute enum does not
             // know (0x12, captured "81126D") does not parse as an identify reply.
             @Test

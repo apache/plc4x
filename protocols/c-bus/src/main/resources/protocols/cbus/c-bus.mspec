@@ -1184,11 +1184,14 @@
             [array  byte        terminalLevels        count 'numBytes-1'       ]
             [simple byte        reStrikeDelay                   ]
         ]
+        // Serial Interface User Guide 7.2: the unit flags, the GAV store enable bytes and the time from the last
+        // recovery of mains, 4 bytes at most; the length is dynamic, so a GAV store enable byte is there only
+        // when the reply is long enough for it next to the unit flags and the time.
         ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
             [simple   IdentifyReplyCommandUnitSummary
                              unitFlags                              ]
-            [optional byte   gavStoreEnabledByte1  'numBytes>1'     ]
-            [optional byte   gavStoreEnabledByte2  'numBytes>2'     ]
+            [optional byte   gavStoreEnabledByte1  'numBytes>2'     ]
+            [optional byte   gavStoreEnabledByte2  'numBytes>3'     ]
             [simple   uint 8 timeFromLastRecoverOfMainsInSeconds    ]
         ]
         ['DSIStatus'                    IdentifyReplyCommandDSIStatus

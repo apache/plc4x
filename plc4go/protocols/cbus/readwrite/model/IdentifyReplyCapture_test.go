@@ -219,3 +219,42 @@ func parseCapturedIdentifyReply(t *testing.T, raw string) CBusMessageToClient {
 	require.True(t, ok, "%T", msg)
 	return toClient
 }
+
+// TestIdentifyReplyOutputUnitSummaryLengths parses OutputUnitSummary replies of each length the Serial
+// Interface User Guide (7.2) allows and serializes them back. The reply is the unit flags, the GAV store
+// enable bytes and the time from the last recovery of mains; its length is dynamic (set by the unit's
+// variables), the guide shows the longest, 4 bytes. The 4 byte replies are captured (a C-Bus Ethernet
+// interface in BASIC mode, and unit $0D through serial interface $02 in SMART mode); the 3 and 2 byte
+// replies are the first capture with one or both GAV store enable bytes left out.
+func TestIdentifyReplyOutputUnitSummaryLengths(t *testing.T) {
+	gavStoreEnabled := func(b byte) *byte { return &b }
+	for _, tt := range []struct {
+		name                   string
+		raw                    string
+		unitFlags              byte
+		gavStoreEnabledByte1   *byte
+		gavStoreEnabledByte2   *byte
+		timeFromLastRecoverSec uint8
+	}{
+		{"4 bytes, captured", "8510020000FF6A\r\n", 0x02, gavStoreEnabled(0x00), gavStoreEnabled(0x00), 0xFF},
+		{"4 bytes, captured long form", "860D0200851008FFFFFFD1\r\n", 0x08, gavStoreEnabled(0xFF), gavStoreEnabled(0xFF), 0xFF},
+		{"3 bytes", "84100200FF6B\r\n", 0x02, gavStoreEnabled(0x00), nil, 0xFF},
+		{"2 bytes", "831002FF6C\r\n", 0x02, nil, nil, 0xFF},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			identifyReply := parseCapturedIdentifyReplyCALData(t, tt.raw)
+			assert.Equal(t, Attribute_OutputUnitSummary, identifyReply.GetAttribute())
+			summary, ok := identifyReply.GetIdentifyReplyCommand().(IdentifyReplyCommandOutputUnitSummary)
+			require.True(t, ok, "%T", identifyReply.GetIdentifyReplyCommand())
+			unitFlags, err := summary.GetUnitFlags().Serialize()
+			require.NoError(t, err)
+			assert.Equal(t, []byte{tt.unitFlags}, unitFlags)
+			assert.Equal(t, tt.gavStoreEnabledByte1, summary.GetGavStoreEnabledByte1())
+			assert.Equal(t, tt.gavStoreEnabledByte2, summary.GetGavStoreEnabledByte2())
+			assert.Equal(t, tt.timeFromLastRecoverSec, summary.GetTimeFromLastRecoverOfMainsInSeconds())
+			serialized, err := parseCapturedIdentifyReply(t, tt.raw).Serialize()
+			require.NoError(t, err)
+			assert.Equal(t, tt.raw, string(serialized))
+		})
+	}
+}
