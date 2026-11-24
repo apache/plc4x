@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"reflect"
 
 	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -117,8 +116,139 @@ func ReadEnumGenericFailing(ctx context.Context, readBuffer utils.ReadBuffer, ac
 			return 0, errors.Errorf("unmapped value %d", rawValue)
 		}
 		return BACnetDoorValue(rawValue), nil
+	case BACnetAccessPassbackMode:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetAccessPassbackModeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetAccessPassbackMode(rawValue), nil
+	case BACnetAccessRuleLocationSpecifier:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetAccessRuleLocationSpecifierKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetAccessRuleLocationSpecifier(rawValue), nil
+	case BACnetAccessRuleTimeRangeSpecifier:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetAccessRuleTimeRangeSpecifierKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetAccessRuleTimeRangeSpecifier(rawValue), nil
+	case BACnetAuthenticationFactorType:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetAuthenticationFactorTypeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetAuthenticationFactorType(rawValue), nil
+	case BACnetAuthenticationStatus:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetAuthenticationStatusKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetAuthenticationStatus(rawValue), nil
+	case BACnetBackupState:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetBackupStateKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetBackupState(rawValue), nil
+	case BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(rawValue), nil
+	case BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(rawValue), nil
+	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(rawValue), nil
+	case BACnetFaultType:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetFaultTypeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetFaultType(rawValue), nil
+	case BACnetIPMode:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetIPModeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetIPMode(rawValue), nil
+	case BACnetLiftCarDoorCommand:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetLiftCarDoorCommandKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetLiftCarDoorCommand(rawValue), nil
+	case BACnetLiftGroupMode:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetLiftGroupModeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetLiftGroupMode(rawValue), nil
+	case BACnetLightingInProgress:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetLightingInProgressKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetLightingInProgress(rawValue), nil
+	case BACnetNetworkNumberQuality:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetNetworkNumberQualityKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetNetworkNumberQuality(rawValue), nil
+	case BACnetProtocolLevel:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetProtocolLevelKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetProtocolLevel(rawValue), nil
+	case BACnetRouterEntryStatus:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetRouterEntryStatusKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetRouterEntryStatus(rawValue), nil
+	case BACnetSecurityLevel:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetSecurityLevelKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetSecurityLevel(rawValue), nil
+	case BACnetSecurityPolicy:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetSecurityPolicyKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetSecurityPolicy(rawValue), nil
+	case BACnetTimerState:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetTimerStateKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetTimerState(rawValue), nil
+	case BACnetTimerTransition:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetTimerTransitionKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetTimerTransition(rawValue), nil
+	case BACnetUnconfirmedServiceChoice:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetUnconfirmedServiceChoiceKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetUnconfirmedServiceChoice(rawValue), nil
+	case BACnetWriteStatus:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !BACnetWriteStatusKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BACnetWriteStatus(rawValue), nil
+	case NPDUNetworkPriority:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !NPDUNetworkPriorityKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return NPDUNetworkPriority(rawValue), nil
+	case SecurityResponseCode:
+		if value := uint8(rawValue); rawValue > math.MaxUint8 || !SecurityResponseCodeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return SecurityResponseCode(rawValue), nil
+	case BVLCResultCode:
+		if value := uint16(rawValue); rawValue > math.MaxUint16 || !BVLCResultCodeKnows(value) {
+			return 0, errors.Errorf("unmapped value %d", rawValue)
+		}
+		return BVLCResultCode(rawValue), nil
 	default:
-		panic(fmt.Sprintf("support for %T not yet implemented", template))
+		// Device data reaches this parser, so an unsupported template must fail the parse, not panic.
+		return nil, errors.Errorf("support for %T not yet implemented", template)
 	}
 }
 
@@ -221,11 +351,7 @@ func ReadEnumGeneric(ctx context.Context, readBuffer utils.ReadBuffer, actualLen
 	case BACnetAccumulatorRecordAccumulatorStatus:
 		return BACnetAccumulatorRecordAccumulatorStatus(rawValue), nil
 	default:
-		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", template))
-		// TODO: this doesn't work
-		value := reflect.New(reflect.TypeOf(template)).Elem()
-		value.Set(reflect.ValueOf(rawValue))
-		return value.Interface(), nil
+		return nil, errors.Errorf("support for %T not yet implemented", template)
 	}
 }
 

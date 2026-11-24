@@ -42,9 +42,9 @@ type BACnetConstructedDataMultiStateInputInterfaceValue interface {
 	utils.Copyable
 	BACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
-	GetInterfaceValue() BACnetOptionalBinaryPV
+	GetInterfaceValue() BACnetOptionalUnsigned
 	// GetActualValue returns ActualValue (virtual field)
-	GetActualValue() BACnetOptionalBinaryPV
+	GetActualValue() BACnetOptionalUnsigned
 	// IsBACnetConstructedDataMultiStateInputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateInputInterfaceValue()
 	// CreateBuilder creates a BACnetConstructedDataMultiStateInputInterfaceValueBuilder
@@ -54,16 +54,16 @@ type BACnetConstructedDataMultiStateInputInterfaceValue interface {
 // _BACnetConstructedDataMultiStateInputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataMultiStateInputInterfaceValue struct {
 	BACnetConstructedDataContract
-	InterfaceValue BACnetOptionalBinaryPV
+	InterfaceValue BACnetOptionalUnsigned
 }
 
 var _ BACnetConstructedDataMultiStateInputInterfaceValue = (*_BACnetConstructedDataMultiStateInputInterfaceValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputInterfaceValue)(nil)
 
 // NewBACnetConstructedDataMultiStateInputInterfaceValue factory function for _BACnetConstructedDataMultiStateInputInterfaceValue
-func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV) *_BACnetConstructedDataMultiStateInputInterfaceValue {
+func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalUnsigned) *_BACnetConstructedDataMultiStateInputInterfaceValue {
 	if interfaceValue == nil {
-		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataMultiStateInputInterfaceValue must not be nil")
+		panic("interfaceValue of type BACnetOptionalUnsigned for BACnetConstructedDataMultiStateInputInterfaceValue must not be nil")
 	}
 	_result := &_BACnetConstructedDataMultiStateInputInterfaceValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag),
@@ -82,11 +82,11 @@ func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpen
 type BACnetConstructedDataMultiStateInputInterfaceValueBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	WithMandatoryFields(interfaceValue BACnetOptionalUnsigned) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// WithInterfaceValue adds InterfaceValue (property field)
-	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	WithInterfaceValue(BACnetOptionalUnsigned) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
-	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	WithInterfaceValueBuilder(func(BACnetOptionalUnsignedBuilder) BACnetOptionalUnsignedBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMultiStateInputInterfaceValue or returns an error if something is wrong
@@ -115,21 +115,21 @@ func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) setParent(c
 	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMultiStateInputInterfaceValue
 }
 
-func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalUnsigned) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
 	return b.WithInterfaceValue(interfaceValue)
 }
 
-func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalUnsigned) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
 	b.InterfaceValue = interfaceValue
 	return b
 }
 
-func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
-	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalBinaryPVBuilder())
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalUnsignedBuilder) BACnetOptionalUnsignedBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalUnsignedBuilder())
 	var err error
 	b.InterfaceValue, err = builder.Build()
 	if err != nil {
-		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOptionalBinaryPVBuilder failed"))
+		b.collectedErr = append(b.collectedErr, errors.Wrap(err, "BACnetOptionalUnsignedBuilder failed"))
 	}
 	return b
 }
@@ -211,7 +211,7 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetParent() BACnet
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetInterfaceValue() BACnetOptionalBinaryPV {
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetInterfaceValue() BACnetOptionalUnsigned {
 	return m.InterfaceValue
 }
 
@@ -224,10 +224,10 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetInterfaceValue(
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetActualValue() BACnetOptionalBinaryPV {
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetActualValue() BACnetOptionalUnsigned {
 	ctx := context.Background()
 	_ = ctx
-	return CastBACnetOptionalBinaryPV(m.GetInterfaceValue())
+	return CastBACnetOptionalUnsigned(m.GetInterfaceValue())
 }
 
 ///////////////////////
@@ -276,13 +276,13 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) parse(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	interfaceValue, err := ReadSimpleField[BACnetOptionalBinaryPV](ctx, "interfaceValue", ReadComplex[BACnetOptionalBinaryPV](BACnetOptionalBinaryPVParseWithBuffer, readBuffer))
+	interfaceValue, err := ReadSimpleField[BACnetOptionalUnsigned](ctx, "interfaceValue", ReadComplex[BACnetOptionalUnsigned](BACnetOptionalUnsignedParseWithBuffer, readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceValue' field"))
 	}
 	m.InterfaceValue = interfaceValue
 
-	actualValue, err := ReadVirtualField[BACnetOptionalBinaryPV](ctx, "actualValue", (*BACnetOptionalBinaryPV)(nil), interfaceValue)
+	actualValue, err := ReadVirtualField[BACnetOptionalUnsigned](ctx, "actualValue", (*BACnetOptionalUnsigned)(nil), interfaceValue)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}
@@ -313,7 +313,7 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMultiStateInputInterfaceValue")
 		}
 
-		if err := WriteSimpleField[BACnetOptionalBinaryPV](ctx, "interfaceValue", m.GetInterfaceValue(), WriteComplex[BACnetOptionalBinaryPV](writeBuffer)); err != nil {
+		if err := WriteSimpleField[BACnetOptionalUnsigned](ctx, "interfaceValue", m.GetInterfaceValue(), WriteComplex[BACnetOptionalUnsigned](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'interfaceValue' field")
 		}
 		// Virtual field
@@ -344,7 +344,7 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) deepCopy() *_BACne
 	}
 	_BACnetConstructedDataMultiStateInputInterfaceValueCopy := &_BACnetConstructedDataMultiStateInputInterfaceValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		utils.DeepCopy[BACnetOptionalBinaryPV](m.InterfaceValue),
+		utils.DeepCopy[BACnetOptionalUnsigned](m.InterfaceValue),
 	}
 	_BACnetConstructedDataMultiStateInputInterfaceValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMultiStateInputInterfaceValueCopy

@@ -2470,12 +2470,12 @@
             [simple   BACnetApplicationTagUnsignedInteger                       accompanimentTime                       ]
             [virtual  BACnetApplicationTagUnsignedInteger                       actualValue       'accompanimentTime'   ]
         ]
-        [*, 'ACK_REQUIRED', '9'                         *AckRequired
+        [*, 'ACK_REQUIRED', '8'                         *AckRequired
             [simple   BACnetEventTransitionBitsTagged('0', 'TagClass.APPLICATION_TAGS')
                                                                                 ackRequired                             ]
             [virtual  BACnetEventTransitionBitsTagged                           actualValue       'ackRequired'         ]
         ]
-        [*, 'ACKED_TRANSITIONS', '9'                    *AckedTransitions
+        [*, 'ACKED_TRANSITIONS', '8'                    *AckedTransitions
             [simple   BACnetEventTransitionBitsTagged('0', 'TagClass.APPLICATION_TAGS') ackedTransitions                ]
             [virtual  BACnetEventTransitionBitsTagged                           actualValue       'ackedTransitions'    ]
         ]
@@ -3810,12 +3810,12 @@
             [virtual  BACnetOptionalBinaryPV                                    actualValue 'interfaceValue'            ]
         ]
         ['MULTI_STATE_INPUT', 'INTERFACE_VALUE'         *MultiStateInputInterfaceValue
-            [simple   BACnetOptionalBinaryPV                                    interfaceValue                          ]
-            [virtual  BACnetOptionalBinaryPV                                    actualValue 'interfaceValue'            ]
+            [simple   BACnetOptionalUnsigned                                    interfaceValue                          ]
+            [virtual  BACnetOptionalUnsigned                                    actualValue 'interfaceValue'            ]
         ]
         ['MULTI_STATE_OUTPUT', 'INTERFACE_VALUE'        *MultiStateOutputInterfaceValue
-            [simple   BACnetOptionalBinaryPV                                    interfaceValue                          ]
-            [virtual  BACnetOptionalBinaryPV                                    actualValue 'interfaceValue'            ]
+            [simple   BACnetOptionalUnsigned                                    interfaceValue                          ]
+            [virtual  BACnetOptionalUnsigned                                    actualValue 'interfaceValue'            ]
         ]
         // TODO: unlikely that we have a common type so maybe check that
         //[*, 'INTERFACE_VALUE'                         *InterfaceValue [validation    '1 == 2'    "TODO: implement me INTERFACE_VALUE *InterfaceValue"]]

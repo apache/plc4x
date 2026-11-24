@@ -8338,11 +8338,11 @@ func (m *_BACnetConstructedData) parse(ctx context.Context, readBuffer utils.Rea
 		if _child, err = new(_BACnetConstructedDataAccompanimentTime).parse(ctx, readBuffer, m, uint8(tagNumber), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccompanimentTime for type-switch of BACnetConstructedData")
 		}
-	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACK_REQUIRED && peekedTagNumber == uint8(9): // BACnetConstructedDataAckRequired
+	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACK_REQUIRED && peekedTagNumber == uint8(8): // BACnetConstructedDataAckRequired
 		if _child, err = new(_BACnetConstructedDataAckRequired).parse(ctx, readBuffer, m, uint8(tagNumber), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAckRequired for type-switch of BACnetConstructedData")
 		}
-	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS && peekedTagNumber == uint8(9): // BACnetConstructedDataAckedTransitions
+	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS && peekedTagNumber == uint8(8): // BACnetConstructedDataAckedTransitions
 		if _child, err = new(_BACnetConstructedDataAckedTransitions).parse(ctx, readBuffer, m, uint8(tagNumber), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAckedTransitions for type-switch of BACnetConstructedData")
 		}

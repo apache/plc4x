@@ -127,9 +127,9 @@ public abstract class BACnetConstructedData implements Message {
       builder = BACnetConstructedDataAccompaniment.staticParseBACnetConstructedDataBuilder(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
     } else if (true && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACCOMPANIMENT_TIME)) && EvaluationHelper.equals(peekedTagNumber, (short) (2))) {
       builder = BACnetConstructedDataAccompanimentTime.staticParseBACnetConstructedDataBuilder(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
-    } else if (true && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACK_REQUIRED)) && EvaluationHelper.equals(peekedTagNumber, (short) (9))) {
+    } else if (true && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACK_REQUIRED)) && EvaluationHelper.equals(peekedTagNumber, (short) (8))) {
       builder = BACnetConstructedDataAckRequired.staticParseBACnetConstructedDataBuilder(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
-    } else if (true && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACKED_TRANSITIONS)) && EvaluationHelper.equals(peekedTagNumber, (short) (9))) {
+    } else if (true && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACKED_TRANSITIONS)) && EvaluationHelper.equals(peekedTagNumber, (short) (8))) {
       builder = BACnetConstructedDataAckedTransitions.staticParseBACnetConstructedDataBuilder(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, (BACnetObjectType) (BACnetObjectType.LOOP)) && EvaluationHelper.equals(propertyIdentifierArgument, (BACnetPropertyIdentifier) (BACnetPropertyIdentifier.ACTION)) && EvaluationHelper.equals(peekedTagNumber, (short) (9))) {
       builder = BACnetConstructedDataLoopAction.staticParseBACnetConstructedDataBuilder(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument);
