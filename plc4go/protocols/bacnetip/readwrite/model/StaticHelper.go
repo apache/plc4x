@@ -660,15 +660,8 @@ func WriteEnumGeneric(ctx context.Context, writeBuffer utils.WriteBuffer, value 
 		panic(fmt.Sprintf("doesn't work yet... implement manually support for %T", value))
 	}
 
-	if valueValue <= 0xff {
-		bitsToWrite = 8
-	} else if valueValue <= 0xffff {
-		bitsToWrite = 16
-	} else if valueValue <= 0xffffffff {
-		bitsToWrite = 32
-	} else {
-		bitsToWrite = 32
-	}
+	// As many octets as the tag header's length says (requiredLength), 3 included.
+	bitsToWrite = uint8(8 * requiredLength(uint(valueValue)))
 	var withWriterArgs []utils.WithWriterArgs
 	if stringer, ok := value.(fmt.Stringer); ok {
 		withWriterArgs = append(withWriterArgs, utils.WithAdditionalStringRepresentation(stringer.String()))
@@ -680,16 +673,7 @@ func WriteProprietaryEnumGeneric(ctx context.Context, writeBuffer utils.WriteBuf
 	if !shouldWrite {
 		return nil
 	}
-	bitsToWrite := uint8(0)
-	if value <= 0xff {
-		bitsToWrite = 8
-	} else if value <= 0xffff {
-		bitsToWrite = 16
-	} else if value <= 0xffffffff {
-		bitsToWrite = 32
-	} else {
-		bitsToWrite = 32
-	}
+	bitsToWrite := uint8(8 * requiredLength(uint(value)))
 	return writeBuffer.WriteUint32("proprietaryValue", bitsToWrite, value, utils.WithAdditionalStringRepresentation("VENDOR_PROPRIETARY_VALUE"))
 }
 
