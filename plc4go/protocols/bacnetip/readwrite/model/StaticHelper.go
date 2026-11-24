@@ -1053,13 +1053,15 @@ func CreateBACnetContextTagDouble(tagNumber uint8, value float64) BACnetContextT
 	return NewBACnetContextTagDouble(header, NewBACnetTagPayloadDouble(value))
 }
 
+// CreateBACnetApplicationTagOctetString's header length is the number of octets: unlike a Character String or a
+// Bit String, an Octet String has no leading octet before its content (ASHRAE 135 Clause 20.2.8).
 func CreateBACnetApplicationTagOctetString(value []byte) BACnetApplicationTagOctetString {
-	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_OCTET_STRING), uint32(len(value)+1))
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_OCTET_STRING), uint32(len(value)))
 	return NewBACnetApplicationTagOctetString(header, NewBACnetTagPayloadOctetString(value))
 }
 
 func CreateBACnetContextTagOctetString(tagNumber uint8, value []byte) BACnetContextTagOctetString {
-	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
+	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)))
 	return NewBACnetContextTagOctetString(header, NewBACnetTagPayloadOctetString(value))
 }
 
