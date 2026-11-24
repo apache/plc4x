@@ -31,6 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/opcua"
+	"github.com/apache/plc4x/plc4go/internal/profinet"
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/internal/slmp"
 	"github.com/apache/plc4x/plc4go/internal/umas"
@@ -144,6 +145,15 @@ func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...conf
 	driver := opcua.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterProfinetDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := profinet.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Profinet is raw Ethernet (Linux, CAP_NET_RAW); the virtual segment is for tests and simulation.
+	transports.RegisterRawSocketTransport(driverManager)
+	transports.RegisterVirtualEthTransport(driverManager)
 	return driver
 }
 
