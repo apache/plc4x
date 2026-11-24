@@ -70,6 +70,14 @@ func StrToUint32(str string) (uint32, error) {
 	return uint32(intVal), nil
 }
 
+func StrToInt16(str string) (int16, error) {
+	intVal, err := strconv.ParseInt(str, 10, 16)
+	if err != nil {
+		return 0, err
+	}
+	return int16(intVal), nil
+}
+
 func StrToInt32(str string) (int32, error) {
 	intVal, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {

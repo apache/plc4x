@@ -113,6 +113,28 @@ func TestStrToBool(t *testing.T) {
 	}
 }
 
+func TestStrToInt16(t *testing.T) {
+	tests := []struct {
+		str     string
+		want    int16
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{str: "1", want: 1, wantErr: assert.NoError},
+		{str: "-32768", want: -32768, wantErr: assert.NoError},
+		{str: "32768", wantErr: assert.Error},
+		{str: "herbert", wantErr: assert.Error},
+	}
+	for _, tt := range tests {
+		t.Run(tt.str, func(t *testing.T) {
+			got, err := StrToInt16(tt.str)
+			if !tt.wantErr(t, err, fmt.Sprintf("StrToInt16(%v)", tt.str)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "StrToInt16(%v)", tt.str)
+		})
+	}
+}
+
 func TestStrToInt32(t *testing.T) {
 	type args struct {
 		str string
