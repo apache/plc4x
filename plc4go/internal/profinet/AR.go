@@ -103,6 +103,8 @@ type applicationRelation struct {
 
 	arUUID        []byte
 	sessionKey    uint16
+	activity      readWriteModel.DceRpc_ActivityUuid
+	sequence      atomic.Uint32
 	inputFrameID  uint16
 	outputFrameID uint16
 
@@ -136,6 +138,7 @@ func newApplicationRelation(settings arSettings, dev device, index *gsdml.Index,
 		localIP:    localIP,
 		arUUID:     arUUID,
 		sessionKey: 1,
+		activity:   newActivity(),
 		ready:      make(chan struct{}),
 		lost:       make(chan error, 1),
 		log:        log,
@@ -153,7 +156,8 @@ func (ar *applicationRelation) remote() *net.UDPAddr {
 func (ar *applicationRelation) call(ctx context.Context, operation readWriteModel.DceRpc_Operation, blocks ...readWriteModel.PnIoCm_Block) (readWriteModel.PnIoCm_Packet_Res, error) {
 	callCtx, cancel := context.WithTimeout(ctx, ar.settings.requestTimeout)
 	defer cancel()
-	return ar.rpc.call(callCtx, ar.remote(), ar.object(), operation, readWriteModel.NewPnIoCm_Packet_Req(argsMaximum, argsMaximum, 0, blocks))
+	sequence := ar.sequence.Add(1) - 1
+	return ar.rpc.call(callCtx, ar.remote(), ar.object(), ar.activity, sequence, operation, readWriteModel.NewPnIoCm_Packet_Req(argsMaximum, argsMaximum, 0, blocks))
 }
 
 // establish runs the startup: read what the device has, connect, parameterize, and wait for the

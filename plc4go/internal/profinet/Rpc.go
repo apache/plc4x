@@ -67,7 +67,7 @@ type rpcEndpoint struct {
 	handler rpcHandler
 
 	mutex   sync.Mutex
-	pending map[[16]byte]chan readWriteModel.DceRpc_Packet
+	pending map[callKey]chan readWriteModel.DceRpc_Packet
 	// answered keeps the last response per incoming activity, to resend for a retransmitted request.
 	answered map[[16]byte][]byte
 
@@ -85,7 +85,7 @@ func listenRPC(local *net.UDPAddr, handler rpcHandler, log zerolog.Logger) (*rpc
 	endpoint := &rpcEndpoint{
 		conn:     conn,
 		handler:  handler,
-		pending:  map[[16]byte]chan readWriteModel.DceRpc_Packet{},
+		pending:  map[callKey]chan readWriteModel.DceRpc_Packet{},
 		answered: map[[16]byte][]byte{},
 		done:     make(chan struct{}),
 		log:      log,
@@ -103,6 +103,12 @@ func (e *rpcEndpoint) close() {
 	close(e.done)
 	_ = e.conn.Close()
 	e.wg.Wait()
+}
+
+// callKey is one call: its activity and its sequence number within it.
+type callKey struct {
+	activity [16]byte
+	sequence uint32
 }
 
 func activityKey(uuid readWriteModel.DceRpc_ActivityUuid) [16]byte {
@@ -124,11 +130,15 @@ func newActivity() readWriteModel.DceRpc_ActivityUuid {
 
 // call sends a request to the device and waits for its response, sending it again every second
 // while unanswered. A response with a non-zero PNIOStatus comes back as *PNIOStatusError.
-func (e *rpcEndpoint) call(ctx context.Context, remote *net.UDPAddr, object readWriteModel.DceRpc_ObjectUuid, operation readWriteModel.DceRpc_Operation, request readWriteModel.PnIoCm_Packet_Req) (readWriteModel.PnIoCm_Packet_Res, error) {
-	activity := newActivity()
+//
+// All calls of one application relation go out under one activity with rising sequence numbers,
+// the way controllers do: a device ties its RPC session to the AR by the activity, and a call on a
+// fresh activity reaches it without the AR (p-net then never raises the end of parameterization to
+// its application, so it never reports ready).
+func (e *rpcEndpoint) call(ctx context.Context, remote *net.UDPAddr, object readWriteModel.DceRpc_ObjectUuid, activity readWriteModel.DceRpc_ActivityUuid, sequence uint32, operation readWriteModel.DceRpc_Operation, request readWriteModel.PnIoCm_Packet_Req) (readWriteModel.PnIoCm_Packet_Res, error) {
 	packet := readWriteModel.NewDceRpc_Packet(readWriteModel.DceRpc_PacketType_REQUEST, true, false, false,
 		readWriteModel.IntegerEncoding_BIG_ENDIAN, readWriteModel.CharacterEncoding_ASCII, readWriteModel.FloatingPointEncoding_IEEE,
-		object, readWriteModel.NewDceRpc_InterfaceUuid_DeviceInterface(), activity, 0, 0, operation, 0, request)
+		object, readWriteModel.NewDceRpc_InterfaceUuid_DeviceInterface(), activity, 0, sequence, operation, 0, request)
 	data, err := packet.Serialize()
 	if err != nil {
 		return nil, errors.Wrapf(err, "error serializing the %s request", operation)
@@ -136,7 +146,7 @@ func (e *rpcEndpoint) call(ctx context.Context, remote *net.UDPAddr, object read
 	if body := len(data) - 80; body > maxRPCBody {
 		return nil, errors.Errorf("the %s request is %d bytes, more than one datagram carries (%d); DCE/RPC fragmentation is not supported yet", operation, body, maxRPCBody)
 	}
-	key := activityKey(activity)
+	key := callKey{activityKey(activity), sequence}
 	answers := make(chan readWriteModel.DceRpc_Packet, 4)
 	e.mutex.Lock()
 	e.pending[key] = answers
@@ -218,7 +228,7 @@ func (e *rpcEndpoint) receive() {
 			continue
 		}
 		e.mutex.Lock()
-		answers, ok := e.pending[key]
+		answers, ok := e.pending[callKey{key, packet.GetSequenceNumber()}]
 		e.mutex.Unlock()
 		if ok {
 			select {

@@ -134,6 +134,8 @@ type Connection struct {
 	codec         *stationCodec
 	ar            *applicationRelation
 	subscriber    _default.DefaultPollingSubscriber
+	closed        chan struct{}
+	closeOnce     sync.Once
 
 	wg  sync.WaitGroup
 	log zerolog.Logger
@@ -165,17 +167,14 @@ func (c *Connection) Connect(ctx context.Context) error {
 		_ = c.Close()
 		return err
 	}
+	c.closed = make(chan struct{})
 	c.wg.Go(func() {
 		select {
 		case err := <-c.ar.lost:
 			c.log.Warn().Err(err).Msg("Profinet connection lost")
-			c.Invalidate()
-		case <-c.ar.ready:
-			// stays until lost or closed; watch for loss below
-			if err := <-c.ar.lost; err != nil {
-				c.log.Warn().Err(err).Msg("Profinet connection lost")
-				c.Invalidate()
-			}
+			// Invalidate closes the connection, which waits for this goroutine: not from here.
+			go c.Invalidate()
+		case <-c.closed:
 		}
 	})
 	return nil
@@ -246,6 +245,11 @@ func interfaceIPv4(st station) net.IP {
 }
 
 func (c *Connection) Close() error {
+	c.closeOnce.Do(func() {
+		if c.closed != nil {
+			close(c.closed)
+		}
+	})
 	if c.ar != nil {
 		c.ar.close()
 	}
