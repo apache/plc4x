@@ -233,7 +233,7 @@ func (m *Writer) buildServiceRequest(writeRequest apiModel.PlcWriteRequest) (rea
 		var defs []readWriteModel.BACnetPropertyWriteDefinition
 		for _, prop := range tag.GetProperties() {
 			plcValue := writeRequest.GetValue(tagName)
-			appTag, err := plcValueToApplicationTag(plcValue.(apiValues.PlcValue), hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId()))
+			appTag, err := plcValueToApplicationTag(plcValue.(apiValues.PlcValue), hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId(), prop.ArrayIndex))
 			if err != nil {
 				return nil, errors.Wrapf(err, "tag %s property %s", tagName, prop.String())
 			}
@@ -264,7 +264,7 @@ func (m *Writer) buildSingleWriteProperty(tag BacNetPlcTag, plcValue apiValues.P
 		return nil, errors.New("nil PlcValue")
 	}
 	prop := tag.GetProperties()[0]
-	appTag, err := plcValueToApplicationTag(plcValue, hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId()))
+	appTag, err := plcValueToApplicationTag(plcValue, hintForProperty(uint32(tag.GetObjectId().getId()), prop.getId(), prop.ArrayIndex))
 	if err != nil {
 		return nil, err
 	}
