@@ -172,7 +172,15 @@ func (d *Discoverer) scan(ctx context.Context, interfaceName string, window time
 		return err
 	}
 	defer func() { _ = instance.Close() }()
+	return identifyOn(ctx, instance, window, d.log, func(device identifiedDevice) bool {
+		callback(device.item(interfaceName, instance.HardwareAddress().String()))
+		return false
+	})
+}
 
+// identifyOn sends one Identify All on an open station and hands each device that answers, once,
+// to found, until the window closes or found returns true.
+func identifyOn(ctx context.Context, instance station, window time.Duration, log zerolog.Logger, found func(identifiedDevice) bool) error {
 	local := instance.HardwareAddress()
 	xid := randomXid()
 	request, err := identifyRequest(local, xid)
@@ -182,7 +190,6 @@ func (d *Discoverer) scan(ctx context.Context, interfaceName string, window time
 	if err := instance.Write(ctx, request); err != nil {
 		return errors.Wrap(err, "error sending the DCP identify request")
 	}
-
 	scanCtx, cancel := context.WithTimeout(ctx, window)
 	defer cancel()
 	seen := map[string]bool{}
@@ -196,12 +203,14 @@ func (d *Discoverer) scan(ctx context.Context, interfaceName string, window time
 			}
 			return err
 		}
-		item, mac, ok := d.itemFrom(scanCtx, interfaceName, local, xid, frame)
-		if !ok || seen[mac] {
+		device, ok := identifiedFrom(scanCtx, local, xid, frame, log)
+		if !ok || seen[device.mac] {
 			continue
 		}
-		seen[mac] = true
-		callback(item)
+		seen[device.mac] = true
+		if found(device) {
+			return nil
+		}
 	}
 }
 
@@ -249,17 +258,17 @@ func readFrame(ctx context.Context, instance transports.TransportInstance) ([]by
 	return record[rawsocket.RecordHeaderSize:], nil
 }
 
-// itemFrom turns an Identify response to our request into a discovery item. Frames that are
-// anything else, including answers to somebody else's request, are skipped.
-func (d *Discoverer) itemFrom(ctx context.Context, interfaceName string, local net.HardwareAddr, xid uint32, data []byte) (apiModel.PlcDiscoveryItem, string, bool) {
+// identifiedFrom reads an Identify response to our request. Frames that are anything else,
+// including answers to somebody else's request, are skipped.
+func identifiedFrom(ctx context.Context, local net.HardwareAddr, xid uint32, data []byte, log zerolog.Logger) (identifiedDevice, bool) {
 	frame, err := readWriteModel.Ethernet_FrameParse(ctx, data)
 	if err != nil {
-		d.log.Trace().Err(err).Msg("not a frame the Profinet model parses")
-		return nil, "", false
+		log.Trace().Err(err).Msg("not a frame the Profinet model parses")
+		return identifiedDevice{}, false
 	}
 	if net.HardwareAddr(frame.GetDestination().GetAddress()).String() != local.String() {
 		// Identify responses go unicast to the requester.
-		return nil, "", false
+		return identifiedDevice{}, false
 	}
 	payload := frame.GetPayload()
 	if vlan, ok := payload.(readWriteModel.Ethernet_FramePayload_VirtualLan); ok {
@@ -267,15 +276,15 @@ func (d *Discoverer) itemFrom(ctx context.Context, interfaceName string, local n
 	}
 	dcp, ok := payload.(readWriteModel.Ethernet_FramePayload_PnDcp)
 	if !ok {
-		return nil, "", false
+		return identifiedDevice{}, false
 	}
 	response, ok := dcp.GetPdu().(readWriteModel.PnDcp_Pdu_IdentifyRes)
 	if !ok || response.GetXid() != xid {
-		return nil, "", false
+		return identifiedDevice{}, false
 	}
 	device := deviceFrom(response)
 	device.mac = net.HardwareAddr(frame.GetSource().GetAddress()).String()
-	return device.item(interfaceName, local.String()), device.mac, true
+	return device, true
 }
 
 // identifiedDevice is what an Identify response says about a device.
@@ -284,6 +293,8 @@ type identifiedDevice struct {
 	vendorID, deviceID   string
 	ip, subnetMask       string
 	mac                  string
+	// vendor and product are the numeric ids, zero when the device didn't send them.
+	vendor, product uint16
 }
 
 func deviceFrom(response readWriteModel.PnDcp_Pdu_IdentifyRes) identifiedDevice {
@@ -297,6 +308,7 @@ func deviceFrom(response readWriteModel.PnDcp_Pdu_IdentifyRes) identifiedDevice 
 		case readWriteModel.PnDcp_Block_DevicePropertiesDeviceId:
 			device.vendorID = fmt.Sprintf("%04X", b.GetVendorId())
 			device.deviceID = fmt.Sprintf("%04X", b.GetDeviceId())
+			device.vendor, device.product = b.GetVendorId(), b.GetDeviceId()
 		case readWriteModel.PnDcp_Block_DevicePropertiesDeviceRole:
 			var roles []string
 			for _, r := range []struct {
