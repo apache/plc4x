@@ -29,6 +29,7 @@ import (
 	"context"
 	"net/url"
 	"os"
+	"strconv"
 	"testing"
 	"time"
 
@@ -36,6 +37,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/rawsocket"
@@ -116,4 +119,90 @@ func TestConnectToDevice(t *testing.T) {
 		t.Logf("echo: %v %v", f, u)
 		return f == 25 && u == 8484
 	}, 5*time.Second, 100*time.Millisecond, "the echo module returns what was written times the GSDML default gain of 2")
+}
+
+// TestDeviceAlarms needs PROFINET_TEST_ALARM_BUTTON too: the file p-net's sample device reads as
+// its button 2 (pn_dev -d <file>). Each press makes the device raise the next of its demo events
+// on its first 8-bit input module, which goes in PROFINET_TEST_ALARM_SLOT (default 2): a process
+// alarm, then cyclic data as backup and back, then a diagnosis. The driver must deliver each alarm to the subscription and acknowledge
+// it, which the device confirms by acknowledging the AlarmAck frame.
+func TestDeviceAlarms(t *testing.T) {
+	iface, name, gsd, button := os.Getenv("PROFINET_TEST_INTERFACE"), os.Getenv("PROFINET_TEST_DEVICE"), os.Getenv("PROFINET_TEST_GSD"), os.Getenv("PROFINET_TEST_ALARM_BUTTON")
+	if iface == "" || name == "" || gsd == "" || button == "" {
+		t.Skip("set PROFINET_TEST_INTERFACE, PROFINET_TEST_DEVICE, PROFINET_TEST_GSD and PROFINET_TEST_ALARM_BUTTON to run against p-net's sample device")
+	}
+	slot := os.Getenv("PROFINET_TEST_ALARM_SLOT")
+	if slot == "" {
+		slot = "2"
+	}
+	options := url.Values{"device-name": {name}, "gsd-directory": {gsd}, "reduction-ratio": {"32"}, "module." + slot: {"IDM_30"}}
+	if ip := os.Getenv("PROFINET_TEST_LOCAL_IP"); ip != "" {
+		options.Set("local-ip", ip)
+	}
+	require.NoError(t, os.WriteFile(button, []byte("0\n"), 0o644))
+	ctx, cancel := context.WithTimeout(t.Context(), 60*time.Second)
+	defer cancel()
+	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+	connection, err := driver.GetConnection(ctx, url.URL{Scheme: rawsocket.TransportCode, Host: iface},
+		map[string]transports.Transport{rawsocket.TransportCode: rawsocket.NewTransport()}, options)
+	require.NoError(t, err)
+	defer func() { _ = connection.Close() }()
+	c := connection.(*Connection)
+
+	request, err := connection.SubscriptionRequestBuilder().AddEventTagAddress("alarms", "ALARM:"+slot).Build()
+	require.NoError(t, err)
+	subscribed := <-request.Execute(ctx)
+	require.NoError(t, subscribed.GetErr())
+	require.Equal(t, "OK", subscribed.GetResponse().GetResponseCode("alarms").String())
+	handle, err := subscribed.GetResponse().GetSubscriptionHandle("alarms")
+	require.NoError(t, err)
+	events := make(chan map[string]apiValues.PlcValue, 8)
+	handle.Register(func(event apiModel.PlcSubscriptionEvent) {
+		events <- event.GetValue("alarms").GetStruct()
+	})
+
+	acknowledged := map[string]uint16{} // AlarmAcks the device acknowledged, by priority
+	press := func() {
+		// The device reads the file every 10 ms and acts on a 0 followed by a 1: hold each long enough.
+		require.NoError(t, os.WriteFile(button, []byte("0\n"), 0o644))
+		time.Sleep(300 * time.Millisecond)
+		require.NoError(t, os.WriteFile(button, []byte("1\n"), 0o644))
+		time.Sleep(300 * time.Millisecond)
+	}
+	expect := func(typeName string) {
+		var alarm map[string]apiValues.PlcValue
+		select {
+		case alarm = <-events:
+		case <-time.After(10 * time.Second):
+			t.Fatalf("no %s alarm from the device", typeName)
+		}
+		priority := alarm["priority"].GetString()
+		t.Logf("alarm: %s priority, %s, slot %d subslot %d, sequence %d, USI 0x%04X, data %X", priority, alarm["alarmTypeName"].GetString(),
+			alarm["slot"].GetUint16(), alarm["subslot"].GetUint16(), alarm["sequence"].GetUint16(), alarm["usi"].GetUint16(), alarm["data"].GetRaw())
+		require.Equal(t, typeName, alarm["alarmTypeName"].GetString())
+		require.Equal(t, slot, strconv.Itoa(int(alarm["slot"].GetUint16())))
+		ch := c.ar.alarmLow
+		if priority == "HIGH" {
+			ch = c.ar.alarmHigh
+		}
+		want := acknowledged[priority] & 0x7FFF
+		acknowledged[priority]++
+		require.Eventually(t, func() bool {
+			ch.mutex.Lock()
+			defer ch.mutex.Unlock()
+			return !ch.waitingTack && ch.sendSeq == want
+		}, 3*time.Second, 20*time.Millisecond, "the device acknowledges the AlarmAck of the %s alarm", typeName)
+	}
+	press()
+	expect("Process")
+	// The next two presses switch the device's cyclic data to backup and redundant and back, which
+	// raise no alarm; the fourth adds a channel diagnosis, which does.
+	press()
+	press()
+	time.Sleep(time.Second)
+	assert.True(t, connection.IsConnected(), "the relation stays up while the device's data is backup")
+	press()
+	expect("Diagnosis")
+	time.Sleep(time.Second)
+	assert.True(t, connection.IsConnected(), "the relation stays up through the alarms")
 }

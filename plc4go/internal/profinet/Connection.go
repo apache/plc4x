@@ -153,6 +153,7 @@ type Connection struct {
 	codec         *stationCodec
 	ar            *applicationRelation
 	subscriber    _default.DefaultPollingSubscriber
+	alarms        *alarmSubscriber
 	closed        chan struct{}
 	closeOnce     sync.Once
 
@@ -171,6 +172,7 @@ func newConnection(st station, configuration Configuration, _options ...options.
 		_default.WithPlcTagHandler(NewTagHandler()),
 		_default.WithPlcValueHandler(spiValues.NewDefaultValueHandler(_options...)))...)
 	c.subscriber = _default.NewDefaultPollingSubscriber(c, _options...)
+	c.alarms = newAlarmSubscriber(_options...)
 	return c
 }
 
@@ -241,6 +243,7 @@ func (c *Connection) establish(ctx context.Context) error {
 	c.ar = newApplicationRelation(cfg.settings, device{name: found.name, mac: mac, ip: ip, vendorID: found.vendor, deviceID: found.product},
 		gsdml.NewIndex(profile), st, localIP, c.log)
 	c.ar.modules = cfg.modules
+	c.ar.onAlarm = c.alarms.publish
 	return c.ar.establish(ctx)
 }
 
@@ -274,6 +277,7 @@ func (c *Connection) Close() error {
 		c.ar.close()
 	}
 	c.subscriber.Close()
+	c.alarms.Close()
 	err := c.DefaultConnection.Close()
 	c.wg.Wait()
 	return err
@@ -296,7 +300,7 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), c.subscriber)
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), subscriberRouter{polling: c.subscriber, alarms: c.alarms})
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {

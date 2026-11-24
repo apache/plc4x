@@ -111,6 +111,12 @@ type applicationRelation struct {
 	inputFrameID  uint16
 	outputFrameID uint16
 
+	// deviceAlarmReference is the device's end of the alarm CR; alarmHigh and alarmLow are the two
+	// alarm channels, and onAlarm gets every alarm the device sends.
+	deviceAlarmReference uint16
+	alarmHigh, alarmLow  *alarmChannel
+	onAlarm              func(Alarm)
+
 	mutex       sync.Mutex
 	output      []byte
 	input       []byte
@@ -142,6 +148,8 @@ func newApplicationRelation(settings arSettings, dev device, index *gsdml.Index,
 		arUUID:     arUUID,
 		sessionKey: 1,
 		activity:   newActivity(),
+		alarmHigh:  newAlarmChannel(true),
+		alarmLow:   newAlarmChannel(false),
 		ready:      make(chan struct{}),
 		lost:       make(chan error, 1),
 		log:        log,
@@ -239,7 +247,7 @@ func (ar *applicationRelation) connect(ctx context.Context) error {
 	}
 	blocks = append(blocks, p.expectedSubmoduleBlocks()...)
 	blocks = append(blocks, readWriteModel.NewPnIoCm_Block_AlarmCrReq(blockVersionHigh, blockVersionLow, readWriteModel.PnIoCm_AlarmCrType_ALARM_CR,
-		rtUDPPort, false, false, 1, 3, 0x0000, 200, 0xC000, 0xA000))
+		rtUDPPort, false, false, rtaTimeoutFactor, rtaRetries, controllerAlarmReference, 200, 0xC000, 0xA000))
 
 	response, err := ar.call(ctx, readWriteModel.DceRpc_Operation_CONNECT, blocks...)
 	if err != nil {
@@ -254,6 +262,8 @@ func (ar *applicationRelation) connect(ctx context.Context) error {
 			case readWriteModel.PnIoCm_IoCrType_OUTPUT_CR:
 				ar.outputFrameID = b.GetFrameId()
 			}
+		case readWriteModel.PnIoCm_Block_AlarmCrRes:
+			ar.deviceAlarmReference = b.GetLocalAlarmReference()
 		case readWriteModel.PnIoCm_Block_ModuleDiff:
 			for _, api := range b.GetApis() {
 				for _, module := range api.GetModules() {
@@ -331,6 +341,8 @@ func (ar *applicationRelation) startCyclic() {
 	ar.running.Store(true)
 	ar.wg.Go(func() { ar.sendCyclic(ctx) })
 	ar.wg.Go(func() { ar.receiveCyclic(ctx) })
+	ar.wg.Go(func() { ar.sendAlarmAcks(ctx, ar.alarmHigh) })
+	ar.wg.Go(func() { ar.sendAlarmAcks(ctx, ar.alarmLow) })
 }
 
 func (ar *applicationRelation) fail(err error) {
@@ -393,9 +405,12 @@ func (ar *applicationRelation) receiveCyclic(ctx context.Context) {
 		readCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
 		frame, err := readFrame(readCtx, ar.station)
 		cancel()
-		if err == nil && ar.acceptInput(frame) {
-			deadline = time.Now().Add(timeout)
-			continue
+		if err == nil {
+			if ar.acceptInput(frame) {
+				deadline = time.Now().Add(timeout)
+				continue
+			}
+			ar.acceptAlarm(ctx, frame)
 		}
 		if ctx.Err() == nil && time.Now().After(deadline) {
 			ar.fail(errors.Errorf("no cyclic data from %s for %s: the application relation is lost", ar.device.name, timeout))

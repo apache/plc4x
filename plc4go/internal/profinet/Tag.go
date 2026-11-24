@@ -166,6 +166,12 @@ func NewTagHandler() TagHandler {
 }
 
 func (TagHandler) ParseTag(address string) (apiModel.PlcTag, error) {
+	if tag, isAlarm, err := parseAlarmTag(address); isAlarm {
+		if err != nil {
+			return nil, err
+		}
+		return tag, nil
+	}
 	return parseTag(address)
 }
 
