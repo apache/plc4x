@@ -46,8 +46,9 @@ const (
 	argsMaximum = 16696
 
 	// The startup sequence's control commands (IEC 61158-6-10 ControlCommand).
-	controlCommandPrmEnd = 0x0001
-	controlCommandDone   = 0x0008
+	controlCommandPrmEnd  = 0x0001
+	controlCommandRelease = 0x0004
+	controlCommandDone    = 0x0008
 
 	// realIdentificationDataIndex is the record that lists every slot and subslot a device has.
 	realIdentificationDataIndex = 0xF000
@@ -461,7 +462,32 @@ func (ar *applicationRelation) outputImage() []byte {
 	return append([]byte(nil), ar.output...)
 }
 
+// release ends a running application relation with the Release call, so the device frees it at
+// once instead of waiting for its watchdog. It is best effort: a device that does not answer within
+// the request timeout is left to the watchdog.
+func (ar *applicationRelation) release() {
+	if ar.rpc == nil || !ar.running.Load() {
+		return
+	}
+	response, err := ar.call(context.Background(), readWriteModel.DceRpc_Operation_RELEASE,
+		readWriteModel.NewPnIoCm_Control_Request_Release(blockVersionHigh, blockVersionLow, readWriteModel.NewUuid(ar.arUUID), ar.sessionKey, controlCommandRelease, 0))
+	if err != nil {
+		ar.log.Debug().Err(err).Str("device", ar.device.name).Msg("Profinet release failed; the device's watchdog ends the relation")
+		return
+	}
+	for _, block := range response.GetBlocks() {
+		if done, ok := block.(readWriteModel.PnIoCm_Control_Response_Release); ok && done.GetControlCommand() == controlCommandDone {
+			ar.log.Debug().Str("device", ar.device.name).Msg("Profinet application relation released")
+			return
+		}
+	}
+	ar.log.Debug().Str("device", ar.device.name).Msg("Profinet release answered without a release block")
+}
+
+// close releases the relation if it is still running, then stops the cyclic data and the RPC
+// endpoint.
 func (ar *applicationRelation) close() {
+	ar.release()
 	if ar.cancel != nil {
 		ar.cancel()
 	}

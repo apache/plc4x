@@ -35,6 +35,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/rawsocket"
@@ -60,10 +61,24 @@ func TestConnectToDevice(t *testing.T) {
 	ctx, cancel := context.WithTimeout(t.Context(), 60*time.Second)
 	defer cancel()
 	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
-	connection, err := driver.GetConnection(ctx, url.URL{Scheme: rawsocket.TransportCode, Host: iface},
-		map[string]transports.Transport{rawsocket.TransportCode: rawsocket.NewTransport()}, options)
-	require.NoError(t, err)
+	connect := func() plc4go.PlcConnection {
+		connection, err := driver.GetConnection(ctx, url.URL{Scheme: rawsocket.TransportCode, Host: iface},
+			map[string]transports.Transport{rawsocket.TransportCode: rawsocket.NewTransport()}, options)
+		require.NoError(t, err)
+		return connection
+	}
+	connection := connect()
 	defer func() { _ = connection.Close() }()
+	defer func() {
+		if t.Failed() {
+			return
+		}
+		// Close sends the Release call ("Profinet application relation released" in the debug log
+		// when the device answers Done), and a new relation can follow on the same device.
+		require.NoError(t, connection.Close())
+		connection = connect()
+		assert.True(t, connection.IsConnected(), "reconnects after a release")
+	}()
 
 	c := connection.(*Connection)
 	for _, s := range c.ar.plan.Submodules {

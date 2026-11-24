@@ -119,6 +119,10 @@ WithMandatoryFields( ) PnIoCm_BlockBuilder
 	AsPnIoCm_Control_Response_ApplicationReady() PnIoCm_Control_Response_ApplicationReadyBuilder
 	// AsPnIoCm_Control_Response_ParameterEnd converts this build to a subType of PnIoCm_Block. It is always possible to return to current builder using Done()
 	AsPnIoCm_Control_Response_ParameterEnd() PnIoCm_Control_Response_ParameterEndBuilder
+	// AsPnIoCm_Control_Request_Release converts this build to a subType of PnIoCm_Block. It is always possible to return to current builder using Done()
+	AsPnIoCm_Control_Request_Release() PnIoCm_Control_Request_ReleaseBuilder
+	// AsPnIoCm_Control_Response_Release converts this build to a subType of PnIoCm_Block. It is always possible to return to current builder using Done()
+	AsPnIoCm_Control_Response_Release() PnIoCm_Control_Response_ReleaseBuilder
 	// AsPnIoCm_Block_IoCrReq converts this build to a subType of PnIoCm_Block. It is always possible to return to current builder using Done()
 	AsPnIoCm_Block_IoCrReq() PnIoCm_Block_IoCrReqBuilder
 	// AsPnIoCm_Block_IoCrRes converts this build to a subType of PnIoCm_Block. It is always possible to return to current builder using Done()
@@ -324,6 +328,26 @@ func (b *_PnIoCm_BlockBuilder) AsPnIoCm_Control_Response_ParameterEnd() PnIoCm_C
 		return cb
 	}
 	cb := NewPnIoCm_Control_Response_ParameterEndBuilder().(*_PnIoCm_Control_Response_ParameterEndBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PnIoCm_BlockBuilder) AsPnIoCm_Control_Request_Release() PnIoCm_Control_Request_ReleaseBuilder {
+	if cb, ok := b.childBuilder.(PnIoCm_Control_Request_ReleaseBuilder); ok {
+		return cb
+	}
+	cb := NewPnIoCm_Control_Request_ReleaseBuilder().(*_PnIoCm_Control_Request_ReleaseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PnIoCm_BlockBuilder) AsPnIoCm_Control_Response_Release() PnIoCm_Control_Response_ReleaseBuilder {
+	if cb, ok := b.childBuilder.(PnIoCm_Control_Response_ReleaseBuilder); ok {
+		return cb
+	}
+	cb := NewPnIoCm_Control_Response_ReleaseBuilder().(*_PnIoCm_Control_Response_ReleaseBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -645,6 +669,14 @@ case blockType == PnIoCm_BlockType_IOX_BLOCK_RES_CONNECTION_APPLICATION_READY : 
 case blockType == PnIoCm_BlockType_IOD_BLOCK_RES_CONNECTION_PARAMETER_END : // PnIoCm_Control_Response_ParameterEnd
 		if _child, err = new(_PnIoCm_Control_Response_ParameterEnd).parse(ctx, readBuffer, m, ); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PnIoCm_Control_Response_ParameterEnd for type-switch of PnIoCm_Block")
+		}
+case blockType == PnIoCm_BlockType_RELEASE_BLOCK_REQ : // PnIoCm_Control_Request_Release
+		if _child, err = new(_PnIoCm_Control_Request_Release).parse(ctx, readBuffer, m, ); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PnIoCm_Control_Request_Release for type-switch of PnIoCm_Block")
+		}
+case blockType == PnIoCm_BlockType_RELEASE_BLOCK_RES : // PnIoCm_Control_Response_Release
+		if _child, err = new(_PnIoCm_Control_Response_Release).parse(ctx, readBuffer, m, ); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type PnIoCm_Control_Response_Release for type-switch of PnIoCm_Block")
 		}
 case blockType == PnIoCm_BlockType_IO_CR_BLOCK_REQ : // PnIoCm_Block_IoCrReq
 		if _child, err = new(_PnIoCm_Block_IoCrReq).parse(ctx, readBuffer, m, ); err != nil {

@@ -245,6 +245,30 @@
             [simple   uint 16                         controlCommand                                         ]
             [reserved uint 16                         '0x0000'                                               ]
         ]
+        // IODReleaseBlock (IEC 61158-6-10): the Release call's request (ControlCommand Release, 0x0004)
+        // and response (ControlCommand Done, 0x0008).
+        ['RELEASE_BLOCK_REQ' PnIoCm_Control_Request_Release
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
+        ]
+        ['RELEASE_BLOCK_RES' PnIoCm_Control_Response_Release
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [simple   uint 16                         controlBlockProperties                                 ]
+        ]
         ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
