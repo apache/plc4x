@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/abeth"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/canopen"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	"github.com/apache/plc4x/plc4go/internal/firmata"
@@ -58,6 +59,15 @@ func RegisterBacnetDriver(driverManager plc4go.PlcDriverManager, _options ...con
 	driver := bacnetip.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterUdpTransport(driverManager)
+	return driver
+}
+
+func RegisterCanopenDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := canopen.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// SocketCAN is the real bus (Linux only); the virtual bus is in-process, for tests and simulation.
+	transports.RegisterSocketCanTransport(driverManager)
+	transports.RegisterVirtualCanTransport(driverManager)
 	return driver
 }
 
