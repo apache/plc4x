@@ -20,6 +20,8 @@
 package bacnetip
 
 import (
+	"math"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -53,10 +55,14 @@ func plcValueToApplicationTag(v apiValues.PlcValue, hint encodingHint) (model.BA
 		}
 		return model.CreateBACnetApplicationTagBoolean(v.GetBool()), nil
 	case apiValues.BYTE, apiValues.USINT, apiValues.UINT, apiValues.UDINT, apiValues.ULINT, apiValues.WORD, apiValues.DWORD, apiValues.LWORD:
+		u := v.GetUint64()
 		if hint == hintEnumerated {
-			return model.CreateBACnetApplicationTagEnumerated(uint32(v.GetUint64())), nil
+			if u > math.MaxUint32 {
+				return nil, errors.Errorf("%d does not fit a BACnet Enumerated, which this driver models as 32 bits", u)
+			}
+			return model.CreateBACnetApplicationTagEnumerated(uint32(u)), nil
 		}
-		return model.CreateBACnetApplicationTagUnsignedInteger(uint(v.GetUint64())), nil
+		return model.CreateBACnetApplicationTagUnsignedInteger(uint(u)), nil
 	case apiValues.SINT, apiValues.INT, apiValues.DINT, apiValues.LINT:
 		return model.CreateBACnetApplicationTagSignedInteger(int(v.GetInt64())), nil
 	case apiValues.REAL:

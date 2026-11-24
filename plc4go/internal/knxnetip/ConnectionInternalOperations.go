@@ -378,7 +378,8 @@ func (m *Connection) sendGroupAddressWriteRequest(ctx context.Context, groupAddr
 			if !ok {
 				return false
 			}
-			return groupValueWrite.GetDataFirstByte() == dataFirstByte &&
+			// Compare the 6 bits only: the echo's int 6 comes back sign-extended (0x21 as -31).
+			return byte(groupValueWrite.GetDataFirstByte())&0x3F == byte(dataFirstByte)&0x3F &&
 				m.sliceEqual(groupValueWrite.GetData(), data)
 		},
 		func(message spi.Message) error {

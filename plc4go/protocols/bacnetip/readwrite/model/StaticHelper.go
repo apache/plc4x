@@ -652,6 +652,10 @@ func ParseVarUint(ctx context.Context, data []byte) uint32 {
 }
 
 func WriteVarUint(value uint32) []byte {
+	if value == 0 {
+		// An Enumerated or Unsigned 0 still has one data octet; big.Int encodes 0 as no bytes.
+		return []byte{0}
+	}
 	return big.NewInt(int64(value)).Bytes()
 }
 
@@ -811,24 +815,29 @@ func CreateUnsignedPayload(value uint) (length uint32, payload BACnetTagPayloadU
 	var valueUint48 *uint64
 	var valueUint56 *uint64
 	var valueUint64 *uint64
-	switch {
-	case value < 0x100:
-		length = 1
-		_valueUint8 := uint8(value)
+	v := uint64(value)
+	length = requiredLength(value)
+	switch length {
+	case 1:
+		_valueUint8 := uint8(v)
 		valueUint8 = &_valueUint8
-	case value < 0x10000:
-		length = 2
-		_valueUint16 := uint16(value)
+	case 2:
+		_valueUint16 := uint16(v)
 		valueUint16 = &_valueUint16
-	case value < 0x1000000:
-		length = 3
-		_valueUint24 := uint32(value)
+	case 3:
+		_valueUint24 := uint32(v)
 		valueUint24 = &_valueUint24
-		//TODO: support more than 32bit
+	case 4:
+		_valueUint32 := uint32(v)
+		valueUint32 = &_valueUint32
+	case 5:
+		valueUint40 = &v
+	case 6:
+		valueUint48 = &v
+	case 7:
+		valueUint56 = &v
 	default:
-		length = 4
-		valueUint32_ := uint32(value)
-		valueUint32 = &valueUint32_
+		valueUint64 = &v
 	}
 	payload = NewBACnetTagPayloadUnsignedInteger(length, valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64)
 	return
@@ -836,7 +845,7 @@ func CreateUnsignedPayload(value uint) (length uint32, payload BACnetTagPayloadU
 
 func CreateBACnetApplicationTagSignedInteger(value int) BACnetApplicationTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
-	header := CreateBACnetTagHeaderBalanced(true, uint8(BACnetDataType_SIGNED_INTEGER), length)
+	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_SIGNED_INTEGER), length)
 	return NewBACnetApplicationTagSignedInteger(header, payload)
 }
 
@@ -846,32 +855,48 @@ func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int) BACnetConte
 	return NewBACnetContextTagSignedInteger(header, payload)
 }
 
+// CreateSignedPayload encodes value in the fewest octets that hold it in two's complement (BACnet clause 20.2.5).
 func CreateSignedPayload(value int) (uint32, BACnetTagPayloadSignedInteger) {
-	var length uint32
 	var valueInt8 *int8
 	var valueInt16 *int16
 	var valueInt24 *int32
 	var valueInt32 *int32
-	switch {
-	case value < 0x100:
-		length = 1
-		_valueInt8 := int8(value)
-		valueInt8 = &_valueInt8
-	case value < 0x10000:
-		length = 2
-		_valueInt16 := int16(value)
-		valueInt16 = &_valueInt16
-	case value < 0x1000000:
-		length = 3
-		_valueInt24 := int32(value)
-		valueInt24 = &_valueInt24
-		//TODO: support more than 32bit
-	default:
-		length = 4
-		_valueInt32 := int32(value)
-		valueInt32 = &_valueInt32
+	var valueInt40 *int64
+	var valueInt48 *int64
+	var valueInt56 *int64
+	var valueInt64 *int64
+	v := int64(value)
+	length := uint32(8)
+	for octets := uint32(1); octets < 8; octets++ {
+		limit := int64(1) << (8*octets - 1)
+		if v >= -limit && v < limit {
+			length = octets
+			break
+		}
 	}
-	payload := NewBACnetTagPayloadSignedInteger(length, valueInt8, valueInt16, valueInt24, valueInt32, nil, nil, nil, nil)
+	switch length {
+	case 1:
+		_valueInt8 := int8(v)
+		valueInt8 = &_valueInt8
+	case 2:
+		_valueInt16 := int16(v)
+		valueInt16 = &_valueInt16
+	case 3:
+		_valueInt24 := int32(v)
+		valueInt24 = &_valueInt24
+	case 4:
+		_valueInt32 := int32(v)
+		valueInt32 = &_valueInt32
+	case 5:
+		valueInt40 = &v
+	case 6:
+		valueInt48 = &v
+	case 7:
+		valueInt56 = &v
+	default:
+		valueInt64 = &v
+	}
+	payload := NewBACnetTagPayloadSignedInteger(length, valueInt8, valueInt16, valueInt24, valueInt32, valueInt40, valueInt48, valueInt56, valueInt64)
 	return length, payload
 }
 
@@ -1005,17 +1030,11 @@ func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractiona
 	return NewBACnetContextTagTime(header, NewBACnetTagPayloadTime(hour, minute, second, fractional))
 }
 
+// requiredLength returns the fewest octets (1 to 8) that hold value unsigned.
 func requiredLength(value uint) uint32 {
-	var length uint32
-	switch {
-	case value < 0x100:
-		length = 1
-	case value < 0x10000:
-		length = 2
-	case value < 0x1000000:
-		length = 3
-	default:
-		length = 4
+	length := uint32(1)
+	for v := uint64(value) >> 8; v != 0; v >>= 8 {
+		length++
 	}
 	return length
 }

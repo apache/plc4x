@@ -87,7 +87,8 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 						return
 					}
 					var payload []byte
-					payload = append(payload, byte(groupValueWrite.GetDataFirstByte()))
+					// int 6 in the mspec: the read buffer sign-extends it, the payload wants the 6 bits only.
+					payload = append(payload, byte(groupValueWrite.GetDataFirstByte())&0x3F)
 					payload = append(payload, groupValueWrite.GetData()...)
 
 					m.handleValueCacheUpdate(ctx, destinationAddress, payload)

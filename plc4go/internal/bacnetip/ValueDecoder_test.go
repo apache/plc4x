@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -209,4 +210,34 @@ func TestConstructedDataToPlcValue_ObjectList_Count(t *testing.T) {
 	require.NotNil(t, got)
 	assert.True(t, got.IsUint32(), "OBJECT_LIST[0] count should be numeric, got %T", got)
 	assert.Equal(t, uint32(5), got.GetUint32())
+}
+
+// A Signed application tag must keep its sign whatever its length (BACnet clause 20.2.5).
+// 3 and 5 to 7 octets are read into a wider Go integer and need the sign extended.
+func TestAppTagToPlcValue_signedOfEveryLengthFromTheWire(t *testing.T) {
+	cases := []struct {
+		name string
+		wire []byte
+		want int64
+	}{
+		{"1 octet negative", []byte{0x31, 0x9C}, -100},
+		{"2 octets negative", []byte{0x32, 0xFF, 0x38}, -200},
+		{"3 octets negative", []byte{0x33, 0xFE, 0x79, 0x60}, -100000},
+		{"3 octets positive", []byte{0x33, 0x7F, 0xFF, 0xFF}, 8388607},
+		{"4 octets negative", []byte{0x34, 0xFF, 0xFF, 0xFF, 0xFF}, -1},
+		{"5 octets negative", []byte{0x35, 0x05, 0xFE, 0xD5, 0xFA, 0x0E, 0x00}, -5000000000},
+		{"5 octets positive", []byte{0x35, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00}, 1 << 32},
+		{"6 octets negative", []byte{0x35, 0x06, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00}, -(1 << 47)},
+		{"7 octets negative", []byte{0x35, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE}, -2},
+		{"8 octets negative", []byte{0x35, 0x08, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, math.MinInt64},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			tag, err := readWriteModel.BACnetApplicationTagParse[readWriteModel.BACnetApplicationTag](t.Context(), c.wire)
+			require.NoError(t, err)
+			got := appTagToPlcValue(tag)
+			require.Equal(t, apiValues.LINT, got.GetPlcValueType())
+			assert.Equal(t, c.want, got.GetInt64())
+		})
+	}
 }

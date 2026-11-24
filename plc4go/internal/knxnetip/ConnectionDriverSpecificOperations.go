@@ -79,7 +79,8 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 
 		var payload []byte
 		// TODO: maybe groupAddressReadResponse.DataFirstByte can be written as uint 6 so the we wouldn't need to cast
-		payload = append(payload, byte(groupAddressReadResponse.GetDataFirstByte()))
+		// int 6 in the mspec: the read buffer sign-extends it, the payload wants the 6 bits only.
+		payload = append(payload, byte(groupAddressReadResponse.GetDataFirstByte())&0x3F)
 		payload = append(payload, groupAddressReadResponse.GetData()...)
 
 		// Parse the response data. The payload is handed to the datapoint parser as-is:

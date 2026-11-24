@@ -394,6 +394,38 @@ func Test_Writer_Write_roundTripsThroughTheReadPath(t *testing.T) {
 // Test_Writer_Write_ignoresForeignConfirmations pins that the confirmation expectation
 // really only matches the frame this write sent: a confirmation echoing a different payload
 // (e.g. a concurrent write of another client on the same tunnel) must not satisfy it.
+// Test_Writer_Write_confirmsSixBitValueEchoedFromTheWire pins that the confirmation of a value
+// with the top bit of the 6-bit small payload set is accepted: parsed from the wire, the int 6
+// field comes back sign-extended (0x21 as -31).
+func Test_Writer_Write_confirmsSixBitValueEchoedFromTheWire(t *testing.T) {
+	wireConfirmingGateway := func(codec *writerCodec, message spi.Message, handleMessage spi.HandleMessage, _ spi.HandleError) error {
+		tunnelingRequest := message.(driverModel.TunnelingRequest)
+		sequenceCounter := tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter()
+		if err := handleMessage(driverModel.NewTunnelingResponse(
+			driverModel.NewTunnelingResponseDataBlock(testCommunicationChannelId, sequenceCounter, driverModel.Status_NO_ERROR))); err != nil {
+			return err
+		}
+		frameBytes, err := tunnelingRequest.GetCemi().(driverModel.LDataReq).GetDataFrame().Serialize()
+		require.NoError(t, err)
+		echoed, err := driverModel.LDataFrameParse[driverModel.LDataExtended](t.Context(), frameBytes)
+		require.NoError(t, err)
+		codec.deliver(driverModel.NewTunnelingRequest(
+			driverModel.NewTunnelingRequestDataBlock(testCommunicationChannelId, sequenceCounter),
+			driverModel.NewLDataCon(0, nil, echoed)))
+		return nil
+	}
+	connection, _ := newWriterConnection(t, map[string][]string{"request-timeout-ms": {"500"}}, wireConfirmingGateway)
+
+	writeRequestBuilder := connection.WriteRequestBuilder()
+	writeRequestBuilder.AddTagAddress("scene", "1/2/3:DPT_SceneNumber", uint8(0x21))
+	writeRequest, err := writeRequestBuilder.Build()
+	require.NoError(t, err)
+
+	result := executeWrite(t, t.Context(), writeRequest)
+	require.NoError(t, result.GetErr())
+	assert.Equal(t, apiModel.PlcResponseCode_OK, result.GetResponse().GetResponseCode("scene"))
+}
+
 func Test_Writer_Write_ignoresForeignConfirmations(t *testing.T) {
 	foreignConfirmation := func(codec *writerCodec, message spi.Message, handleMessage spi.HandleMessage, _ spi.HandleError) error {
 		tunnelingRequest := message.(driverModel.TunnelingRequest)

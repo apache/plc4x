@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"math"
 	"testing"
 
 	"github.com/rs/zerolog"
@@ -113,6 +114,55 @@ func TestPlcValueToApplicationTag_EnumeratedHint(t *testing.T) {
 	require.NoError(t, err)
 	_, ok := got.(readWriteModel.BACnetApplicationTagEnumerated)
 	assert.True(t, ok, "expected Enumerated when hintEnumerated is set")
+}
+
+// Integers go out as application tags in their shortest length (BACnet clauses 20.2.4 to 20.2.11) and read back
+// as the value written.
+func TestPlcValueToApplicationTag_integersOnTheWire(t *testing.T) {
+	cases := []struct {
+		name string
+		in   apiValues.PlcValue
+		hint encodingHint
+		wire []byte
+	}{
+		{"signed 100", spiValues.NewPlcLINT(100), hintNone, []byte{0x31, 0x64}},
+		{"signed -100", spiValues.NewPlcLINT(-100), hintNone, []byte{0x31, 0x9C}},
+		{"signed 200 needs a second octet for the sign", spiValues.NewPlcLINT(200), hintNone, []byte{0x32, 0x00, 0xC8}},
+		{"signed -100000", spiValues.NewPlcLINT(-100000), hintNone, []byte{0x33, 0xFE, 0x79, 0x60}},
+		{"signed 2^40", spiValues.NewPlcLINT(1 << 40), hintNone, []byte{0x35, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00}},
+		{"signed min int64", spiValues.NewPlcLINT(math.MinInt64), hintNone, []byte{0x35, 0x08, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+		{"unsigned 2^40", spiValues.NewPlcULINT(1 << 40), hintNone, []byte{0x25, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00}},
+		{"unsigned max uint64", spiValues.NewPlcULINT(math.MaxUint64), hintNone, []byte{0x25, 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}},
+		{"enumerated 0", spiValues.NewPlcUDINT(0), hintEnumerated, []byte{0x91, 0x00}},
+		{"enumerated inactive", spiValues.NewPlcBOOL(false), hintEnumerated, []byte{0x91, 0x00}},
+		{"enumerated max uint32", spiValues.NewPlcUDINT(math.MaxUint32), hintEnumerated, []byte{0x94, 0xFF, 0xFF, 0xFF, 0xFF}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			tag, err := plcValueToApplicationTag(c.in, c.hint)
+			require.NoError(t, err)
+			wire, err := tag.Serialize()
+			require.NoError(t, err)
+			assert.Equal(t, c.wire, wire)
+
+			parsed, err := readWriteModel.BACnetApplicationTagParse[readWriteModel.BACnetApplicationTag](t.Context(), wire)
+			require.NoError(t, err)
+			got := appTagToPlcValue(parsed)
+			switch c.in.GetPlcValueType() {
+			case apiValues.LINT:
+				assert.Equal(t, c.in.GetInt64(), got.GetInt64())
+			case apiValues.BOOL:
+				assert.Equal(t, uint64(0), got.GetUint64())
+			default:
+				assert.Equal(t, c.in.GetUint64(), got.GetUint64())
+			}
+		})
+	}
+}
+
+func TestPlcValueToApplicationTag_enumeratedAbove32BitsIsRefused(t *testing.T) {
+	_, err := plcValueToApplicationTag(spiValues.NewPlcULINT(1<<32), hintEnumerated)
+	assert.Error(t, err, "an Enumerated is 32 bits here; a bigger value must not be truncated silently")
 }
 
 // ── buildServiceRequest dispatch ───────────────────────────────────────────

@@ -323,7 +323,7 @@ func (rb *byteReadBuffer) ReadInt8(_ string, bitLength uint8, readerArgs ...With
 	if handled {
 		return int8(decoded), decodeErr
 	}
-	return int8(res), nil
+	return int8(signExtend(res, bitLength)), nil
 }
 
 func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int16, error) {
@@ -337,9 +337,9 @@ func (rb *byteReadBuffer) ReadInt16(_ string, bitLength uint8, readerArgs ...Wit
 		return int16(decoded), decodeErr
 	}
 	if rb.byteOrder == binary.LittleEndian {
-		return int16(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+		res = bits.ReverseBytes64(res) >> (64 - bitLength)
 	}
-	return int16(res), nil
+	return int16(signExtend(res, bitLength)), nil
 }
 
 func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int32, error) {
@@ -353,9 +353,9 @@ func (rb *byteReadBuffer) ReadInt32(_ string, bitLength uint8, readerArgs ...Wit
 		return int32(decoded), decodeErr
 	}
 	if rb.byteOrder == binary.LittleEndian {
-		return int32(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+		res = bits.ReverseBytes64(res) >> (64 - bitLength)
 	}
-	return int32(res), nil
+	return int32(signExtend(res, bitLength)), nil
 }
 
 func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error) {
@@ -369,9 +369,19 @@ func (rb *byteReadBuffer) ReadInt64(_ string, bitLength uint8, readerArgs ...Wit
 		return int64(decoded), decodeErr
 	}
 	if rb.byteOrder == binary.LittleEndian {
-		return int64(bits.ReverseBytes64(res) >> (64 - bitLength)), nil
+		res = bits.ReverseBytes64(res) >> (64 - bitLength)
 	}
-	return int64(res), nil
+	return int64(signExtend(res, bitLength)), nil
+}
+
+// signExtend reads the low bitLength bits of value as a two's complement number, so a signed field narrower than
+// its Go type (int 24 in an int32, int 40 in an int64) keeps its sign. (Java: ReadBufferByteBased#signExtend)
+func signExtend(value uint64, bitLength uint8) int64 {
+	if bitLength == 0 || bitLength >= 64 {
+		return int64(value)
+	}
+	shift := 64 - bitLength
+	return int64(value<<shift) >> shift
 }
 
 func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReaderArgs) (*big.Int, error) {

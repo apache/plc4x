@@ -27,6 +27,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewReadBuffer(t *testing.T) {
@@ -1316,6 +1317,42 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 			}
 		})
 	}
+}
+
+// A signed field narrower than its Go type is two's complement over its own bits, as in the Java ReadBufferByteBased:
+// int 24 0xFE7960 is -100000, not 16677216.
+func TestReadBuffer_signedNarrowerThanItsTypeKeepsItsSign(t *testing.T) {
+	read := func(data []byte, byteOrder binary.ByteOrder, f func(ReadBufferByteBased) (int64, error)) int64 {
+		t.Helper()
+		got, err := f(NewReadBufferByteBased(data, WithByteOrderForReadBufferByteBased(byteOrder)))
+		require.NoError(t, err)
+		return got
+	}
+	int8Of := func(n uint8) func(ReadBufferByteBased) (int64, error) {
+		return func(rb ReadBufferByteBased) (int64, error) { v, err := rb.ReadInt8("", n); return int64(v), err }
+	}
+	int16Of := func(n uint8) func(ReadBufferByteBased) (int64, error) {
+		return func(rb ReadBufferByteBased) (int64, error) { v, err := rb.ReadInt16("", n); return int64(v), err }
+	}
+	int32Of := func(n uint8) func(ReadBufferByteBased) (int64, error) {
+		return func(rb ReadBufferByteBased) (int64, error) { v, err := rb.ReadInt32("", n); return int64(v), err }
+	}
+	int64Of := func(n uint8) func(ReadBufferByteBased) (int64, error) {
+		return func(rb ReadBufferByteBased) (int64, error) { return rb.ReadInt64("", n) }
+	}
+	be, le := binary.BigEndian, binary.LittleEndian
+
+	assert.Equal(t, int64(-1), read([]byte{0xFC}, be, int8Of(6)), "int 6 0b111111")
+	assert.Equal(t, int64(31), read([]byte{0x7C}, be, int8Of(6)), "int 6 0b011111")
+	assert.Equal(t, int64(-2048), read([]byte{0x80, 0x00}, be, int16Of(12)), "int 12")
+	assert.Equal(t, int64(-100000), read([]byte{0xFE, 0x79, 0x60}, be, int32Of(24)), "int 24")
+	assert.Equal(t, int64(8388607), read([]byte{0x7F, 0xFF, 0xFF}, be, int32Of(24)), "int 24 max")
+	assert.Equal(t, int64(-100000), read([]byte{0x60, 0x79, 0xFE}, le, int32Of(24)), "int 24 little endian")
+	assert.Equal(t, int64(-5000000000), read([]byte{0xFE, 0xD5, 0xFA, 0x0E, 0x00}, be, int64Of(40)), "int 40")
+	assert.Equal(t, int64(-(1 << 47)), read([]byte{0x80, 0, 0, 0, 0, 0}, be, int64Of(48)), "int 48")
+	assert.Equal(t, int64(-2), read([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE}, be, int64Of(56)), "int 56")
+	assert.Equal(t, int64(1<<55-1), read([]byte{0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, be, int64Of(56)), "int 56 max")
+	assert.Equal(t, int64(-1), read([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, be, int64Of(64)), "int 64")
 }
 
 func TestReadBuffer_ReadInt16(t *testing.T) {
