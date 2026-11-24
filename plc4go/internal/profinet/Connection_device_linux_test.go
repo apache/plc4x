@@ -53,6 +53,10 @@ func TestConnectToDevice(t *testing.T) {
 	if ip := os.Getenv("PROFINET_TEST_LOCAL_IP"); ip != "" {
 		options.Set("local-ip", ip)
 	}
+	// PROFINET_TEST_RPC_FRAGMENT_SIZE makes the connect go out as DCE/RPC fragments.
+	if size := os.Getenv("PROFINET_TEST_RPC_FRAGMENT_SIZE"); size != "" {
+		options.Set("rpc-fragment-size", size)
+	}
 	// PROFINET_TEST_ECHO_SLOT puts p-net's echo module (IDM_40: Float32 and Unsigned32 out, the
 	// same times a gain parameter back in) in that slot and checks values make the round trip. The
 	// gain is a parameter record whose GSDML default is 2 while p-net starts with 1, so doubled
@@ -138,6 +142,10 @@ func TestDeviceAlarms(t *testing.T) {
 	options := url.Values{"device-name": {name}, "gsd-directory": {gsd}, "reduction-ratio": {"32"}, "module." + slot: {"IDM_30"}}
 	if ip := os.Getenv("PROFINET_TEST_LOCAL_IP"); ip != "" {
 		options.Set("local-ip", ip)
+	}
+	// PROFINET_TEST_RPC_FRAGMENT_SIZE makes the connect go out as DCE/RPC fragments.
+	if size := os.Getenv("PROFINET_TEST_RPC_FRAGMENT_SIZE"); size != "" {
+		options.Set("rpc-fragment-size", size)
 	}
 	require.NoError(t, os.WriteFile(button, []byte("0\n"), 0o644))
 	ctx, cancel := context.WithTimeout(t.Context(), 60*time.Second)

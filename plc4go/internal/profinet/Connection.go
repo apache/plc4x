@@ -124,6 +124,16 @@ func ParseFromOptions(log zerolog.Logger, connectionOptions map[string][]string)
 			*target = time.Duration(n) * time.Millisecond
 		}
 	}
+	// rpc-fragment-size is the most RPC body (bytes) per datagram; longer requests go out as
+	// fragments. The default, 1360, fills the 1440 byte UDP payload devices take; a link with a
+	// smaller MTU needs less.
+	if v := reader.Get("rpc-fragment-size"); v != "" {
+		n, err := strconv.ParseUint(v, 10, 16)
+		if err != nil || n < 64 || n > defaultRPCFragmentBody {
+			return Configuration{}, errors.Errorf("bad rpc-fragment-size %q: 64 to %d bytes", v, defaultRPCFragmentBody)
+		}
+		c.settings.rpcFragmentSize = int(n)
+	}
 	for key, values := range connectionOptions {
 		slotText, ok := strings.CutPrefix(key, "module.")
 		if !ok || len(values) == 0 {

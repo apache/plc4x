@@ -38,11 +38,11 @@ import (
 const (
 	// pnioCMPort is the UDP port of the Profinet context manager (PNIO-CM), on device and controller.
 	pnioCMPort = 34964
-	// maxRPCBody is what fits in one UDP datagram on a 1500 byte link, less the IPv4, UDP and
-	// DCE/RPC headers. The model sends unfragmented requests only.
-	maxRPCBody = 1500 - 20 - 8 - 80
 	// rpcRetransmit is how often an unanswered request is sent again.
 	rpcRetransmit = time.Second
+	// rpcFackWait is how long a fragment waits for the receiver's FACK before the next goes out.
+	// A device that sends none just makes each fragment wait this long.
+	rpcFackWait = 200 * time.Millisecond
 )
 
 // PNIOStatusError is a Profinet error answer: the four PNIOStatus bytes of a response.
@@ -66,10 +66,17 @@ type rpcEndpoint struct {
 	conn    *net.UDPConn
 	handler rpcHandler
 
+	// fragmentSize is the most body one datagram carries; longer packets go out as fragments.
+	fragmentSize int
+
 	mutex   sync.Mutex
 	pending map[callKey]chan readWriteModel.DceRpc_Packet
+	// facks gets the fragment numbers the receiver acknowledges, per call sent as fragments.
+	facks map[callKey]chan uint16
+	// partial collects incoming fragments per call.
+	partial map[callKey]*reassembly
 	// answered keeps the last response per incoming activity, to resend for a retransmitted request.
-	answered map[[16]byte][]byte
+	answered map[[16]byte][][]byte
 
 	wg   sync.WaitGroup
 	done chan struct{}
@@ -77,18 +84,26 @@ type rpcEndpoint struct {
 	log zerolog.Logger
 }
 
-func listenRPC(local *net.UDPAddr, handler rpcHandler, log zerolog.Logger) (*rpcEndpoint, error) {
+// listenRPC opens the endpoint. fragmentSize is the most body one datagram carries; 0 is the
+// default, which fills the UDP payload devices take.
+func listenRPC(local *net.UDPAddr, handler rpcHandler, fragmentSize int, log zerolog.Logger) (*rpcEndpoint, error) {
+	if fragmentSize <= 0 {
+		fragmentSize = defaultRPCFragmentBody
+	}
 	conn, err := net.ListenUDP("udp4", local)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error opening the PNIO-CM port %s", local)
 	}
 	endpoint := &rpcEndpoint{
-		conn:     conn,
-		handler:  handler,
-		pending:  map[callKey]chan readWriteModel.DceRpc_Packet{},
-		answered: map[[16]byte][]byte{},
-		done:     make(chan struct{}),
-		log:      log,
+		conn:         conn,
+		handler:      handler,
+		fragmentSize: fragmentSize,
+		pending:      map[callKey]chan readWriteModel.DceRpc_Packet{},
+		facks:        map[callKey]chan uint16{},
+		partial:      map[callKey]*reassembly{},
+		answered:     map[[16]byte][][]byte{},
+		done:         make(chan struct{}),
+		log:          log,
 	}
 	endpoint.wg.Go(endpoint.receive)
 	return endpoint, nil
@@ -143,23 +158,52 @@ func (e *rpcEndpoint) call(ctx context.Context, remote *net.UDPAddr, object read
 	if err != nil {
 		return nil, errors.Wrapf(err, "error serializing the %s request", operation)
 	}
-	if body := len(data) - 80; body > maxRPCBody {
-		return nil, errors.Errorf("the %s request is %d bytes, more than one datagram carries (%d); DCE/RPC fragmentation is not supported yet", operation, body, maxRPCBody)
-	}
+	fragments := fragmentPacket(data, e.fragmentSize, true)
 	key := callKey{activityKey(activity), sequence}
 	answers := make(chan readWriteModel.DceRpc_Packet, 4)
+	facks := make(chan uint16, 16)
 	e.mutex.Lock()
 	e.pending[key] = answers
+	if len(fragments) > 1 {
+		e.facks[key] = facks
+	}
 	e.mutex.Unlock()
 	defer func() {
 		e.mutex.Lock()
 		delete(e.pending, key)
+		delete(e.facks, key)
 		e.mutex.Unlock()
 	}()
 
+	// send sends the request, a fragmented one a fragment at a time, each after the receiver
+	// acknowledged the one before or rpcFackWait passed.
 	send := func() error {
-		_, err := e.conn.WriteToUDP(data, remote)
-		return err
+		for i, fragment := range fragments {
+			if _, err := e.conn.WriteToUDP(fragment, remote); err != nil {
+				return err
+			}
+			if i == len(fragments)-1 {
+				break
+			}
+			wait := time.NewTimer(rpcFackWait)
+		waiting:
+			for {
+				select {
+				case <-ctx.Done():
+					wait.Stop()
+					return ctx.Err()
+				case <-wait.C:
+					e.log.Debug().Int("fragment", i).Stringer("operation", operation).Msg("no FACK for a request fragment; sending the next")
+					break waiting
+				case number := <-facks:
+					if int(number) >= i {
+						wait.Stop()
+						break waiting
+					}
+				}
+			}
+		}
+		return nil
 	}
 	if err := send(); err != nil {
 		return nil, errors.Wrapf(err, "error sending the %s request to %s", operation, remote)
@@ -217,6 +261,27 @@ func (e *rpcEndpoint) receive() {
 			continue
 		}
 		data := append([]byte(nil), buffer[:n]...)
+		if h, ok := parseRPCHeader(data); ok {
+			if h.packetType == rpcPacketTypeFack {
+				e.mutex.Lock()
+				facks, waiting := e.facks[h.key()]
+				e.mutex.Unlock()
+				if waiting {
+					select {
+					case facks <- h.fragment:
+					default:
+					}
+				}
+				continue
+			}
+			if h.isFragment() {
+				whole, complete := e.reassemble(h, data, from)
+				if !complete {
+					continue
+				}
+				data = whole
+			}
+		}
 		packet, err := readWriteModel.DceRpc_PacketParse(context.Background(), data)
 		if err != nil {
 			e.log.Debug().Err(err).Stringer("from", from).Msg("not a DCE/RPC packet the model reads")
@@ -239,6 +304,31 @@ func (e *rpcEndpoint) receive() {
 	}
 }
 
+// reassemble takes an incoming fragment, acknowledging it when the sender asks for that; complete
+// is true with the whole packet once its last fragment has arrived.
+func (e *rpcEndpoint) reassemble(h rpcHeader, fragment []byte, from *net.UDPAddr) ([]byte, bool) {
+	e.mutex.Lock()
+	r, ok := e.partial[h.key()]
+	if !ok {
+		if len(e.partial) > 64 {
+			e.partial = map[callKey]*reassembly{}
+		}
+		r = &reassembly{}
+		e.partial[h.key()] = r
+	}
+	whole, accepted, done := r.add(h, fragment)
+	if done {
+		delete(e.partial, h.key())
+	}
+	e.mutex.Unlock()
+	if accepted && !done && h.flags&rpcFlagNoFack == 0 {
+		if _, err := e.conn.WriteToUDP(fackFor(fragment), from); err != nil {
+			e.log.Debug().Err(err).Msg("error sending a FACK")
+		}
+	}
+	return whole, done
+}
+
 // serve answers a call from the device.
 func (e *rpcEndpoint) serve(packet readWriteModel.DceRpc_Packet, key [16]byte, from *net.UDPAddr) {
 	e.mutex.Lock()
@@ -246,14 +336,14 @@ func (e *rpcEndpoint) serve(packet readWriteModel.DceRpc_Packet, key [16]byte, f
 	e.mutex.Unlock()
 	if packet.GetPacketType() == readWriteModel.DceRpc_PacketType_PING {
 		if seen {
-			_, _ = e.conn.WriteToUDP(cached, from)
+			e.write(cached, from)
 		} else {
 			e.reply(packet, from, readWriteModel.DceRpc_PacketType_WORKING, readWriteModel.NewPnIoCm_Packet_Working())
 		}
 		return
 	}
 	if seen {
-		_, _ = e.conn.WriteToUDP(cached, from)
+		e.write(cached, from)
 		return
 	}
 	request, ok := packet.GetPayload().(readWriteModel.PnIoCm_Packet_Req)
@@ -270,14 +360,26 @@ func (e *rpcEndpoint) serve(packet readWriteModel.DceRpc_Packet, key [16]byte, f
 	if data != nil {
 		e.mutex.Lock()
 		if len(e.answered) > 64 {
-			e.answered = map[[16]byte][]byte{}
+			e.answered = map[[16]byte][][]byte{}
 		}
 		e.answered[key] = data
 		e.mutex.Unlock()
 	}
 }
 
-func (e *rpcEndpoint) reply(request readWriteModel.DceRpc_Packet, to *net.UDPAddr, packetType readWriteModel.DceRpc_PacketType, payload readWriteModel.PnIoCm_Packet) []byte {
+// write sends datagrams, the fragments of one packet.
+func (e *rpcEndpoint) write(datagrams [][]byte, to *net.UDPAddr) {
+	for _, datagram := range datagrams {
+		if _, err := e.conn.WriteToUDP(datagram, to); err != nil {
+			e.log.Debug().Err(err).Msg("error sending a response to the device")
+			return
+		}
+	}
+}
+
+// reply answers a call from the device. A response too long for one datagram goes out as
+// fragments that ask for no FACK: this runs on the receive loop, which cannot wait for them.
+func (e *rpcEndpoint) reply(request readWriteModel.DceRpc_Packet, to *net.UDPAddr, packetType readWriteModel.DceRpc_PacketType, payload readWriteModel.PnIoCm_Packet) [][]byte {
 	response := readWriteModel.NewDceRpc_Packet(packetType, false, true, false,
 		readWriteModel.IntegerEncoding_BIG_ENDIAN, readWriteModel.CharacterEncoding_ASCII, readWriteModel.FloatingPointEncoding_IEEE,
 		request.GetObjectUuid(), request.GetInterfaceUuid(), request.GetActivityUuid(), 0, request.GetSequenceNumber(), request.GetOperation(), 0, payload)
@@ -286,8 +388,7 @@ func (e *rpcEndpoint) reply(request readWriteModel.DceRpc_Packet, to *net.UDPAdd
 		e.log.Warn().Err(err).Msg("error serializing a response to the device")
 		return nil
 	}
-	if _, err := e.conn.WriteToUDP(data, to); err != nil {
-		e.log.Debug().Err(err).Msg("error sending a response to the device")
-	}
-	return data
+	datagrams := fragmentPacket(data, e.fragmentSize, false)
+	e.write(datagrams, to)
+	return datagrams
 }

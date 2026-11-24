@@ -74,6 +74,8 @@ type arSettings struct {
 	dataHoldFactor  uint16
 	requestTimeout  time.Duration
 	readyTimeout    time.Duration
+	// rpcFragmentSize is the most RPC body one datagram carries; 0 is the default.
+	rpcFragmentSize int
 }
 
 // cycle is the time between two cyclic frames.
@@ -175,7 +177,7 @@ func (ar *applicationRelation) call(ctx context.Context, operation readWriteMode
 // device to report it is ready, with cyclic data running from the connect on.
 func (ar *applicationRelation) establish(ctx context.Context) error {
 	var err error
-	if ar.rpc, err = listenRPC(&net.UDPAddr{IP: ar.localIP, Port: pnioCMPort}, ar.serve, ar.log); err != nil {
+	if ar.rpc, err = listenRPC(&net.UDPAddr{IP: ar.localIP, Port: pnioCMPort}, ar.serve, ar.settings.rpcFragmentSize, ar.log); err != nil {
 		return err
 	}
 	real, err := ar.readRealIdentification(ctx)
