@@ -100,6 +100,8 @@ type applicationRelation struct {
 
 	rpc  *rpcEndpoint
 	plan *plan
+	// modules are GSDML module ids by slot the controller expects beyond what the device reports.
+	modules map[uint16]string
 
 	arUUID        []byte
 	sessionKey    uint16
@@ -169,6 +171,9 @@ func (ar *applicationRelation) establish(ctx context.Context) error {
 	}
 	real, err := ar.readRealIdentification(ctx)
 	if err != nil {
+		return err
+	}
+	if real, err = withConfiguredModules(ar.index, real, ar.modules); err != nil {
 		return err
 	}
 	if ar.plan, err = makePlan(ar.index, real); err != nil {

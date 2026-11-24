@@ -21,6 +21,7 @@ package profinet
 
 import (
 	"sort"
+	"strings"
 
 	"github.com/apache/plc4x/plc4go/internal/profinet/gsdml"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/profinet/readwrite/model"
@@ -218,4 +219,46 @@ func (p *plan) expectedSubmoduleBlocks() []readWriteModel.PnIoCm_Block {
 			[]readWriteModel.PnIoCm_ExpectedSubmoduleBlockReqApi{readWriteModel.NewPnIoCm_ExpectedSubmoduleBlockReqApi(slot, moduleIdent, 0, submodules)}))
 	}
 	return blocks
+}
+
+// withConfiguredModules puts the configured modules in their slots, replacing whatever the device
+// reported there. A module's submodules go in subslot 1 and up, or in their FixedInSubslots.
+func withConfiguredModules(index *gsdml.Index, reported []realSubmodule, modules map[uint16]string) ([]realSubmodule, error) {
+	if len(modules) == 0 {
+		return reported, nil
+	}
+	var result []realSubmodule
+	for _, r := range reported {
+		if _, replaced := modules[r.Slot]; !replaced {
+			result = append(result, r)
+		}
+	}
+	for slot, id := range modules {
+		module, ok := index.Module(id)
+		if !ok {
+			return nil, errors.Errorf("the GSDML has no module %q for slot %d", id, slot)
+		}
+		moduleIdent, err := gsdml.ParseNumber(module.ModuleIdentNumber)
+		if err != nil {
+			return nil, errors.Errorf("module %s has a bad ModuleIdentNumber %q", id, module.ModuleIdentNumber)
+		}
+		submodules := index.SubmodulesOf(module)
+		if len(submodules) == 0 {
+			return nil, errors.Errorf("module %s has no submodules", id)
+		}
+		for i, submodule := range submodules {
+			subslot := uint16(i + 1)
+			if fields := strings.Fields(submodule.FixedInSubslots); len(fields) > 0 {
+				if fixed, err := gsdml.ParseNumber(fields[0]); err == nil {
+					subslot = uint16(fixed)
+				}
+			}
+			submoduleIdent, err := gsdml.ParseNumber(submodule.SubmoduleIdentNumber)
+			if err != nil {
+				return nil, errors.Errorf("submodule %s has a bad SubmoduleIdentNumber %q", submodule.ID, submodule.SubmoduleIdentNumber)
+			}
+			result = append(result, realSubmodule{Slot: slot, Subslot: subslot, ModuleIdent: uint32(moduleIdent), SubmoduleIdent: uint32(submoduleIdent)})
+		}
+	}
+	return result, nil
 }

@@ -57,6 +57,10 @@ type Configuration struct {
 	localIP        net.IP
 	settings       arSettings
 	identifyWindow time.Duration
+	// modules are GSDML module ids by slot, for slots the device doesn't report on its own: a
+	// device that plugs what the controller expects (p-net's sample device does) or a module to
+	// replace what is reported.
+	modules map[uint16]string
 }
 
 func ParseFromOptions(log zerolog.Logger, connectionOptions map[string][]string) (Configuration, error) {
@@ -119,6 +123,21 @@ func ParseFromOptions(log zerolog.Logger, connectionOptions map[string][]string)
 			}
 			*target = time.Duration(n) * time.Millisecond
 		}
+	}
+	for key, values := range connectionOptions {
+		slotText, ok := strings.CutPrefix(key, "module.")
+		if !ok || len(values) == 0 {
+			continue
+		}
+		reader.Ignore(key)
+		slot, err := strconv.ParseUint(slotText, 10, 16)
+		if err != nil || slot == 0 {
+			return Configuration{}, errors.Errorf("bad %s: modules go in slots 1 and up", key)
+		}
+		if c.modules == nil {
+			c.modules = map[uint16]string{}
+		}
+		c.modules[uint16(slot)] = values[0]
 	}
 	if c.deviceName == "" && c.deviceMAC == nil {
 		return Configuration{}, errors.New("name the device with device-name or device-mac (discovery puts both in its items)")
@@ -221,6 +240,7 @@ func (c *Connection) establish(ctx context.Context) error {
 	}
 	c.ar = newApplicationRelation(cfg.settings, device{name: found.name, mac: mac, ip: ip, vendorID: found.vendor, deviceID: found.product},
 		gsdml.NewIndex(profile), st, localIP, c.log)
+	c.ar.modules = cfg.modules
 	return c.ar.establish(ctx)
 }
 

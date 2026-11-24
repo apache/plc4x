@@ -49,6 +49,14 @@ func TestConnectToDevice(t *testing.T) {
 	if ip := os.Getenv("PROFINET_TEST_LOCAL_IP"); ip != "" {
 		options.Set("local-ip", ip)
 	}
+	// PROFINET_TEST_ECHO_SLOT puts p-net's echo module (IDM_40: Float32 and Unsigned32 out, the
+	// same times a gain parameter back in) in that slot and checks values make the round trip. The
+	// gain is a parameter record whose GSDML default is 2 while p-net starts with 1, so doubled
+	// values also show the parameterization reached the device.
+	echoSlot := os.Getenv("PROFINET_TEST_ECHO_SLOT")
+	if echoSlot != "" {
+		options.Set("module."+echoSlot, "IDM_40")
+	}
 	ctx, cancel := context.WithTimeout(t.Context(), 60*time.Second)
 	defer cancel()
 	driver := NewDriver(testutils.EnrichOptionsWithOptionsForTesting(t)...)
@@ -67,4 +75,30 @@ func TestConnectToDevice(t *testing.T) {
 	_, status, last := c.ar.inputImage()
 	assert.WithinDuration(t, time.Now(), last, time.Second, "input frames keep arriving")
 	t.Logf("input data status 0x%02X", status)
+
+	if echoSlot == "" {
+		return
+	}
+	write, err := connection.WriteRequestBuilder().
+		AddTagAddress("f", echoSlot+".1.OUTPUT.0:REAL", float32(12.5)).
+		AddTagAddress("u", echoSlot+".1.OUTPUT.1:UDINT", uint32(4242)).Build()
+	require.NoError(t, err)
+	written := <-write.Execute(ctx)
+	require.NoError(t, written.GetErr())
+	require.Equal(t, "OK", written.GetResponse().GetResponseCode("f").String())
+	require.Eventually(t, func() bool {
+		read, err := connection.ReadRequestBuilder().
+			AddTagAddress("f", echoSlot+".1.INPUT.0:REAL").
+			AddTagAddress("u", echoSlot+".1.INPUT.1:UDINT").Build()
+		if err != nil {
+			return false
+		}
+		result := <-read.Execute(ctx)
+		if result.GetErr() != nil || result.GetResponse().GetResponseCode("f").String() != "OK" {
+			return false
+		}
+		f, u := result.GetResponse().GetValue("f").GetFloat32(), result.GetResponse().GetValue("u").GetUint32()
+		t.Logf("echo: %v %v", f, u)
+		return f == 25 && u == 8484
+	}, 5*time.Second, 100*time.Millisecond, "the echo module returns what was written times the GSDML default gain of 2")
 }
