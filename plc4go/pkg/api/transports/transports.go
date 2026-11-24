@@ -25,11 +25,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	spiTransports "github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/rawsocket"
 	"github.com/apache/plc4x/plc4go/spi/transports/serial"
 	"github.com/apache/plc4x/plc4go/spi/transports/socketcan"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/spi/transports/virtualcan"
+	"github.com/apache/plc4x/plc4go/spi/transports/virtualeth"
 )
 
 // TransportError exposes the SPI transport error wrapper on the public API so callers can perform
@@ -78,4 +80,16 @@ func RegisterSocketCanTransport(driverManager plc4go.PlcDriverManager, _options 
 // RegisterVirtualCanTransport registers the in-process virtual CAN bus used by tests and simulators.
 func RegisterVirtualCanTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
 	driverManager.(spi.TransportAware).RegisterTransport(virtualcan.NewTransport(converter.WithOptionToInternal(_options...)...))
+}
+
+// RegisterRawSocketTransport registers the Linux raw Ethernet (AF_PACKET) transport, pure Go. On
+// other platforms it is registered too and fails at connect time with a clear error.
+func RegisterRawSocketTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.(spi.TransportAware).RegisterTransport(rawsocket.NewTransport(converter.WithOptionToInternal(_options...)...))
+}
+
+// RegisterVirtualEthTransport registers the in-process virtual Ethernet segment used by tests and
+// simulators.
+func RegisterVirtualEthTransport(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) {
+	driverManager.(spi.TransportAware).RegisterTransport(virtualeth.NewTransport(converter.WithOptionToInternal(_options...)...))
 }
