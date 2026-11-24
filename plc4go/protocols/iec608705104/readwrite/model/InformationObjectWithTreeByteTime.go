@@ -84,7 +84,7 @@ func NewInformationObjectWithTreeByteTime(address uint32) *_InformationObjectWit
 	_result := &_InformationObjectWithTreeByteTime{
 		InformationObjectContract: NewInformationObject(address),
 	}
-	_result.InformationObjectContract.(*_InformationObject)._SubType = _result._SubType
+	_result.InformationObjectContract.(*_InformationObject)._SubType = _result
 	return _result
 }
 

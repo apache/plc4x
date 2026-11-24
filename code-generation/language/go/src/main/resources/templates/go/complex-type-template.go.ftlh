@@ -318,7 +318,7 @@ var _ ${type.getParentType().orElseThrow().name}Requirements = (*_${type.name})(
 		${field.name?cap_first}: ${helper.getGoSafeName(field.name)},
 	</#list>
 	}
-	_result.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType=_result<#if type.isDiscriminatedParentTypeDefinition()>._SubType</#if>
+	_result.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType=_result
 	return _result
 <#else>
 	<@compress single_line=true>
@@ -822,7 +822,10 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint64 {
 
 	// Optional Field (${optionalField.name})
 	if m.${optionalField.name?cap_first} != nil {
-					<#if optionalField.type.isSimpleTypeReference()>
+					<#if optionalField.type.isVstringTypeReference()>
+						<#assign vstringTypeReference = optionalField.type.asVstringTypeReference().orElseThrow()>
+		lengthInBits += uint64(${helper.toSerializationExpression(optionalField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)})
+					<#elseif optionalField.type.isSimpleTypeReference()>
 						<#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
 						<#assign bs=simpleTypeReference.sizeInBits>
 		lengthInBits += ${(bs<0)?then(0,bs)}
@@ -1000,7 +1003,10 @@ func (m *_${type.name}) getLengthInBits(ctx context.Context) uint64 {
 
 	// Optional Field (${optionalField.name})
 	if m.${optionalField.name?cap_first} != nil {
-				<#if optionalField.type.isSimpleTypeReference()>
+				<#if optionalField.type.isVstringTypeReference()>
+					<#assign vstringTypeReference = optionalField.type.asVstringTypeReference().orElseThrow()>
+		lengthInBits += uint64(${helper.toSerializationExpression(optionalField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)})
+				<#elseif optionalField.type.isSimpleTypeReference()>
 					<#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
 		lengthInBits += ${simpleTypeReference.sizeInBits}
 				<#elseif helper.isEnumField(field)>

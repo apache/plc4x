@@ -97,7 +97,7 @@ func NewExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask ExtensionObj
 		ExtensionObjectContract: NewExtensionObject(typeId),
 		EncodingMask:            encodingMask,
 	}
-	_result.ExtensionObjectContract.(*_ExtensionObject)._SubType = _result._SubType
+	_result.ExtensionObjectContract.(*_ExtensionObject)._SubType = _result
 	return _result
 }
 

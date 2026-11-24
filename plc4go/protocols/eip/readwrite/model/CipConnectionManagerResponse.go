@@ -84,7 +84,7 @@ func NewCipConnectionManagerResponse(status uint8, extStatus []uint16) *_CipConn
 	_result := &_CipConnectionManagerResponse{
 		CipServiceResponseContract: NewCipServiceResponse(status, extStatus),
 	}
-	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result._SubType
+	_result.CipServiceResponseContract.(*_CipServiceResponse)._SubType = _result
 	return _result
 }
 

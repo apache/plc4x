@@ -94,7 +94,7 @@ func NewCipServiceResponse(status uint8, extStatus []uint16) *_CipServiceRespons
 		Status:             status,
 		ExtStatus:          extStatus,
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result._SubType
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
