@@ -44,8 +44,11 @@ import (
 //   - Enumerated     → PlcUDINT (the raw numeric; the property identifier on
 //     the request side determines the enum schema)
 //   - BitString      → PlcRawByteArray (packed MSB-first)
-//   - Date           → PlcDATE       (year-1900 + month + day-of-month)
-//   - Time           → PlcTIME_OF_DAY
+//   - Date           → PlcDATE       (year-1900 + month + day-of-month), or a
+//     PlcStruct of the raw octets when the date is not one calendar day
+//     (see bacnetDateToPlcValue)
+//   - Time           → PlcTIME_OF_DAY, or a PlcStruct of the raw octets when
+//     the time is not one time of day (see bacnetTimeToPlcValue)
 //   - ObjectId       → PlcSTRING formatted as "<type>,<instance>"
 //   - Null           → PlcNULL
 func appTagToPlcValue(tag model.BACnetApplicationTag) apiValues.PlcValue {
@@ -74,20 +77,9 @@ func appTagToPlcValue(tag model.BACnetApplicationTag) apiValues.PlcValue {
 	case model.BACnetApplicationTagBitString:
 		return spiValues.NewPlcRawByteArray(bitsToBytes(t.GetPayload().GetData()))
 	case model.BACnetApplicationTagDate:
-		payload := t.GetPayload()
-		// Year is reported as years-since-1900 OR raw uint16 for newer devices.
-		year := payload.GetYear()
-		// Build a date; if wildcard, fall back to the zero day so callers can
-		// still match on PlcDATE equality.
-		date := time.Date(int(year), time.Month(payload.GetMonth()), int(payload.GetDayOfMonth()), 0, 0, 0, 0, time.UTC)
-		return spiValues.NewPlcDATE(date)
+		return bacnetDateToPlcValue(t.GetPayload())
 	case model.BACnetApplicationTagTime:
-		payload := t.GetPayload()
-		dur := time.Duration(payload.GetHour())*time.Hour +
-			time.Duration(payload.GetMinute())*time.Minute +
-			time.Duration(payload.GetSecond())*time.Second +
-			time.Duration(payload.GetFractional())*10*time.Millisecond
-		return spiValues.NewPlcTIME_OF_DAY(dur)
+		return bacnetTimeToPlcValue(t.GetPayload())
 	case model.BACnetApplicationTagObjectIdentifier:
 		return spiValues.NewPlcSTRING(fmt.Sprintf("%s,%d", t.GetObjectType(), t.GetInstanceNumber()))
 	default:
@@ -301,4 +293,49 @@ func bitsToBytes(bits []bool) []byte {
 		}
 	}
 	return out
+}
+
+// bacnetDateToPlcValue maps a BACnet Date (ASHRAE 135 clause 20.2.12) to a PlcDATE
+// when its octets name one calendar day. A Date can also be a pattern: 255 is the
+// wildcard for the year, month and day, month 13/14 means every odd/even month and
+// day 32/33/34 the last/every odd/every even day of the month. time.Date would
+// normalise those (and impossible days such as 2026-02-30) into a different, real
+// date, so they are returned as a PlcStruct of the four raw octets instead, named
+// after the wire fields: yearMinus1900, month, dayOfMonth and dayOfWeek. The day of
+// week is not checked against a concrete date; devices commonly send 255 there.
+func bacnetDateToPlcValue(payload model.BACnetTagPayloadDate) apiValues.PlcValue {
+	yearMinus1900 := payload.GetYearMinus1900()
+	month := payload.GetMonth()
+	day := payload.GetDayOfMonth()
+	if yearMinus1900 != 0xFF && month >= 1 && month <= 12 && day >= 1 && day <= 31 {
+		date := time.Date(int(payload.GetYear()), time.Month(month), int(day), 0, 0, 0, 0, time.UTC)
+		if date.Month() == time.Month(month) && date.Day() == int(day) {
+			return spiValues.NewPlcDATE(date)
+		}
+	}
+	return spiValues.NewPlcStructOrdered(map[string]apiValues.PlcValue{
+		"yearMinus1900": spiValues.NewPlcUSINT(yearMinus1900),
+		"month":         spiValues.NewPlcUSINT(month),
+		"dayOfMonth":    spiValues.NewPlcUSINT(day),
+		"dayOfWeek":     spiValues.NewPlcUSINT(payload.GetDayOfWeek()),
+	}, []string{"yearMinus1900", "month", "dayOfMonth", "dayOfWeek"})
+}
+
+// bacnetTimeToPlcValue maps a BACnet Time (clause 20.2.13) to a PlcTIME_OF_DAY when
+// its octets name one time of day. 255 in any octet is a wildcard, which a duration
+// would turn into a wrong time (an hour of 255); such a time, and any octet out of
+// range, is returned as a PlcStruct of the raw octets: hour, minute, second and
+// fractional (hundredths of a second).
+func bacnetTimeToPlcValue(payload model.BACnetTagPayloadTime) apiValues.PlcValue {
+	hour, minute, second, fractional := payload.GetHour(), payload.GetMinute(), payload.GetSecond(), payload.GetFractional()
+	if hour < 24 && minute < 60 && second < 60 && fractional < 100 {
+		return spiValues.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(
+			((uint32(hour)*60+uint32(minute))*60+uint32(second))*1000 + uint32(fractional)*10)
+	}
+	return spiValues.NewPlcStructOrdered(map[string]apiValues.PlcValue{
+		"hour":       spiValues.NewPlcUSINT(hour),
+		"minute":     spiValues.NewPlcUSINT(minute),
+		"second":     spiValues.NewPlcUSINT(second),
+		"fractional": spiValues.NewPlcUSINT(fractional),
+	}, []string{"hour", "minute", "second", "fractional"})
 }
