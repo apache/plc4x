@@ -22,8 +22,8 @@
 package profinet
 
 // Connects to a real Profinet device when PROFINET_TEST_INTERFACE, PROFINET_TEST_DEVICE (its name
-// of station) and PROFINET_TEST_GSD (a directory with its GSDML) are set. tools/pnet-peer runs the
-// open-source p-net sample device for this in Docker; a Pi with p-net or any device works too.
+// of station) and PROFINET_TEST_GSD (a directory with its GSDML) are set. The open-source p-net sample
+// device (v0.2.0), in Docker or on a Pi, works as the peer, and so does any real device.
 
 import (
 	"context"
