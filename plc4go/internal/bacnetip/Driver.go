@@ -37,6 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiTransports "github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -104,6 +105,19 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 			localPort = parsed
 		}
 	}
+	// Parse Configuration early so we can propagate the discovery timeout to
+	// the Discoverer for the lifetime of this Driver instance. (Discovery is a
+	// driver-level call, but the timeout is naturally part of Configuration.)
+	if cfg, cfgErr := ParseFromOptionsQuietly(connectionLog, driverOptions); cfgErr == nil {
+		d.discoverer.SetDiscoveryTimeout(time.Duration(cfg.DiscoveryTimeoutSeconds) * time.Second)
+		if cfg.ForeignDeviceBBMD != "" {
+			// A foreign device registers with the BBMD from the socket it then receives the
+			// forwarded broadcasts on, and that is this connection's socket. Connected to the
+			// device it could neither send to the BBMD nor hear from it.
+			driverOptions[udp.OptionUnconnected] = []string{"true"}
+		}
+	}
+
 	localAddress := &net.UDPAddr{IP: net.IPv4zero, Port: localPort}
 	connectionLog.Info().Stringer("localAddress", localAddress).Msg("BACnet driver binding local UDP")
 
@@ -124,13 +138,6 @@ func (d *Driver) GetConnection(ctx context.Context, transportUrl url.URL, transp
 			Int("localPort", localPort).
 			Msg("We couldn't create a transport instance for port")
 		return nil, errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String())
-	}
-
-	// Parse Configuration early so we can propagate the discovery timeout to
-	// the Discoverer for the lifetime of this Driver instance. (Discovery is a
-	// driver-level call, but the timeout is naturally part of Configuration.)
-	if cfg, cfgErr := ParseFromOptionsQuietly(connectionLog, driverOptions); cfgErr == nil {
-		d.discoverer.SetDiscoveryTimeout(time.Duration(cfg.DiscoveryTimeoutSeconds) * time.Second)
 	}
 
 	codec := NewMessageCodec(

@@ -49,6 +49,7 @@ type fakeBacnetDevice struct {
 	wg      sync.WaitGroup
 	log     zerolog.Logger
 	gotReqs int
+	lastSrc *net.UDPAddr // source of the last confirmed request
 	ctx     context.Context
 	mu      sync.Mutex
 }
@@ -91,6 +92,7 @@ func (d *fakeBacnetDevice) serve() {
 		}
 		d.mu.Lock()
 		d.gotReqs++
+		d.lastSrc = src
 		d.mu.Unlock()
 
 		resp := d.buildReadPropertyAck(invokeId)
