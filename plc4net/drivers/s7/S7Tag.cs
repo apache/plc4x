@@ -40,6 +40,7 @@ namespace org.apache.plc4net.drivers.s7
     /// <item><c>%DB{block}.DB{X|B|W|D}{byte}[.{bit}]:{TYPE}</c> - a data block, for example
     /// <c>%DB1.DBW10:INT</c> or <c>%DB1.DBX0.0:BOOL</c>.</item>
     /// <item><c>%DB{block}:{byte}[.{bit}]:{TYPE}</c> - the short form of the same.</item>
+    /// <item><c>%DB{block}:{byte}:STRING({length})</c> - a fixed-length string in a data block.</item>
     /// <item><c>%{I|Q|M}[X|B|W|D]{byte}[.{bit}]:{TYPE}</c> - inputs, outputs and flags, for example
     /// <c>%M0.0:BOOL</c> or <c>%QW4:WORD</c>.</item>
     /// </list>
@@ -49,9 +50,9 @@ namespace org.apache.plc4net.drivers.s7
     /// a <c>REAL</c>.
     /// </para>
     /// <para>
-    /// Array selections, strings, the 64-bit types, the date and time types, counters, timers and the
-    /// other memory areas are accepted by plc4j but not supported here yet; they are rejected rather
-    /// than read as something else.
+    /// Array selections, WSTRING, the 64-bit types, the date and time types, counters, timers and the
+    /// other memory areas are not supported here yet; they are rejected rather than read as something
+    /// else. Fixed-length STRING is supported only in data blocks.
     /// </para>
     /// </remarks>
     public sealed class S7Tag : IPlcTag
@@ -81,7 +82,7 @@ namespace org.apache.plc4net.drivers.s7
         // [0-9], not \d: in .NET \d matches every Unicode decimal digit, so a non-ASCII number would
         // pass the pattern and then blow up int.Parse instead of failing here as an invalid tag.
         private const string Tail =
-            @"(?<byte>[0-9]{1,7})(\.(?<bit>[0-7]))?(?<array>\[[^\]]*\])?:(?<type>(S5)?[A-Za-z_]+)$";
+            @"(?<byte>[0-9]{1,7})(\.(?<bit>[0-7]))?(?<array>\[[^\]]*\])?:(?<type>(S5)?[A-Za-z_]+)(\((?<stringLength>[0-9]{1,3})\))?$";
 
         private static readonly Regex DataBlockPattern = new Regex(
             @"^%DB(?<db>[0-9]{1,5})\.DB(?<size>[XBWD]?)" + Tail,
@@ -96,6 +97,17 @@ namespace org.apache.plc4net.drivers.s7
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         public S7Tag(MemoryArea area, int dbNumber, int byteOffset, byte bitOffset, TransportSize dataType)
+            : this(area, dbNumber, byteOffset, bitOffset, dataType, null)
+        {
+        }
+
+        public S7Tag(
+            MemoryArea area,
+            int dbNumber,
+            int byteOffset,
+            byte bitOffset,
+            TransportSize dataType,
+            int? stringLength)
         {
             if (area != MemoryArea.DATA_BLOCKS && area != MemoryArea.INPUTS
                 && area != MemoryArea.OUTPUTS && area != MemoryArea.FLAGS_MARKERS)
@@ -103,9 +115,33 @@ namespace org.apache.plc4net.drivers.s7
                 throw new PlcInvalidFieldException(
                     $"The memory area {area} is not supported yet; supported: data blocks, inputs, outputs and flags.");
             }
-            if (!SupportedTypes.Contains(dataType))
+            if (!SupportedTypes.Contains(dataType) && dataType != TransportSize.STRING)
             {
                 throw new PlcInvalidFieldException(UnsupportedType(dataType.ToString()));
+            }
+            if (dataType == TransportSize.STRING)
+            {
+                if (area != MemoryArea.DATA_BLOCKS)
+                {
+                    throw new PlcInvalidFieldException("S7 STRING tags are supported only in data blocks.");
+                }
+                if (!stringLength.HasValue || stringLength.Value < 1 || stringLength.Value > 254)
+                {
+                    throw new PlcInvalidFieldException("An S7 STRING length must be between 1 and 254 characters.");
+                }
+                if (bitOffset != 0)
+                {
+                    throw new PlcInvalidFieldException("An S7 STRING cannot have a bit offset.");
+                }
+                if (byteOffset > MaxByteOffset - (stringLength.Value + 1))
+                {
+                    throw new PlcInvalidFieldException(
+                        "The S7 STRING extends past the highest byte offset the address can carry.");
+                }
+            }
+            else if (stringLength.HasValue)
+            {
+                throw new PlcInvalidFieldException("A string length can be specified only for an S7 STRING tag.");
             }
             if (dbNumber < 0 || dbNumber > MaxDataBlock)
             {
@@ -133,6 +169,7 @@ namespace org.apache.plc4net.drivers.s7
             ByteOffset = byteOffset;
             BitOffset = bitOffset;
             DataType = dataType;
+            StringLength = stringLength;
         }
 
         public MemoryArea Area { get; }
@@ -147,8 +184,11 @@ namespace org.apache.plc4net.drivers.s7
 
         public TransportSize DataType { get; }
 
-        /// <summary>The bytes the value takes on the wire; a <c>BOOL</c> travels as one.</summary>
-        public int SizeInBytes => DataType.GetSizeInBytes();
+        /// <summary>The declared maximum character count for a fixed-length STRING; null otherwise.</summary>
+        public int? StringLength { get; }
+
+        /// <summary>The bytes the value takes on the wire; a STRING includes its two-byte header.</summary>
+        public int SizeInBytes => StringLength.HasValue ? StringLength.Value + 2 : DataType.GetSizeInBytes();
 
         /// <summary>
         /// Parses a tag address such as <c>%DB1.DBW10:INT</c> or <c>%M0.0:BOOL</c>.
@@ -187,7 +227,7 @@ namespace org.apache.plc4net.drivers.s7
                 $"'{tagAddress}' is not a supported S7 tag address. Expected " +
                 "%DB{block}.DB{X|B|W|D}{byte}[.{bit}]:{TYPE}, %DB{block}:{byte}[.{bit}]:{TYPE} or " +
                 "%{I|Q|M}[X|B|W|D]{byte}[.{bit}]:{TYPE}, for example %DB1.DBW10:INT or %M0.0:BOOL; " +
-                "the data type is part of the address. Strings and the other memory areas " +
+                "a data-block string uses %DB{block}:{byte}:STRING({length}). WSTRING and the other memory areas " +
                 "are not supported yet.");
         }
 
@@ -201,6 +241,19 @@ namespace org.apache.plc4net.drivers.s7
 
             var dataType = TypeOf(match.Groups["type"].Value);
             var byteOffset = int.Parse(match.Groups["byte"].Value, CultureInfo.InvariantCulture);
+            int? stringLength = null;
+            if (match.Groups["stringLength"].Success)
+            {
+                if (dataType != TransportSize.STRING)
+                {
+                    throw new PlcInvalidFieldException($"'{match.Value}': a length is supported only for STRING.");
+                }
+                stringLength = int.Parse(match.Groups["stringLength"].Value, CultureInfo.InvariantCulture);
+            }
+            else if (dataType == TransportSize.STRING)
+            {
+                throw new PlcInvalidFieldException($"'{match.Value}': STRING needs a declared length, as in :STRING(10).");
+            }
 
             byte bitOffset = 0;
             if (match.Groups["bit"].Success)
@@ -221,7 +274,7 @@ namespace org.apache.plc4net.drivers.s7
                     $"which is '{(char)dataType.GetShortName()}'.");
             }
 
-            return new S7Tag(area, dbNumber, byteOffset, bitOffset, dataType);
+            return new S7Tag(area, dbNumber, byteOffset, bitOffset, dataType, stringLength);
         }
 
         private static MemoryArea AreaOf(string letter)
@@ -248,7 +301,7 @@ namespace org.apache.plc4net.drivers.s7
                 if (string.Equals(candidate, name, StringComparison.OrdinalIgnoreCase))
                 {
                     var type = (TransportSize)Enum.Parse(typeof(TransportSize), candidate);
-                    if (!SupportedTypes.Contains(type))
+                    if (!SupportedTypes.Contains(type) && type != TransportSize.STRING)
                     {
                         throw new PlcInvalidFieldException(UnsupportedType(candidate));
                     }
@@ -266,16 +319,17 @@ namespace org.apache.plc4net.drivers.s7
         public override string ToString()
         {
             var bit = DataType == TransportSize.BOOL ? $".{BitOffset}" : string.Empty;
+            var type = DataType == TransportSize.STRING ? $"STRING({StringLength})" : DataType.ToString();
             switch (Area)
             {
                 case MemoryArea.DATA_BLOCKS:
-                    return $"%DB{DbNumber}.DB{ByteOffset}{bit}:{DataType}";
+                    return $"%DB{DbNumber}.DB{ByteOffset}{bit}:{type}";
                 case MemoryArea.INPUTS:
-                    return $"%I{ByteOffset}{bit}:{DataType}";
+                    return $"%I{ByteOffset}{bit}:{type}";
                 case MemoryArea.OUTPUTS:
-                    return $"%Q{ByteOffset}{bit}:{DataType}";
+                    return $"%Q{ByteOffset}{bit}:{type}";
                 default:
-                    return $"%M{ByteOffset}{bit}:{DataType}";
+                    return $"%M{ByteOffset}{bit}:{type}";
             }
         }
     }

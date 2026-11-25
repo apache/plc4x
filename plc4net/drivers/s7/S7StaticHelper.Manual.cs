@@ -41,8 +41,12 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
         {
             if (IsUtf8(encoding))
             {
-                io.ReadByte("maxLength", 8);
+                int maxLength = io.ReadByte("maxLength", 8);
                 int totalStringLength = io.ReadByte("totalLength", 8);
+                if (maxLength != stringLength || totalStringLength > maxLength)
+                {
+                    throw new ParseException("S7 STRING length header does not match the declared field length.");
+                }
 
                 var bytes = new byte[Math.Max(totalStringLength, 0)];
                 for (var i = 0; i < stringLength && io.HasMore(8); i++)
@@ -105,14 +109,16 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             if (IsUtf8(encoding))
             {
                 var maxLength = Math.Min(stringLength, 254) & 0xFF;
-                var actLength = Math.Min(maxLength, text.Length & 0xFF);
-
+                var actChars = Encoding.UTF8.GetBytes(text);
+                if (actChars.Length > maxLength)
+                {
+                    throw new OverflowException("The UTF-8 value does not fit the declared S7 STRING length.");
+                }
                 var chars = new byte[maxLength];
-                var actChars = Encoding.UTF8.GetBytes(text.Substring(0, actLength));
-                Array.Copy(actChars, chars, Math.Min(actChars.Length, chars.Length));
+                Array.Copy(actChars, chars, actChars.Length);
 
                 io.WriteByte("maxLength", 8, (byte)maxLength);
-                io.WriteByte("totalLength", 8, (byte)actLength);
+                io.WriteByte("totalLength", 8, (byte)actChars.Length);
                 io.WriteByteArray("chars", chars);
                 return;
             }
