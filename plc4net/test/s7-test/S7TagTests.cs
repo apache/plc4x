@@ -105,6 +105,18 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Equal(size, S7Tag.Parse(address).SizeInBytes);
         }
 
+        [Fact]
+        public void A_fixed_string_keeps_its_declared_length_in_both_tag_forms()
+        {
+            var parsed = S7Tag.Parse("%DB1:10:STRING(4)");
+            var constructed = new S7Tag(MemoryArea.DATA_BLOCKS, 1, 10, 0, TransportSize.STRING, 4);
+
+            Assert.Equal(4, parsed.StringLength);
+            Assert.Equal(6, parsed.SizeInBytes);
+            Assert.Equal(parsed.ToString(), constructed.ToString());
+            Assert.Equal(parsed.StringLength, S7Tag.Parse(parsed.ToString()).StringLength);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("   ")]
@@ -117,7 +129,7 @@ namespace org.apache.plc4net.drivers.s7.test
         [InlineData("%DB1.DBW10.:INT")]
         [InlineData("%DB1.DBW10:INT:INT")]
         [InlineData("%DB1.DBW10:INT junk")]
-        [InlineData("%DB1.DBB0:STRING(10)")]
+        [InlineData("%DB1.DBB0:STRING(0)")]
         [InlineData("%DB100000.DBW0:INT")] // six digits
         [InlineData("%M12345678:BYTE")] // eight digits
         [InlineData("%M0.8:BOOL")] // bit 8
@@ -195,7 +207,7 @@ namespace org.apache.plc4net.drivers.s7.test
         [InlineData("%DB1.DBW0:S5TIME")]
         [InlineData("%DB1.DBB0:CHAR")]
         [InlineData("%DB1.DBX0.0:COUNTER")]
-        [InlineData("%DB1.DBB0:STRING")]
+        [InlineData("%DB1.DBB0:WSTRING")]
         public void The_types_that_are_not_supported_yet_are_refused_with_an_explanation(string address)
         {
             var exception = Assert.Throws<PlcInvalidFieldException>(() => S7Tag.Parse(address));

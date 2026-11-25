@@ -130,6 +130,19 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public void A_fixed_string_counts_utf8_bytes_and_rejects_overlong_or_invalid_values()
+        {
+            var buffer = new WriteBuffer();
+            DataItem.StaticSerialize(buffer, new PlcSTRING("é"), "IEC61131_STRING", ControllerType.ANY, 2);
+
+            Assert.Equal("0202c3a9", ToHex(buffer.GetBytes()));
+            Assert.Equal("é", Parse("IEC61131_STRING", "0202c3a9", 2).GetString());
+            Assert.Throws<OverflowException>(() => DataItem.StaticSerialize(
+                new WriteBuffer(), new PlcSTRING(new string('a', 256)), "IEC61131_STRING", ControllerType.ANY, 254));
+            Assert.Throws<ParseException>(() => Parse("IEC61131_STRING", "02034142", 2));
+        }
+
+        [Fact]
         public void Non_finite_reals_round_trip_instead_of_throwing()
         {
             // PlcSimpleNumericValueAdapter.IsFloat() used to reject NaN / ±Inf,

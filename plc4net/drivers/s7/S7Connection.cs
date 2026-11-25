@@ -525,6 +525,13 @@ namespace org.apache.plc4net.drivers.s7
                 var requestItem = write ? AddressItemSize + data + previousPadding : AddressItemSize;
                 var answerItem = write ? 1 : data + previousPadding;
 
+                if (JobSize + (write ? AddressItemSize + data : AddressItemSize) > pduLength
+                    || AckSize + (write ? 1 : data) > pduLength)
+                {
+                    throw new S7DriverException(
+                        $"The S7 {tags[i]} item cannot fit in the negotiated PDU of {pduLength} bytes.");
+                }
+
                 if (job.Count > 0
                     && (requestSize + requestItem > pduLength
                         || answerSize + answerItem > pduLength))
@@ -554,18 +561,20 @@ namespace org.apache.plc4net.drivers.s7
 
         private int PduLength => NegotiatedPduLength > 0 ? NegotiatedPduLength : _requestedPduSize;
 
-        /// <summary>
-        /// The S7-ANY address of a tag, built the way plc4j builds it: the tag's own data type
-        /// names the transport size, and the CPU is asked for one element.
-        /// </summary>
+        /// <summary>The S7-ANY address of one tag.</summary>
         internal static S7AddressAny ToAddress(S7Tag tag)
-            => new S7AddressAny(
-                tag.DataType,
-                1,
+        {
+            // A fixed STRING is addressed as its complete byte representation: two header bytes
+            // followed by the declared character capacity, using CHAR transport elements.
+            var isString = tag.DataType == TransportSize.STRING;
+            return new S7AddressAny(
+                isString ? TransportSize.CHAR : tag.DataType,
+                isString ? checked((ushort)tag.SizeInBytes) : (ushort)1,
                 (ushort)tag.DbNumber,
                 tag.Area,
                 (ushort)tag.ByteOffset,
                 tag.BitOffset);
+        }
 
         // ── PlcReader ──────────────────────────────────────────
 
@@ -685,7 +694,11 @@ namespace org.apache.plc4net.drivers.s7
                 throw new S7DriverException(
                     $"The S7 answer carries {data.Length} byte(s) for {tag}; a {tag.DataType} takes {tag.SizeInBytes}.");
             }
-            return DataItem.StaticParse(new ReadBuffer(data), tag.DataType.GetDataProtocolId(), ControllerType.ANY, 0);
+            return DataItem.StaticParse(
+                new ReadBuffer(data),
+                tag.DataType.GetDataProtocolId(),
+                ControllerType.ANY,
+                tag.StringLength ?? 0);
         }
 
         // ── PlcWriter ──────────────────────────────────────────
@@ -840,13 +853,34 @@ namespace org.apache.plc4net.drivers.s7
                 case TransportSize.UDINT:
                     plcValue = new PlcUDINT(checked((uint)ToInteger(value)));
                     break;
+                case TransportSize.STRING:
+                    plcValue = new PlcSTRING(ToStringValue(value));
+                    break;
                 default:
                     throw new S7DriverException($"A tag cannot be written as {tag.DataType}.");
             }
 
             var buffer = new WriteBuffer();
-            DataItem.StaticSerialize(buffer, plcValue, tag.DataType.GetDataProtocolId(), ControllerType.ANY, 0);
+            DataItem.StaticSerialize(
+                buffer,
+                plcValue,
+                tag.DataType.GetDataProtocolId(),
+                ControllerType.ANY,
+                tag.StringLength ?? 0);
             return buffer.GetBytes();
+        }
+
+        private static string ToStringValue(object value)
+        {
+            switch (value)
+            {
+                case string text:
+                    return text;
+                case IPlcValue plc:
+                    return plc.GetString();
+                default:
+                    throw new InvalidCastException("An S7 STRING requires a string value.");
+            }
         }
 
         private static bool ToBoolean(object value)

@@ -280,6 +280,19 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public async Task A_fixed_string_read_requests_its_header_and_full_capacity()
+        {
+            var transport = Ready();
+            var connection = ConnectQuietly(transport);
+            transport.InjectTestData(S7Frames.ReadAck(2, (0xFF, 0x09, Hex("040248690000"))));
+            var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
+            address[5] = 6;
+
+            Assert.Equal("Hi", ValueOf(await ReadAsync(connection, "%DB1:10:STRING(4)")).GetString());
+            Assert.Equal(S7Frames.ReadRequest(2, address), Written(transport));
+        }
+
+        [Fact]
         public async Task A_multi_item_read_is_decoded_item_by_item_in_the_order_of_the_request()
         {
             var transport = Ready();
@@ -534,6 +547,21 @@ namespace org.apache.plc4net.drivers.s7.test
                 .Select(i => S7Tag.Parse($"%{area}{(type == "REAL" ? "D" : type == "BYTE" ? "B" : "W")}{i * 4}:{type}"))
                 .ToList();
 
+        [Fact]
+        public void A_fixed_string_uses_char_transport_and_checks_the_negotiated_pdu()
+        {
+            var tag = S7Tag.Parse("%DB1:10:STRING(4)");
+            var address = S7Connection.ToAddress(tag);
+
+            Assert.Equal(TransportSize.CHAR, address.TransportSize);
+            Assert.Equal((ushort)6, address.NumberOfElements);
+            Assert.Equal("040248690000", BitConverter.ToString(S7Connection.EncodeValue(tag, "Hi")).Replace("-", ""));
+            Assert.Throws<S7DriverException>(() => S7Connection.PlanJobs(
+                new[] { S7Tag.Parse("%DB1:0:STRING(254)") }, false, 240));
+            Assert.Throws<S7DriverException>(() => S7Connection.PlanJobs(
+                new[] { S7Tag.Parse("%DB1:0:STRING(254)") }, true, 240));
+        }
+
         [Theory]
         [InlineData(25, 240, "19,6")] // 12 + 12 * 19 = 240
         [InlineData(19, 240, "19")]
@@ -595,11 +623,9 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
-        public void A_tag_that_cannot_fit_a_job_still_gets_one_of_its_own()
+        public void A_tag_that_cannot_fit_a_job_is_rejected_before_sending()
         {
-            var jobs = S7Connection.PlanJobs(Tags(3, "REAL"), true, 10);
-
-            Assert.Equal("1,1,1", string.Join(",", jobs.Select(j => j.Count)));
+            Assert.Throws<S7DriverException>(() => S7Connection.PlanJobs(Tags(3, "REAL"), true, 10));
         }
 
         // ── Writing ────────────────────────────────────────────
@@ -638,6 +664,22 @@ namespace org.apache.plc4net.drivers.s7.test
                     2,
                     new[] { S7Frames.AddressItem(addressSize, (ushort)tag.DbNumber, area, tag.ByteOffset, tag.BitOffset) },
                     (dataSize, Hex(dataHex))),
+                Written(transport));
+        }
+
+        [Fact]
+        public async Task A_fixed_string_write_sends_the_header_and_full_capacity()
+        {
+            var transport = Ready();
+            var connection = ConnectQuietly(transport);
+            transport.InjectTestData(S7Frames.WriteAck(2, 0xFF));
+            var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
+            address[5] = 6;
+
+            var response = await WriteAsync(connection, "%DB1:10:STRING(4)", "Hi");
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(S7Frames.WriteRequest(2, new[] { address }, (0x09, Hex("040248690000"))),
                 Written(transport));
         }
 
