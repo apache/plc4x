@@ -289,3 +289,58 @@ func TestDispatchNotification_ConstructedDataBranch(t *testing.T) {
 }
 
 var _ = time.Second // keep import alive across phases
+
+// A process id alone does not identify a subscription: a device still holding one an earlier
+// connection made notifies with an id this connection has since given to another object, and an
+// unconnected socket hears every device. A notification counts only when its monitored object is
+// the handle's object too.
+func TestHandleCOVNotification_MatchesTheMonitoredObject(t *testing.T) {
+	analogInput := readWriteModel.BACnetObjectType_ANALOG_INPUT
+	proprietary := uint16(600)
+	for _, tc := range []struct {
+		name         string
+		tag          objectId
+		notifiedType uint16
+		notifiedInst uint32
+		wantEvent    bool
+	}{
+		{name: "same object", tag: objectId{ObjectIdType: &analogInput, ObjectIdInstance: 1}, notifiedType: uint16(analogInput), notifiedInst: 1, wantEvent: true},
+		{name: "other instance", tag: objectId{ObjectIdType: &analogInput, ObjectIdInstance: 1}, notifiedType: uint16(analogInput), notifiedInst: 2},
+		{name: "other type", tag: objectId{ObjectIdType: &analogInput, ObjectIdInstance: 1}, notifiedType: uint16(readWriteModel.BACnetObjectType_ANALOG_VALUE), notifiedInst: 1},
+		{name: "same proprietary object", tag: objectId{ObjectIdTypeProprietary: &proprietary, ObjectIdInstance: 3}, notifiedType: proprietary, notifiedInst: 3, wantEvent: true},
+		{name: "other proprietary type", tag: objectId{ObjectIdTypeProprietary: &proprietary, ObjectIdInstance: 3}, notifiedType: proprietary + 1, notifiedInst: 3},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := newTestSubscriber(t)
+			s.log = zerolog.Nop()
+			handle := NewSubscriptionHandle(s, "pv", &plcTag{ObjectId: tc.tag}, apiModel.SubscriptionChangeOfState, 0)
+			handle.subscriberProcessId = 7
+			s.storeHandle(handle)
+			capture := &captureConsumer{}
+			s.Register(capture.consume, []apiModel.PlcSubscriptionHandle{handle.DefaultPlcSubscriptionHandle})
+
+			unconfirmed := buildCOVNotification(7, 1234, analogInput, 0, 21.5)
+			monitored := readWriteModel.CreateBACnetContextTagObjectIdentifier(2, tc.notifiedType, tc.notifiedInst)
+			s.HandleUnconfirmedCOVNotification(readWriteModel.NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(
+				unconfirmed.GetSubscriberProcessIdentifier(),
+				unconfirmed.GetInitiatingDeviceIdentifier(),
+				monitored,
+				unconfirmed.GetLifetimeInSeconds(),
+				unconfirmed.GetListOfValues(),
+			))
+			s.HandleConfirmedCOVNotification(readWriteModel.NewBACnetConfirmedServiceRequestConfirmedCOVNotification(
+				0,
+				unconfirmed.GetSubscriberProcessIdentifier(),
+				unconfirmed.GetInitiatingDeviceIdentifier(),
+				monitored,
+				unconfirmed.GetLifetimeInSeconds(),
+				unconfirmed.GetListOfValues(),
+			))
+			if tc.wantEvent {
+				assert.Len(t, capture.events, 2, "the unconfirmed and the confirmed notification")
+			} else {
+				assert.Empty(t, capture.events, "a notification for another object must not reach the handle's consumer")
+			}
+		})
+	}
+}

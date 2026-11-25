@@ -313,14 +313,12 @@ func (m *Subscriber) acceptsResponse(message spi.Message, invokeId uint8) bool {
 
 // HandleConfirmedCOVNotification is invoked by Connection's message loop when a
 // ConfirmedCOVNotification APDU arrives. It looks up the SubscriptionHandle by
-// subscriber-process-id and fans out a SubscriptionEvent to every consumer
-// registered against that handle. The caller is responsible for sending the
-// APDUSimpleAck reply back to the publisher.
+// subscriber-process-id and monitored object (notificationHandle) and fans out a
+// SubscriptionEvent to every consumer registered against that handle. The caller
+// is responsible for sending the APDUSimpleAck reply back to the publisher.
 func (m *Subscriber) HandleConfirmedCOVNotification(req readWriteModel.BACnetConfirmedServiceRequestConfirmedCOVNotification) {
-	processId := uint32(req.GetSubscriberProcessIdentifier().GetPayload().GetActualValue())
-	handle := m.lookupHandle(processId)
+	handle := m.notificationHandle("Confirmed", req.GetSubscriberProcessIdentifier(), req.GetMonitoredObjectIdentifier())
 	if handle == nil {
-		m.log.Debug().Uint32("processId", processId).Msg("Confirmed COV notification for unknown subscriber")
 		return
 	}
 	m.dispatchNotification(handle, req.GetListOfValues())
@@ -329,13 +327,64 @@ func (m *Subscriber) HandleConfirmedCOVNotification(req readWriteModel.BACnetCon
 // HandleUnconfirmedCOVNotification mirrors HandleConfirmedCOVNotification for
 // the unconfirmed variant. No reply is sent.
 func (m *Subscriber) HandleUnconfirmedCOVNotification(req readWriteModel.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) {
-	processId := uint32(req.GetSubscriberProcessIdentifier().GetPayload().GetActualValue())
-	handle := m.lookupHandle(processId)
+	handle := m.notificationHandle("Unconfirmed", req.GetSubscriberProcessIdentifier(), req.GetMonitoredObjectIdentifier())
 	if handle == nil {
-		m.log.Debug().Uint32("processId", processId).Msg("Unconfirmed COV notification for unknown subscriber")
 		return
 	}
 	m.dispatchNotification(handle, req.GetListOfValues())
+}
+
+// notificationHandle returns the handle a COV notification is for: the one with its subscriber
+// process id that also monitors the notification's object, or nil.
+//
+// The process id alone does not identify the subscription. The ids restart at 1 with every
+// connection, so a device that still holds a subscription an earlier connection made (until its
+// lifetime runs out) keeps notifying the same address with an id this connection has since given
+// to another object, and a socket left unconnected (foreign-device registration) hears every
+// device, not only its own. A notification for another object is dropped instead of being
+// reported as the value of the handle's tag.
+func (m *Subscriber) notificationHandle(kind string, processIdentifier readWriteModel.BACnetContextTagUnsignedInteger, monitored readWriteModel.BACnetContextTagObjectIdentifier) *SubscriptionHandle {
+	var processId uint32
+	if processIdentifier != nil {
+		processId = uint32(processIdentifier.GetPayload().GetActualValue())
+	}
+	handle := m.lookupHandle(processId)
+	if handle == nil {
+		m.log.Debug().Uint32("processId", processId).Msgf("%s COV notification for unknown subscriber", kind)
+		return nil
+	}
+	if !handle.monitors(monitored) {
+		event := m.log.Debug().Uint32("processId", processId).Str("tagName", handle.tagName)
+		if monitored != nil {
+			event = event.Uint16("objectType", objectIdentifierType(monitored)).Uint32("instance", monitored.GetInstanceNumber())
+		}
+		event.Msgf("%s COV notification for an object this subscription does not monitor", kind)
+		return nil
+	}
+	return handle
+}
+
+// monitors reports whether monitored is the object this handle subscribed to, compared the way
+// SubscribeCOV encoded it (raw object type, proprietary types included, and instance).
+func (h *SubscriptionHandle) monitors(monitored readWriteModel.BACnetContextTagObjectIdentifier) bool {
+	tag, ok := h.tag.(BacNetPlcTag)
+	if !ok || tag == nil || monitored == nil {
+		return false
+	}
+	id := tag.GetObjectId()
+	if id.ObjectIdType == nil && id.ObjectIdTypeProprietary == nil {
+		return false
+	}
+	return objectIdentifierType(monitored) == id.getId() && monitored.GetInstanceNumber() == id.ObjectIdInstance
+}
+
+// objectIdentifierType is the raw object type of an object identifier: the proprietary type
+// number for a vendor-proprietary type.
+func objectIdentifierType(id readWriteModel.BACnetContextTagObjectIdentifier) uint16 {
+	if payload := id.GetPayload(); payload.GetIsProprietary() {
+		return payload.GetProprietaryValue()
+	}
+	return uint16(id.GetObjectType())
 }
 
 // dispatchNotification converts the list of (property, value) pairs into a

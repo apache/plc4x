@@ -54,7 +54,7 @@ type Connection struct {
 	subscribersMu     sync.Mutex
 	// nextCovProcessId allocates the SubscribeCOV subscriber process ids for
 	// every Subscriber of this connection. Notifications reach all of them and
-	// each routes by process id alone, so the ids must be unique per
+	// each routes by process id (and monitored object), so the ids must be unique per
 	// connection, not per Subscriber. The first id is 1; 0 means "no subscription".
 	nextCovProcessId atomic.Uint32
 	tm                transactions.RequestTransactionManager
