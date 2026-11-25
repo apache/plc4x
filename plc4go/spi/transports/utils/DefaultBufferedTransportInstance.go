@@ -114,6 +114,15 @@ func (m *defaultBufferedTransportInstance) FillBuffer(ctx context.Context, until
 	for ctx.Err() == nil {
 		bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
+			if transports.IsBufferFull(err) {
+				// The peek grows a byte at a time, so this is where it reaches the end of the
+				// buffer. The frame is longer than the buffer, which says nothing about the
+				// connection: the rest of it is still there and Read streams it through
+				// afterwards. Report it, but say what it is here, where that is known, rather
+				// than leaving a transport's catch-all to call it fatal.
+				return transports.NewTransportError(transports.TransportErrorTransient,
+					errors.Wrap(err, "Error while peeking"))
+			}
 			return errors.Wrap(err, "Error while peeking")
 		}
 		if keepGoing := until(uint(nBytes-1), bytes[len(bytes)-1], m.GetReader()); !keepGoing {

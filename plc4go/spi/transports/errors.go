@@ -20,6 +20,7 @@
 package transports
 
 import (
+	"bufio"
 	stdErrors "errors"
 	"fmt"
 	"syscall"
@@ -115,6 +116,16 @@ func ErrorAs(err error, target any) (matched bool) {
 		}
 	}()
 	return stdErrors.As(err, target)
+}
+
+// IsBufferFull reports whether err is bufio's ErrBufferFull.
+//
+// It says the read buffer cannot hold any more of the frame being peeked at. That is a state of
+// the buffer, not a failure of the transport: the remaining bytes are still on the connection and
+// Read streams them through the buffer afterwards. Classifying it as fatal tore down connections
+// that had nothing wrong with them, on exactly the devices that send the largest frames.
+func IsBufferFull(err error) bool {
+	return ErrorIs(err, bufio.ErrBufferFull)
 }
 
 // IsFatal reports whether the error kind signals an unusable transport.

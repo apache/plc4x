@@ -356,3 +356,33 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 		})
 	}
 }
+
+// A frame larger than the read buffer makes the peek fail with bufio.ErrBufferFull. That says the
+// peek reached the end of the buffer, not that the connection is broken - the rest of the frame is
+// still there and Read streams it through afterwards. FillBuffer is where that is known, so it is
+// where the error is classified, instead of leaving a transport's catch-all to call it fatal.
+func Test_defaultBufferedTransportInstance_FillBuffer_frameLargerThanTheBuffer(t *testing.T) {
+	requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
+	expect := requirements.EXPECT()
+	// 16 bytes is the smallest buffer bufio hands out, and there are more bytes behind it than
+	// it can hold.
+	expect.GetReader().Return(bufio.NewReaderSize(bytes.NewReader(make([]byte, 64)), 16))
+	expect.IsConnected().Return(true)
+
+	m := &defaultBufferedTransportInstance{
+		DefaultBufferedTransportInstanceRequirements: requirements,
+		log: log.Logger,
+	}
+
+	// Never stop, so the peek keeps growing until it asks for more than the buffer can hold.
+	err := m.FillBuffer(t.Context(), func(_ uint, _ byte, _ transports.ExtendedReader) bool {
+		return true
+	})
+
+	assert.Error(t, err, "the error is reported, not swallowed")
+	assert.True(t, transports.IsBufferFull(err), "the bufio.ErrBufferFull sentinel must survive wrapping")
+	transportError, ok := transports.AsTransportError(err)
+	assert.True(t, ok, "the error must carry its own classification")
+	assert.Equal(t, transports.TransportErrorTransient, transportError.Kind())
+	assert.False(t, transportError.Kind().IsFatal())
+}

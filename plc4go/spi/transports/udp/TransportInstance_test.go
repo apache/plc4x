@@ -32,6 +32,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/nettest"
 
+	"github.com/apache/plc4x/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
@@ -789,4 +790,19 @@ func TestTransportInstance_Write_clearsAnExpiredDeadline(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	assert.NoError(t, m.Write(context.Background(), []byte{2}))
+}
+
+// FillBuffer classifies a full read buffer where it happens, because that is the only place that
+// knows the peek simply reached the end of the buffer. Classification here must not overrule it:
+// before this, an error that arrived already classified still fell into the catch-all below and
+// came back fatal.
+func TestTransportInstance_ClassifyError_keepsAnExistingClassification(t *testing.T) {
+	m := &TransportInstance{}
+	alreadyClassified := transports.NewTransportError(transports.TransportErrorTransient,
+		errors.Wrap(bufio.ErrBufferFull, "Error while peeking"))
+
+	kind := m.ClassifyError(alreadyClassified)
+
+	assert.Equal(t, transports.TransportErrorTransient, kind)
+	assert.False(t, kind.IsFatal())
 }
