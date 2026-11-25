@@ -124,8 +124,12 @@ func (c *Connection) foreignDeviceWriter() (transports.AddressedDatagramWriter, 
 	return writer, ok
 }
 
-// maintainForeignDeviceRegistration registers right away and renews at TTL/2 until ctx ends. A
-// failed registration is logged and retried on the next tick.
+// maintainForeignDeviceRegistration registers right away and renews at TTL/2 until ctx ends or the
+// connection is gone. A failed registration is logged and retried on the next tick.
+//
+// Close ends ctx, but a connection can also end without Close: a fatal transport error
+// invalidates it and closes its transport. The loop then ends on its next tick, without sending,
+// instead of failing a registration on the closed socket every TTL/2 until someone calls Close.
 func (c *Connection) maintainForeignDeviceRegistration(ctx context.Context, writer transports.AddressedDatagramWriter, host string, port uint16) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -142,6 +146,10 @@ func (c *Connection) maintainForeignDeviceRegistration(ctx context.Context, writ
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for {
+		if !c.IsConnected() {
+			log.Debug().Msg("Ending foreign-device registration: the connection is gone")
+			return
+		}
 		if err := c.registerForeignDevice(ctx, writer, host, port, ttl); err != nil {
 			if ctx.Err() != nil {
 				return

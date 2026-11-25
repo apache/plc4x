@@ -57,7 +57,7 @@ type Connection struct {
 	// each routes by process id (and monitored object), so the ids must be unique per
 	// connection, not per Subscriber. The first id is 1; 0 means "no subscription".
 	nextCovProcessId atomic.Uint32
-	tm                transactions.RequestTransactionManager
+	tm               transactions.RequestTransactionManager
 
 	connectionId string
 	tracer       tracer.Tracer
