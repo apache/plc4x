@@ -184,23 +184,53 @@ func TestMessageCodec_Receive_ParsesBVLCFromTransport(t *testing.T) {
 	assert.Equal(t, bvlc.GetBvlcFunction(), parsed.GetBvlcFunction())
 }
 
-func TestMessageCodec_Receive_NotEnoughBytesReturnsNil(t *testing.T) {
-	codec, ti := newTestCodec(t)
-	// 2 bytes is below the 4-byte minimum BVLC header — Receive must
-	// short-circuit with (nil, nil), not block or err.
-	ti.PushReceived([]byte{0x81, 0x0a})
-	msg, err := codec.Receive(context.Background())
-	assert.NoError(t, err)
-	assert.Nil(t, msg, "<4 buffered bytes should not yield a message")
+// The fake transport, like the udp one, hands the codec one datagram at a time: whatever is
+// buffered when Receive runs is the rest of one datagram. A malformed one must be consumed whole
+// and dropped, so the next datagram parses; it must neither wait for more bytes (which never come
+// over UDP) nor end the connection.
+func TestMessageCodec_Receive_DropsMalformedDatagram(t *testing.T) {
+	valid, err := makeWhoIsBVLC(t).Serialize()
+	require.NoError(t, err)
+	for _, tc := range []struct {
+		name     string
+		datagram []byte
+	}{
+		{name: "shorter than the header", datagram: []byte{0x81, 0x0a}},
+		{name: "shorter than its BVLC length", datagram: []byte{0x81, 0x0a, 0x00, 0x64}},
+		{name: "BVLC length below the header", datagram: []byte{0x81, 0x0a, 0x00, 0x02, 0x01}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			codec, ti := newTestCodec(t)
+			ti.PushReceived(tc.datagram)
+			msg, err := codec.Receive(context.Background())
+			assert.NoError(t, err, "a malformed datagram must not be a transport error")
+			assert.Nil(t, msg)
+			num, err := ti.GetNumBytesAvailableInBuffer()
+			require.NoError(t, err)
+			assert.Zero(t, num, "the malformed datagram must be consumed")
+
+			ti.PushReceived(valid)
+			msg, err = codec.Receive(context.Background())
+			require.NoError(t, err)
+			assert.NotNil(t, msg, "the datagram after a malformed one must parse")
+		})
+	}
 }
 
-func TestMessageCodec_Receive_PartialPacketReturnsNil(t *testing.T) {
+// Bytes after the BVLC message belong to no message: they are dropped with their datagram, not
+// left in the buffer as the start of the next one.
+func TestMessageCodec_Receive_DropsTrailingBytes(t *testing.T) {
 	codec, ti := newTestCodec(t)
-	// BVLC header claims packet-size 100 (0x0064), but we only feed 4 bytes.
-	ti.PushReceived([]byte{0x81, 0x0a, 0x00, 0x64})
+	valid, err := makeWhoIsBVLC(t).Serialize()
+	require.NoError(t, err)
+	ti.PushReceived(append(append([]byte(nil), valid...), 0xde, 0xad))
+
 	msg, err := codec.Receive(context.Background())
-	assert.NoError(t, err)
-	assert.Nil(t, msg, "buffer < declared packet-size should not yield a message")
+	require.NoError(t, err)
+	assert.NotNil(t, msg)
+	num, err := ti.GetNumBytesAvailableInBuffer()
+	require.NoError(t, err)
+	assert.Zero(t, num, "the trailing bytes must go with their datagram")
 }
 
 func TestMessageCodec_ExpectationsMatchUnsolicitedMessages(t *testing.T) {

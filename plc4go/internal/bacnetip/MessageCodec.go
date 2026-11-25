@@ -88,50 +88,55 @@ func (m *MessageCodec) Send(ctx context.Context, interactionInfo string, message
 	return nil
 }
 
+// Receive takes one datagram from the transport and parses the BVLC message in it.
+//
+// BACnet/IP runs over UDP, and a datagram carries exactly one BVLC message (ASHRAE 135 Annex J).
+// The udp transport buffers one datagram at a time and reads the next only once the buffer is
+// empty, so whatever is buffered is the rest of the current datagram, and nothing more of it will
+// ever arrive. Receive therefore consumes it whole, whatever it holds. Waiting for more bytes, as a
+// stream codec would, stalls every later read behind a datagram that is shorter than its BVLC
+// length says (or shorter than the 4 byte header): the transport never reads the next datagram
+// while those bytes sit in the buffer. A malformed datagram is dropped and logged; it does not end
+// the connection, as anyone who can reach the socket can send one.
 func (m *MessageCodec) Receive(ctx context.Context) (spi.Message, error) {
-	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
-		data, err := m.GetTransportInstance().PeekReadableBytes(ctx, 4)
-		if err != nil {
-			m.log.Warn().Err(err).Msg("error peeking")
-			// TODO: Possibly clean up ...
-			return nil, nil
-		}
-		packetSize := (uint32(data[2]) << 8) + uint32(data[3])
-		// A BVLC length below the 4 byte header can never become parseable and
-		// would make the receive worker spin forever on the same unconsumed
-		// bytes (reachable via a single spoofed UDP datagram), so treat it as
-		// a fatal framing error.
-		if packetSize < 4 {
-			return nil, transports.NewTransportError(transports.TransportErrorFatal,
-				errors.Errorf("invalid BVLC frame length %d (minimum 4)", packetSize))
-		}
-		if num < packetSize {
-			m.log.Debug().
-				Uint32("num", num).
-				Uint32("packetSize", packetSize).
-				Msg("Not enough bytes. Got: num Need: packetSize")
-			return nil, nil
-		}
-		data, err = m.GetTransportInstance().Read(ctx, packetSize)
-		if err != nil {
-			m.log.Debug().Err(err).Msg("Error reading")
-			// TODO: Possibly clean up ...
-			return nil, nil
-		}
-		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		bvlcPacket, err := model.BVLCParse[model.BVLC](ctxForModel, data)
-		if err != nil {
-			m.log.Warn().Err(err).Msg("error parsing")
-			// TODO: Possibly clean up ...
-			return nil, nil
-		}
-		return bvlcPacket, nil
-	} else if err != nil {
+	transportInstance := m.GetTransportInstance()
+	num, err := transportInstance.GetNumBytesAvailableInBuffer()
+	if err != nil {
 		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
-	// TODO: maybe we return here a not enough error error
-	return nil, nil
+	if num == 0 {
+		return nil, nil
+	}
+	m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
+	datagram, err := transportInstance.Read(ctx, num)
+	if err != nil {
+		m.log.Debug().Err(err).Msg("Error reading")
+		return nil, nil
+	}
+	if len(datagram) < 4 {
+		m.log.Warn().Int("size", len(datagram)).Msg("dropping a datagram shorter than the 4 byte BVLC header")
+		return nil, nil
+	}
+	packetSize := (uint32(datagram[2]) << 8) + uint32(datagram[3])
+	if packetSize < 4 || packetSize > num {
+		m.log.Warn().
+			Uint32("packetSize", packetSize).
+			Uint32("size", num).
+			Msg("dropping a datagram whose BVLC length does not fit it")
+		return nil, nil
+	}
+	if packetSize < num {
+		m.log.Debug().
+			Uint32("packetSize", packetSize).
+			Uint32("size", num).
+			Msg("dropping the bytes after the BVLC message in a datagram")
+	}
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	bvlcPacket, err := model.BVLCParse[model.BVLC](ctxForModel, datagram[:packetSize])
+	if err != nil {
+		m.log.Warn().Err(err).Msg("error parsing")
+		return nil, nil
+	}
+	return bvlcPacket, nil
 }
