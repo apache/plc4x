@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"math"
+	"time"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -73,9 +74,44 @@ func plcValueToApplicationTag(v apiValues.PlcValue, hint encodingHint) (model.BA
 		return model.CreateBACnetApplicationTagCharacterString(model.BACnetCharacterEncoding_ISO_10646, v.GetString()), nil
 	case apiValues.RAW_BYTE_ARRAY:
 		return model.CreateBACnetApplicationTagOctetString(v.GetRaw()), nil
+	case apiValues.DATE:
+		return dateToApplicationTag(v.GetDate())
+	case apiValues.TIME_OF_DAY:
+		return timeOfDayToApplicationTag(v.GetTime()), nil
 	default:
 		return nil, errors.Errorf("PlcValue type %v cannot be encoded as a BACnet ApplicationTag", v.GetPlcValueType())
 	}
+}
+
+// dateToApplicationTag maps a calendar day to a BACnet Date (ASHRAE 135 clause
+// 20.2.12), the inverse of bacnetDateToPlcValue for a concrete date. The day is
+// taken from the value's own zone, as a PlcDATE carries no instant. The year octet
+// counts from 1900 and 255 means "any year", so only 1900..2154 can be sent; any
+// other year is an error instead of wrapping into a different one. The day of week
+// is numbered 1=Monday .. 7=Sunday.
+func dateToApplicationTag(date time.Time) (model.BACnetApplicationTag, error) {
+	year := date.Year()
+	if year < 1900 || year > 1900+0xFE {
+		return nil, errors.Errorf("year %d of date %s is outside the BACnet date range 1900..2154", year, date.Format(time.DateOnly))
+	}
+	dayOfWeek := uint8(date.Weekday())
+	if date.Weekday() == time.Sunday {
+		dayOfWeek = 7
+	}
+	return model.CreateBACnetApplicationTagDate(uint16(year), uint8(date.Month()), uint8(date.Day()), dayOfWeek), nil
+}
+
+// timeOfDayToApplicationTag maps a time of day to a BACnet Time (clause 20.2.13),
+// the inverse of bacnetTimeToPlcValue for a concrete time. The wire format holds
+// hundredths of a second; a finer part is truncated, not rounded, so 23:59:59.999
+// stays on the same day.
+func timeOfDayToApplicationTag(timeOfDay time.Time) model.BACnetApplicationTag {
+	return model.CreateBACnetApplicationTagTime(
+		uint8(timeOfDay.Hour()),
+		uint8(timeOfDay.Minute()),
+		uint8(timeOfDay.Second()),
+		uint8(timeOfDay.Nanosecond()/int(10*time.Millisecond)),
+	)
 }
 
 // encodingHint nudges plcValueToApplicationTag when the source PlcValue type is
