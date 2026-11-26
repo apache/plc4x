@@ -171,16 +171,32 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 	m.driverContext.adsVersion = fmt.Sprintf("%d.%d.%d", deviceInfoResponse.GetMajorVersion(), deviceInfoResponse.GetMinorVersion(), deviceInfoResponse.GetVersion())
 	m.driverContext.deviceName = GetZeroTerminatedString(deviceInfoResponse.GetDevice())
 
-	// Read the online-version
-	// (The order online- before symbol-version matches the Java driver and the shared driver testsuite.)
-	onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
-	if err != nil {
-		return errors.Wrap(err, "error reading online version")
-	}
-	rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
-	if err != nil {
-		return errors.Wrap(err, "error reading online version")
+	// Which TwinCAT this is, taken from the version the device just reported rather than from
+	// letting a request fail. Beckhoff document the online-version symbol as a TwinCAT 3 one, and
+	// TwinCAT 2 has no equivalent of it to ask for. Keying on a measured 2 rather than on "not 3"
+	// leaves every device this has not been measured against on the path it takes today.
+	m.driverContext.isTwinCat2 = deviceInfoResponse.GetMajorVersion() == 2
+
+	if m.driverContext.isTwinCat2 {
+		// Nothing to read and nothing to subscribe to. Offline changes are still tracked through
+		// the symbol version below, which is what Beckhoff name for a new program being downloaded.
+		m.log.Info().
+			Str("adsVersion", m.driverContext.adsVersion).
+			Str("deviceName", m.driverContext.deviceName).
+			Msg("TwinCAT2 device: continuing without online-change tracking")
+		m.driverContext.onlineVersion = 0
+	} else {
+		// Read the online-version
+		// (The order online- before symbol-version matches the Java driver and the shared driver testsuite.)
+		onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
+		if err != nil {
+			return errors.Wrap(err, "error reading online version")
+		}
+		rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
+		if err != nil {
+			return errors.Wrap(err, "error reading online version")
+		}
 	}
 
 	// Read the symbol-version (offline changes)
@@ -236,20 +252,28 @@ func (m *Connection) setupConnection(ctx context.Context) error {
 	// (Cyclic with a 1s check interval: the wire request is an ON_CHANGE device notification
 	// whose cycle time is the interval, matching the Java driver's Duration.ofMillis(1000).
 	// The online- before offline-version order matches the Java driver and the driver testsuite.)
-	versionChangeRequest, err := m.SubscriptionRequestBuilder().
-		AddCyclicTagAddress("onlineVersion", "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", time.Second).
-		AddPreRegisteredConsumer("onlineVersion", func(event apiModel.PlcSubscriptionEvent) {
-			if event.GetResponseCode("onlineVersion") == apiModel.PlcResponseCode_OK {
-				newVersion := event.GetValue("onlineVersion").GetUint32()
-				if newVersion != m.driverContext.onlineVersion {
-					m.log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
-					err := m.readSymbolTableAndDatatypeTable(ctx)
-					if err != nil {
-						m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
+	// The online half watches a symbol a TwinCAT2 device does not have. Subscribing to it there
+	// fails on the missing symbol and would take the whole connection down with it, so the
+	// subscription is built without it and the offline-version half - which every device
+	// supports, and which is what catches a recompile - is kept.
+	versionChangeBuilder := m.SubscriptionRequestBuilder()
+	if !m.driverContext.isTwinCat2 {
+		versionChangeBuilder = versionChangeBuilder.
+			AddCyclicTagAddress("onlineVersion", "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", time.Second).
+			AddPreRegisteredConsumer("onlineVersion", func(event apiModel.PlcSubscriptionEvent) {
+				if event.GetResponseCode("onlineVersion") == apiModel.PlcResponseCode_OK {
+					newVersion := event.GetValue("onlineVersion").GetUint32()
+					if newVersion != m.driverContext.onlineVersion {
+						m.log.Info().Msg("detected online version change: reloading symbol- and data-type-table.")
+						err := m.readSymbolTableAndDatatypeTable(ctx)
+						if err != nil {
+							m.log.Error().Err(err).Msg("error updating data-type and symbol tables")
+						}
 					}
 				}
-			}
-		}).
+			})
+	}
+	versionChangeRequest, err := versionChangeBuilder.
 		AddCyclicTagAddress("offlineVersion", "0xF008/0x0000:USINT", time.Second).
 		AddPreRegisteredConsumer("offlineVersion", func(event apiModel.PlcSubscriptionEvent) {
 			if event.GetResponseCode("offlineVersion") == apiModel.PlcResponseCode_OK {
@@ -378,7 +402,7 @@ func (m *Connection) directTagFor(ctx context.Context, tag apiModel.PlcTag) (*mo
 		return nil, errors.Errorf("invalid tag type %T", tag)
 	}
 	if directTag.DataType == nil {
-		dataType, ok := m.driverContext.dataTypeTable[directTag.ValueType.String()]
+		dataType, ok := m.driverContext.lookupDataType(directTag.ValueType.String())
 		if !ok {
 			return nil, errors.Errorf("no entry for data type %s in the data type table", directTag.ValueType)
 		}
@@ -420,7 +444,7 @@ func (m *Connection) resolveSymbolicTag(ctx context.Context, symbolicTag model.S
 		return nil, fmt.Errorf("couldn't find tag with address %s", symbolName)
 	}
 	dataTypeName := symbol.GetDataTypeName()
-	dataType, ok := m.driverContext.dataTypeTable[dataTypeName]
+	dataType, ok := m.driverContext.lookupDataType(dataTypeName)
 	if !ok {
 		return nil, fmt.Errorf("couldn't find data type with name %s for tag with address %s", dataTypeName, symbolName)
 	}
@@ -564,7 +588,7 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 	for _, child := range curDataType.GetChildren() {
 		if child.GetMainName() == curAddressPart {
 			childDataTypeName := child.GetSecondaryName()
-			childDataType, ok := m.driverContext.dataTypeTable[childDataTypeName]
+			childDataType, ok := m.driverContext.lookupDataType(childDataTypeName)
 			if !ok {
 				return nil, fmt.Errorf("couldn't find data type %s for property %s of data type %s",
 					childDataTypeName, curAddressPart, curDataType.GetSecondaryName())

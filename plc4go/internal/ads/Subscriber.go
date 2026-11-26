@@ -142,7 +142,7 @@ func (m *Connection) subscribe(ctx context.Context, subscriptionRequest apiModel
 		tagName := subscriptionRequest.GetTagNames()[0]
 		directTag := subscriptionRequest.GetTag(tagName).(dirverModel.DirectPlcTag)
 		if directTag.DataType == nil {
-			dataType, ok := m.driverContext.dataTypeTable[directTag.ValueType.String()]
+			dataType, ok := m.driverContext.lookupDataType(directTag.ValueType.String())
 			if !ok {
 				utils.DeliverResult(m.log, responseChan, spiModel.NewDefaultPlcSubscriptionRequestResult(
 					subscriptionRequest,
