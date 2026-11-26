@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using org.apache.plc4net.drivers.s7.readwrite.model;
 using org.apache.plc4net.exceptions;
 using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.model.values;
 using org.apache.plc4net.types;
 using Xunit;
 using static org.apache.plc4net.drivers.s7.test.ConnectionTestSupport;
@@ -289,6 +290,22 @@ namespace org.apache.plc4net.drivers.s7.test
             address[5] = 6;
 
             Assert.Equal("Hi", ValueOf(await ReadAsync(connection, "%DB1:10:STRING(4)")).GetString());
+            Assert.Equal(S7Frames.ReadRequest(2, address), Written(transport));
+        }
+
+        [Fact]
+        public async Task A_fixed_wstring_read_requests_its_full_utf16_capacity()
+        {
+            var transport = Ready();
+            var connection = ConnectQuietly(transport);
+            transport.InjectTestData(S7Frames.ReadAck(2, (0xFF, 0x09, Hex("000400020048006900000000"))));
+            var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
+            address[5] = 12;
+
+            var value = ValueOf(await ReadAsync(connection, "%DB1:10:WSTRING(4)"));
+
+            Assert.IsType<PlcWSTRING>(value);
+            Assert.Equal("Hi", value.GetString());
             Assert.Equal(S7Frames.ReadRequest(2, address), Written(transport));
         }
 
@@ -680,6 +697,22 @@ namespace org.apache.plc4net.drivers.s7.test
 
             Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
             Assert.Equal(S7Frames.WriteRequest(2, new[] { address }, (0x09, Hex("040248690000"))),
+                Written(transport));
+        }
+
+        [Fact]
+        public async Task A_fixed_wstring_write_sends_the_header_and_full_utf16_capacity()
+        {
+            var transport = Ready();
+            var connection = ConnectQuietly(transport);
+            transport.InjectTestData(S7Frames.WriteAck(2, 0xFF));
+            var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
+            address[5] = 12;
+
+            var response = await WriteAsync(connection, "%DB1:10:WSTRING(4)", "Hi");
+
+            Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
+            Assert.Equal(S7Frames.WriteRequest(2, new[] { address }, (0x09, Hex("000400020048006900000000"))),
                 Written(transport));
         }
 

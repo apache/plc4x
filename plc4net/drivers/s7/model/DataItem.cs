@@ -150,7 +150,7 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             {
                 // STRING
                 var value = (string) (S7StaticHelper.ParseS7String(readBuffer, stringLength, "UTF16BE"));
-                return new PlcSTRING(value);
+                return new PlcWSTRING(value);
             }
             else if (Equals(dataProtocolId, "IEC61131_TIME"))
             {
