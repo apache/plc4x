@@ -298,14 +298,14 @@ namespace org.apache.plc4net.drivers.s7.test
         {
             var transport = Ready();
             var connection = ConnectQuietly(transport);
-            transport.InjectTestData(S7Frames.ReadAck(2, (0xFF, 0x09, Hex("000400020048006900000000"))));
+            transport.InjectTestData(S7Frames.ReadAck(2, (0xFF, 0x09, Hex("000400034E2DD83DDE420000"))));
             var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
             address[5] = 12;
 
             var value = ValueOf(await ReadAsync(connection, "%DB1:10:WSTRING(4)"));
 
             Assert.IsType<PlcWSTRING>(value);
-            Assert.Equal("Hi", value.GetString());
+            Assert.Equal("中🙂", value.GetString());
             Assert.Equal(S7Frames.ReadRequest(2, address), Written(transport));
         }
 
@@ -579,6 +579,18 @@ namespace org.apache.plc4net.drivers.s7.test
                 new[] { S7Tag.Parse("%DB1:0:STRING(254)") }, true, 240));
         }
 
+        [Fact]
+        public void A_fixed_wstring_uses_its_doubled_byte_length_for_pdu_planning()
+        {
+            var tag = S7Tag.Parse("%DB1:0:WSTRING(110)");
+            var address = S7Connection.ToAddress(tag);
+
+            Assert.Equal(TransportSize.CHAR, address.TransportSize);
+            Assert.Equal((ushort)224, address.NumberOfElements);
+            Assert.Throws<S7DriverException>(() => S7Connection.PlanJobs(new[] { tag }, false, 240));
+            Assert.Throws<S7DriverException>(() => S7Connection.PlanJobs(new[] { tag }, true, 240));
+        }
+
         [Theory]
         [InlineData(25, 240, "19,6")] // 12 + 12 * 19 = 240
         [InlineData(19, 240, "19")]
@@ -709,10 +721,10 @@ namespace org.apache.plc4net.drivers.s7.test
             var address = S7Frames.AddressItem(0x03, 1, DataBlocks, 10, 0);
             address[5] = 12;
 
-            var response = await WriteAsync(connection, "%DB1:10:WSTRING(4)", "Hi");
+            var response = await WriteAsync(connection, "%DB1:10:WSTRING(4)", "中🙂");
 
             Assert.Equal(PlcResponseCode.Ok, response.GetResponseCode("v"));
-            Assert.Equal(S7Frames.WriteRequest(2, new[] { address }, (0x09, Hex("000400020048006900000000"))),
+            Assert.Equal(S7Frames.WriteRequest(2, new[] { address }, (0x09, Hex("000400034E2DD83DDE420000"))),
                 Written(transport));
         }
 

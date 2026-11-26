@@ -159,6 +159,18 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
+        public void A_wstring_counts_utf16_code_units_at_a_surrogate_pair_boundary()
+        {
+            var buffer = new WriteBuffer();
+            DataItem.StaticSerialize(buffer, new PlcWSTRING("🙂"), "IEC61131_WSTRING", ControllerType.ANY, 2);
+
+            Assert.Equal("00020002d83dde42", ToHex(buffer.GetBytes()));
+            Assert.Equal("🙂", Parse("IEC61131_WSTRING", ToHex(buffer.GetBytes()), 2).GetString());
+            Assert.Throws<OverflowException>(() => DataItem.StaticSerialize(
+                new WriteBuffer(), new PlcWSTRING("🙂"), "IEC61131_WSTRING", ControllerType.ANY, 1));
+        }
+
+        [Fact]
         public void Non_finite_reals_round_trip_instead_of_throwing()
         {
             // PlcSimpleNumericValueAdapter.IsFloat() used to reject NaN / ±Inf,
