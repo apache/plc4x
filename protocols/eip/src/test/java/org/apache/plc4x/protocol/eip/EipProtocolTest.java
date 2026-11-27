@@ -18,13 +18,31 @@
  */
 package org.apache.plc4x.protocol.eip;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecLexer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 class EipProtocolTest {
+
+    @Test
+    void parsesSpecificationWithoutSyntaxErrors() throws Exception {
+        try (InputStream spec = EipProtocol.class.getResourceAsStream("/protocols/eip/eip.mspec")) {
+            assertNotNull(spec);
+            MSpecLexer lexer = new MSpecLexer(CharStreams.fromStream(spec));
+            MSpecParser parser = new MSpecParser(new CommonTokenStream(lexer));
+            parser.file();
+            assertEquals(0, parser.getNumberOfSyntaxErrors());
+        }
+    }
 
     @Test
     void getTypeContext() throws Exception {
