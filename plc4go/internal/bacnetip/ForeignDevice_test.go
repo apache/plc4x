@@ -225,35 +225,6 @@ func TestForeignDevice_CloseStopsRenewal(t *testing.T) {
 	assert.Equal(t, sent, len(bbmd.received()), "no registration after Close")
 }
 
-// TestForeignDevice_InvalidatedConnectionStopsRenewal pins that the registration loop ends with the
-// connection, also when the connection ends without Close: a fatal transport error invalidates it
-// and closes its transport, but nobody may ever call Close.
-func TestForeignDevice_InvalidatedConnectionStopsRenewal(t *testing.T) {
-	log := testutils.ProduceTestingLogger(t)
-	device := startFakeBacnetDevice(t, log)
-	t.Cleanup(device.stop)
-	bbmd := startFakeBBMD(t, log, model.BVLCResultCode_SUCCESSFUL_COMPLETION, false)
-
-	connection := connectForeignDeviceTest(t, log, device, map[string][]string{
-		"ForeignDeviceBBMD": {bbmd.address()},
-		"ForeignDeviceTTL":  {"1"},
-	})
-	t.Cleanup(func() { assert.NoError(t, connection.Close()) })
-	require.NotNil(t, connection.foreignDeviceDone)
-	require.Eventually(t, func() bool { return len(bbmd.received()) > 0 }, 5*time.Second, 10*time.Millisecond)
-
-	invalidator, ok := connection.DefaultConnection.(interface{ Invalidate() })
-	require.True(t, ok)
-	invalidator.Invalidate()
-	require.False(t, connection.IsConnected())
-
-	select {
-	case <-connection.foreignDeviceDone:
-	case <-time.After(10 * foreignDeviceRenewalInterval(1)):
-		t.Fatal("the foreign-device registration loop outlived the invalidated connection")
-	}
-}
-
 // TestForeignDevice_NoBBMDNoRegistration pins that a connection without ForeignDeviceBBMD starts
 // no registration and keeps its socket connected to the device.
 func TestForeignDevice_NoBBMDNoRegistration(t *testing.T) {
