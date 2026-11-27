@@ -129,3 +129,101 @@ func TestExtractProtocolSpecificOptions_RemoteAddress(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "192.168.1.50", specific.remoteAddress)
 }
+
+// iAmFrame is a real IAm of device 3001 (vendor 999) as an Original-Broadcast-NPDU.
+var iAmFrame = []byte{
+	0x81, 0x0b, 0x00, 0x15, // BVLC
+	0x01, 0x00, // NPDU
+	0x10, 0x00, // APDU unconfirmed, service IAm
+	0xc4, 0x02, 0x00, 0x0b, 0xb9, // object-id: device 3001
+	0x22, 0x05, 0xc4, // max-apdu 1476
+	0x91, 0x00, // segmentation: both
+	0x22, 0x03, 0xe7, // vendor 999
+}
+
+// The discovery socket shares the BACnet port, so it gets datagrams meant for other sockets. A BVLC-Result (no
+// NPDU), a network layer message and a confirmed request are skipped without a panic, and an IAm behind them is
+// still reported.
+func TestHandleIncomingBVLCs_SkipsWhatIsNoUnconfirmedRequest(t *testing.T) {
+	src := &net.UDPAddr{IP: net.IPv4(192, 168, 100, 2), Port: 47808}
+	nlmControl := driverModel.NewNPDUControl(true, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	// ReadProperty(device 1, object-name), a confirmed request
+	confirmed, err := driverModel.BVLCParse[driverModel.BVLC](t.Context(), []byte{
+		0x81, 0x0a, 0x00, 0x11, // BVLC Original-Unicast-NPDU
+		0x01, 0x04, // NPDU, expecting reply
+		0x00, 0x05, 0x01, 0x0c, // APDU confirmed, invoke id 1, ReadProperty
+		0x0c, 0x02, 0x00, 0x00, 0x01, // object-id: device 1
+		0x19, 0x4d, // property: object-name
+	})
+	require.NoError(t, err)
+	iAm, err := driverModel.BVLCParse[driverModel.BVLC](t.Context(), iAmFrame)
+	require.NoError(t, err)
+
+	ch := make(chan receivedBvlcMessage, 8)
+	ch <- receivedBvlcMessage{bvlc: driverModel.NewBVLCResult(driverModel.BVLCResultCode_SUCCESSFUL_COMPLETION), addr: src}
+	ch <- receivedBvlcMessage{bvlc: driverModel.NewBVLCOriginalUnicastNPDU(driverModel.NewNPDU(1, nlmControl, nil, nil, nil, nil, nil, nil, nil, driverModel.NewNLMWhoIsRouterToNetwork(nil), nil)), addr: src}
+	ch <- receivedBvlcMessage{bvlc: confirmed, addr: src}
+	ch <- receivedBvlcMessage{bvlc: iAm, addr: src}
+
+	got := make(chan apiModel.PlcDiscoveryItem, 4)
+	ctx, cancel := context.WithCancel(t.Context())
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		NewDiscoverer().handleIncomingBVLCs(ctx, func(item apiModel.PlcDiscoveryItem) { got <- item }, ch)
+	}()
+	select {
+	case item := <-got:
+		assert.Contains(t, item.GetName(), "3001")
+	case <-time.After(2 * time.Second):
+		t.Fatal("the IAm behind the skipped datagrams was not reported")
+	}
+	cancel()
+	<-done
+	assert.Empty(t, got)
+}
+
+// A discovery socket's reader skips a datagram that does not parse, and ends when the socket is closed, also
+// when nobody takes what it read any more: Close waits for it.
+func TestReceiveBVLCs_EndsWithTheSocket(t *testing.T) {
+	conn, err := net.ListenPacket("udp4", "127.0.0.1:0")
+	require.NoError(t, err)
+	sender, err := net.Dial("udp4", conn.LocalAddr().String())
+	require.NoError(t, err)
+	defer func() { _ = sender.Close() }()
+
+	d := NewDiscoverer()
+	ctx, cancel := context.WithCancel(t.Context())
+	incoming := make(chan receivedBvlcMessage) // unbuffered: nobody reads after the first message
+	d.wg.Go(func() { d.receiveBVLCs(ctx, conn, incoming) })
+
+	_, err = sender.Write([]byte{0x81, 0x0b, 0x00}) // shorter than a BVLC header
+	require.NoError(t, err)
+	_, err = sender.Write(iAmFrame)
+	require.NoError(t, err)
+	select {
+	case msg := <-incoming:
+		_, ok := msg.bvlc.(driverModel.BVLCOriginalBroadcastNPDU)
+		assert.True(t, ok, "got %T", msg.bvlc)
+	case <-time.After(2 * time.Second):
+		t.Fatal("the IAm after the malformed datagram was not handed on")
+	}
+
+	// The window ends: nobody reads incoming any more, a late datagram arrives, the socket closes
+	cancel()
+	_, err = sender.Write(iAmFrame)
+	require.NoError(t, err)
+	time.Sleep(50 * time.Millisecond)
+	require.NoError(t, conn.Close())
+
+	closed := make(chan struct{})
+	go func() {
+		_ = d.Close()
+		close(closed)
+	}()
+	select {
+	case <-closed:
+	case <-time.After(2 * time.Second):
+		t.Fatal("Close did not return: a discovery reader outlived its socket")
+	}
+}

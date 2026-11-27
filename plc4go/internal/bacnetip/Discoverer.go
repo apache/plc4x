@@ -88,6 +88,13 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	if err != nil {
 		return errors.Wrap(err, "error building communication channels")
 	}
+	// Closing the sockets ends their readers, also when broadcastAndDiscover fails
+	// after it started some of them.
+	defer func() {
+		for _, channel := range communicationChannels {
+			_ = channel.Close()
+		}
+	}()
 
 	timeout := d.discoveryTimeout
 	if timeout <= 0 {
@@ -110,9 +117,6 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	select {
 	case <-time.After(timeout):
 	case <-ctx.Done():
-	}
-	for _, channel := range communicationChannels {
-		_ = channel.Close()
 	}
 	return nil
 }
@@ -231,86 +235,45 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 			}
 		}
 
+		// The unicast and the broadcast connection are one socket (see
+		// buildupCommunicationChannels); one reader per socket. It ends when Discover
+		// closes the socket at the end of the window.
 		d.wg.Go(func() {
-			for {
-				if err := ctx.Err(); err != nil {
-					d.log.Debug().Err(err).Msg("ending")
-					return
-				}
-				blockingReadChan := make(chan bool)
-				d.wg.Go(func() {
-					buf := make([]byte, 4096)
-					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
-					if err != nil {
-						d.log.Debug().Err(err).Msg("Ending unicast receive")
-						blockingReadChan <- false
-						return
-					}
-					d.log.Debug().Stringer("addr", addr).Msg("Received unicast bvlc")
-					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
-					if err != nil {
-						d.log.Warn().Err(err).Msg("Could not parse bvlc")
-						blockingReadChan <- true
-						return
-					}
-					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
-					blockingReadChan <- true
-				})
-				select {
-				case ok := <-blockingReadChan:
-					if !ok {
-						d.log.Debug().Msg("Ending unicast reading")
-						return
-					}
-					d.log.Trace().Msg("Received something unicast")
-				case <-ctx.Done():
-					d.log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
-					return
-				}
-			}
+			d.receiveBVLCs(ctx, communicationChannelInstance.unicastConnection, incomingBVLCChannel)
 		})
-
-		d.wg.Go(func() {
-			for {
-				if err := ctx.Err(); err != nil {
-					d.log.Debug().Err(err).Msg("ending")
-					return
-				}
-				blockingReadChan := make(chan bool)
-				d.wg.Go(func() {
-					buf := make([]byte, 4096)
-					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
-					if err != nil {
-						d.log.Debug().Err(err).Msg("Ending broadcast receive")
-						blockingReadChan <- false
-						return
-					}
-					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
-					if err != nil {
-						d.log.Warn().Err(err).Msg("Could not parse bvlc")
-						blockingReadChan <- true
-					}
-					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
-					blockingReadChan <- true
-				})
-				select {
-				case ok := <-blockingReadChan:
-					if !ok {
-						d.log.Debug().Msg("Ending broadcast reading")
-						return
-					}
-					d.log.Trace().Msg("Received something broadcast")
-				case <-ctx.Done():
-					d.log.Debug().Err(ctx.Err()).Msg("Ending broadcast receive")
-					return
-				}
-			}
-		})
+		if communicationChannelInstance.broadcastConnection != communicationChannelInstance.unicastConnection {
+			d.wg.Go(func() {
+				d.receiveBVLCs(ctx, communicationChannelInstance.broadcastConnection, incomingBVLCChannel)
+			})
+		}
 	}
 	return incomingBVLCChannel, nil
+}
+
+// receiveBVLCs reads the datagrams of one discovery socket and hands each one it
+// can parse to incoming, until the socket is closed or ctx ends. A datagram that
+// does not parse is logged and skipped.
+func (d *Discoverer) receiveBVLCs(ctx context.Context, conn net.PacketConn, incoming chan<- receivedBvlcMessage) {
+	buf := make([]byte, 4096)
+	for {
+		n, addr, err := conn.ReadFrom(buf)
+		if err != nil {
+			d.log.Debug().Err(err).Stringer("local", conn.LocalAddr()).Msg("Ending discovery receive")
+			return
+		}
+		d.log.Debug().Stringer("addr", addr).Msg("Received bvlc")
+		ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
+		incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, append([]byte(nil), buf[:n]...))
+		if err != nil {
+			d.log.Warn().Err(err).Stringer("addr", addr).Msg("Could not parse bvlc")
+			continue
+		}
+		select {
+		case incoming <- receivedBvlcMessage{incomingBvlc, addr}:
+		case <-ctx.Done():
+			return
+		}
+	}
 }
 
 func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
@@ -320,22 +283,30 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 			d.log.Debug().Err(ctx.Err()).Msg("Ending incoming BVLC handling")
 			return
 		case receivedBvlc := <-incomingBVLCChannel:
-			var npdu driverModel.NPDU
-			if bvlc, ok := receivedBvlc.bvlc.(interface{ GetNpdu() driverModel.NPDU }); ok {
-				npdu = bvlc.GetNpdu()
+			// The discovery socket shares the BACnet port with whatever else the host
+			// runs on it (SO_REUSEPORT), so it gets datagrams meant for another socket
+			// too: a BBMD's BVLC-Result, which carries no NPDU, a network layer message,
+			// a confirmed request or a reply. Only unconfirmed requests are of use here;
+			// the rest is skipped.
+			npduCarrier, ok := receivedBvlc.bvlc.(interface{ GetNpdu() driverModel.NPDU })
+			if !ok {
+				d.log.Debug().Stringer("addr", receivedBvlc.addr).Type("bvlc", receivedBvlc.bvlc).Msg("Skipping a BVLC without an NPDU")
+				continue
 			}
-			_ = npdu
-			if apdu := npdu.GetApdu(); apdu == nil {
-				nlm := npdu.GetNlm()
-				d.log.Debug().Interface("nlm", nlm).Msg("Got nlm")
+			npdu := npduCarrier.GetNpdu()
+			if npdu == nil {
 				continue
 			}
 			apdu := npdu.GetApdu()
-			if _, ok := apdu.(driverModel.APDUConfirmedRequest); ok {
-				d.log.Debug().Interface("apdu", apdu).Msg("Got apdu")
+			if apdu == nil {
+				d.log.Debug().Interface("nlm", npdu.GetNlm()).Msg("Got nlm")
 				continue
 			}
-			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequest)
+			apduUnconfirmedRequest, ok := apdu.(driverModel.APDUUnconfirmedRequest)
+			if !ok {
+				d.log.Debug().Stringer("addr", receivedBvlc.addr).Type("apdu", apdu).Msg("Skipping an APDU that is no unconfirmed request")
+				continue
+			}
 			serviceRequest := apduUnconfirmedRequest.GetServiceRequest()
 			switch serviceRequest := serviceRequest.(type) {
 			case driverModel.BACnetUnconfirmedServiceRequestIAm:
@@ -343,6 +314,7 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
 					d.log.Debug().Err(err).Msg("Error parsing url")
+					continue
 				}
 				// A routed I-Am carries the device's origin as an NPDU source
 				// specifier (SNET/SADR, ASHRAE 135 clause 6.2.4). Surface it as
@@ -367,6 +339,7 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
 					d.log.Debug().Err(err).Msg("Error parsing url")
+					continue
 				}
 				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
@@ -384,7 +357,16 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 	}
 }
 
-func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
+func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interfaces []net.Interface, bacNetPort int) (_ []communicationChannel, err error) {
+	var communicationChannels []communicationChannel
+	// A failure part way leaves no socket open behind it.
+	defer func() {
+		if err != nil {
+			for _, channel := range communicationChannels {
+				_ = channel.Close()
+			}
+		}
+	}()
 	// Iterate over all network devices of this system.
 	for _, networkInterface := range interfaces {
 		if err := ctx.Err(); err != nil {
@@ -470,7 +452,7 @@ func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interface
 			})
 		}
 	}
-	return
+	return communicationChannels, nil
 }
 
 func (d *Discoverer) Close() error {
