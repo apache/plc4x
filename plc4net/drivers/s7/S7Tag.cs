@@ -43,6 +43,8 @@ namespace org.apache.plc4net.drivers.s7
     /// <item><c>%DB{block}:{byte}:STRING({length})</c> - a fixed-length string in a data block.</item>
     /// <item><c>%{I|Q|M}[X|B|W|D]{byte}[.{bit}]:{TYPE}</c> - inputs, outputs and flags, for example
     /// <c>%M0.0:BOOL</c> or <c>%QW4:WORD</c>.</item>
+    /// <item><c>%DB1.DBW10[2..4]:INT</c> - a one-dimensional numeric range; its
+    /// offset resolves to byte 14 and its three values form a list.</item>
     /// </list>
     /// <para>
     /// A <c>BOOL</c> carries its bit; no other type does. The size letter is optional, and when
@@ -50,14 +52,14 @@ namespace org.apache.plc4net.drivers.s7
     /// a <c>REAL</c>.
     /// </para>
     /// <para>
-    /// Array selections, the 64-bit types, the date and time types, counters, timers and the
-    /// other memory areas are not supported here yet; they are rejected rather than read as something
-    /// else. Fixed-length STRING and WSTRING are supported only in data blocks.
+    /// BOOL and string array selections, the 64-bit types, the date and time types, counters,
+    /// timers and the other memory areas are not supported here yet; they are rejected rather
+    /// than read as something else. Fixed-length STRING and WSTRING are supported only in data blocks.
     /// </para>
     /// </remarks>
     public sealed class S7Tag : IPlcTag
     {
-        /// <summary>The data types a tag can have: the scalars that one S7-ANY item reads in one piece.</summary>
+        /// <summary>The data types accepted by the public S7 tag parser.</summary>
         public static readonly IReadOnlyList<TransportSize> SupportedTypes = new[]
         {
             TransportSize.BOOL,
@@ -71,6 +73,8 @@ namespace org.apache.plc4net.drivers.s7
             TransportSize.DINT,
             TransportSize.UDINT,
             TransportSize.REAL,
+            TransportSize.CHAR,
+            TransportSize.WCHAR,
         };
 
         /// <summary>The highest data block number: it travels in 16 bits.</summary>
@@ -108,7 +112,19 @@ namespace org.apache.plc4net.drivers.s7
             byte bitOffset,
             TransportSize dataType,
             int? stringLength)
+            : this(area, dbNumber, byteOffset, bitOffset, dataType, stringLength, 1, false)
         {
+        }
+
+        public S7Tag(
+            MemoryArea area, int dbNumber, int byteOffset, byte bitOffset,
+            TransportSize dataType, int? stringLength, ushort quantity, bool explicitRange)
+        {
+            if (quantity == 0)
+                throw new PlcInvalidFieldException("An S7 array must contain at least one element.");
+            if ((quantity != 1 || explicitRange) &&
+                (dataType == TransportSize.BOOL || dataType == TransportSize.STRING || dataType == TransportSize.WSTRING))
+                throw new PlcInvalidFieldException("S7 BOOL and string array selections are not supported yet.");
             if (area != MemoryArea.DATA_BLOCKS && area != MemoryArea.INPUTS
                 && area != MemoryArea.OUTPUTS && area != MemoryArea.FLAGS_MARKERS)
             {
@@ -160,6 +176,9 @@ namespace org.apache.plc4net.drivers.s7
                 throw new PlcInvalidFieldException(
                     $"The S7 byte offset must be between 0 and {MaxByteOffset}, but was {byteOffset}.");
             }
+            if ((quantity != 1 || explicitRange) &&
+                (long)byteOffset + (long)quantity * dataType.GetSizeInBytes() > MaxByteOffset + 1L)
+                throw new PlcInvalidFieldException("The S7 array extends past the addressable byte range.");
             if (bitOffset > 7 || (dataType != TransportSize.BOOL && bitOffset != 0))
             {
                 throw new PlcInvalidFieldException(
@@ -172,6 +191,8 @@ namespace org.apache.plc4net.drivers.s7
             BitOffset = bitOffset;
             DataType = dataType;
             StringLength = stringLength;
+            Quantity = quantity;
+            ExplicitRange = explicitRange || quantity > 1;
         }
 
         public MemoryArea Area { get; }
@@ -189,10 +210,14 @@ namespace org.apache.plc4net.drivers.s7
         /// <summary>The declared maximum character count for a fixed-length STRING; null otherwise.</summary>
         public int? StringLength { get; }
 
+        public ushort Quantity { get; }
+
+        public bool ExplicitRange { get; }
+
         /// <summary>The bytes the value takes on the wire, including a string's length header.</summary>
         public int SizeInBytes => StringLength.HasValue
             ? (StringLength.Value + 2) * (DataType == TransportSize.WSTRING ? 2 : 1)
-            : DataType.GetSizeInBytes();
+            : DataType.GetSizeInBytes() * Quantity;
 
         /// <summary>
         /// Parses a tag address such as <c>%DB1.DBW10:INT</c> or <c>%M0.0:BOOL</c>.
@@ -237,14 +262,34 @@ namespace org.apache.plc4net.drivers.s7
 
         private static S7Tag FromMatch(Match match, MemoryArea area, int dbNumber)
         {
-            if (match.Groups["array"].Success)
-            {
-                throw new PlcInvalidFieldException(
-                    $"'{match.Value}': array selections are not supported yet.");
-            }
-
             var dataType = TypeOf(match.Groups["type"].Value);
             var byteOffset = int.Parse(match.Groups["byte"].Value, CultureInfo.InvariantCulture);
+            ushort quantity = 1;
+            var explicitRange = false;
+            if (match.Groups["array"].Success)
+            {
+                var selection = Regex.Match(match.Groups["array"].Value,
+                    @"^\[(?<start>[0-9]+)(\.\.(?<end>[0-9]+))?\]$", RegexOptions.CultureInvariant);
+                if (!selection.Success ||
+                    !int.TryParse(selection.Groups["start"].Value, NumberStyles.None,
+                        CultureInfo.InvariantCulture, out var start))
+                    throw new PlcInvalidFieldException($"'{match.Value}': invalid array selection.");
+                explicitRange = selection.Groups["end"].Success;
+                var end = start;
+                if (explicitRange &&
+                    !int.TryParse(selection.Groups["end"].Value, NumberStyles.None,
+                        CultureInfo.InvariantCulture, out end))
+                    throw new PlcInvalidFieldException($"'{match.Value}': invalid array selection.");
+                if (end < start || (long)end - start + 1 > ushort.MaxValue ||
+                    dataType == TransportSize.BOOL || dataType == TransportSize.STRING ||
+                    dataType == TransportSize.WSTRING)
+                    throw new PlcInvalidFieldException($"'{match.Value}': array selection is not supported for this type or range.");
+                quantity = checked((ushort)((long)end - start + 1));
+                var resolved = (long)byteOffset + (long)start * dataType.GetSizeInBytes();
+                if (resolved > MaxByteOffset)
+                    throw new PlcInvalidFieldException($"'{match.Value}': array selection exceeds the addressable byte range.");
+                byteOffset = (int)resolved;
+            }
             int? stringLength = null;
             if (match.Groups["stringLength"].Success)
             {
@@ -278,7 +323,8 @@ namespace org.apache.plc4net.drivers.s7
                     $"which is '{(char)dataType.GetShortName()}'.");
             }
 
-            return new S7Tag(area, dbNumber, byteOffset, bitOffset, dataType, stringLength);
+            return new S7Tag(area, dbNumber, byteOffset, bitOffset, dataType,
+                stringLength, quantity, explicitRange);
         }
 
         private static MemoryArea AreaOf(string letter)
@@ -325,16 +371,17 @@ namespace org.apache.plc4net.drivers.s7
         {
             var bit = DataType == TransportSize.BOOL ? $".{BitOffset}" : string.Empty;
             var type = StringLength.HasValue ? $"{DataType}({StringLength})" : DataType.ToString();
+            var selection = ExplicitRange ? $"[0..{Quantity - 1}]" : string.Empty;
             switch (Area)
             {
                 case MemoryArea.DATA_BLOCKS:
-                    return $"%DB{DbNumber}.DB{ByteOffset}{bit}:{type}";
+                    return $"%DB{DbNumber}.DB{ByteOffset}{bit}{selection}:{type}";
                 case MemoryArea.INPUTS:
-                    return $"%I{ByteOffset}{bit}:{type}";
+                    return $"%I{ByteOffset}{bit}{selection}:{type}";
                 case MemoryArea.OUTPUTS:
-                    return $"%Q{ByteOffset}{bit}:{type}";
+                    return $"%Q{ByteOffset}{bit}{selection}:{type}";
                 default:
-                    return $"%M{ByteOffset}{bit}:{type}";
+                    return $"%M{ByteOffset}{bit}{selection}:{type}";
             }
         }
     }
