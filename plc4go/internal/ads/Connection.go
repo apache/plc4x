@@ -439,7 +439,7 @@ func (m *Connection) resolveSymbolicTag(ctx context.Context, symbolicTag model.S
 	} else {
 		return nil, errors.New("invalid address")
 	}
-	symbol, ok := m.driverContext.symbolTable[symbolName]
+	symbol, ok := m.driverContext.lookupSymbol(symbolName)
 	if !ok {
 		return nil, fmt.Errorf("couldn't find tag with address %s", symbolName)
 	}
@@ -585,16 +585,14 @@ func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []
 	// Resolve the next level of the address.
 	curAddressPart := addressParts[0]
 	restAddressParts := addressParts[1:]
-	for _, child := range curDataType.GetChildren() {
-		if child.GetMainName() == curAddressPart {
-			childDataTypeName := child.GetSecondaryName()
-			childDataType, ok := m.driverContext.lookupDataType(childDataTypeName)
-			if !ok {
-				return nil, fmt.Errorf("couldn't find data type %s for property %s of data type %s",
-					childDataTypeName, curAddressPart, curDataType.GetSecondaryName())
-			}
-			return m.resolveSymbolicAddress(ctx, restAddressParts, childDataType, indexGroup, indexOffset+child.GetOffset())
+	if child, ok := m.driverContext.childByName(curDataType, curAddressPart); ok {
+		childDataTypeName := child.GetSecondaryName()
+		childDataType, ok := m.driverContext.lookupDataType(childDataTypeName)
+		if !ok {
+			return nil, fmt.Errorf("couldn't find data type %s for property %s of data type %s",
+				childDataTypeName, curAddressPart, curDataType.GetSecondaryName())
 		}
+		return m.resolveSymbolicAddress(ctx, restAddressParts, childDataType, indexGroup, indexOffset+child.GetOffset())
 	}
 	return nil, fmt.Errorf("couldn't find property named %s for data type %s",
 		curAddressPart, curDataType.GetSecondaryName())
