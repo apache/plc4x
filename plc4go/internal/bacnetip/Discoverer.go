@@ -123,6 +123,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
 	incomingBVLCChannel := make(chan receivedBvlcMessage, 32)
+	// A BBMD gets the WhoIs once, from the first channel that can send to it: every
+	// channel would hand it the same broadcast.
+	bbmdsReached := map[string]bool{}
 	for _, communicationChannelInstance := range communicationChannels {
 		if err := ctx.Err(); err != nil {
 			return incomingBVLCChannel, err
@@ -138,16 +141,20 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 
 			// serializeWhoIs frames a WhoIs BVLC: an Original-Broadcast-NPDU for a
 			// broadcast (so peers reply with a broadcast IAm), an
-			// Original-Unicast-NPDU for a directed WhoIs.
-			serializeWhoIs := func(directed bool) ([]byte, error) {
+			// Original-Unicast-NPDU for a directed WhoIs and a
+			// Distribute-Broadcast-To-Network for a BBMD.
+			serializeWhoIs := func(framing whoIsFraming) ([]byte, error) {
 				requestWhoIs := driverModel.NewBACnetUnconfirmedServiceRequestWhoIs(lowLimit, highLimit)
 				apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoIs)
 				control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 				npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu)
 				var bvlc driverModel.BVLC
-				if directed {
+				switch framing {
+				case whoIsDirected:
 					bvlc = driverModel.NewBVLCOriginalUnicastNPDU(npdu)
-				} else {
+				case whoIsViaBBMD:
+					bvlc = driverModel.NewBVLCDistributeBroadcastToNetwork(npdu)
+				default:
 					bvlc = driverModel.NewBVLCOriginalBroadcastNPDU(npdu)
 				}
 				return bvlc.Serialize()
@@ -155,7 +162,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 
 			// Always broadcast on the interface (standard discovery on a local
 			// subnet).
-			if theBytes, err := serializeWhoIs(false); err != nil {
+			if theBytes, err := serializeWhoIs(whoIsBroadcast); err != nil {
 				return nil, err
 			} else if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastTarget); err != nil {
 				d.log.Debug().Err(err).Msg("Error sending broadcast WhoIs")
@@ -170,7 +177,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 			}
 			directedTargets = append(directedTargets, specificOptions.remoteAddresses...)
 			if len(directedTargets) > 0 {
-				theBytes, err := serializeWhoIs(true)
+				theBytes, err := serializeWhoIs(whoIsDirected)
 				if err != nil {
 					return nil, err
 				}
@@ -183,6 +190,31 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					if _, err := communicationChannelInstance.unicastConnection.WriteTo(theBytes, udpAddr); err != nil {
 						d.log.Debug().Err(err).Stringer("target", udpAddr).Msg("Error sending directed WhoIs")
 					}
+				}
+			}
+
+			// And hand it to each BBMD this host is registered with as a foreign
+			// device, from the discovery port: the BBMD broadcasts it on its subnet and
+			// forwards it to its peers, and the IAms come back as Forwarded-NPDUs.
+			if len(specificOptions.bbmdAddresses) > 0 {
+				theBytes, err := serializeWhoIs(whoIsViaBBMD)
+				if err != nil {
+					return nil, err
+				}
+				for _, bbmd := range specificOptions.bbmdAddresses {
+					if bbmdsReached[bbmd] {
+						continue
+					}
+					udpAddr, rerr := resolveBacnetUDPAddr(bbmd, specificOptions.bacNetPort)
+					if rerr != nil {
+						d.log.Warn().Err(rerr).Str("bbmd", bbmd).Msg("invalid BBMD address; skipping")
+						continue
+					}
+					if _, err := communicationChannelInstance.unicastConnection.WriteTo(theBytes, udpAddr); err != nil {
+						d.log.Debug().Err(err).Stringer("bbmd", udpAddr).Msg("Error sending WhoIs to BBMD")
+						continue
+					}
+					bbmdsReached[bbmd] = true
 				}
 			}
 		}
@@ -308,10 +340,19 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				continue
 			}
 			serviceRequest := apduUnconfirmedRequest.GetServiceRequest()
+			// A BBMD forwards a broadcast as a Forwarded-NPDU from its own address; the
+			// BVLC header names the B/IP address it came from (Annex J.2.5). That is
+			// the sender, not the BBMD.
+			senderAddr := receivedBvlc.addr
+			if forwarded, ok := receivedBvlc.bvlc.(driverModel.BVLCForwardedNPDU); ok {
+				if ip := forwarded.GetIp(); len(ip) == 4 {
+					senderAddr = &net.UDPAddr{IP: net.IPv4(ip[0], ip[1], ip[2], ip[3]), Port: int(forwarded.GetPort())}
+				}
+			}
 			switch serviceRequest := serviceRequest.(type) {
 			case driverModel.BACnetUnconfirmedServiceRequestIAm:
 				iAm := serviceRequest
-				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
+				remoteUrl, err := url.Parse("udp://" + senderAddr.String())
 				if err != nil {
 					d.log.Debug().Err(err).Msg("Error parsing url")
 					continue
@@ -321,7 +362,7 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				// ready-to-use connection options (the same RemoteNetwork /
 				// RemoteAddress keys the connection URL accepts) so consumers can
 				// reach the device through the relaying router: transport URL =
-				// the router (the frame's UDP source), options = the routed hop.
+				// the router (the frame's sender), options = the routed hop.
 				discoveryOptions := routedOriginOptions(npdu)
 				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
@@ -336,7 +377,7 @@ func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(even
 				callback(discoveryEvent)
 			case driverModel.BACnetUnconfirmedServiceRequestIHave:
 				iHave := serviceRequest
-				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
+				remoteUrl, err := url.Parse("udp://" + senderAddr.String())
 				if err != nil {
 					d.log.Debug().Err(err).Msg("Error parsing url")
 					continue
@@ -462,6 +503,15 @@ func (d *Discoverer) Close() error {
 	return nil
 }
 
+// whoIsFraming is how a discovery WhoIs is framed in its BVLC.
+type whoIsFraming int
+
+const (
+	whoIsBroadcast whoIsFraming = iota
+	whoIsDirected
+	whoIsViaBBMD
+)
+
 type receivedBvlcMessage struct {
 	bvlc driverModel.BVLC
 	addr net.Addr
@@ -529,7 +579,14 @@ type protocolSpecificOptions struct {
 	// back (through a router/BBMD, or on stacks that learn MACs only from ARP).
 	// Each entry is host only or host:port; port defaults to bacNetPort.
 	remoteAddresses []string
-	whoIsOptions    *struct {
+	// bbmdAddresses, when non-empty, additionally sends the WhoIs to each listed
+	// BBMD as a Distribute-Broadcast-To-Network, which the BBMD broadcasts on its
+	// own subnet and forwards to its peers. A BBMD accepts it only from a
+	// registered foreign device, so the caller lists the BBMDs it holds a
+	// registration with, made from the discovery port (BACnet/IP Annex J.5.2).
+	// Each entry is host only or host:port; port defaults to bacNetPort.
+	bbmdAddresses []string
+	whoIsOptions  *struct {
 		limits *struct {
 			low  uint
 			high uint
@@ -587,6 +644,13 @@ func remoteAddress(addr string) option {
 func remoteAddresses(addrs []string) option {
 	return func(specificOptions *protocolSpecificOptions) error {
 		specificOptions.remoteAddresses = addrs
+		return nil
+	}
+}
+
+func bbmdAddresses(addrs []string) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		specificOptions.bbmdAddresses = addrs
 		return nil
 	}
 }
@@ -750,6 +814,22 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 		}
 		if len(addrs) > 0 {
 			collectedOptions = append(collectedOptions, remoteAddresses(addrs))
+		}
+	}
+
+	if _, ok := filteredOptionMap["bbmd-addresses"]; ok {
+		joined, err := OneString(filteredOptionMap, "bbmd-addresses")
+		if err != nil {
+			return nil, err
+		}
+		var addrs []string
+		for a := range strings.SplitSeq(joined, ",") {
+			if a = strings.TrimSpace(a); a != "" {
+				addrs = append(addrs, a)
+			}
+		}
+		if len(addrs) > 0 {
+			collectedOptions = append(collectedOptions, bbmdAddresses(addrs))
 		}
 	}
 

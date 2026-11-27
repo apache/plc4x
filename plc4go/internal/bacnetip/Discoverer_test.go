@@ -227,3 +227,108 @@ func TestReceiveBVLCs_EndsWithTheSocket(t *testing.T) {
 		t.Fatal("Close did not return: a discovery reader outlived its socket")
 	}
 }
+
+// forwardedIAm is iAmFrame as a BBMD forwards it: a Forwarded-NPDU naming the B/IP address it came from.
+func forwardedIAm(t *testing.T, origin *net.UDPAddr) []byte {
+	t.Helper()
+	iAm, err := driverModel.BVLCParse[driverModel.BVLC](t.Context(), iAmFrame)
+	require.NoError(t, err)
+	npdu := iAm.(interface{ GetNpdu() driverModel.NPDU }).GetNpdu()
+	data, err := driverModel.NewBVLCForwardedNPDU(origin.IP.To4(), uint16(origin.Port), npdu).Serialize()
+	require.NoError(t, err)
+	return data
+}
+
+// An IAm a BBMD forwarded is the device's, at the address the Forwarded-NPDU names, not the BBMD's.
+func TestHandleIncomingBVLCs_ForwardedIAmIsReportedAtItsOrigin(t *testing.T) {
+	origin := &net.UDPAddr{IP: net.IPv4(10, 2, 0, 7), Port: 47809}
+	bvlc, err := driverModel.BVLCParse[driverModel.BVLC](t.Context(), forwardedIAm(t, origin))
+	require.NoError(t, err)
+
+	ch := make(chan receivedBvlcMessage, 1)
+	ch <- receivedBvlcMessage{bvlc: bvlc, addr: &net.UDPAddr{IP: net.IPv4(10, 0, 0, 5), Port: 47808}}
+	got := make(chan apiModel.PlcDiscoveryItem, 1)
+	ctx, cancel := context.WithCancel(t.Context())
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		NewDiscoverer().handleIncomingBVLCs(ctx, func(item apiModel.PlcDiscoveryItem) { got <- item }, ch)
+	}()
+	defer func() { cancel(); <-done }()
+
+	select {
+	case item := <-got:
+		transportURL := item.GetTransportUrl()
+		assert.Equal(t, "10.2.0.7", transportURL.Hostname())
+		assert.Equal(t, "47809", transportURL.Port())
+	case <-time.After(2 * time.Second):
+		t.Fatal("the forwarded IAm was not reported")
+	}
+}
+
+func TestExtractProtocolSpecificOptions_BBMDAddresses(t *testing.T) {
+	specific, err := extractProtocolSpecificOptions([]options.WithDiscoveryOption{
+		options.WithDiscoveryOptionProtocolSpecific("bbmd-addresses", "10.0.0.5, 10.0.0.6:47809,"),
+	})
+	require.NoError(t, err)
+	assert.Equal(t, []string{"10.0.0.5", "10.0.0.6:47809"}, specific.bbmdAddresses)
+}
+
+// With a BBMD listed, the WhoIs also goes to the BBMD as a Distribute-Broadcast-To-Network, once, from the
+// discovery socket; the IAm the BBMD forwards back to that socket is reported at its origin.
+func TestDiscover_WhoIsViaBBMD(t *testing.T) {
+	bbmd, err := net.ListenPacket("udp4", "127.0.0.1:0")
+	require.NoError(t, err)
+	defer func() { _ = bbmd.Close() }()
+	subnet, err := net.ListenPacket("udp4", "127.0.0.1:0") // stands in for the subnet broadcast address
+	require.NoError(t, err)
+	defer func() { _ = subnet.Close() }()
+	conn, err := net.ListenPacket("udp4", "127.0.0.1:0") // the discovery socket
+	require.NoError(t, err)
+
+	d := NewDiscoverer()
+	specific, err := extractProtocolSpecificOptions([]options.WithDiscoveryOption{
+		options.WithDiscoveryOptionProtocolSpecific("bbmd-addresses", bbmd.LocalAddr().String()),
+	})
+	require.NoError(t, err)
+	channel := communicationChannel{unicastConnection: conn, broadcastConnection: conn, broadcastTarget: subnet.LocalAddr(), log: d.log}
+	ctx, cancel := context.WithCancel(t.Context())
+	// Two channels on the same socket: the BBMD still gets the WhoIs once
+	incoming, err := d.broadcastAndDiscover(ctx, []communicationChannel{channel, channel}, specific)
+	require.NoError(t, err)
+	got := make(chan apiModel.PlcDiscoveryItem, 1)
+	d.wg.Go(func() {
+		d.handleIncomingBVLCs(ctx, func(item apiModel.PlcDiscoveryItem) { got <- item }, incoming)
+	})
+	defer func() {
+		cancel()
+		_ = conn.Close()
+		require.NoError(t, d.Close())
+	}()
+
+	buf := make([]byte, 1500)
+	require.NoError(t, bbmd.SetReadDeadline(time.Now().Add(2*time.Second)))
+	n, from, err := bbmd.ReadFrom(buf)
+	require.NoError(t, err)
+	assert.Equal(t, conn.LocalAddr().String(), from.String(), "the WhoIs must leave from the discovery socket")
+	msg, err := driverModel.BVLCParse[driverModel.BVLC](t.Context(), buf[:n])
+	require.NoError(t, err)
+	dbtn, ok := msg.(driverModel.BVLCDistributeBroadcastToNetwork)
+	require.True(t, ok, "got %T", msg)
+	_, ok = dbtn.GetNpdu().GetApdu().(driverModel.APDUUnconfirmedRequest).GetServiceRequest().(driverModel.BACnetUnconfirmedServiceRequestWhoIs)
+	assert.True(t, ok)
+	require.NoError(t, bbmd.SetReadDeadline(time.Now().Add(200*time.Millisecond)))
+	_, _, err = bbmd.ReadFrom(buf)
+	assert.Error(t, err, "the BBMD got the WhoIs twice")
+
+	// The BBMD forwards a device's IAm to the registered address
+	_, err = bbmd.WriteTo(forwardedIAm(t, &net.UDPAddr{IP: net.IPv4(10, 2, 0, 7), Port: 47808}), conn.LocalAddr())
+	require.NoError(t, err)
+	select {
+	case item := <-got:
+		transportURL := item.GetTransportUrl()
+		assert.Equal(t, "10.2.0.7", transportURL.Hostname())
+	case <-time.After(2 * time.Second):
+		t.Fatal("the forwarded IAm was not reported")
+	}
+}
