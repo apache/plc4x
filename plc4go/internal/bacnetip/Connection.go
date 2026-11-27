@@ -57,17 +57,14 @@ type Connection struct {
 	// each routes by process id (and monitored object), so the ids must be unique per
 	// connection, not per Subscriber. The first id is 1; 0 means "no subscription".
 	nextCovProcessId atomic.Uint32
-	tm                transactions.RequestTransactionManager
+	tm               transactions.RequestTransactionManager
 
 	connectionId string
 	tracer       tracer.Tracer
 
 	wg sync.WaitGroup // use to track spawned go routines
 
-	stopRefresh context.CancelFunc // ends the COV refresh and foreign-device registration loops started by Connect
-	// foreignDeviceDone is closed when the foreign-device registration loop has ended; nil when
-	// Connect started none (no ForeignDeviceBBMD).
-	foreignDeviceDone chan struct{}
+	stopRefresh context.CancelFunc // ends the COV refresh loop started by Connect
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -152,16 +149,14 @@ func (c *Connection) Connect(ctx context.Context) error {
 	c.wg.Go(func() {
 		c.refreshSubscriptions(refreshCtx)
 	})
-	c.startForeignDeviceRegistration(refreshCtx)
 	return nil
 }
 
 func (c *Connection) Close() error {
-	// End the background loops before the transport goes, so none of them sends on a closed socket.
+	err := c.DefaultConnection.Close()
 	if c.stopRefresh != nil {
 		c.stopRefresh()
 	}
-	err := c.DefaultConnection.Close()
 	c.wg.Wait()
 	return err
 }

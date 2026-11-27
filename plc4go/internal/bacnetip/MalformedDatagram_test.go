@@ -20,14 +20,40 @@
 package bacnetip
 
 import (
+	"context"
+	"net/url"
+	"strconv"
 	"testing"
+	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
+
+// connectFakeDevice connects a driver's connection to the fake device over real UDP, from an
+// ephemeral local port.
+func connectFakeDevice(t *testing.T, log zerolog.Logger, device *fakeBacnetDevice, connectionOptions map[string][]string) *Connection {
+	t.Helper()
+	driver := NewDriver(options.WithCustomLogger(log))
+	t.Cleanup(func() { _ = driver.Close() })
+	connectionOptions["local-port"] = []string{"0"}
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+	connection, err := driver.GetConnection(ctx,
+		url.URL{Scheme: "udp", Host: "127.0.0.1:" + strconv.Itoa(device.port())},
+		map[string]transports.Transport{"udp": udp.NewTransport(options.WithCustomLogger(log))},
+		connectionOptions,
+	)
+	require.NoError(t, err)
+	return connection.(*Connection)
+}
 
 // TestNativeBacnetRead_SurvivesMalformedDatagrams pins, over a real UDP socket, that one malformed
 // datagram neither stalls the reads after it nor ends the connection. The udp transport only reads
@@ -49,7 +75,7 @@ func TestNativeBacnetRead_SurvivesMalformedDatagrams(t *testing.T) {
 			log := testutils.ProduceTestingLogger(t)
 			device := startFakeBacnetDevice(t, log)
 			t.Cleanup(device.stop)
-			connection := connectForeignDeviceTest(t, log, device, map[string][]string{
+			connection := connectFakeDevice(t, log, device, map[string][]string{
 				"ApduTimeoutMs": {"1000"},
 			})
 			t.Cleanup(func() { assert.NoError(t, connection.Close()) })

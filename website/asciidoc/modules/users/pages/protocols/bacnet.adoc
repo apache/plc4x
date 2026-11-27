@@ -74,25 +74,6 @@ bacnet-ip:udp://192.168.178.101:47808
 
 include::partial$bacnet-ip.adoc[]
 
-=== Foreign-Device Registration (Go)
-
-The Go driver can register a connection as a BACnet/IP foreign device with a BBMD, so the
-BBMD forwards the broadcasts of other IP subnets to it:
-
-----
-bacnet-ip:udp://10.1.2.3:47808?ForeignDeviceBBMD=10.0.0.5:47808&ForeignDeviceTTL=300
-----
-
-`ForeignDeviceBBMD`::
-The BBMD as `host` or `host:port` (port `47808` by default). When set, the connection sends a
-BVLC Register-Foreign-Device to it right after connecting, from the same UDP socket it talks to
-the device on, and renews the registration at half the TTL until the connection is closed. A
-rejected or unanswered registration is logged and retried with the next renewal. That socket is
-left unconnected, so it receives datagrams from any sender, not only from the device.
-
-`ForeignDeviceTTL`::
-The registration's time-to-live in seconds. Default `300`.
-
 == Tag Addresses
 
 Addressing is implemented in Go only. The Java driver receives broadcast traffic as

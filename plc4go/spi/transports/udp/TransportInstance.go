@@ -51,11 +51,6 @@ type TransportInstance struct {
 	// Deprecated: no-op as of plc4go 1.0; will be removed once the API contract
 	// can absorb the signature change.
 	SoReUse bool
-	// Unconnected leaves the socket unconnected even when RemoteAddress is set: Write still
-	// sends to RemoteAddress, but the socket receives datagrams from any source and
-	// WriteToAddress can reach other addresses. A connected socket (the default) only sees
-	// datagrams from RemoteAddress.
-	Unconnected bool
 
 	transport    *Transport
 	udpConn      *net.UDPConn
@@ -68,10 +63,7 @@ type TransportInstance struct {
 	log zerolog.Logger
 }
 
-var (
-	_ transports.TransportInstance       = (*TransportInstance)(nil)
-	_ transports.AddressedDatagramWriter = (*TransportInstance)(nil)
-)
+var _ transports.TransportInstance = (*TransportInstance)(nil)
 
 func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, soReUse bool, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	logger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
@@ -109,12 +101,12 @@ func (m *TransportInstance) Connect(ctx context.Context) error {
 
 	// "connect" to the remote
 	var err error
-	if m.RemoteAddress != nil && !m.Unconnected {
+	if m.RemoteAddress != nil {
 		if m.udpConn, err = net.DialUDP("udp", m.LocalAddress, m.RemoteAddress); err != nil {
 			return errors.Wrapf(err, "error connecting to remote address '%s'", m.RemoteAddress)
 		}
 	} else {
-		// Listen-only or unconnected mode. The SoReUse field used to switch
+		// Listen-only mode (no RemoteAddress). The SoReUse field used to switch
 		// to a SO_REUSEPORT-enabled bind via libp2p/go-reuseport; that did not
 		// actually solve the "multiple BACnet stacks on one host" problem (see
 		// the SoReUse doc comment), so both branches now use stdlib net.ListenUDP.
@@ -262,8 +254,15 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
-	if err := m.setWriteDeadline(ctx); err != nil {
-		return err
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		if err := m.udpConn.SetWriteDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting write deadline")
+		}
+	} else if err := m.udpConn.SetWriteDeadline(time.Time{}); err != nil {
+		// Clear whatever deadline a previous bounded Write left armed - an
+		// expired one would fail this (unbounded) write instantly.
+		return errors.Wrap(err, "error clearing write deadline")
 	}
 	var num int
 	var err error
@@ -283,45 +282,6 @@ func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	}
 	if num != len(data) {
 		return errors.Errorf("error writing: not all bytes written (Expected %d, Actual %d)", len(data), num)
-	}
-	return nil
-}
-
-// WriteToAddress sends data as one datagram to address from this instance's socket. The socket must
-// be unconnected (see Unconnected): a connected socket can only send to RemoteAddress.
-func (m *TransportInstance) WriteToAddress(ctx context.Context, data []byte, address *net.UDPAddr) error {
-	if !m.IsConnected() {
-		return errors.New("working on a unconnected connection")
-	}
-	if address == nil {
-		return errors.New("no address to write to")
-	}
-	if m.udpConn.RemoteAddr() != nil {
-		return errors.Errorf("cannot write to %s: the socket is connected to %s", address, m.RemoteAddress)
-	}
-	if err := m.setWriteDeadline(ctx); err != nil {
-		return err
-	}
-	num, err := m.udpConn.WriteToUDP(data, address)
-	if err != nil {
-		return errors.Wrapf(err, "error writing (address: %s)", address)
-	}
-	if num != len(data) {
-		return errors.Errorf("error writing: not all bytes written (Expected %d, Actual %d)", len(data), num)
-	}
-	return nil
-}
-
-func (m *TransportInstance) setWriteDeadline(ctx context.Context) error {
-	if deadline, ok := ctx.Deadline(); ok {
-		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
-		if err := m.udpConn.SetWriteDeadline(deadline); err != nil {
-			return errors.Wrap(err, "error setting write deadline")
-		}
-	} else if err := m.udpConn.SetWriteDeadline(time.Time{}); err != nil {
-		// Clear whatever deadline a previous bounded Write left armed - an
-		// expired one would fail this (unbounded) write instantly.
-		return errors.Wrap(err, "error clearing write deadline")
 	}
 	return nil
 }

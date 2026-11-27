@@ -27,15 +27,10 @@ import "github.com/apache/plc4x/plc4go/spi/options"
 // A user addresses a transport's option under the transport's own code, as PLC4J does and as the
 // documentation says: "tcp.connect-timeout-ms", not "connect-timeout-ms". An option a driver
 // injects into the map itself is not addressed by anyone and carries no prefix.
-// OptionUnconnected, when "true", makes the instance keep its socket unconnected (see
-// TransportInstance.Unconnected). Drivers inject it; users do not set it.
-const OptionUnconnected = "unconnected"
-
 func init() {
 	options.RegisterTransportOptions(
 		"udp.so-reuse",
 		// Injected by a driver rather than written by a user, so it carries no prefix.
 		"defaultUdpPort",
-		OptionUnconnected,
 	)
 }

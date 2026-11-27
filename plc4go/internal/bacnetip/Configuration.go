@@ -60,15 +60,12 @@ type Configuration struct {
 	// ("MM") by convention until a real allocation is registered with ASHRAE.
 	VendorId uint16
 
-	// ForeignDeviceBBMD, when non-empty ("host" or "host:port", port 47808 by default),
-	// registers the connection as a foreign device with that BBMD at connect time
-	// (BVLC Register-Foreign-Device) so the BBMD forwards broadcasts from other IP
-	// subnets to it. The registration is sent from the connection's own socket, which
-	// is then left unconnected so it also hears the BBMD.
+	// ForeignDeviceBBMD, when non-empty (host:port), enables BBMD foreign-device
+	// registration at connect time so the driver can interoperate across IP subnets.
 	ForeignDeviceBBMD string
 
-	// ForeignDeviceTTL is the BBMD registration TTL in seconds; 0 means 300. The driver
-	// re-registers at TTL/2 to keep the foreign-device entry alive until Close.
+	// ForeignDeviceTTL is the BBMD registration TTL in seconds. The driver re-registers
+	// at TTL/2 to keep the foreign-device entry alive.
 	ForeignDeviceTTL uint16
 
 	// ApduTimeoutMs is the per-request timeout in milliseconds before the transaction

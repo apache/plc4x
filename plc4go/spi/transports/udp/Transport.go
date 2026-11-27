@@ -97,24 +97,13 @@ func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL,
 		}
 	}
 
-	var unconnected bool
-	if val, ok := options[OptionUnconnected]; ok && len(val) > 0 {
-		if parseBool, err := strconv.ParseBool(val[0]); err != nil {
-			return nil, errors.Wrap(err, "error setting unconnected")
-		} else {
-			unconnected = parseBool
-		}
-	}
-
 	// Potentially resolve the ip address, if a hostname was provided
 	remoteAddress, err := net.ResolveUDPAddr("udp", remoteAddressString+":"+strconv.Itoa(remotePort))
 	if err != nil {
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	instance := NewTransportInstance(localAddress, remoteAddress, soReUse, m, _options...)
-	instance.Unconnected = unconnected
-	return instance, nil
+	return NewTransportInstance(localAddress, remoteAddress, soReUse, m, _options...), nil
 }
 
 func (m *Transport) Close() error {
