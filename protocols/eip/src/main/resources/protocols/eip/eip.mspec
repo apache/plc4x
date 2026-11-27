@@ -307,7 +307,6 @@
         ]
     ]
 ]
-]
 
 [discriminatedType CommandSpecificDataItem
     [discriminator uint 16 itemType]
