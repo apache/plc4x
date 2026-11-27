@@ -564,9 +564,9 @@ namespace org.apache.plc4net.drivers.s7
         /// <summary>The S7-ANY address of one tag.</summary>
         internal static S7AddressAny ToAddress(S7Tag tag)
         {
-            // A fixed STRING is addressed as its complete byte representation: two header bytes
-            // followed by the declared character capacity, using CHAR transport elements.
-            var isString = tag.DataType == TransportSize.STRING;
+            // Fixed strings are addressed by their complete byte representation, including
+            // the length header, using CHAR transport elements.
+            var isString = tag.DataType == TransportSize.STRING || tag.DataType == TransportSize.WSTRING;
             return new S7AddressAny(
                 isString ? TransportSize.CHAR : tag.DataType,
                 isString ? checked((ushort)tag.SizeInBytes) : (ushort)1,
@@ -855,6 +855,9 @@ namespace org.apache.plc4net.drivers.s7
                     break;
                 case TransportSize.STRING:
                     plcValue = new PlcSTRING(ToStringValue(value));
+                    break;
+                case TransportSize.WSTRING:
+                    plcValue = new PlcWSTRING(ToStringValue(value));
                     break;
                 default:
                     throw new S7DriverException($"A tag cannot be written as {tag.DataType}.");

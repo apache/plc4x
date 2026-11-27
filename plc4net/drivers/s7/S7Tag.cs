@@ -50,9 +50,9 @@ namespace org.apache.plc4net.drivers.s7
     /// a <c>REAL</c>.
     /// </para>
     /// <para>
-    /// Array selections, WSTRING, the 64-bit types, the date and time types, counters, timers and the
+    /// Array selections, the 64-bit types, the date and time types, counters, timers and the
     /// other memory areas are not supported here yet; they are rejected rather than read as something
-    /// else. Fixed-length STRING is supported only in data blocks.
+    /// else. Fixed-length STRING and WSTRING are supported only in data blocks.
     /// </para>
     /// </remarks>
     public sealed class S7Tag : IPlcTag
@@ -115,33 +115,35 @@ namespace org.apache.plc4net.drivers.s7
                 throw new PlcInvalidFieldException(
                     $"The memory area {area} is not supported yet; supported: data blocks, inputs, outputs and flags.");
             }
-            if (!SupportedTypes.Contains(dataType) && dataType != TransportSize.STRING)
+            if (!SupportedTypes.Contains(dataType) && dataType != TransportSize.STRING
+                && dataType != TransportSize.WSTRING)
             {
                 throw new PlcInvalidFieldException(UnsupportedType(dataType.ToString()));
             }
-            if (dataType == TransportSize.STRING)
+            if (dataType == TransportSize.STRING || dataType == TransportSize.WSTRING)
             {
                 if (area != MemoryArea.DATA_BLOCKS)
                 {
-                    throw new PlcInvalidFieldException("S7 STRING tags are supported only in data blocks.");
+                    throw new PlcInvalidFieldException("S7 STRING and WSTRING tags are supported only in data blocks.");
                 }
                 if (!stringLength.HasValue || stringLength.Value < 1 || stringLength.Value > 254)
                 {
-                    throw new PlcInvalidFieldException("An S7 STRING length must be between 1 and 254 characters.");
+                    throw new PlcInvalidFieldException("An S7 STRING or WSTRING length must be between 1 and 254 characters.");
                 }
                 if (bitOffset != 0)
                 {
-                    throw new PlcInvalidFieldException("An S7 STRING cannot have a bit offset.");
+                    throw new PlcInvalidFieldException("An S7 STRING or WSTRING cannot have a bit offset.");
                 }
-                if (byteOffset > MaxByteOffset - (stringLength.Value + 1))
+                var sizeInBytes = (stringLength.Value + 2) * (dataType == TransportSize.WSTRING ? 2 : 1);
+                if (byteOffset > MaxByteOffset - (sizeInBytes - 1))
                 {
                     throw new PlcInvalidFieldException(
-                        "The S7 STRING extends past the highest byte offset the address can carry.");
+                        "The S7 STRING or WSTRING extends past the highest byte offset the address can carry.");
                 }
             }
             else if (stringLength.HasValue)
             {
-                throw new PlcInvalidFieldException("A string length can be specified only for an S7 STRING tag.");
+                throw new PlcInvalidFieldException("A string length can be specified only for an S7 STRING or WSTRING tag.");
             }
             if (dbNumber < 0 || dbNumber > MaxDataBlock)
             {
@@ -187,8 +189,10 @@ namespace org.apache.plc4net.drivers.s7
         /// <summary>The declared maximum character count for a fixed-length STRING; null otherwise.</summary>
         public int? StringLength { get; }
 
-        /// <summary>The bytes the value takes on the wire; a STRING includes its two-byte header.</summary>
-        public int SizeInBytes => StringLength.HasValue ? StringLength.Value + 2 : DataType.GetSizeInBytes();
+        /// <summary>The bytes the value takes on the wire, including a string's length header.</summary>
+        public int SizeInBytes => StringLength.HasValue
+            ? (StringLength.Value + 2) * (DataType == TransportSize.WSTRING ? 2 : 1)
+            : DataType.GetSizeInBytes();
 
         /// <summary>
         /// Parses a tag address such as <c>%DB1.DBW10:INT</c> or <c>%M0.0:BOOL</c>.
@@ -227,7 +231,7 @@ namespace org.apache.plc4net.drivers.s7
                 $"'{tagAddress}' is not a supported S7 tag address. Expected " +
                 "%DB{block}.DB{X|B|W|D}{byte}[.{bit}]:{TYPE}, %DB{block}:{byte}[.{bit}]:{TYPE} or " +
                 "%{I|Q|M}[X|B|W|D]{byte}[.{bit}]:{TYPE}, for example %DB1.DBW10:INT or %M0.0:BOOL; " +
-                "a data-block string uses %DB{block}:{byte}:STRING({length}). WSTRING and the other memory areas " +
+                "a data-block string uses %DB{block}:{byte}:STRING({length}) or :WSTRING({length}). The other memory areas " +
                 "are not supported yet.");
         }
 
@@ -244,15 +248,15 @@ namespace org.apache.plc4net.drivers.s7
             int? stringLength = null;
             if (match.Groups["stringLength"].Success)
             {
-                if (dataType != TransportSize.STRING)
+                if (dataType != TransportSize.STRING && dataType != TransportSize.WSTRING)
                 {
-                    throw new PlcInvalidFieldException($"'{match.Value}': a length is supported only for STRING.");
+                    throw new PlcInvalidFieldException($"'{match.Value}': a length is supported only for STRING or WSTRING.");
                 }
                 stringLength = int.Parse(match.Groups["stringLength"].Value, CultureInfo.InvariantCulture);
             }
-            else if (dataType == TransportSize.STRING)
+            else if (dataType == TransportSize.STRING || dataType == TransportSize.WSTRING)
             {
-                throw new PlcInvalidFieldException($"'{match.Value}': STRING needs a declared length, as in :STRING(10).");
+                throw new PlcInvalidFieldException($"'{match.Value}': STRING and WSTRING need a declared length, as in :STRING(10).");
             }
 
             byte bitOffset = 0;
@@ -301,7 +305,8 @@ namespace org.apache.plc4net.drivers.s7
                 if (string.Equals(candidate, name, StringComparison.OrdinalIgnoreCase))
                 {
                     var type = (TransportSize)Enum.Parse(typeof(TransportSize), candidate);
-                    if (!SupportedTypes.Contains(type) && type != TransportSize.STRING)
+                    if (!SupportedTypes.Contains(type) && type != TransportSize.STRING
+                        && type != TransportSize.WSTRING)
                     {
                         throw new PlcInvalidFieldException(UnsupportedType(candidate));
                     }
@@ -319,7 +324,7 @@ namespace org.apache.plc4net.drivers.s7
         public override string ToString()
         {
             var bit = DataType == TransportSize.BOOL ? $".{BitOffset}" : string.Empty;
-            var type = DataType == TransportSize.STRING ? $"STRING({StringLength})" : DataType.ToString();
+            var type = StringLength.HasValue ? $"{DataType}({StringLength})" : DataType.ToString();
             switch (Area)
             {
                 case MemoryArea.DATA_BLOCKS:

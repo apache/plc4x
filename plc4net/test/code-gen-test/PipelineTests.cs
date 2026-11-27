@@ -508,6 +508,9 @@ namespace org.apache.plc4net.test.codegen
             var files = new CSharpGenerator(
                 model, "s7", "org.apache.plc4net.drivers.s7.readwrite", manualStaticCalls: true).Generate();
 
+            Assert.Contains("return new PlcWSTRING(value);", files["model/DataItem.cs"]);
+            Assert.Contains("return new PlcSTRING(value);", files["model/DataItem.cs"]);
+
             // The call is generated as the mspec writes it ...
             Assert.Contains(
                 "S7StaticHelper.EventItemLength(readBuffer, valueLength)", files["model/AssociatedValueType.cs"]);

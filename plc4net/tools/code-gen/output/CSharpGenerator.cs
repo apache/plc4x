@@ -1825,8 +1825,13 @@ namespace org.apache.plc4net.tools.codegen.output
                 case "WCHAR":
                     // read as a 1- or 2-byte string; Plc(W)CHAR wraps a char.
                     return $"new Plc{cs.Name}({v}.Length > 0 ? {v}[0] : '\\0')";
+                case "STRING" when cs.DiscriminatorValues?.Any(value =>
+                    value is StringLiteral { Value: "IEC61131_WSTRING" }) == true:
+                    // The shared S7 mspec names both string cases STRING; the discriminator
+                    // selects the .NET value type for its UTF-16BE WSTRING case.
+                    return $"new PlcWSTRING({v})";
                 default:
-                    // BOOL / BYTE / … / STRING / WSTRING - Plc<caseName>(value).
+                    // BOOL / BYTE / … / STRING - Plc<caseName>(value).
                     return $"new Plc{cs.Name}({v})";
             }
         }

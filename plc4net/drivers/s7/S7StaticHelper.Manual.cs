@@ -73,8 +73,16 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
 
             if (IsUtf16Be(encoding))
             {
-                io.ReadUshort("maxLength", 16);
+                if (!io.HasMore((stringLength + 2) * 16))
+                {
+                    throw new ParseException("S7 WSTRING is shorter than its declared field length.");
+                }
+                int maxLength = io.ReadUshort("maxLength", 16);
                 int totalStringLength = io.ReadUshort("totalLength", 16);
+                if (maxLength != stringLength || totalStringLength > maxLength)
+                {
+                    throw new ParseException("S7 WSTRING length header does not match the declared field length.");
+                }
 
                 var bytes = new byte[Math.Max(totalStringLength, 0) * 2];
                 for (var i = 0; i < stringLength && io.HasMore(16); i++)
@@ -126,11 +134,15 @@ namespace org.apache.plc4net.drivers.s7.readwrite.model
             if (IsUtf16Be(encoding))
             {
                 var maxLength = Math.Min(stringLength, 16382) & 0xFFFF;
-                var actLength = Math.Min(maxLength, text.Length & 0xFFFF);
+                if (text.Length > maxLength)
+                {
+                    throw new OverflowException("The UTF-16 value does not fit the declared S7 WSTRING length.");
+                }
+                var actLength = text.Length;
 
                 var chars = new byte[maxLength * 2];
-                var actChars = Encoding.BigEndianUnicode.GetBytes(text.Substring(0, actLength));
-                Array.Copy(actChars, chars, Math.Min(actChars.Length, chars.Length));
+                var actChars = Encoding.BigEndianUnicode.GetBytes(text);
+                Array.Copy(actChars, chars, actChars.Length);
 
                 io.WriteUshort("maxLength", 16, (ushort)maxLength);
                 io.WriteUshort("totalLength", 16, (ushort)actLength);

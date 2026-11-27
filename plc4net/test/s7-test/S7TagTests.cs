@@ -117,6 +117,29 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Equal(parsed.StringLength, S7Tag.Parse(parsed.ToString()).StringLength);
         }
 
+        [Fact]
+        public void A_fixed_wstring_keeps_its_declared_length_and_byte_size_in_both_tag_forms()
+        {
+            var parsed = S7Tag.Parse("%DB1:10:WSTRING(4)");
+            var constructed = new S7Tag(MemoryArea.DATA_BLOCKS, 1, 10, 0, TransportSize.WSTRING, 4);
+
+            Assert.Equal(4, parsed.StringLength);
+            Assert.Equal(12, parsed.SizeInBytes);
+            Assert.Equal(parsed.ToString(), constructed.ToString());
+            Assert.Equal(parsed.ToString(), S7Tag.Parse(parsed.ToString()).ToString());
+        }
+
+        [Theory]
+        [InlineData("%DB1:10:WSTRING")]
+        [InlineData("%DB1:10:WSTRING(0)")]
+        [InlineData("%DB1:10:WSTRING(255)")]
+        [InlineData("%M10:WSTRING(4)")]
+        [InlineData("%DB1:65525:WSTRING(4)")]
+        public void An_invalid_fixed_wstring_is_rejected(string address)
+        {
+            Assert.Throws<PlcInvalidFieldException>(() => S7Tag.Parse(address));
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData("   ")]
@@ -207,7 +230,6 @@ namespace org.apache.plc4net.drivers.s7.test
         [InlineData("%DB1.DBW0:S5TIME")]
         [InlineData("%DB1.DBB0:CHAR")]
         [InlineData("%DB1.DBX0.0:COUNTER")]
-        [InlineData("%DB1.DBB0:WSTRING")]
         public void The_types_that_are_not_supported_yet_are_refused_with_an_explanation(string address)
         {
             var exception = Assert.Throws<PlcInvalidFieldException>(() => S7Tag.Parse(address));

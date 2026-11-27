@@ -127,6 +127,7 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Equal("A", Parse("IEC61131_WCHAR", "0041").GetString());
             Assert.Equal("Hi", Parse("IEC61131_STRING", "02024869", 2).GetString());
             Assert.Equal("Hi", Parse("IEC61131_WSTRING", "0002000200480069", 2).GetString());
+            Assert.IsType<PlcWSTRING>(Parse("IEC61131_WSTRING", "0002000200480069", 2));
         }
 
         [Fact]
@@ -140,6 +141,33 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Throws<OverflowException>(() => DataItem.StaticSerialize(
                 new WriteBuffer(), new PlcSTRING(new string('a', 256)), "IEC61131_STRING", ControllerType.ANY, 254));
             Assert.Throws<ParseException>(() => Parse("IEC61131_STRING", "02034142", 2));
+        }
+
+        [Fact]
+        public void A_fixed_wstring_keeps_its_capacity_and_rejects_invalid_lengths()
+        {
+            var buffer = new WriteBuffer();
+            DataItem.StaticSerialize(buffer, new PlcWSTRING("Hi"), "IEC61131_WSTRING", ControllerType.ANY, 4);
+
+            Assert.Equal("000400020048006900000000", ToHex(buffer.GetBytes()));
+            Assert.IsType<PlcWSTRING>(Parse("IEC61131_WSTRING", ToHex(buffer.GetBytes()), 4));
+            Assert.Throws<OverflowException>(() => DataItem.StaticSerialize(
+                new WriteBuffer(), new PlcWSTRING("Hello"), "IEC61131_WSTRING", ControllerType.ANY, 4));
+            Assert.Throws<ParseException>(() => Parse("IEC61131_WSTRING", "000300020048006900000000", 4));
+            Assert.Throws<ParseException>(() => Parse("IEC61131_WSTRING", "000400050048006900000000", 4));
+            Assert.Throws<ParseException>(() => Parse("IEC61131_WSTRING", "0004000200480069", 4));
+        }
+
+        [Fact]
+        public void A_wstring_counts_utf16_code_units_at_a_surrogate_pair_boundary()
+        {
+            var buffer = new WriteBuffer();
+            DataItem.StaticSerialize(buffer, new PlcWSTRING("🙂"), "IEC61131_WSTRING", ControllerType.ANY, 2);
+
+            Assert.Equal("00020002d83dde42", ToHex(buffer.GetBytes()));
+            Assert.Equal("🙂", Parse("IEC61131_WSTRING", ToHex(buffer.GetBytes()), 2).GetString());
+            Assert.Throws<OverflowException>(() => DataItem.StaticSerialize(
+                new WriteBuffer(), new PlcWSTRING("🙂"), "IEC61131_WSTRING", ControllerType.ANY, 1));
         }
 
         [Fact]
