@@ -299,10 +299,11 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, value string,
 	encoding := nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(wb.ExtractEncoding(UpcastWriterArgs(writerArgs...)...)), "")
 	remainingBits := int64(bitLength) // int64 so subtraction doesn't wrap on underflow
 	switch encoding {
-	case "UTF8", "ASCII", "ISO88591", "WINDOWS1252":
-		// The single-byte encodings write the string's bytes as-is: for the character
-		// ranges the protocols use these are identical, and it avoids silently writing
-		// nothing (the switch's fall-through is plain zero-fill).
+	default:
+		// The single-byte encodings (UTF8, ASCII, ISO88591, WINDOWS1252) write the string's
+		// bytes as-is: for the character ranges the protocols use these are identical. So
+		// does a string without an encoding, as ReadString reads one: zero-filling it would
+		// silently write nothing (OPC UA's chunk type, a string enum, went out as 0x00).
 		for _, b := range []byte(value) {
 			wb.bits.TryWriteByte(b)
 			remainingBits -= 8

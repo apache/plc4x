@@ -1041,6 +1041,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return tracer + ((HexadecimalLiteral) term).getHexString();
         } else if (term instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
+            if (fieldType instanceof ByteOrderTypeReference) {
+                // A byte order written as a string, e.g. a branch of
+                // byteOrder='x ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'.
+                return tracer + toByteOrderConstant(((StringLiteral) term).getValue());
+            }
             return tracer + "\"" + ((StringLiteral) term).getValue() + "\"";
         } else if (term instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
@@ -1494,7 +1499,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("length");
-        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + getGoSafeName(variableLiteral.getName()) + ")"));
+        // x.length is the length of a string or array: len() both when serializing (the
+        // message's getter) and when parsing (the local variable already read).
+        return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("len(" + getGoSafeName(variableLiteral.getName()) + ")"));
     }
 
     private String toValueVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
@@ -1989,6 +1996,42 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
+        return getFieldOptions(field, parserArguments, false);
+    }
+
+    /**
+     * Field options for the serializer: a byte order computed from the message's own
+     * fields reads them from the message (m.GetX()) instead of the parser's locals.
+     */
+    public String getFieldSerializerOptions(TypedField field, List<Argument> serializerArguments) {
+        return getFieldOptions(field, serializerArguments, true);
+    }
+
+    private static String toByteOrderConstant(String name) {
+        return switch (name) {
+            case "BIG_ENDIAN" -> "binary.BigEndian";
+            case "LITTLE_ENDIAN" -> "binary.LittleEndian";
+            default -> throw new FreemarkerException("unmapped bytes order " + name);
+        };
+    }
+
+    /**
+     * Translates a field's byteOrder term: a quoted constant becomes binary.BigEndian or
+     * binary.LittleEndian; any other term (e.g. a ternary on an earlier field) becomes a
+     * Go expression of type binary.ByteOrder evaluated when the field is read or written.
+     */
+    private String toByteOrderExpression(TypedField field, Term term, List<Argument> arguments, boolean serialize) {
+        Optional<StringLiteral> constant = term.asLiteral().flatMap(Literal::asStringLiteral);
+        if (constant.isPresent()) {
+            return toByteOrderConstant(constant.get().getValue());
+        }
+        TypeReference byteOrderType = new DefaultByteOrderTypeReference();
+        return serialize
+            ? toSerializationExpression(field, byteOrderType, term, arguments)
+            : toParseExpression(field, byteOrderType, term, arguments);
+    }
+
+    private String getFieldOptions(TypedField field, List<Argument> parserArguments, boolean serialize) {
         StringBuilder sb = new StringBuilder();
         field.getAttribute("stringEncoding").ifPresentOrElse(term -> {
             emitCodegenRequiredImports();
@@ -2013,11 +2056,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         field.getByteOrder().ifPresent(term -> {
             emitCodegenRequiredImports();
             emitRequiredImport("encoding/binary");
-            String byteOrder = switch (term.stringRepresentation()) {
-                case "\"BIG_ENDIAN\"" -> "binary.BigEndian";
-                case "\"LITTLE_ENDIAN\"" -> "binary.LittleEndian";
-                default -> throw new RuntimeException("unmapped bytes order " + term.stringRepresentation());
-            };
+            String byteOrder = toByteOrderExpression(field, term, parserArguments, serialize);
             sb.append(", codegen.WithByteOrder(").append(byteOrder).append(")");
         });
 

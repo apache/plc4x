@@ -283,9 +283,12 @@ func (m *TransportInstance) FillReadBuffer(data []byte) {
 		m.log.Error().Msg("working on a unconnected connection")
 		return
 	}
+	m.dataMutex.RLock()
+	existingBytes := len(m.readBuffer)
+	m.dataMutex.RUnlock()
 	m.log.Trace().
 		Int("nBytes", len(data)).
-		Int("existingBytes", len(m.readBuffer)).
+		Int("existingBytes", existingBytes).
 		Int("readChannelSize", len(m.readChannel)).
 		Str("hexDump", hex.Dump(data)).
 		Msg("fill read buffer with hexDump (nBytes bytes). (Adding to existingBytes bytes existing)")

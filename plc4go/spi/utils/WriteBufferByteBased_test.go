@@ -28,6 +28,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSizingWorksProperly(t *testing.T) {
@@ -827,6 +828,18 @@ func Test_byteWriteBuffer_WriteSerializable(t *testing.T) {
 			tt.wantErr(t, wb.WriteSerializable(tt.args.ctx, tt.args.serializable), fmt.Sprintf("WriteSerializable(%v, %v)", tt.args.ctx, tt.args.serializable))
 		})
 	}
+}
+
+// A string without an encoding is written byte for byte, as ReadString reads it back.
+func Test_byteWriteBuffer_WriteStringWithoutEncoding(t *testing.T) {
+	wb := NewWriteBufferByteBased()
+	require.NoError(t, wb.WriteString("chunk", 8, "F"))
+	require.NoError(t, wb.WriteString("padded", 32, "ab"))
+	assert.Equal(t, []byte{'F', 'a', 'b', 0, 0}, wb.GetBytes())
+
+	value, err := NewReadBufferByteBased(wb.GetBytes()).ReadString("chunk", 8)
+	require.NoError(t, err)
+	assert.Equal(t, "F", value)
 }
 
 func Test_byteWriteBuffer_WriteString(t *testing.T) {

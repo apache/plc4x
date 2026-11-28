@@ -157,12 +157,21 @@ func (m *_PascalString) GetStringValue() *string {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
+// stringValueOrEmpty is the string, or "" for the null string (no value), which the length
+// helpers encode as -1. Dereferencing the absent value panicked on every null string.
+func (m *_PascalString) stringValueOrEmpty() string {
+	if m.StringValue == nil {
+		return ""
+	}
+	return *m.StringValue
+}
+
 func (m *_PascalString) GetStringLength() int32 {
 	ctx := context.Background()
 	_ = ctx
 	stringValue := m.GetStringValue()
 	_ = stringValue
-	return int32(PascalLengthToUtf8Length(ctx, Utf8LengthToPascalLength(ctx, (*m.GetStringValue()))))
+	return int32(PascalLengthToUtf8Length(ctx, Utf8LengthToPascalLength(ctx, m.stringValueOrEmpty())))
 }
 
 ///////////////////////
@@ -195,7 +204,7 @@ func (m *_PascalString) GetLengthInBits(ctx context.Context) uint64 {
 
 	// Optional Field (stringValue)
 	if m.StringValue != nil {
-		lengthInBits += 0
+		lengthInBits += uint64(int32(m.GetStringLength()) * int32(int32(8)))
 	}
 
 	return lengthInBits
@@ -274,7 +283,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if pushErr := writeBuffer.PushContext("PascalString"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for PascalString")
 	}
-	sLength := int32(Utf8LengthToPascalLength(ctx, (*m.GetStringValue())))
+	sLength := int32(Utf8LengthToPascalLength(ctx, m.stringValueOrEmpty()))
 	if err := WriteImplicitField(ctx, "sLength", sLength, WriteSignedInt(writeBuffer, 32)); err != nil {
 		return errors.Wrap(err, "Error serializing 'sLength' field")
 	}
