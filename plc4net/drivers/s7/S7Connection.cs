@@ -18,6 +18,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -34,6 +35,7 @@ using org.apache.plc4net.spi.drivers;
 using org.apache.plc4net.spi.drivers.functions;
 using org.apache.plc4net.spi.drivers.messages;
 using org.apache.plc4net.spi.drivers.messages.items;
+using org.apache.plc4net.spi.drivers.subscriptions;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
 using org.apache.plc4net.spi.transports;
@@ -58,7 +60,8 @@ namespace org.apache.plc4net.drivers.s7
     /// <c>local-device-group</c> (<c>PG_OR_PC</c>, <c>OS</c> or <c>OTHERS</c>; <c>PG_OR_PC</c> and
     /// <c>OTHERS</c>), <c>remote-tsap</c> and <c>local-tsap</c> (hexadecimal, replacing what the
     /// rack, slot and device group give), <c>pdu-size</c> (1024), <c>max-amq-caller</c> and
-    /// <c>max-amq-callee</c> (8) and <c>read-timeout-ms</c> (10000).
+    /// <c>max-amq-callee</c> (8), <c>read-timeout-ms</c> (10000),
+    /// <c>subscription-polling-interval-ms</c> (1000), and <c>ping-address</c> (%M0:BYTE).
     /// </para>
     /// </remarks>
     public sealed class S7Connection : ConnectionBase, PlcReader, PlcWriter
@@ -67,7 +70,7 @@ namespace org.apache.plc4net.drivers.s7
         {
             CanRead = true,
             CanWrite = true,
-            CanSubscribe = false
+            CanSubscribe = true
         };
 
         private const int InitialPollIntervalMs = 2;
@@ -105,11 +108,13 @@ namespace org.apache.plc4net.drivers.s7
         private readonly int _maxAmqCaller;
         private readonly int _maxAmqCallee;
         private readonly int _readTimeoutMs;
+        private readonly S7Tag _pingTag;
 
         // The CPU takes one job at a time from this connection; the gate keeps two callers from
         // interleaving their jobs on the wire.
         private readonly SemaphoreSlim _exchangeGate = new SemaphoreSlim(1, 1);
         private readonly S7MessageCodec _codec;
+        private readonly PollingSubscriptionManager _subscriptions;
 
         // Set by an async transport's read thread. The exchange loop owns clearing it.
         private TaskCompletionSource<bool>? _dataArrival;
@@ -134,8 +139,14 @@ namespace org.apache.plc4net.drivers.s7
             _maxAmqCaller = NumberParameter(connectionString, "max-amq-caller", DefaultMaxAmq, 1, ushort.MaxValue);
             _maxAmqCallee = NumberParameter(connectionString, "max-amq-callee", DefaultMaxAmq, 1, ushort.MaxValue);
             _readTimeoutMs = NumberParameter(connectionString, "read-timeout-ms", DefaultReadTimeoutMs, 1, int.MaxValue);
+            _pingTag = S7Tag.Parse(connectionString.GetParameter("ping-address") ?? "%M0:BYTE");
 
             _codec = new S7MessageCodec(transport, OnMessage, _requestedPduSize);
+            var subscriptionInterval = NumberParameter(connectionString,
+                "subscription-polling-interval-ms", 1000, 1, int.MaxValue);
+            _subscriptions = new PollingSubscriptionManager(this, Parse,
+                TimeSpan.FromMilliseconds(subscriptionInterval),
+                ex => Logger.LogWarning(ex, "S7 polling subscription failed"));
         }
 
         /// <summary>The PDU length the CPU granted in Setup Communication, in bytes; 0 before that.</summary>
@@ -316,9 +327,30 @@ namespace org.apache.plc4net.drivers.s7
         public override IPlcWriteRequestBuilder? WriteRequestBuilder
             => new DefaultPlcWriteRequestBuilder(this, Parse);
 
-        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder => null;
+        public override IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder
+            => _subscriptions.SubscriptionRequestBuilder;
 
-        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder => null;
+        public override IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder
+            => _subscriptions.UnsubscriptionRequestBuilder;
+
+        /// <summary>Checks responsiveness with one S7 Read Var request.</summary>
+        public async Task PingAsync(CancellationToken cancellationToken = default)
+        {
+            var tags = new Dictionary<string, PlcTagItem<IPlcTag>>
+            {
+                ["ping"] = new DefaultPlcTagItem<IPlcTag>("ping", _pingTag)
+            };
+            var response = (DefaultPlcReadResponse)await Read(
+                new DefaultPlcReadRequest(this, tags), cancellationToken).ConfigureAwait(false);
+            if (response.GetResponseCode("ping") != PlcResponseCode.Ok)
+                throw new S7DriverException($"S7 ping failed: {response.GetResponseCode("ping")}.");
+        }
+
+        public override void Close()
+        {
+            _subscriptions.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            base.Close();
+        }
 
         // ── Exchange ───────────────────────────────────────────
 
@@ -569,7 +601,7 @@ namespace org.apache.plc4net.drivers.s7
             var isString = tag.DataType == TransportSize.STRING || tag.DataType == TransportSize.WSTRING;
             return new S7AddressAny(
                 isString ? TransportSize.CHAR : tag.DataType,
-                isString ? checked((ushort)tag.SizeInBytes) : (ushort)1,
+                isString ? checked((ushort)tag.SizeInBytes) : tag.Quantity,
                 (ushort)tag.DbNumber,
                 tag.Area,
                 (ushort)tag.ByteOffset,
@@ -694,11 +726,25 @@ namespace org.apache.plc4net.drivers.s7
                 throw new S7DriverException(
                     $"The S7 answer carries {data.Length} byte(s) for {tag}; a {tag.DataType} takes {tag.SizeInBytes}.");
             }
-            return DataItem.StaticParse(
-                new ReadBuffer(data),
-                tag.DataType.GetDataProtocolId(),
-                ControllerType.ANY,
-                tag.StringLength ?? 0);
+            if (!tag.ExplicitRange)
+                return ParseElement(tag, new ReadBuffer(data));
+
+            var values = new List<IPlcValue>(tag.Quantity);
+            var elementSize = tag.DataType.GetSizeInBytes();
+            for (var i = 0; i < tag.Quantity; i++)
+                values.Add(ParseElement(tag, new ReadBuffer(data, i * elementSize, elementSize)));
+            return new PlcList(values);
+        }
+
+        private static IPlcValue ParseElement(S7Tag tag, ReadBuffer buffer)
+        {
+            var value = DataItem.StaticParse(buffer, tag.DataType.GetDataProtocolId(),
+                ControllerType.ANY, tag.StringLength ?? 0);
+            // The shared S7 model currently maps IEC61131_WCHAR to CHAR. Keep the
+            // public PLC4Net value type consistent with the requested tag.
+            return tag.DataType == TransportSize.WCHAR
+                ? new PlcWCHAR(value.GetString()[0])
+                : value;
         }
 
         // ── PlcWriter ──────────────────────────────────────────
@@ -817,6 +863,22 @@ namespace org.apache.plc4net.drivers.s7
         /// <exception cref="InvalidCastException">The value is not of a kind the data type takes.</exception>
         internal static byte[] EncodeValue(S7Tag tag, object value)
         {
+            if (tag.ExplicitRange)
+            {
+                var values = value is IPlcValue plc && plc.IsList()
+                    ? plc.GetList().Cast<object>().ToArray()
+                    : value is IEnumerable sequence && value is not string
+                        ? sequence.Cast<object>().ToArray()
+                        : new[] { value };
+                if (values.Length != tag.Quantity)
+                    throw new InvalidCastException($"The S7 array needs {tag.Quantity} values, but got {values.Length}.");
+                var scalar = new S7Tag(tag.Area, tag.DbNumber, tag.ByteOffset,
+                    tag.BitOffset, tag.DataType, tag.StringLength);
+                var bytes = new List<byte>(tag.SizeInBytes);
+                foreach (var item in values)
+                    bytes.AddRange(EncodeValue(scalar, item));
+                return bytes.ToArray();
+            }
             IPlcValue plcValue;
             switch (tag.DataType)
             {
@@ -858,6 +920,17 @@ namespace org.apache.plc4net.drivers.s7
                     break;
                 case TransportSize.WSTRING:
                     plcValue = new PlcWSTRING(ToStringValue(value));
+                    break;
+                case TransportSize.CHAR:
+                case TransportSize.WCHAR:
+                    var character = value is char ch ? ch.ToString() : ToStringValue(value);
+                    if (character.Length != 1 || char.IsSurrogate(character[0]) ||
+                        (tag.DataType == TransportSize.CHAR &&
+                         System.Text.Encoding.UTF8.GetByteCount(character) != 1))
+                        throw new InvalidCastException("An S7 CHAR needs one UTF-8 byte; WCHAR needs one UTF-16 code unit.");
+                    plcValue = tag.DataType == TransportSize.WCHAR
+                        ? new PlcWCHAR(character[0])
+                        : new PlcCHAR(character[0]);
                     break;
                 default:
                     throw new S7DriverException($"A tag cannot be written as {tag.DataType}.");

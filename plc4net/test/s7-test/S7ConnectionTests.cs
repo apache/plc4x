@@ -25,7 +25,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using org.apache.plc4net.drivers.s7.readwrite.model;
 using org.apache.plc4net.exceptions;
+using org.apache.plc4net.messages;
 using org.apache.plc4net.spi.drivers;
+using org.apache.plc4net.spi.drivers.subscriptions;
 using org.apache.plc4net.spi.model.values;
 using org.apache.plc4net.types;
 using Xunit;
@@ -864,7 +866,163 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Throws<PlcInvalidFieldException>(() => connection.Parse("holding-register:1"));
             Assert.True(connection.PlcConnectionMetadata.CanRead);
             Assert.True(connection.PlcConnectionMetadata.CanWrite);
-            Assert.False(connection.PlcConnectionMetadata.CanSubscribe);
+            Assert.True(connection.PlcConnectionMetadata.CanSubscribe);
+        }
+
+        [Fact]
+        public async Task A_cyclic_subscription_reads_through_the_S7_connection()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+            var cpu = new FakeCpu(transport, S7Frames.ReadAck(2, (0xFF, 0x05, Hex("1234"))));
+            var subscribed = (IPlcSubscriptionResponse)await connection.SubscriptionRequestBuilder!
+                .AddCyclicField("value", "%DB1.DBW0:INT", TimeSpan.FromMilliseconds(50))
+                .Build().ExecuteAsync();
+            var received = new TaskCompletionSource<SubscriptionValueEventArgs>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var handle = subscribed.GetSubscriptionHandle("value");
+            handle.PlcSubscriptionEvent += (_, e) => received.TrySetResult((SubscriptionValueEventArgs)e);
+
+            var result = await received.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(PlcResponseCode.Ok, result.ResponseCode);
+            Assert.Equal(0x1234, result.Value!.GetInt());
+            await cpu.Running;
+            await connection.UnsubscriptionRequestBuilder!.AddHandles(handle).Build().ExecuteAsync();
+            connection.Close();
+            await Assert.ThrowsAsync<ObjectDisposedException>(() => connection.SubscriptionRequestBuilder!
+                .AddCyclicField("closed", "%DB1.DBW0:INT", TimeSpan.FromSeconds(1))
+                .Build().ExecuteAsync());
+        }
+
+        [Fact]
+        public async Task A_numeric_array_range_reads_and_writes_every_element()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+            var cpu = new FakeCpu(transport,
+                S7Frames.ReadAck(2, (0xFF, 0x05, Hex("0001FFFE0003"))),
+                S7Frames.WriteAck(3, 0xFF));
+            var address = "%DB1.DBW10[2..4]:INT";
+
+            var read = ValueOf(await ReadAsync(connection, address));
+            Assert.Equal(new[] { 1, -2, 3 }, read.GetList().Select(v => v.GetInt()).ToArray());
+            var written = await WriteAsync(connection, address, new short[] { 4, 5, 6 });
+            Assert.Equal(PlcResponseCode.Ok, written.GetResponseCode("v"));
+            await cpu.Running;
+
+            var item = S7Frames.AddressItem(0x05, 1, DataBlocks, 14, 0);
+            item[5] = 3;
+            Assert.Equal(S7Frames.ReadRequest(2, item), cpu.Requests[0]);
+            Assert.Equal(S7Frames.WriteRequest(3, new[] { item },
+                (0x05, Hex("000400050006"))), cpu.Requests[1]);
+        }
+
+        [Theory]
+        [InlineData("CHAR", 0x03, "41")]
+        [InlineData("WCHAR", 0x13, "0041")]
+        public async Task Character_tags_read_and_write_one_character(
+            string type, byte addressSize, string wireValue)
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+            var cpu = new FakeCpu(transport,
+                S7Frames.ReadAck(2, (0xFF, 0x09, Hex(wireValue))),
+                S7Frames.WriteAck(3, 0xFF));
+            var address = "%DB1.DB0:" + type;
+
+            var read = ValueOf(await ReadAsync(connection, address));
+            Assert.Equal("A", read.GetString());
+            if (type == "WCHAR")
+                Assert.IsType<PlcWCHAR>(read);
+            else
+                Assert.IsType<PlcCHAR>(read);
+            var write = await WriteAsync(connection, address, "A");
+            Assert.Equal(PlcResponseCode.Ok, write.GetResponseCode("v"));
+            await cpu.Running;
+
+            var item = S7Frames.AddressItem(addressSize, 1, DataBlocks, 0, 0);
+            Assert.Equal(S7Frames.ReadRequest(2, item), cpu.Requests[0]);
+            Assert.Equal(S7Frames.WriteRequest(3, new[] { item },
+                (0x09, Hex(wireValue))), cpu.Requests[1]);
+        }
+
+        [Fact]
+        public async Task Wchar_array_returns_wide_character_values()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+            var cpu = new FakeCpu(transport,
+                S7Frames.ReadAck(2, (0xFF, 0x09, Hex("00410042"))),
+                S7Frames.WriteAck(3, 0xFF));
+            const string address = "%DB1.DB0[0..1]:WCHAR";
+
+            var values = ValueOf(await ReadAsync(connection, address)).GetList().ToArray();
+            Assert.Equal(new[] { "A", "B" }, values.Select(value => value.GetString()).ToArray());
+            Assert.All(values, value => Assert.IsType<PlcWCHAR>(value));
+            var write = await WriteAsync(connection, address, new[] { "C", "D" });
+            Assert.Equal(PlcResponseCode.Ok, write.GetResponseCode("v"));
+            await cpu.Running;
+
+            var item = S7Frames.AddressItem(0x13, 1, DataBlocks, 0, 0);
+            item[5] = 2;
+            Assert.Equal(S7Frames.ReadRequest(2, item), cpu.Requests[0]);
+            Assert.Equal(S7Frames.WriteRequest(3, new[] { item },
+                (0x09, Hex("00430044"))), cpu.Requests[1]);
+        }
+
+        [Theory]
+        [InlineData("%DB1.DB0:CHAR", "é")]
+        [InlineData("%DB1.DB0:WCHAR", "AB")]
+        public async Task Character_values_that_do_not_fit_are_rejected_before_send(
+            string address, string value)
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+
+            var response = await WriteAsync(connection, address, value);
+
+            Assert.Equal(PlcResponseCode.InvalidDatatype, response.GetResponseCode("v"));
+            Assert.Empty(transport.GetAllWrittenData());
+        }
+
+        [Fact]
+        public async Task Ping_reads_the_configured_tag()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport,
+                S7Uri + "&ping-address=%25DB1.DBW4:INT");
+            var cpu = new FakeCpu(transport,
+                S7Frames.ReadAck(2, (0xFF, 0x05, Hex("1234"))));
+
+            await connection.PingAsync();
+            await cpu.Running;
+
+            Assert.Equal(S7Frames.ReadRequest(2,
+                S7Frames.AddressItem(0x05, 1, DataBlocks, 4, 0)), cpu.Requests[0]);
+        }
+
+        [Fact]
+        public async Task An_array_with_the_wrong_value_count_sends_no_write()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+
+            var response = await WriteAsync(connection, "%DB1.DBW10[0..2]:INT",
+                new short[] { 1, 2 });
+
+            Assert.Equal(PlcResponseCode.InvalidDatatype, response.GetResponseCode("v"));
+            Assert.Empty(transport.GetAllWrittenData());
+        }
+
+        [Theory]
+        [InlineData("0")]
+        [InlineData("-1")]
+        [InlineData("bad")]
+        public void Invalid_subscription_polling_interval_is_rejected(string interval)
+        {
+            Assert.Throws<PlcConnectionException>(() => new S7Connection(
+                ConnectionString.Parse(S7Uri + "&subscription-polling-interval-ms=" + interval),
+                NewTransport()));
         }
     }
 }

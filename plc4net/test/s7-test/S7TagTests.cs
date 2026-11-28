@@ -215,10 +215,35 @@ namespace org.apache.plc4net.drivers.s7.test
         }
 
         [Fact]
-        public void Array_selections_are_refused_with_an_explanation()
+        public void Numeric_array_selection_resolves_the_byte_offset_and_preserves_the_range_shape()
         {
-            var exception = Assert.Throws<PlcInvalidFieldException>(() => S7Tag.Parse("%DB1.DBW10[4]:INT"));
-            Assert.Contains("array", exception.Message);
+            var one = S7Tag.Parse("%DB1.DBW10[4]:INT");
+            Assert.Equal(18, one.ByteOffset);
+            Assert.Equal((ushort)1, one.Quantity);
+            Assert.False(one.ExplicitRange);
+
+            var range = S7Tag.Parse("%DB1.DBW10[4..7]:INT");
+            Assert.Equal(18, range.ByteOffset);
+            Assert.Equal((ushort)4, range.Quantity);
+            Assert.Equal(8, range.SizeInBytes);
+            Assert.True(range.ExplicitRange);
+            Assert.Equal(range.ToString(), S7Tag.Parse(range.ToString()).ToString());
+
+            var constructed = new S7Tag(MemoryArea.DATA_BLOCKS, 1, 18, 0,
+                TransportSize.INT, null, 4, true);
+            Assert.Equal(range.ToString(), constructed.ToString());
+            Assert.True(S7Tag.Parse("%DB1.DBW10[4..4]:INT").ExplicitRange);
+        }
+
+        [Theory]
+        [InlineData("%DB1.DBW10[7..4]:INT")]
+        [InlineData("%DB1.DBW10[65536]:INT")]
+        [InlineData("%DB1.DBW65534[0..1]:INT")]
+        [InlineData("%DB1.DBW10[1,2]:INT")]
+        [InlineData("%DB1.DBX0.0[0..1]:BOOL")]
+        public void Invalid_or_unsupported_array_selection_is_rejected(string address)
+        {
+            Assert.Throws<PlcInvalidFieldException>(() => S7Tag.Parse(address));
         }
 
         [Theory]
@@ -228,7 +253,6 @@ namespace org.apache.plc4net.drivers.s7.test
         [InlineData("%DB1.DBD0:TIME")]
         [InlineData("%DB1.DBW0:DATE")]
         [InlineData("%DB1.DBW0:S5TIME")]
-        [InlineData("%DB1.DBB0:CHAR")]
         [InlineData("%DB1.DBX0.0:COUNTER")]
         public void The_types_that_are_not_supported_yet_are_refused_with_an_explanation(string address)
         {
