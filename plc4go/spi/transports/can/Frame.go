@@ -66,8 +66,11 @@ type Frame struct {
 	Extended bool
 	Remote   bool
 	Error    bool
-	// Data is at most MaxDataLength bytes.
+	// Data is at most MaxDataLength bytes. A remote frame carries none.
 	Data []byte
+	// RequestedLength is the data length code of a remote frame: how many bytes it asks for
+	// (0..MaxDataLength). It is used only when Remote is set; a data frame's length is len(Data).
+	RequestedLength uint8
 }
 
 // Encode lays the frame out as one FrameSize record.
@@ -84,7 +87,15 @@ func (f Frame) Encode() ([]byte, error) {
 	} else if rawID > StandardIDMask {
 		return nil, errors.Errorf("standard CAN identifier 0x%X is wider than 11 bits", rawID)
 	}
+	dlc := byte(len(f.Data))
 	if f.Remote {
+		if len(f.Data) != 0 {
+			return nil, errors.Errorf("a remote CAN frame carries no data, got %d bytes", len(f.Data))
+		}
+		if f.RequestedLength > MaxDataLength {
+			return nil, errors.Errorf("a remote CAN frame asks for at most %d bytes, got %d", MaxDataLength, f.RequestedLength)
+		}
+		dlc = f.RequestedLength
 		rawID |= FlagRemote
 	}
 	if f.Error {
@@ -92,7 +103,7 @@ func (f Frame) Encode() ([]byte, error) {
 	}
 	record := make([]byte, FrameSize)
 	binary.BigEndian.PutUint32(record[0:4], rawID)
-	record[4] = byte(len(f.Data))
+	record[4] = dlc
 	copy(record[8:], f.Data)
 	return record, nil
 }
@@ -113,7 +124,13 @@ func Decode(record []byte) (Frame, error) {
 		Extended: rawID&FlagExtended != 0,
 		Remote:   rawID&FlagRemote != 0,
 		Error:    rawID&FlagError != 0,
-		Data:     append([]byte(nil), record[8:8+dlc]...),
+	}
+	if frame.Remote {
+		// The data length code of a remote frame is the length it asks for; the data bytes are padding.
+		frame.RequestedLength = uint8(dlc)
+		frame.Data = []byte{}
+	} else {
+		frame.Data = append([]byte(nil), record[8:8+dlc]...)
 	}
 	if frame.Extended {
 		frame.ID = rawID & ExtendedIDMask
@@ -129,7 +146,7 @@ func (f Frame) String() string {
 	case f.Error:
 		kind = " error"
 	case f.Remote:
-		kind = " rtr"
+		kind = fmt.Sprintf(" rtr, dlc: %d", f.RequestedLength)
 	}
 	if f.Extended {
 		return fmt.Sprintf("can{id: 0x%08X%s, data: % X}", f.ID, kind, f.Data)

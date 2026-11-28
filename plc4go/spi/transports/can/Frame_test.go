@@ -32,6 +32,8 @@ func TestFrameRoundTrip(t *testing.T) {
 		{ID: 0x80},
 		{ID: 0x1ABCDEF0, Extended: true, Data: []byte{1, 2, 3}},
 		{ID: 0x123, Remote: true},
+		{ID: 0x701, Remote: true, RequestedLength: 1},
+		{ID: 0x1ABCDEF0, Extended: true, Remote: true, RequestedLength: 8},
 	} {
 		record, err := frame.Encode()
 		if err != nil {
@@ -44,7 +46,7 @@ func TestFrameRoundTrip(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: %v", frame, err)
 		}
-		if decoded.ID != frame.ID || decoded.Extended != frame.Extended || decoded.Remote != frame.Remote || !bytes.Equal(decoded.Data, frame.Data) {
+		if decoded.ID != frame.ID || decoded.Extended != frame.Extended || decoded.Remote != frame.Remote || decoded.RequestedLength != frame.RequestedLength || !bytes.Equal(decoded.Data, frame.Data) {
 			t.Fatalf("round trip changed %s into %s", frame, decoded)
 		}
 	}
@@ -75,5 +77,38 @@ func TestFrameRejects(t *testing.T) {
 	}
 	if _, err := Decode(record[:8]); err == nil {
 		t.Fatal("a short record was accepted")
+	}
+}
+
+func TestRemoteFrameLength(t *testing.T) {
+	record, err := Frame{ID: 0x701, Remote: true, RequestedLength: 1}.Encode()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []byte{0x40, 0x00, 0x07, 0x01, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	if !bytes.Equal(record, want) {
+		t.Fatalf("layout\n got % X\nwant % X", record, want)
+	}
+
+	// An incoming remote frame's DLC is the length it asks for; whatever sits in the data bytes is
+	// padding, not data.
+	record[8] = 0xAA
+	decoded, err := Decode(record)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !decoded.Remote || decoded.RequestedLength != 1 || len(decoded.Data) != 0 {
+		t.Fatalf("decoded %s, want an rtr asking for 1 byte with no data", decoded)
+	}
+}
+
+func TestRemoteFrameRejects(t *testing.T) {
+	for _, frame := range []Frame{
+		{ID: 0x701, Remote: true, Data: []byte{1}},
+		{ID: 0x701, Remote: true, RequestedLength: 9},
+	} {
+		if _, err := frame.Encode(); err == nil {
+			t.Fatalf("%s: encoded, want an error", frame)
+		}
 	}
 }
