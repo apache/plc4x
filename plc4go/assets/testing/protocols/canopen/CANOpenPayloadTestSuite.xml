@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
+
+  <name>Tests of CANopen frames payload</name>
+
+  <protocol-name>canopen</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <testcase>
+    <name>Time synchronization, payload: A017BD805034</name>
+    <!--
+    Initial test payload was A017BD835034, however it does not align with CANOpen spec or mapping on our side is wrong
+    -->
+    <raw>A017BD805034</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TIME</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenTimeSynchronization>
+          <timeOfDay>
+            <CANOpenTime>
+              <millis dataType="uint" bitLength="32">2159876000</millis>
+              <days dataType="uint" bitLength="16">13392</days>
+            </CANOpenTime>
+          </timeOfDay>
+        </CANOpenTimeSynchronization>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Time synchronization, payload: 7019BE805034</name>
+    <!--
+    Initial test payload was 7019BE835034, however it does not align with CANOpen spec or mapping on our side is wrong
+    -->
+    <raw>7019BE835034</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TIME</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenTimeSynchronization>
+          <timeOfDay>
+            <CANOpenTime>
+              <millis dataType="uint" bitLength="32">2210273648</millis>
+              <days dataType="uint" bitLength="16">13392</days>
+            </CANOpenTime>
+          </timeOfDay>
+        </CANOpenTimeSynchronization>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 00</name>
+    <raw>00</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenHeartbeatPayload>
+          <state>
+            <NMTState dataType="uint" bitLength="8" stringRepresentation="BOOTED_UP">0</NMTState>
+          </state>
+        </CANOpenHeartbeatPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 7F</name>
+    <raw>7F</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenHeartbeatPayload>
+          <state>
+            <NMTState dataType="uint" bitLength="8" stringRepresentation="PRE_OPERATIONAL">127</NMTState>
+          </state>
+        </CANOpenHeartbeatPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 05</name>
+    <raw>05</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenHeartbeatPayload>
+          <state>
+            <NMTState dataType="uint" bitLength="8" stringRepresentation="OPERATIONAL">5</NMTState>
+          </state>
+        </CANOpenHeartbeatPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO request, payload: 4317100000000000</name>
+    <raw>4317100000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOInitiateUploadResponse>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">0</size>
+                <expedited dataType="bit" bitLength="1">true</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4119</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateExpeditedUploadResponse>
+                      <data dataType="byte" bitLength="32">0x00000000</data>
+                      <padding isList="true">
+                      </padding>
+                    </SDOInitiateExpeditedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO request, payload: 00171000A00F0000</name>
+    <raw>00171000A00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_DOWNLOAD">0</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOSegmentDownloadRequest>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <size dataType="uint" bitLength="3">0</size>
+                <last dataType="bit" bitLength="1">false</last>
+                <data dataType="byte" bitLength="56">0x171000a00f0000</data>
+                <padding isList="true">
+                </padding>
+              </SDOSegmentDownloadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO write request, payload: 2B171000D00F0000</name>
+    <raw>2B171000D00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_DOWNLOAD">1</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateDownloadRequest>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">2</size>
+                <expedited dataType="bit" bitLength="1">true</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4119</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateExpeditedUploadResponse>
+                      <data dataType="byte" bitLength="16">0xd00f</data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOInitiateExpeditedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateDownloadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO write result, payload: 60171000A00F0000</name>
+    <raw>00171000A00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOSegmentUploadResponse>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <size dataType="uint" bitLength="3">0</size>
+                <last dataType="bit" bitLength="1">false</last>
+                <data dataType="byte" bitLength="56">0x171000a00f0000</data>
+                <padding isList="true">
+                </padding>
+              </SDOSegmentUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <!-- samples -->
+  <testcase>
+    <name>SDO response, payload: 6000200000000000</name>
+    <raw>6000200000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_DOWNLOAD">3</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOInitiateDownloadResponse>
+                <reserved dataType="uint" bitLength="5">0</reserved>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">8192</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <reserved dataType="int" bitLength="32">0</reserved>
+              </SDOInitiateDownloadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>PDO, payload: 7856341200000000</name>
+    <raw>7856341200000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_PDO_1</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenPDOPayload>
+          <pdo>
+            <CANOpenPDO>
+              <data dataType="byte" bitLength="64">0x7856341200000000</data>
+            </CANOpenPDO>
+          </pdo>
+        </CANOpenPDOPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+
+  <testcase>
+    <name>PDO, payload: F9013E014C015C01</name>
+    <raw>F9013E014C015C01</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_PDO_1</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenPDOPayload>
+          <pdo>
+            <CANOpenPDO>
+              <data dataType="byte" bitLength="64">0xf9013e014c015c01</data>
+            </CANOpenPDO>
+          </pdo>
+        </CANOpenPDOPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+</test:testsuite>

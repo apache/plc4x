@@ -55,6 +55,10 @@ type ParserSerializerTestcase struct {
 	rootType        string
 	referenceXml    string
 	parserArguments []string
+	// noReference: the testcase has an empty <xml> element (a frame the suite
+	// records but does not describe yet). Java fails such a case with "Missing
+	// reference xml element"; here it is skipped with that reason.
+	noReference bool
 }
 
 func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerTestcase) error {
@@ -207,6 +211,9 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, parser Parser, 
 				t.Skipf("Testcase %s skipped", testcase.name)
 				return
 			}
+			if testcase.noReference {
+				t.Skipf("Testcase %s has no reference xml element", testcase.name)
+			}
 			t.Logf("Running testcase %s", testcase.name)
 			synctest.Test(t, func(t *testing.T) {
 				if err := testsuite.Run(t, testcase); err != nil {
@@ -303,13 +310,18 @@ func ParseParserSerializerTestSuite(t *testing.T, node xmldom.Node, parser Parse
 			}
 			referenceXml := child.FindOneByName("xml")
 			normalizeXml(referenceXml)
-			referenceSerialized := referenceXml.FirstChild().XMLPretty()
+			referenceSerialized := ""
+			noReference := referenceXml.FirstChild() == nil
+			if !noReference {
+				referenceSerialized = referenceXml.FirstChild().XMLPretty()
+			}
 			testcase := ParserSerializerTestcase{
 				name:            testcaseName,
 				rawInputText:    rawInputText,
 				rootType:        rootType,
 				referenceXml:    referenceSerialized,
 				parserArguments: parserArguments,
+				noReference:     noReference,
 			}
 			testcases = append(testcases, testcase)
 		default:

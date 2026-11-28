@@ -79,16 +79,7 @@ func (m PlcRawByteArray) Serialize() ([]byte, error) {
 }
 
 func (m PlcRawByteArray) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcRawByteArray"); err != nil {
-		return err
-	}
-	for _, value := range m.Values {
-		if err := writeBuffer.WriteByte("value", value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("PlcRawByteArray"); err != nil {
-		return err
-	}
-	return nil
+	// One byte array element, the way plc4j renders it (<PlcRawByteArray dataType="byte"
+	// bitLength="64">0x...</PlcRawByteArray> in XML), not one element per byte.
+	return writeBuffer.WriteByteArray("PlcRawByteArray", m.Values)
 }

@@ -79,6 +79,10 @@ public abstract class PnIoCm_Block implements Message {
       builder = PnIoCm_Control_Response_ApplicationReady.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (PnIoCm_BlockType) (PnIoCm_BlockType.IOD_BLOCK_RES_CONNECTION_PARAMETER_END))) {
       builder = PnIoCm_Control_Response_ParameterEnd.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, (PnIoCm_BlockType) (PnIoCm_BlockType.RELEASE_BLOCK_REQ))) {
+      builder = PnIoCm_Control_Request_Release.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, (PnIoCm_BlockType) (PnIoCm_BlockType.RELEASE_BLOCK_RES))) {
+      builder = PnIoCm_Control_Response_Release.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (PnIoCm_BlockType) (PnIoCm_BlockType.IO_CR_BLOCK_REQ))) {
       builder = PnIoCm_Block_IoCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (PnIoCm_BlockType) (PnIoCm_BlockType.IO_CR_BLOCK_RES))) {

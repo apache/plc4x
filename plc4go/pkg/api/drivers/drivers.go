@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/abeth"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/canopen"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	"github.com/apache/plc4x/plc4go/internal/firmata"
@@ -30,6 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/opcua"
+	"github.com/apache/plc4x/plc4go/internal/profinet"
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/internal/slmp"
 	"github.com/apache/plc4x/plc4go/internal/umas"
@@ -58,6 +60,15 @@ func RegisterBacnetDriver(driverManager plc4go.PlcDriverManager, _options ...con
 	driver := bacnetip.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterUdpTransport(driverManager)
+	return driver
+}
+
+func RegisterCanopenDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := canopen.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// SocketCAN is the real bus (Linux only); the virtual bus is in-process, for tests and simulation.
+	transports.RegisterSocketCanTransport(driverManager)
+	transports.RegisterVirtualCanTransport(driverManager)
 	return driver
 }
 
@@ -134,6 +145,15 @@ func RegisterOpcuaDriver(driverManager plc4go.PlcDriverManager, _options ...conf
 	driver := opcua.NewDriver(converter.WithOptionToInternal(_options...)...)
 	driverManager.RegisterDriver(driver)
 	transports.RegisterTcpTransport(driverManager)
+	return driver
+}
+
+func RegisterProfinetDriver(driverManager plc4go.PlcDriverManager, _options ...config.WithOption) plc4go.PlcDriver {
+	driver := profinet.NewDriver(converter.WithOptionToInternal(_options...)...)
+	driverManager.RegisterDriver(driver)
+	// Profinet is raw Ethernet (Linux, CAP_NET_RAW); the virtual segment is for tests and simulation.
+	transports.RegisterRawSocketTransport(driverManager)
+	transports.RegisterVirtualEthTransport(driverManager)
 	return driver
 }
 
