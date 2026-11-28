@@ -930,7 +930,12 @@ namespace org.apache.plc4net.drivers.s7.test
                 S7Frames.WriteAck(3, 0xFF));
             var address = "%DB1.DB0:" + type;
 
-            Assert.Equal("A", ValueOf(await ReadAsync(connection, address)).GetString());
+            var read = ValueOf(await ReadAsync(connection, address));
+            Assert.Equal("A", read.GetString());
+            if (type == "WCHAR")
+                Assert.IsType<PlcWCHAR>(read);
+            else
+                Assert.IsType<PlcCHAR>(read);
             var write = await WriteAsync(connection, address, "A");
             Assert.Equal(PlcResponseCode.Ok, write.GetResponseCode("v"));
             await cpu.Running;
@@ -939,6 +944,30 @@ namespace org.apache.plc4net.drivers.s7.test
             Assert.Equal(S7Frames.ReadRequest(2, item), cpu.Requests[0]);
             Assert.Equal(S7Frames.WriteRequest(3, new[] { item },
                 (0x09, Hex(wireValue))), cpu.Requests[1]);
+        }
+
+        [Fact]
+        public async Task Wchar_array_returns_wide_character_values()
+        {
+            var transport = Ready();
+            using var connection = ConnectQuietly(transport);
+            var cpu = new FakeCpu(transport,
+                S7Frames.ReadAck(2, (0xFF, 0x09, Hex("00410042"))),
+                S7Frames.WriteAck(3, 0xFF));
+            const string address = "%DB1.DB0[0..1]:WCHAR";
+
+            var values = ValueOf(await ReadAsync(connection, address)).GetList().ToArray();
+            Assert.Equal(new[] { "A", "B" }, values.Select(value => value.GetString()).ToArray());
+            Assert.All(values, value => Assert.IsType<PlcWCHAR>(value));
+            var write = await WriteAsync(connection, address, new[] { "C", "D" });
+            Assert.Equal(PlcResponseCode.Ok, write.GetResponseCode("v"));
+            await cpu.Running;
+
+            var item = S7Frames.AddressItem(0x13, 1, DataBlocks, 0, 0);
+            item[5] = 2;
+            Assert.Equal(S7Frames.ReadRequest(2, item), cpu.Requests[0]);
+            Assert.Equal(S7Frames.WriteRequest(3, new[] { item },
+                (0x09, Hex("00430044"))), cpu.Requests[1]);
         }
 
         [Theory]

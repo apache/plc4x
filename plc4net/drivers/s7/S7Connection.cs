@@ -727,15 +727,24 @@ namespace org.apache.plc4net.drivers.s7
                     $"The S7 answer carries {data.Length} byte(s) for {tag}; a {tag.DataType} takes {tag.SizeInBytes}.");
             }
             if (!tag.ExplicitRange)
-                return DataItem.StaticParse(new ReadBuffer(data),
-                    tag.DataType.GetDataProtocolId(), ControllerType.ANY, tag.StringLength ?? 0);
+                return ParseElement(tag, new ReadBuffer(data));
 
             var values = new List<IPlcValue>(tag.Quantity);
             var elementSize = tag.DataType.GetSizeInBytes();
             for (var i = 0; i < tag.Quantity; i++)
-                values.Add(DataItem.StaticParse(new ReadBuffer(data, i * elementSize, elementSize),
-                    tag.DataType.GetDataProtocolId(), ControllerType.ANY, 0));
+                values.Add(ParseElement(tag, new ReadBuffer(data, i * elementSize, elementSize)));
             return new PlcList(values);
+        }
+
+        private static IPlcValue ParseElement(S7Tag tag, ReadBuffer buffer)
+        {
+            var value = DataItem.StaticParse(buffer, tag.DataType.GetDataProtocolId(),
+                ControllerType.ANY, tag.StringLength ?? 0);
+            // The shared S7 model currently maps IEC61131_WCHAR to CHAR. Keep the
+            // public PLC4Net value type consistent with the requested tag.
+            return tag.DataType == TransportSize.WCHAR
+                ? new PlcWCHAR(value.GetString()[0])
+                : value;
         }
 
         // ── PlcWriter ──────────────────────────────────────────
@@ -919,7 +928,9 @@ namespace org.apache.plc4net.drivers.s7
                         (tag.DataType == TransportSize.CHAR &&
                          System.Text.Encoding.UTF8.GetByteCount(character) != 1))
                         throw new InvalidCastException("An S7 CHAR needs one UTF-8 byte; WCHAR needs one UTF-16 code unit.");
-                    plcValue = new PlcCHAR(character[0]);
+                    plcValue = tag.DataType == TransportSize.WCHAR
+                        ? new PlcWCHAR(character[0])
+                        : new PlcCHAR(character[0]);
                     break;
                 default:
                     throw new S7DriverException($"A tag cannot be written as {tag.DataType}.");
