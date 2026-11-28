@@ -30,10 +30,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
-// openSocket opens a non-blocking CAN_RAW socket bound to the interface. Non-blocking matters: it is
-// what lets os.NewFile hand the descriptor to the runtime poller, so deadlines work and Close wakes
-// up a pending read.
-func openSocket(interfaceName string) (*os.File, error) {
+// canRawErrFilter is CAN_RAW_ERR_FILTER from linux/can/raw.h, which x/sys/unix does not define.
+const canRawErrFilter = 2
+
+// openSocket opens a non-blocking CAN_RAW socket bound to the interface, delivering the error frames
+// of the classes in errorMask. Non-blocking matters: it is what lets os.NewFile hand the descriptor
+// to the runtime poller, so deadlines work and Close wakes up a pending read.
+func openSocket(interfaceName string, errorMask uint32) (*os.File, error) {
 	networkInterface, err := net.InterfaceByName(interfaceName)
 	if err != nil {
 		return nil, errors.Wrapf(err, "no network interface %s", interfaceName)
@@ -41,6 +44,12 @@ func openSocket(interfaceName string) (*os.File, error) {
 	fd, err := unix.Socket(unix.AF_CAN, unix.SOCK_RAW|unix.SOCK_NONBLOCK|unix.SOCK_CLOEXEC, unix.CAN_RAW)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating a CAN_RAW socket")
+	}
+	if errorMask != 0 {
+		if err := unix.SetsockoptInt(fd, unix.SOL_CAN_RAW, canRawErrFilter, int(errorMask)); err != nil {
+			_ = unix.Close(fd)
+			return nil, errors.Wrap(err, "error asking the CAN socket for error frames")
+		}
 	}
 	if err := unix.Bind(fd, &unix.SockaddrCAN{Ifindex: networkInterface.Index}); err != nil {
 		_ = unix.Close(fd)

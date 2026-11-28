@@ -45,6 +45,9 @@ type TransportInstance struct {
 	transportUtils.DefaultBufferedTransportInstance
 
 	InterfaceName string
+	// ErrorMask is the error classes the kernel delivers as error frames (0: none). See the package
+	// comment.
+	ErrorMask uint32
 
 	transport *Transport
 
@@ -76,7 +79,7 @@ func (m *TransportInstance) Connect(_ context.Context) error {
 	if m.connected.Load() {
 		return errors.New("already connected")
 	}
-	file, err := openSocket(m.InterfaceName)
+	file, err := openSocket(m.InterfaceName, m.ErrorMask)
 	if err != nil {
 		return errors.Wrapf(err, "error opening a SocketCAN socket on %s", m.InterfaceName)
 	}

@@ -24,7 +24,14 @@
 //
 //	canopen:socketcan://can0
 //
-// The instance delivers frames in the layout of package can: one 16 byte record per frame. On
+// The instance delivers frames in the layout of package can: one 16 byte record per frame.
+//
+// The kernel delivers error frames (bus off, error passive, lost arbitration, ...) only when asked.
+// This option asks for them; its value is a CAN error class mask, as in Linux's linux/can/error.h:
+//
+//	socketcan.error-mask   e.g. 0x1FFFFFFF for every class, 0 (the default) for none
+//
+// They arrive as frames with can.Frame.Error set. On
 // anything but Linux the transport is still registered, so a connection string naming it fails with
 // a clear error rather than "unknown transport".
 package socketcan
@@ -32,6 +39,7 @@ package socketcan
 import (
 	"net/url"
 	"regexp"
+	"strconv"
 
 	"github.com/rs/zerolog"
 
@@ -40,8 +48,16 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-// TransportCode is the scheme of a connection string using this transport.
-const TransportCode = "socketcan"
+const (
+	// TransportCode is the scheme of a connection string using this transport.
+	TransportCode = "socketcan"
+
+	// ErrorMaskOption is the option naming the error classes the kernel delivers as error frames.
+	ErrorMaskOption = "socketcan.error-mask"
+
+	// errorClassMask is every error class bit Linux defines (CAN_ERR_MASK).
+	errorClassMask = uint32(0x1FFFFFFF)
+)
 
 // interfaceNamePattern is what Linux accepts as a network interface name: at most 15 characters,
 // no slash and no whitespace.
@@ -67,7 +83,7 @@ func (m *Transport) GetTransportName() string {
 	return "Linux SocketCAN Transport"
 }
 
-func (m *Transport) CreateTransportInstance(transportUrl url.URL, _ map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, transportOptions map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
 	interfaceName := transportUrl.Host
 	if interfaceName == "" {
 		// socketcan:can0 (no slashes) parses into Opaque.
@@ -76,7 +92,32 @@ func (m *Transport) CreateTransportInstance(transportUrl url.URL, _ map[string][
 	if !interfaceNamePattern.MatchString(interfaceName) {
 		return nil, errors.Errorf("socketcan needs a network interface name such as can0, got %q", interfaceName)
 	}
-	return NewTransportInstance(interfaceName, m, _options...), nil
+	errorMask, err := parseErrorMask(transportOptions[ErrorMaskOption])
+	if err != nil {
+		return nil, err
+	}
+	instance := NewTransportInstance(interfaceName, m, _options...)
+	instance.ErrorMask = errorMask
+	return instance, nil
+}
+
+// parseErrorMask reads the error-mask option: absent is 0, otherwise one number, in decimal or with
+// a 0x prefix, inside CAN_ERR_MASK.
+func parseErrorMask(values []string) (uint32, error) {
+	if len(values) == 0 {
+		return 0, nil
+	}
+	if len(values) > 1 {
+		return 0, errors.Errorf("%s takes one value, got %d", ErrorMaskOption, len(values))
+	}
+	mask, err := strconv.ParseUint(values[0], 0, 32)
+	if err != nil {
+		return 0, errors.Wrapf(err, "%s must be a number such as 0x1FFFFFFF, got %q", ErrorMaskOption, values[0])
+	}
+	if uint32(mask)&^errorClassMask != 0 {
+		return 0, errors.Errorf("%s 0x%X has bits outside the error classes (0x%X)", ErrorMaskOption, mask, errorClassMask)
+	}
+	return uint32(mask), nil
 }
 
 func (m *Transport) Close() error {
