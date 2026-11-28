@@ -27,6 +27,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/errors"
 )
 
-func openSocket(interfaceName string) (*os.File, error) {
+func openSocket(interfaceName string, _ uint32) (*os.File, error) {
 	return nil, errors.Errorf("SocketCAN is only available on Linux (asked for %s)", interfaceName)
 }
