@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[enum uint 4 CANOpenService(uint 8 min, uint 8 max, bit pdo) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
+[enum uint 4 CANOpenService(uint 16 min, uint 16 max, bit pdo) byteOrder='"LITTLE_ENDIAN"' unsignedIntegerEncoding='"unsigned-binary"' signedIntegerEncoding='"twos-complement"' floatEncoding='"IEEE754"' stringEncoding='"UTF8"'
     ['0b0000' NMT             ['0',          '0'    ,      'false']]
     ['0b0001' SYNC            ['0x80',       '0x80' ,      'false']]
     ['0b0001' EMCY            ['0x81',       '0xFF' ,      'false']]

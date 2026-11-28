@@ -52,7 +52,9 @@ func NewFieldReaderArray[T any](log zerolog.Logger) *FieldReaderArray[T] {
 func (f *FieldReaderArray[T]) ReadFieldCount(ctx context.Context, logicalName string, dataReader io.DataReader[T], count uint64, readerArgs ...utils.WithReaderArgs) ([]T, error) {
 	f.log.Debug().Str("logicalName", logicalName).Uint64("count", count).Msg("reading field")
 	if count > math.MaxInt64 {
-		return nil, errors.Errorf("Array count of %d exceeds the maximum allowed count of %d", count, math.MaxInt64)
+		// The count came from a negative signed field: a protocol's way of saying "no array"
+		// (OPC UA writes -1 for a null array). It reads as an empty array, as in PLC4J.
+		count = 0
 	}
 	// Ensure we have the render as list argument present
 	readerArgs = append(readerArgs, utils.WithRenderAsList(true))

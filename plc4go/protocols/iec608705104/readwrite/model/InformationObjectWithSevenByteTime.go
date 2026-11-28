@@ -84,7 +84,7 @@ func NewInformationObjectWithSevenByteTime(address uint32) *_InformationObjectWi
 	_result := &_InformationObjectWithSevenByteTime{
 		InformationObjectContract: NewInformationObject(address),
 	}
-	_result.InformationObjectContract.(*_InformationObject)._SubType = _result._SubType
+	_result.InformationObjectContract.(*_InformationObject)._SubType = _result
 	return _result
 }
 

@@ -226,6 +226,8 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
 				} else if structValue := convertApiRequestStructValue(tagNode.GetChild("value")); structValue != nil {
 					wrb.AddTagAddress(tagName, tagAddress, structValue)
+				} else if typedValue, ok := apiRequestTypedValue(tagNode.GetChild("value")); ok {
+					wrb.AddTagAddress(tagName, tagAddress, typedValue)
 				} else {
 					tagValue := tagNode.GetChild("value").Text
 					wrb.AddTagAddress(tagName, tagAddress, tagValue)
@@ -568,6 +570,20 @@ type ConnectionConnectAwaiter interface {
 	SetAwaitSetupComplete(awaitComplete bool)
 	// SetAwaitDisconnectComplete sets a flag that the driver should await a dis-connection completion
 	SetAwaitDisconnectComplete(awaitComplete bool)
+}
+
+// apiRequestTypedValue reads a value spelled with its type, <value><PlcUSINT>128</PlcUSINT></value>,
+// which is how plc4j's driver test suites write a single value. The tag's own type decides how the
+// text is parsed, as for a bare <value>128</value>.
+func apiRequestTypedValue(valueNode *xmldom.Node) (string, bool) {
+	if valueNode == nil || len(valueNode.Children) != 1 {
+		return "", false
+	}
+	child := valueNode.Children[0]
+	if child.Name == "PlcStruct" || !strings.HasPrefix(child.Name, "Plc") || len(child.Children) != 0 {
+		return "", false
+	}
+	return strings.TrimSpace(child.Text), true
 }
 
 // convertApiRequestStructValue converts a structured api-request value (a PlcStruct element

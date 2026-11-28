@@ -80,7 +80,7 @@ func NewInformationObjectWithoutTime(address uint32) *_InformationObjectWithoutT
 	_result := &_InformationObjectWithoutTime{
 		InformationObjectContract: NewInformationObject(address),
 	}
-	_result.InformationObjectContract.(*_InformationObject)._SubType = _result._SubType
+	_result.InformationObjectContract.(*_InformationObject)._SubType = _result
 	return _result
 }
 

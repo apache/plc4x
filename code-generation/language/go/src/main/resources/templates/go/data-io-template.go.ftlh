@@ -94,9 +94,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
 						<#if enumTypeWithoutTraces?contains(".")>
-							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?remove_beginning("Get")?remove_ending("()")}
 						<#else>
-							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?remove_beginning("Get")?remove_ending("()")}
 						</#if>
 					<#else>
 						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
@@ -380,9 +380,9 @@ func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
 						<#if enumTypeWithoutTraces?contains(".")>
-							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+							${enumTypeTraces}${enumTypeWithoutTraces?split(".")[0]}.${enumValueWithoutTraces?remove_beginning("Get")?remove_ending("()")}
 						<#else>
-							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?remove_beginning("Get")?remove_ending("()")}
 						</#if>
 					<#else>
 						${helper.toParseExpression(null, typeRef, discriminatorValueTerm, parserArguments)}

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
+
+  <name>Tests of CANopen frames from Wireshark sample PCAP files.</name>
+
+  <protocol-name>canopen</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <testcase>
+    <name>SDO initiate request: 4008100000000000</name>
+    <raw>4008100000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateUploadRequest>
+                <reserved dataType="uint" bitLength="5">0</reserved>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <reserved dataType="int" bitLength="32">0</reserved>
+              </SDOInitiateUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate response: 4108100015000000</name>
+    <raw>4108100015000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOInitiateUploadResponse>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">0</size>
+                <expedited dataType="bit" bitLength="1">false</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateSegmentedUploadResponse>
+                      <bytes dataType="uint" bitLength="32">21</bytes>
+                    </SDOInitiateSegmentedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO segment upload request: 6000000000000000</name>
+    <raw>6000000000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOSegmentUploadRequest>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <reserved dataType="uint" bitLength="4">0</reserved>
+                <reserved dataType="int" bitLength="56">0</reserved>
+              </SDOSegmentUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO abort: 8000000021000008</name>
+    <raw>8000000021000008</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOAbortRequest>
+                <abort>
+                  <SDOAbort>
+                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <address>
+                      <IndexAddress>
+                        <index dataType="uint" bitLength="16">0</index>
+                        <subindex dataType="uint" bitLength="8">0</subindex>
+                      </IndexAddress>
+                    </address>
+                    <code dataType="uint" bitLength="32">134217761</code>
+                  </SDOAbort>
+                </abort>
+              </SDOAbortRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO upload segment response: 00556c7472614869</name>
+    <raw>00556c7472614869</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOSegmentUploadResponse>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <size dataType="uint" bitLength="3">0</size>
+                <last dataType="bit" bitLength="1">false</last>
+                <data dataType="byte" bitLength="56">0x556c7472614869</data>
+                <padding isList="true">
+                </padding>
+              </SDOSegmentUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO upload segment request: 7000000000000000</name>
+    <raw>7000000000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOSegmentUploadRequest>
+                <toggle dataType="bit" bitLength="1">true</toggle>
+                <reserved dataType="uint" bitLength="4">0</reserved>
+                <reserved dataType="int" bitLength="56">0</reserved>
+              </SDOSegmentUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate upload request: 4008102a00000000</name>
+    <raw>4008102a00000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateUploadRequest>
+                <reserved dataType="uint" bitLength="5">0</reserved>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">42</subindex>
+                  </IndexAddress>
+                </address>
+                <reserved dataType="int" bitLength="32">0</reserved>
+              </SDOInitiateUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x42: 0142</name>
+    <raw>0142</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">66</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x00 (all): 0100</name>
+    <raw>0100</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">0</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x42: 0263</name>
+    <raw>0263</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="STOP">2</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">99</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate download request: 2300620161736466</name>
+    <raw>2300620161736466</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_DOWNLOAD">1</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateDownloadRequest>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">0</size>
+                <expedited dataType="bit" bitLength="1">true</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">25088</index>
+                    <subindex dataType="uint" bitLength="8">1</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateExpeditedUploadResponse>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
+                      <padding isList="true">
+                      </padding>
+                    </SDOInitiateExpeditedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateDownloadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO abort: 8000620100000206</name>
+    <raw>8000620100000206</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOAbortResponse>
+                <abort>
+                  <SDOAbort>
+                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <address>
+                      <IndexAddress>
+                        <index dataType="uint" bitLength="16">25088</index>
+                        <subindex dataType="uint" bitLength="8">1</subindex>
+                      </IndexAddress>
+                    </address>
+                    <code dataType="uint" bitLength="32">100794368</code>
+                  </SDOAbort>
+                </abort>
+              </SDOAbortResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO block upload: c208100015000000</name>
+    <raw>c208100015000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="BLOCK">6</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOBlockResponse>
+                <block>
+                  <SDOBlockData>
+                    <flags dataType="uint" bitLength="5">2</flags>
+                    <data dataType="byte" bitLength="56">0x08100015000000</data>
+                  </SDOBlockData>
+                </block>
+              </SDOBlockResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
+    </xml>
+  </testcase>
+</test:testsuite>

@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       byteOrder="LITTLE_ENDIAN">
+
+  <name>CANOpen SDO Segmentation</name>
+
+  <protocol-name>canopen</protocol-name>
+  <output-flavor>read-write</output-flavor>
+
+  <driver-name>canopen</driver-name>
+
+  <driver-parameters>
+    <parameter>
+      <name>nodeId</name>
+      <value>15</value>
+    </parameter>
+    <parameter>
+      <name>request-timeout-ms</name>
+      <value>5000</value>
+    </parameter>
+  </driver-parameters>
+
+  <testcase>
+    <name>Expedited SDO read request</name>
+    <description>
+      Single tags read request which answers with 4 bytes of data.
+    </description>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>expeditedSdo</name>
+              <address>SDO:1:1000/22:UNSIGNED32</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1001</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for from requested node">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application (expedited)">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedSdo>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedSdo>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <expeditedSdo>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="uint" bitLength="32">1717859169</PlcUDINT>
+                </value>
+              </PlcResponseItem>
+            </expeditedSdo>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Expedited SDO read request - short</name>
+    <description>
+      Single tag read request which answers with 4 bytes of data.
+    </description>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>expeditedShort</name>
+              <address>SDO:1:9186/1:UNSIGNED8</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">9186</index>
+                          <subindex dataType="uint" bitLength="8">1</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">9186</index>
+                          <subindex dataType="uint" bitLength="8">1</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application (expedited short)">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedShort>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">9186</index>
+                          <subIndex dataType="int" bitLength="64">1</subIndex>
+                          <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedShort>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <expeditedShort>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUSINT dataType="uint" bitLength="8">97</PlcUSINT>
+                </value>
+              </PlcResponseItem>
+            </expeditedShort>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Expedited SDO read request - custom answer node id</name>
+    <description>
+      Single tag read request which answers with 4 bytes of data.
+    </description>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>expeditedSdoCustomAnswer</name>
+              <address>SDO:1/2:1000/22:UNSIGNED32</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
+        <!-- one unwanted frame -->
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1001</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for from requested node">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application (custom answer id)">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <expeditedSdoCustomAnswer>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </expeditedSdoCustomAnswer>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <expeditedSdoCustomAnswer>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcUDINT dataType="uint" bitLength="32">1717859169</PlcUDINT>
+                </value>
+              </PlcResponseItem>
+            </expeditedSdoCustomAnswer>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Segmented SDO read request</name>
+    <description>
+      Single tag read request which answers with 8 bytes of data which must go over two CAN frames.
+    </description>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>segmentedSdo</name>
+              <address>SDO:2:2000/44:RECORD</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">2000</index>
+                          <subindex dataType="uint" bitLength="8">44</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response with segment information">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">false</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">2000</index>
+                          <subindex dataType="uint" bitLength="8">44</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateSegmentedUploadResponse>
+                            <bytes dataType="uint" bitLength="32">8</bytes>
+                          </SDOInitiateSegmentedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+
+      <outgoing-plc-message name="Send first SDO Segment Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for first segment">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">false</last>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">true</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response with segment information">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">true</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">false</last>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+
+      </incoming-plc-message>
+
+      <outgoing-plc-message name="Send second SDO Segment Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for second segment">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0
+                  </SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">true</last>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+
+      <api-response name="Report Read Response to application (segmented)">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <segmentedSdo>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">2</node>
+                          <index dataType="int" bitLength="64">2000</index>
+                          <subIndex dataType="int" bitLength="64">44</subIndex>
+                          <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </segmentedSdo>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <segmentedSdo>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcRawByteArray dataType="byte" bitLength="64">0x6173646661736466</PlcRawByteArray>
+                </value>
+              </PlcResponseItem>
+            </segmentedSdo>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Expedited SDO read request with abort answer</name>
+    <description>
+      Single tag read request which answers with 4 bytes of data.
+    </description>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest>
+          <tags isList="true">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>TheFailingTag</name>
+              <address>SDO:1:1000/22:UNSIGNED32</address>
+            </tag>
+          </tags>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send SDO Initialize Upload Request">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2
+                  </SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOAbortResponse>
+                      <abort>
+                        <SDOAbort>
+                          <reserved dataType="uint" bitLength="5">0</reserved>
+                          <address>
+                            <IndexAddress>
+                              <index dataType="uint" bitLength="16">1001</index>
+                              <subindex dataType="uint" bitLength="8">22</subindex>
+                            </IndexAddress>
+                          </address>
+                          <code dataType="uint" bitLength="32">84082688</code>
+                        </SDOAbort>
+                      </abort>
+                    </SDOAbortResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
+          </payload>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application (abort)">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <TheFailingTag>
+                    <PlcTagItem>
+                      <tag>
+                        <CANOpenSDOTag>
+                          <node dataType="int" bitLength="64">1</node>
+                          <index dataType="int" bitLength="64">1000</index>
+                          <subIndex dataType="int" bitLength="64">22</subIndex>
+                          <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
+                        </CANOpenSDOTag>
+                      </tag>
+                    </PlcTagItem>
+                  </TheFailingTag>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <TheFailingTag>
+              <PlcResponseItem>
+                <code dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</code>
+                <value>
+                  <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
+                </value>
+              </PlcResponseItem>
+            </TheFailingTag>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+      <delay>1000</delay>
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

@@ -84,7 +84,7 @@ func NewCipServiceRequest() *_CipServiceRequest {
 	_result := &_CipServiceRequest{
 		CipServiceContract: NewCipService(),
 	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result._SubType
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 
